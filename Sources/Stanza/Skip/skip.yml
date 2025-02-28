@@ -1,0 +1,28 @@
+# Configuration file for https://skip.tools project
+settings:
+  contents:
+    - block: 'dependencyResolutionManagement'
+      contents:
+        - block: 'versionCatalogs'
+          contents:
+            - block: 'create("libs")'
+              contents:
+                - 'version("readium", "3.0.3")'
+                - 'library("readium-shared", "org.readium.kotlin-toolkit", "readium-shared").versionRef("readium")'
+                - 'library("readium-streamer", "org.readium.kotlin-toolkit", "readium-streamer").versionRef("readium")'
+                - 'library("readium-navigator", "org.readium.kotlin-toolkit", "readium-navigator").versionRef("readium")'
+                - 'library("readium-opds", "org.readium.kotlin-toolkit", "readium-opds").versionRef("readium")'
+                - 'library("readium-lcp", "org.readium.kotlin-toolkit", "readium-lcp").versionRef("readium")'
+                #- 'library("readium-adapter-pdfium", "org.readium.kotlin-toolkit", "readium-adapter-pdfium").versionRef("readium")'
+
+build:
+  contents:
+    - block: 'dependencies'
+      contents:
+        - 'implementation(libs.readium.shared)'
+        - 'implementation(libs.readium.streamer)'
+        - 'implementation(libs.readium.navigator)'
+        - 'implementation(libs.readium.opds)'
+        - 'implementation(libs.readium.lcp)'
+        #- 'implementation(libs.readium.adapter.pdfium)'
+        - 'implementation("androidx.fragment:fragment-compose:1.8.5")'
