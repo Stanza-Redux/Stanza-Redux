@@ -1,0 +1,23 @@
+# Configuration file for https://skip.tools project
+settings:
+  contents:
+    - block: 'dependencyResolutionManagement'
+      contents:
+        - block: 'versionCatalogs'
+          contents:
+            - block: 'create("libs")'
+              contents:
+                - 'version("readium", "3.0.3")'
+                - 'library("readium-shared", "org.readium.kotlin-toolkit", "readium-shared").versionRef("readium")'
+                - 'library("readium-streamer", "org.readium.kotlin-toolkit", "readium-streamer").versionRef("readium")'
+                - 'library("readium-opds", "org.readium.kotlin-toolkit", "readium-opds").versionRef("readium")'
+                - 'library("readium-lcp", "org.readium.kotlin-toolkit", "readium-lcp").versionRef("readium")'
+
+build:
+  contents:
+    - block: 'dependencies'
+      contents:
+        - 'implementation(libs.readium.shared)'
+        - 'implementation(libs.readium.streamer)'
+        - 'implementation(libs.readium.opds)'
+        - 'implementation(libs.readium.lcp)'
