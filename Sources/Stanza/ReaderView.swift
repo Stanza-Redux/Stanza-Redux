@@ -67,10 +67,10 @@ var navConfig = EPUBNavigatorViewController.Configuration()
 #endif
 
 @Observable class ReaderViewModel {
-    var publication: Publication
+    var publication: Pub
     var isFullscreen = false
 
-    init(publication: Publication, isFullscreen: Bool = false) {
+    init(publication: Pub, isFullscreen: Bool = false) {
         self.publication = publication
         self.isFullscreen = isFullscreen
     }
@@ -78,7 +78,7 @@ var navConfig = EPUBNavigatorViewController.Configuration()
 
 struct ReaderView: View {
     let bookURL: URL = Bundle.module.url(forResource: "Alice", withExtension: "epub")!
-    @State var publication: Publication? = nil
+    @State var publication: Pub? = nil
     @State var viewModel: ReaderViewModel? = nil
     @State var error: Error? = nil
     @State var locator: Locator? = nil
@@ -124,15 +124,15 @@ struct ReaderView: View {
     }
 
     func loadPublication() async throws {
-        let publication = try await StanzaModel.loadPublication(bookURL: bookURL)
+        let publication: Pub = try await Pub.loadPublication(bookURL: bookURL)
         self.publication = publication
         #if !SKIP
         self.viewModel = ReaderViewModel(publication: publication)
-        self.navigator = try EPUBNavigatorViewController(publication: publication, initialLocation: locator, config: navConfig, httpServer: httpServer)
+        self.navigator = try EPUBNavigatorViewController(publication: publication.platformValue, initialLocation: locator, config: navConfig, httpServer: httpServer)
         #endif
     }
 
-    func readerViewContainer(publication: Publication) -> some View {
+    func readerViewContainer(publication: Pub) -> some View {
         #if !SKIP
         ReaderViewContainer(
             viewModel: viewModel!,
@@ -187,7 +187,7 @@ struct ReaderViewContainer: View {
         viewControllerWrapper
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .ignoresSafeArea(.all)
-            .navigationTitle(viewModel.publication.metadata.title ?? "Unknown Title")
+            .navigationTitle(viewModel.publication.title ?? "Unknown Title")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarHidden(viewModel.isFullscreen)
             .statusBarHidden(viewModel.isFullscreen)

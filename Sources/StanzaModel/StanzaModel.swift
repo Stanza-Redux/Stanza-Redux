@@ -84,20 +84,46 @@ let publicationOpener: PublicationOpener = PublicationOpener(
 )
 #endif
 
-public class StanzaModel {
-    public static func loadPublication(bookURL: URL) async throws -> Publication {
+
+/// A wrapper for an underlying `Publication` type.
+public class Pub {
+    #if !SKIP
+    public typealias PlatformPublication = ReadiumShared.Publication
+    #else
+    public typealias PlatformPublication = org.readium.r2.shared.publication.Publication
+    #endif
+
+    public var platformValue: PlatformPublication
+
+    public init(platformValue: Publication) {
+        self.platformValue = platformValue
+    }
+
+    public var title: String? {
+        platformValue.metadata.title
+    }
+}
+
+#if SKIP
+extension Pub: KotlinConverting<PlatformPublication> {
+    public override func kotlin(nocopy: Bool = false) -> PlatformPublication {
+        return platformValue
+    }
+}
+#endif
+
+extension Pub {
+    public static func loadPublication(bookURL: URL, allowUserInteraction: Bool = true) async throws -> Pub {
 
         #if !SKIP
         // Retrieve an `Asset` to access the file content.
         switch await assetRetriever.retrieve(url: bookURL.anyURL.absoluteURL!) {
         case .success(let asset):
             // Open a `Publication` from the `Asset`.
-            switch await publicationOpener.open(asset: asset, allowUserInteraction: true) {
+            switch await publicationOpener.open(asset: asset, allowUserInteraction: allowUserInteraction) {
             case .success(let publication):
                 logger.log("opened \(publication.metadata.title ?? "Unknown")")
-                return publication
-
-
+                return Pub(platformValue: publication)
             case .failure(let error):
                 // Failed to access or parse the publication
                 logger.log("error \(error)")
@@ -124,15 +150,71 @@ public class StanzaModel {
 
         logger.log("tmpFile: \(tmpFile)")
         let absoluteUrl: org.readium.r2.shared.util.AbsoluteUrl = tmpFile.toURL().toAbsoluteUrl()!
-        let asset = assetRetriever.retrieve(absoluteUrl).getOrElse { _ in error("could not retrieve: \(absoluteUrl)") }
+        let asset = assetRetriever.retrieve(absoluteUrl)
+            .getOrElse { error in
+                logger.error("could not retrieve: \(absoluteUrl): \(error)")
+                throw error
+            }
 
         logger.log("asset: \(asset)")
 
-        let pub: Publication = publicationOpener.open(asset: asset, allowUserInteraction: true).getOrElse { _ in error("could not open: \(asset)") }
+        let publication: Publication = publicationOpener.open(asset: asset, allowUserInteraction: allowUserInteraction)
+            .getOrElse { error in
+                logger.error("could not open: \(absoluteUrl): \(error)")
+                throw error
+            }
         logger.log("pub: \(pub)")
 
-        return pub
+        return Pub(platformValue: publication)
         #endif
     }
 }
+
+
+/// A wrapper for an underlying `Link` type.
+public class Lnk {
+    #if !SKIP
+    public typealias PlatformLink = ReadiumShared.Link
+    #else
+    public typealias PlatformLink = org.readium.r2.shared.publication.Link
+    #endif
+
+    public var platformValue: PlatformLink
+
+    public init(platformValue: PlatformLink) {
+        self.platformValue = platformValue
+    }
+}
+
+#if SKIP
+extension Lnk: KotlinConverting<PlatformLink> {
+    public override func kotlin(nocopy: Bool = false) -> PlatformLink {
+        return platformValue
+    }
+}
+#endif
+
+
+/// A wrapper for an underlying `Locator` type.
+public class Loc {
+    #if !SKIP
+    public typealias PlatformLocator = ReadiumShared.Locator
+    #else
+    public typealias PlatformLocator = org.readium.r2.shared.publication.Locator
+    #endif
+
+    public var platformValue: PlatformLocator
+
+    public init(platformValue: PlatformLocator) {
+        self.platformValue = platformValue
+    }
+}
+
+#if SKIP
+extension Loc: KotlinConverting<PlatformLocator> {
+    public override func kotlin(nocopy: Bool = false) -> PlatformLocator {
+        return platformValue
+    }
+}
+#endif
 
