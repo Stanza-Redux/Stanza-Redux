@@ -6,6 +6,7 @@ import OSLog
 #if !SKIP
 import ReadiumOPDS
 //import ReadiumLCP
+import ReadiumAdapterGCDWebServer
 import ReadiumShared
 import ReadiumStreamer
 #else
@@ -50,20 +51,28 @@ import org.readium.r2.streamer.PublicationOpener
 import org.readium.r2.streamer.parser.PublicationParser
 import org.readium.r2.streamer.parser.DefaultPublicationParser
 //import org.readium.adapter.pdfium.document.PdfiumDocumentFactory
-#endif
 
-let logger = Logger(subsystem: "Stanza", category: "StanzaModelTests")
-
-#if SKIP
 // Kotlin has different capitalization than Swift for the type (DefaultHttpClient vs. DefaultHTTPClient)
 typealias DefaultHTTPClient = org.readium.r2.shared.util.http.DefaultHttpClient
 #endif
 
-let httpClient: DefaultHTTPClient = DefaultHTTPClient(userAgent: "Readium")
+let logger = Logger(subsystem: "Stanza", category: "StanzaModelTests")
+public let httpClient: DefaultHTTPClient = DefaultHTTPClient(userAgent: "Readium")
 
-#if SKIP
-let contentResolver: ContentResolver = ProcessInfo.processInfo.androidContext.contentResolver
-let assetRetriever: AssetRetriever = AssetRetriever(contentResolver: contentResolver, httpClient: httpClient)
+#if !SKIP
+public let httpServer: GCDHTTPServer = GCDHTTPServer(assetRetriever: assetRetriever)
+public let assetRetriever = AssetRetriever(httpClient: httpClient)
+let pdfDocumentFactory = DefaultPDFDocumentFactory()
+let publicationOpener = PublicationOpener(
+    parser: DefaultPublicationParser(
+        httpClient: httpClient,
+        assetRetriever: assetRetriever,
+        pdfFactory: pdfDocumentFactory
+    )
+)
+#else
+public let contentResolver: ContentResolver = ProcessInfo.processInfo.androidContext.contentResolver
+public let assetRetriever: AssetRetriever = AssetRetriever(contentResolver: contentResolver, httpClient: httpClient)
 //let pdfDocumentFactory: PdfiumDocumentFactory = PdfiumDocumentFactory(context: ProcessInfo.processInfo.androidContext)
 let publicationOpener: PublicationOpener = PublicationOpener(
     publicationParser: DefaultPublicationParser(
@@ -71,16 +80,6 @@ let publicationOpener: PublicationOpener = PublicationOpener(
         httpClient: httpClient,
         assetRetriever: assetRetriever,
         pdfFactory: nil // pdfDocumentFactory
-    )
-)
-#else
-let assetRetriever = AssetRetriever(httpClient: httpClient)
-let pdfDocumentFactory = DefaultPDFDocumentFactory()
-let publicationOpener = PublicationOpener(
-    parser: DefaultPublicationParser(
-        httpClient: httpClient,
-        assetRetriever: assetRetriever,
-        pdfFactory: pdfDocumentFactory
     )
 )
 #endif

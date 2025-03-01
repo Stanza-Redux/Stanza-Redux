@@ -11,9 +11,9 @@ import StanzaModel
 import ReadiumNavigator
 import ReadiumShared
 import ReadiumStreamer
-import ReadiumLCP
+//import ReadiumLCP
 import ReadiumOPDS
-import ReadiumAdapterGCDWebServer
+//import ReadiumAdapterGCDWebServer
 #else
 import android.content.ContentResolver
 import androidx.fragment.app.FragmentActivity
@@ -53,10 +53,6 @@ import org.readium.r2.shared.util.toUri
 import org.readium.r2.shared.util.toUrl
 import org.readium.r2.shared.util.toAbsoluteUrl
 import org.readium.r2.shared.util.asset.AssetRetriever
-import org.readium.r2.shared.util.http.DefaultHttpClient
-import org.readium.r2.shared.util.http.HttpClient
-import org.readium.r2.shared.util.http.HttpRequest
-import org.readium.r2.shared.util.http.fetchWithDecoder
 import org.readium.r2.shared.util.mediatype.MediaType
 import org.readium.r2.shared.util.pdf.PdfDocumentFactory
 import org.readium.r2.shared.util.xml.ElementNode
@@ -64,40 +60,10 @@ import org.readium.r2.shared.util.xml.XmlParser
 import org.readium.r2.streamer.PublicationOpener
 import org.readium.r2.streamer.parser.PublicationParser
 import org.readium.r2.streamer.parser.DefaultPublicationParser
-//import org.readium.adapter.pdfium.document.PdfiumDocumentFactory
 #endif
 
-#if SKIP
-// Kotlin has different capitalization than Swift for the type (DefaultHttpClient vs. DefaultHTTPClient)
-typealias DefaultHTTPClient = org.readium.r2.shared.util.http.DefaultHttpClient
-#endif
-
-let httpClient: DefaultHTTPClient = DefaultHTTPClient(userAgent: "Readium")
-
-#if SKIP
-let contentResolver: ContentResolver = ProcessInfo.processInfo.androidContext.contentResolver
-let assetRetriever: AssetRetriever = AssetRetriever(contentResolver: contentResolver, httpClient: httpClient)
-//let pdfDocumentFactory: PdfiumDocumentFactory = PdfiumDocumentFactory(context: ProcessInfo.processInfo.androidContext)
-let publicationOpener: PublicationOpener = PublicationOpener(
-    publicationParser: DefaultPublicationParser(
-        context: ProcessInfo.processInfo.androidContext,
-        httpClient: httpClient,
-        assetRetriever: assetRetriever,
-        pdfFactory: nil // pdfDocumentFactory
-    )
-)
-#else
-let assetRetriever = AssetRetriever(httpClient: httpClient)
-let pdfDocumentFactory = DefaultPDFDocumentFactory()
-let httpServer = GCDHTTPServer(assetRetriever: assetRetriever)
+#if !SKIP
 var navConfig = EPUBNavigatorViewController.Configuration()
-let publicationOpener = PublicationOpener(
-    parser: DefaultPublicationParser(
-        httpClient: httpClient,
-        assetRetriever: assetRetriever,
-        pdfFactory: pdfDocumentFactory
-    )
-)
 #endif
 
 @Observable class ReaderViewModel {
@@ -162,15 +128,7 @@ struct ReaderView: View {
         self.publication = publication
         #if !SKIP
         self.viewModel = ReaderViewModel(publication: publication)
-        self.navigator = try! EPUBNavigatorViewController(
-            publication: publication,
-            initialLocation: locator,
-            config: navConfig,
-            httpServer: httpServer
-        )
-
-        // View model provided by your application.
-        self.viewModel = ReaderViewModel(publication: publication)
+        self.navigator = try EPUBNavigatorViewController(publication: publication, initialLocation: locator, config: navConfig, httpServer: httpServer)
         #endif
     }
 
