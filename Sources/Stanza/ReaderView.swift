@@ -64,6 +64,8 @@ import org.readium.r2.streamer.parser.DefaultPublicationParser
 
 #if !SKIP
 var navConfig = EPUBNavigatorViewController.Configuration()
+#else
+var navConfig = EpubNavigatorFactory.Configuration(defaults: EpubDefaults(pageMargins: 1.4))
 #endif
 
 @Observable class ReaderViewModel {
@@ -148,19 +150,9 @@ struct ReaderView: View {
             // create a EpubReaderFragment
             // https://github.com/readium/kotlin-toolkit/blob/develop/docs/guides/navigator/navigator.md#epubnavigatorfragment
 
-            let navigatorFactory = EpubNavigatorFactory(
-                publication: publication,
-                configuration: EpubNavigatorFactory.Configuration(
-                    defaults: EpubDefaults(
-                        pageMargins: 1.4
-                    )
-                )
-            )
+            let navigatorFactory = EpubNavigatorFactory(publication: publication.platformValue, configuration: navConfig)
 
-            let fragmentFactory = navigatorFactory.createFragmentFactory(
-                initialLocator: nil,
-                listener: nil
-            )
+            let fragmentFactory = navigatorFactory.createFragmentFactory(initialLocator: nil, listener: nil)
 
             let fragmentManager = (LocalContext.current as FragmentActivity).supportFragmentManager
             fragmentManager.fragmentFactory = fragmentFactory
