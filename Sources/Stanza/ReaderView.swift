@@ -4,6 +4,7 @@
 import Foundation
 import SwiftUI
 import Observation
+import StanzaModel
 
 #if SKIP || canImport(ReadiumNavigator)
 #if !SKIP
@@ -127,17 +128,16 @@ struct ReaderView: View {
             VStack {
                 Button("Load Book") {
                     Task {
-                        do {
-                            try await loadPublication()
-                        } catch {
-                            self.error = error
-                        }
+                        await loadDefaultBook()
                     }
                 }
 
                 if let error {
                     Text("Error: \(error)")
                 }
+            }
+            .task {
+                await loadDefaultBook()
             }
         }
 //        config.editingActions.append(
@@ -149,62 +149,28 @@ struct ReaderView: View {
 
     }
 
-    func loadPublication() async throws {
-
-        #if !SKIP
-        // Retrieve an `Asset` to access the file content.
-        switch await assetRetriever.retrieve(url: bookURL.anyURL.absoluteURL!) {
-        case .success(let asset):
-            // Open a `Publication` from the `Asset`.
-            switch await publicationOpener.open(asset: asset, allowUserInteraction: true) {
-            case .success(let publication):
-                logger.log("opened \(publication.metadata.title ?? "Unknown")")
-                self.publication = publication
-                self.navigator = try! EPUBNavigatorViewController(
-                    publication: publication,
-                    initialLocation: locator,
-                    config: navConfig,
-                    httpServer: httpServer
-                )
-
-                // View model provided by your application.
-                self.viewModel = ReaderViewModel(publication: publication)
-
-
-            case .failure(let error):
-                // Failed to access or parse the publication
-                logger.log("error \(error)")
-                self.error = error
-            }
-
-        case .failure(let error):
-            // Failed to retrieve the asset
-            logger.log("error \(error)")
+    func loadDefaultBook() async {
+        do {
+            try await loadPublication()
+        } catch {
             self.error = error
         }
-        #else
-        let uri: java.net.URI = bookURL.kotlin() // e.g. jar:file:/data/app/~~KxZz_SOCG-tQVrrDgu-5KQ==/org.appfair.app.Stanza_Redux-dgdtNt79ZSigWaEiQOHNdA==/base.apk!/stanza/module/Resources/Alice.epub
+    }
 
-        // FIXME: NPE because Uri.addFileAuthority doesn't understand jar:file: schemes
-        // TODO: write out the book URL to a temporary file and open that
-        //let absoluteUrl: org.readium.r2.shared.util.AbsoluteUrl = uri.toURL().toAbsoluteUrl()!
-        logger.log("bookURL: \(uri)")
-        let storageDir = ProcessInfo.processInfo.androidContext.getExternalFilesDir(android.os.Environment.DIRECTORY_DOCUMENTS)
-        let ext = ".epub"
-        let tmpFile = java.io.File.createTempFile("Stanza_\(UUID().uuidString)", ext, storageDir)
+    func loadPublication() async throws {
+        let publication = try await StanzaModel.loadPublication(bookURL: bookURL)
+        self.publication = publication
+        #if !SKIP
+        self.viewModel = ReaderViewModel(publication: publication)
+        self.navigator = try! EPUBNavigatorViewController(
+            publication: publication,
+            initialLocation: locator,
+            config: navConfig,
+            httpServer: httpServer
+        )
 
-        uri.toURL().openStream().copyTo(java.io.FileOutputStream(tmpFile))
-
-        logger.log("tmpFile: \(tmpFile)")
-        let absoluteUrl: org.readium.r2.shared.util.AbsoluteUrl = tmpFile.toURL().toAbsoluteUrl()!
-        let asset = assetRetriever.retrieve(absoluteUrl).getOrElse { _ in error("could not retrieve: \(absoluteUrl)") }
-
-        logger.log("asset: \(asset)")
-
-        let pub: Publication = publicationOpener.open(asset: asset, allowUserInteraction: true).getOrElse { _ in error("could not open: \(asset)") }
-        logger.log("pub: \(pub)")
-
-        self.publication = pub
+        // View model provided by your application.
+        self.viewModel = ReaderViewModel(publication: publication)
         #endif
     }
 

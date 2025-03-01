@@ -31,10 +31,7 @@ let package = Package(
             .product(name: "AppFairUI", package: "appfair-app"),
             .product(name: "SkipUI", package: "skip-ui"),
             .product(name: "SkipKit", package: "skip-kit"),
-            .product(name: "ReadiumLCP", package: "readium-swift-toolkit", condition: .when(platforms: [.iOS])),
             .product(name: "ReadiumNavigator", package: "readium-swift-toolkit", condition: .when(platforms: [.iOS])),
-            .product(name: "ReadiumStreamer", package: "readium-swift-toolkit", condition: .when(platforms: [.iOS])),
-            .product(name: "ReadiumAdapterGCDWebServer", package: "readium-swift-toolkit", condition: .when(platforms: [.iOS])),
         ], resources: [.process("Resources")], plugins: [.plugin(name: "skipstone", package: "skip")]),
         .testTarget(name: "StanzaTests", dependencies: [
             "Stanza",
@@ -47,6 +44,9 @@ let package = Package(
             //.product(name: "SkipScript", package: "skip-script"),
             .product(name: "ReadiumShared", package: "readium-swift-toolkit"),
             .product(name: "ReadiumOPDS", package: "readium-swift-toolkit"),
+            //.product(name: "ReadiumLCP", package: "readium-swift-toolkit"),
+            .product(name: "ReadiumStreamer", package: "readium-swift-toolkit"),
+            .product(name: "ReadiumAdapterGCDWebServer", package: "readium-swift-toolkit"),
         ], resources: [.process("Resources")], plugins: [.plugin(name: "skipstone", package: "skip")]),
         .testTarget(name: "StanzaModelTests", dependencies: [
             "StanzaModel",
