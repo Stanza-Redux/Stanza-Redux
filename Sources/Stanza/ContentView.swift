@@ -14,9 +14,11 @@ public struct ContentView: View {
 
     public var body: some View {
         TabView(selection: $tab) {
+            #if SKIP || canImport(ReadiumNavigator)
             ReaderView()
             .tabItem { Label("Welcome", systemImage: "heart.fill") }
             .tag(Tab.welcome)
+            #endif
 
             NavigationStack {
                 List {

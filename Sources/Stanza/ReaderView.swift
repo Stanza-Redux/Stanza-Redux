@@ -5,6 +5,7 @@ import Foundation
 import SwiftUI
 import Observation
 
+#if SKIP || canImport(ReadiumNavigator)
 #if !SKIP
 import ReadiumNavigator
 import ReadiumShared
@@ -317,4 +318,5 @@ class ReaderViewController: UIViewController {
         //viewModel.makeHighlight()
     }
 }
+#endif
 #endif
