@@ -12,9 +12,10 @@ import ReadiumShared
 
 @available(macOS 14, *)
 final class StanzaModelTests: XCTestCase {
-    func testStanzaModel() throws {
+    func testStanzaModel() async throws {
         let epubURL = try XCTUnwrap(Bundle.module.url(forResource: "Alice", withExtension: "epub"))
         print("epubURL: \(epubURL.absoluteString)")
-//        logger.log("checking epub: \(epubURL.absoluteString)")
+        let pub = try await Pub.loadPublication(from: epubURL)
+        XCTAssertEqual("Alice's Adventures in Wonderland", pub.title)
     }
 }

@@ -85,14 +85,14 @@ let publicationOpener: PublicationOpener = PublicationOpener(
 #endif
 
 
+#if !SKIP
+public typealias PlatformPublication = ReadiumShared.Publication
+#else
+public typealias PlatformPublication = org.readium.r2.shared.publication.Publication
+#endif
+
 /// A wrapper for an underlying `Publication` type.
 public class Pub {
-    #if !SKIP
-    public typealias PlatformPublication = ReadiumShared.Publication
-    #else
-    public typealias PlatformPublication = org.readium.r2.shared.publication.Publication
-    #endif
-
     public var platformValue: PlatformPublication
 
     public init(platformValue: Publication) {
@@ -113,7 +113,8 @@ extension Pub: KotlinConverting<PlatformPublication> {
 #endif
 
 extension Pub {
-    public static func loadPublication(bookURL: URL, allowUserInteraction: Bool = true) async throws -> Pub {
+    /// Loads the publication from the given URL.
+    public static func loadPublication(from bookURL: URL, allowUserInteraction: Bool = true) async throws -> Pub {
 
         #if !SKIP
         // Retrieve an `Asset` to access the file content.
@@ -163,7 +164,7 @@ extension Pub {
                 logger.error("could not open: \(absoluteUrl): \(error)")
                 throw error
             }
-        logger.log("pub: \(pub)")
+        logger.log("pub: \(publication)")
 
         return Pub(platformValue: publication)
         #endif
@@ -171,14 +172,14 @@ extension Pub {
 }
 
 
+#if !SKIP
+public typealias PlatformLink = ReadiumShared.Link
+#else
+public typealias PlatformLink = org.readium.r2.shared.publication.Link
+#endif
+
 /// A wrapper for an underlying `Link` type.
 public class Lnk {
-    #if !SKIP
-    public typealias PlatformLink = ReadiumShared.Link
-    #else
-    public typealias PlatformLink = org.readium.r2.shared.publication.Link
-    #endif
-
     public var platformValue: PlatformLink
 
     public init(platformValue: PlatformLink) {
@@ -195,14 +196,14 @@ extension Lnk: KotlinConverting<PlatformLink> {
 #endif
 
 
+#if !SKIP
+public typealias PlatformLocator = ReadiumShared.Locator
+#else
+public typealias PlatformLocator = org.readium.r2.shared.publication.Locator
+#endif
+
 /// A wrapper for an underlying `Locator` type.
 public class Loc {
-    #if !SKIP
-    public typealias PlatformLocator = ReadiumShared.Locator
-    #else
-    public typealias PlatformLocator = org.readium.r2.shared.publication.Locator
-    #endif
-
     public var platformValue: PlatformLocator
 
     public init(platformValue: PlatformLocator) {

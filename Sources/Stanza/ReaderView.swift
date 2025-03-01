@@ -124,7 +124,7 @@ struct ReaderView: View {
     }
 
     func loadPublication() async throws {
-        let publication: Pub = try await Pub.loadPublication(bookURL: bookURL)
+        let publication: Pub = try await Pub.loadPublication(from: bookURL)
         self.publication = publication
         #if !SKIP
         self.viewModel = ReaderViewModel(publication: publication)
