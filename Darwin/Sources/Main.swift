@@ -4,7 +4,7 @@ import Stanza
 /// The entry point to the app simply loads the App implementation from SPM module.
 @main struct AppMain: App {
     #if canImport(UIKit)
-    @UIApplicationDelegateAdaptor(AppMainDelete.self) var appDelegate
+    @UIApplicationDelegateAdaptor(AppMainDelegate.self) var appDelegate
     #endif
     @Environment(\.scenePhase) private var scenePhase
 
@@ -28,7 +28,7 @@ import Stanza
 }
 
 #if canImport(UIKit)
-class AppMainDelete: UIResponder, UIApplicationDelegate {
+class AppMainDelegate: UIResponder, UIApplicationDelegate {
     unowned var application: UIApplication? = nil
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]?) -> Bool {
