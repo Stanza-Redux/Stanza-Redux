@@ -147,7 +147,7 @@ struct ReaderViewContainer: View {
         viewControllerWrapper
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .ignoresSafeArea(.all)
-            .navigationTitle(viewModel.publication.title ?? "Unknown Title")
+            .navigationTitle(viewModel.publication.metadata.title ?? "Unknown Title")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarHidden(viewModel.isFullscreen)
             .statusBarHidden(viewModel.isFullscreen)

@@ -149,34 +149,33 @@ extension Pub {
             throw error
         }
         #else
-        let uri: java.net.URI = bookURL.kotlin() // e.g. jar:file:/data/app/~~KxZz_SOCG-tQVrrDgu-5KQ==/org.appfair.app.Stanza_Redux-dgdtNt79ZSigWaEiQOHNdA==/base.apk!/stanza/module/Resources/Alice.epub
+        // e.g. asset:/stanza/module/Resources/Alice.epub
+        var url = bookURL
 
-        // FIXME: NPE because Uri.addFileAuthority doesn't understand jar:file: schemes
-        // TODO: write out the book URL to a temporary file and open that
-        //let absoluteUrl: org.readium.r2.shared.util.AbsoluteUrl = uri.toURL().toAbsoluteUrl()!
-        logger.log("bookURL: \(uri)")
-        let storageDir = ProcessInfo.processInfo.androidContext.getExternalFilesDir(android.os.Environment.DIRECTORY_DOCUMENTS)
-        let ext = ".epub"
-        let tmpFile = java.io.File.createTempFile("Stanza_\(UUID().uuidString)", ext, storageDir)
+        logger.log("opening bookURL: \(url)")
+        // Cannot open assets directly from the apk, so we need to copy them out to a temporary file
+        // org.readium.r2.shared.util.asset.AssetRetriever$RetrieveUrlError$SchemeNotSupported
+        if bookURL.scheme == "asset" {
+            // copy it out to a file, then open the file on disk TODO: cleanup
+            let tmpURL = URL.cachesDirectory.appendingPathComponent(url.lastPathComponent!)
+            logger.debug("copying asset to tmpFile: \(tmpURL.path)")
+            try url.kotlin().toURL().openStream().copyTo(java.io.FileOutputStream(tmpURL.path))
+            url = tmpURL
+        }
 
-        uri.toURL().openStream().copyTo(java.io.FileOutputStream(tmpFile))
-
-        logger.log("tmpFile: \(tmpFile)")
-        let absoluteUrl: org.readium.r2.shared.util.AbsoluteUrl = tmpFile.toURL().toAbsoluteUrl()!
+        let absoluteUrl: org.readium.r2.shared.util.AbsoluteUrl = url.kotlin().toURL().toAbsoluteUrl()!
         let asset = assetRetriever.retrieve(absoluteUrl)
             .getOrElse { error in
                 logger.error("could not retrieve: \(absoluteUrl): \(error)")
                 throw error
             }
 
-        logger.log("asset: \(asset)")
-
         let publication: Publication = publicationOpener.open(asset: asset, allowUserInteraction: allowUserInteraction)
             .getOrElse { error in
                 logger.error("could not open: \(absoluteUrl): \(error)")
                 throw error
             }
-        logger.log("pub: \(publication)")
+        logger.info("opened publication: \(publication)")
 
         return Pub(platformValue: publication)
         #endif
