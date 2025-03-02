@@ -99,8 +99,20 @@ public class Pub {
         self.platformValue = platformValue
     }
 
-    public var title: String? {
-        platformValue.metadata.title
+    public var manifest: Man {
+        Man(platformValue: platformValue.manifest)
+    }
+
+    public var metadata: Meta {
+        manifest.metadata
+    }
+
+    public var language: String? {
+        #if !SKIP
+        platformValue.metadata.language?.code.bcp47
+        #else
+        platformValue.metadata.language?.code
+        #endif
     }
 }
 
@@ -173,18 +185,168 @@ extension Pub {
 
 
 #if !SKIP
+public typealias PlatformManifest = ReadiumShared.Manifest
+#else
+public typealias PlatformManifest = org.readium.r2.shared.publication.Manifest
+#endif
+
+/// Holds the metadata of a Readium publication, as described in the Readium Web Publication
+/// Manifest.
+///
+/// See. https://readium.org/webpub-manifest/
+public struct Man {
+    public var platformValue: PlatformManifest
+
+    public init(platformValue: PlatformManifest) {
+        self.platformValue = platformValue
+    }
+
+    public var metadata: Meta {
+        Meta(platformValue: platformValue.metadata)
+    }
+
+    public var links: [Lnk] {
+        Array(platformValue.links).map({ Lnk(platformValue: $0)} )
+    }
+
+    /// Identifies a list of resources in reading order for the publication.
+    public var readingOrder: [Lnk] {
+        Array(platformValue.readingOrder).map({ Lnk(platformValue: $0)} )
+    }
+
+    /// Identifies resources that are necessary for rendering the publication.
+    public var resources: [Lnk] {
+        Array(platformValue.resources).map({ Lnk(platformValue: $0)} )
+    }
+
+    /// Identifies the collection that contains a table of contents.
+    public var tableOfContents: [Lnk] {
+        Array(platformValue.tableOfContents).map({ Lnk(platformValue: $0)} )
+    }
+}
+
+#if SKIP
+extension Man: KotlinConverting<PlatformManifest> {
+    public override func kotlin(nocopy: Bool = false) -> PlatformManifest {
+        return platformValue
+    }
+}
+#endif
+
+
+
+#if !SKIP
+public typealias PlatformMetadata = ReadiumShared.Metadata
+#else
+public typealias PlatformMetadata = org.readium.r2.shared.publication.Metadata
+#endif
+
+/// A wrapper for an underlying `Metadata` type.
+public struct Meta {
+    public var platformValue: PlatformMetadata
+
+    public init(platformValue: PlatformMetadata) {
+        self.platformValue = platformValue
+    }
+
+    public var identifier: String? {
+        platformValue.identifier
+    }
+
+    public var title: String? {
+        platformValue.localizedTitle?.string
+    }
+
+    public var subtitle: String? {
+        platformValue.localizedSubtitle?.string
+    }
+
+    public var sortAs: String? {
+        platformValue.sortAs
+    }
+
+    public var numberOfPages: Int? {
+        platformValue.numberOfPages
+    }
+
+    public var duration: Double? {
+        platformValue.duration
+    }
+
+    public var subjects: [Sub] {
+        Array(platformValue.subjects).map({ Sub(platformValue: $0)} )
+    }
+
+    public var published: Date? {
+        #if !SKIP
+        return platformValue.published
+        #else
+        // org.readium.r2.shared.util.Instant
+        guard let instant = platformValue.published else { return nil }
+        return Date(platformValue: instant.toJavaDate())
+        #endif
+    }
+}
+
+#if SKIP
+extension Meta: KotlinConverting<PlatformMetadata> {
+    public override func kotlin(nocopy: Bool = false) -> PlatformMetadata {
+        return platformValue
+    }
+}
+#endif
+
+
+#if !SKIP
 public typealias PlatformLink = ReadiumShared.Link
 #else
 public typealias PlatformLink = org.readium.r2.shared.publication.Link
 #endif
 
 /// A wrapper for an underlying `Link` type.
-public class Lnk {
+public struct Lnk {
     public var platformValue: PlatformLink
 
     public init(platformValue: PlatformLink) {
         self.platformValue = platformValue
     }
+
+    public var title: String? {
+        platformValue.title
+    }
+
+    /// URI or URI template of the linked resource.
+    public var href: String {
+        #if !SKIP
+        return platformValue.href
+        #else
+        // org.readium.r2.shared.publication.Href
+        return platformValue.href.toString()
+        #endif
+    }
+
+    public var templated: Bool {
+        #if !SKIP
+        platformValue.templated
+        #else
+        // org.readium.r2.shared.publication.Href
+        return platformValue.href.isTemplated
+        #endif
+    }
+
+    /// Resources that are children of the linked resource, in the context of a given collection role.
+    public var children: [Lnk] {
+        Array(platformValue.children).map({ Lnk(platformValue: $0) })
+    }
+
+    /// Alternate resources for the linked resource.
+    public var alternates: [Lnk] {
+        Array(platformValue.alternates).map({ Lnk(platformValue: $0) })
+    }
+
+//    public var mediaType: MediaType? {
+//        platformValue.mediaType
+//    }
 }
 
 #if SKIP
@@ -203,7 +365,7 @@ public typealias PlatformLocator = org.readium.r2.shared.publication.Locator
 #endif
 
 /// A wrapper for an underlying `Locator` type.
-public class Loc {
+public struct Loc {
     public var platformValue: PlatformLocator
 
     public init(platformValue: PlatformLocator) {
@@ -219,3 +381,25 @@ extension Loc: KotlinConverting<PlatformLocator> {
 }
 #endif
 
+#if !SKIP
+public typealias PlatformSubject = ReadiumShared.Subject
+#else
+public typealias PlatformSubject = org.readium.r2.shared.publication.Subject
+#endif
+
+/// A wrapper for an underlying `Subject` type.
+public struct Sub {
+    public var platformValue: PlatformSubject
+
+    public init(platformValue: PlatformSubject) {
+        self.platformValue = platformValue
+    }
+}
+
+#if SKIP
+extension Sub: KotlinConverting<PlatformSubject> {
+    public override func kotlin(nocopy: Bool = false) -> PlatformSubject {
+        return platformValue
+    }
+}
+#endif

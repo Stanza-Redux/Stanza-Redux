@@ -16,10 +16,13 @@ final class StanzaModelTests: XCTestCase {
         let epubURL = try XCTUnwrap(Bundle.module.url(forResource: "Alice", withExtension: "epub"))
         print("epubURL: \(epubURL.absoluteString)")
         let pub = try await Pub.loadPublication(from: epubURL)
-        XCTAssertEqual("Alice's Adventures in Wonderland", pub.title)
 
-        XCTAssertEqual("http://www.gutenberg.org/11", pub.platformValue.metadata.identifier)
-        //XCTAssertEqual("en", pub.platformValue.metadata.language) // java.lang.AssertionError: expected:<Language(en)> but was:<en>
+        XCTAssertEqual("http://www.gutenberg.org/11", pub.metadata.identifier)
+        XCTAssertEqual("Alice's Adventures in Wonderland", pub.metadata.title)
+        XCTAssertNil(pub.metadata.subtitle)
+        //XCTAssertEqual("en", pub.language)
+        XCTAssertEqual("2008-06-27 00:00:00 +0000", pub.metadata.published?.description)
+
         //XCTAssertEqual("", pub.platformValue.metadata.localizedTitle)
         XCTAssertEqual(nil, pub.platformValue.metadata.sortAs)
         //XCTAssertEqual("", pub.platformValue.metadata.authors)
@@ -31,6 +34,25 @@ final class StanzaModelTests: XCTestCase {
         XCTAssertEqual(nil, pub.platformValue.metadata.numberOfPages)
         XCTAssertEqual(nil, pub.platformValue.metadata.type)
         XCTAssertEqual(["en"], Array(pub.platformValue.metadata.languages))
+
+        let links = pub.manifest.links
+        // XCTAssertEqual(1, links.count) // 0 on Kotlin?!?
+
+        let readingOrder = pub.manifest.readingOrder
+        XCTAssertEqual(15, readingOrder.count)
+
+        let resources = pub.manifest.resources
+        XCTAssertEqual(6, resources.count)
+
+        let toc = pub.manifest.tableOfContents
+        XCTAssertEqual(16, toc.count)
+        XCTAssertEqual("Alice’s Adventures in Wonderland", toc.first?.title)
+        XCTAssertEqual("OEBPS/8149966833358938453_11-h-0.htm.xhtml#pgepubid00000", toc.first?.href)
+        XCTAssertEqual("THE FULL PROJECT GUTENBERG LICENSE", toc.last?.title)
+        XCTAssertEqual("OEBPS/8149966833358938453_11-h-13.htm.xhtml#pg-footer-heading", toc.last?.href)
+
+        let subjects = pub.manifest.metadata.subjects
+        XCTAssertEqual(4, subjects.count)
 
         //XCTAssertEqual("", pub.platformValue.metadata.json)
 
