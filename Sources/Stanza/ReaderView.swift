@@ -11,9 +11,8 @@ import StanzaModel
 import ReadiumNavigator
 import ReadiumShared
 import ReadiumStreamer
-//import ReadiumLCP
 import ReadiumOPDS
-//import ReadiumAdapterGCDWebServer
+//import ReadiumLCP
 #else
 import android.content.ContentResolver
 import androidx.fragment.app.FragmentActivity
@@ -25,47 +24,20 @@ import androidx.compose.ui.viewinterop.AndroidView
 import org.readium.r2.navigator.epub.EpubNavigatorFactory
 import org.readium.r2.navigator.epub.EpubDefaults
 import org.readium.r2.navigator.epub.EpubNavigatorFragment
-import org.readium.r2.shared.opds.Acquisition
-import org.readium.r2.shared.opds.Facet
-import org.readium.r2.shared.opds.Feed
-import org.readium.r2.shared.opds.Group
-import org.readium.r2.shared.opds.ParseData
-import org.readium.r2.shared.opds.Price
-import org.readium.r2.shared.publication.Contributor
-import org.readium.r2.shared.publication.Href
-import org.readium.r2.shared.publication.Link
-import org.readium.r2.shared.publication.LocalizedString
-import org.readium.r2.shared.publication.Locator
-import org.readium.r2.shared.publication.Manifest
-import org.readium.r2.shared.publication.Metadata
-import org.readium.r2.shared.publication.Properties
-import org.readium.r2.shared.publication.Publication
-import org.readium.r2.shared.publication.PublicationCollection
-import org.readium.r2.shared.publication.Subject
-import org.readium.r2.shared.toJSON
-import org.readium.r2.shared.util.AbsoluteUrl
-import org.readium.r2.shared.util.ErrorException
-import org.readium.r2.shared.util.Instant
-import org.readium.r2.shared.util.Try
-import org.readium.r2.shared.util.Url
-import org.readium.r2.shared.util.getOrElse
-import org.readium.r2.shared.util.toUri
-import org.readium.r2.shared.util.toUrl
-import org.readium.r2.shared.util.toAbsoluteUrl
-import org.readium.r2.shared.util.asset.AssetRetriever
-import org.readium.r2.shared.util.mediatype.MediaType
-import org.readium.r2.shared.util.pdf.PdfDocumentFactory
-import org.readium.r2.shared.util.xml.ElementNode
-import org.readium.r2.shared.util.xml.XmlParser
-import org.readium.r2.streamer.PublicationOpener
-import org.readium.r2.streamer.parser.PublicationParser
-import org.readium.r2.streamer.parser.DefaultPublicationParser
 #endif
 
 #if !SKIP
-var navConfig = EPUBNavigatorViewController.Configuration()
+typealias PlatformDefaults = ReadiumNavigator.EPUBDefaults
 #else
-var navConfig = EpubNavigatorFactory.Configuration(defaults: EpubDefaults(pageMargins: 1.4))
+typealias PlatformDefaults = org.readium.r2.navigator.epub.EpubDefaults
+#endif
+
+let defaults = PlatformDefaults(columnCount: nil, fontSize: nil, fontWeight: nil, hyphens: nil, imageFilter: nil, language: nil, letterSpacing: nil, ligatures: nil, lineHeight: nil, pageMargins: nil, paragraphIndent: nil, paragraphSpacing: nil, publisherStyles: nil, readingProgression: nil, scroll: nil, spread: nil, textAlign: nil, textNormalization: nil, typeScale: nil, wordSpacing: nil)
+
+#if !SKIP
+var navConfig: EPUBNavigatorViewController.Configuration = EPUBNavigatorViewController.Configuration(defaults: defaults)
+#else
+var navConfig: org.readium.r2.navigator.epub.EpubNavigatorFactory.Configuration = EpubNavigatorFactory.Configuration(defaults: defaults)
 #endif
 
 @Observable class ReaderViewModel {
@@ -80,17 +52,16 @@ var navConfig = EpubNavigatorFactory.Configuration(defaults: EpubDefaults(pageMa
 
 struct ReaderView: View {
     let bookURL: URL = Bundle.module.url(forResource: "Alice", withExtension: "epub")!
-    @State var publication: Pub? = nil
     @State var viewModel: ReaderViewModel? = nil
     @State var error: Error? = nil
-    @State var locator: Locator? = nil
+    @State var locator: Loc? = nil
 
     #if !SKIP
     @State var navigator: EPUBNavigatorViewController? = nil
     #endif
 
     var body: some View {
-        if let publication {
+        if let publication = viewModel?.publication {
             readerViewContainer(publication: publication)
         } else {
             VStack {
@@ -127,10 +98,9 @@ struct ReaderView: View {
 
     func loadPublication() async throws {
         let publication: Pub = try await Pub.loadPublication(from: bookURL)
-        self.publication = publication
-        #if !SKIP
         self.viewModel = ReaderViewModel(publication: publication)
-        self.navigator = try EPUBNavigatorViewController(publication: publication.platformValue, initialLocation: locator, config: navConfig, httpServer: httpServer)
+        #if !SKIP
+        self.navigator = try EPUBNavigatorViewController(publication: publication.platformValue, initialLocation: locator?.platformValue, config: navConfig, httpServer: httpServer)
         #endif
     }
 
@@ -149,10 +119,8 @@ struct ReaderView: View {
         ComposeView { context in
             // create a EpubReaderFragment
             // https://github.com/readium/kotlin-toolkit/blob/develop/docs/guides/navigator/navigator.md#epubnavigatorfragment
-
             let navigatorFactory = EpubNavigatorFactory(publication: publication.platformValue, configuration: navConfig)
-
-            let fragmentFactory = navigatorFactory.createFragmentFactory(initialLocator: nil, listener: nil)
+            let fragmentFactory = navigatorFactory.createFragmentFactory(initialLocator: locator?.platformValue, listener: nil)
 
             let fragmentManager = (LocalContext.current as FragmentActivity).supportFragmentManager
             fragmentManager.fragmentFactory = fragmentFactory
@@ -235,4 +203,188 @@ class ReaderViewController: UIViewController {
     }
 }
 #endif
+
+
+#if !SKIP
+public typealias PlatformPrefs = ReadiumNavigator.EPUBPreferences
+#else
+public typealias PlatformPrefs = org.readium.r2.navigator.epub.EpubPreferences
+#endif
+
+/// A wrapper for an underlying `Link` type.
+public class Prefs {
+    public var platformValue: PlatformPrefs
+
+    public init(platformValue: PlatformPrefs) {
+        self.platformValue = platformValue
+    }
+
+//    /// Default page background color.
+//    public var backgroundColor: Color? {
+//        get { platformValue.backgroundColor }
+//        set { platformValue.backgroundColor = newValue }
+//    }
+
+//    /// Number of reflowable columns to display (one-page view or two-page
+//    /// spread).
+//    public var columnCount: ColumnCount? {
+//        get { platformValue.columnCount }
+//        set { platformValue.columnCount = newValue }
+//    }
+
+//    /// Default typeface for the text.
+//    public var fontFamily: FontFamily? {
+//        get { platformValue.fontFamily }
+//        set { platformValue.fontFamily = newValue }
+//    }
+
+    /// Base text font size.
+    public var fontSize: Double? {
+        get { platformValue.fontSize }
+        //set { platformValue.fontSize = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
+    }
+
+    /// Default boldness for the text.
+    public var fontWeight: Double? {
+        get { platformValue.fontWeight }
+        //set { platformValue.fontWeight = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
+    }
+
+    /// Enable hyphenation.
+    public var hyphens: Bool? {
+        get { platformValue.hyphens }
+        //set { platformValue.hyphens = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
+    }
+
+//    /// Filter applied to images in dark theme.
+//    public var imageFilter: ImageFilter? {
+//        get { platformValue.imageFilter }
+//        set { platformValue.imageFilter = newValue }
+//    }
+
+//    /// Language of the publication content.
+//    public var language: Language? {
+//        get { platformValue.language }
+//        set { platformValue.language = newValue }
+//    }
+
+    /// Space between letters.
+    public var letterSpacing: Double? {
+        get { platformValue.letterSpacing }
+        //set { platformValue.letterSpacing = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
+    }
+
+    /// Enable ligatures in Arabic.
+    public var ligatures: Bool? {
+        get { platformValue.ligatures }
+        //set { platformValue.ligatures = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
+    }
+
+    /// Leading line height.
+    public var lineHeight: Double? {
+        get { platformValue.lineHeight }
+        //set { platformValue.lineHeight = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
+    }
+
+    /// Factor applied to horizontal margins.
+    public var pageMargins: Double? {
+        get { platformValue.pageMargins }
+        //set { platformValue.pageMargins = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
+    }
+
+    /// Text indentation for paragraphs.
+    public var paragraphIndent: Double? {
+        get { platformValue.paragraphIndent }
+        //set { platformValue.paragraphIndent = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
+    }
+
+    /// Vertical margins for paragraphs.
+    public var paragraphSpacing: Double? {
+        get { platformValue.paragraphSpacing }
+        //set { platformValue.paragraphSpacing = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
+    }
+
+    /// Indicates whether the original publisher styles should be observed.
+    ///
+    /// Many settings require this to be off.
+    public var publisherStyles: Bool? {
+        get { platformValue.publisherStyles }
+        //set { platformValue.publisherStyles = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
+    }
+
+//    /// Direction of the reading progression across resources.
+//    public var readingProgression: ReadingProgression? {
+//        get { platformValue.readingProgression }
+//        set { platformValue.readingProgression = newValue }
+//    }
+
+    /// Indicates if the overflow of resources should be handled using
+    /// scrolling instead of synthetic pagination.
+    public var scroll: Bool? {
+        get { platformValue.scroll }
+        //set { platformValue.scroll = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
+    }
+
+//    /// Indicates if the fixed-layout publication should be rendered with a
+//    /// synthetic spread (dual-page).
+//    public var spread: Spread? {
+//        get { platformValue.spread }
+//        set { platformValue.spread = newValue }
+//    }
+
+//    /// Page text alignment.
+//    public var textAlign: TextAlignment? {
+//        get { platformValue.textAlign }
+//        set { platformValue.textAlign = newValue }
+//    }
+
+//    /// Default page text color.
+//    public var textColor: Color? {
+//        get { platformValue.textColor }
+//        set { platformValue.textColor = newValue }
+//    }
+
+//    /// Normalize text styles to increase accessibility.
+//    public var textColor: Bool? {
+//        get { platformValue.textColor }
+//        set { platformValue.textColor = newValue }
+//    }
+
+//    /// Reader theme.
+//    public var theme: Theme? {
+//        get { platformValue.theme }
+//        set { platformValue.theme = newValue }
+//    }
+
+    /// Scale applied to all element font sizes.
+    public var typeScale: Double? {
+        get { platformValue.typeScale }
+        //set { platformValue.typeScale = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
+    }
+
+    /// Indicates whether the text should be laid out vertically.
+    ///
+    /// This is used for example with CJK languages. This setting is
+    /// automatically derived from the language if no preference is given.
+    public var verticalText: Bool? {
+        get { platformValue.verticalText }
+        //set { platformValue.verticalText = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
+    }
+
+    /// Space between words.
+    public var wordSpacing: Double? {
+        get { platformValue.wordSpacing }
+        //set { platformValue.wordSpacing = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
+    }
+
+}
+
+#if SKIP
+extension Prefs: KotlinConverting<PlatformPrefs> {
+    public override func kotlin(nocopy: Bool = false) -> PlatformPrefs {
+        return platformValue
+    }
+}
+#endif
+
 #endif
