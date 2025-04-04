@@ -55,6 +55,7 @@ struct ReaderView: View {
     @State var viewModel: ReaderViewModel? = nil
     @State var error: Error? = nil
     @State var locator: Loc? = nil
+    @State var isFullscreen: Bool = false
 
     #if !SKIP
     @State var navigator: EPUBNavigatorViewController? = nil
@@ -62,7 +63,10 @@ struct ReaderView: View {
 
     var body: some View {
         if let publication = viewModel?.publication {
-            readerViewContainer(publication: publication)
+            Text("Opening \(publication.metadata.title ?? "Book")")
+                .fullScreenCover(isPresented: $isFullscreen) {
+                    readerViewContainer(publication: publication)
+                }
         } else {
             VStack {
                 Button("Load Book") {
@@ -77,6 +81,7 @@ struct ReaderView: View {
             }
             .task {
                 await loadDefaultBook()
+                self.isFullscreen = true
             }
         }
 //        config.editingActions.append(

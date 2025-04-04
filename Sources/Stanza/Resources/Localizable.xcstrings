@@ -29,6 +29,9 @@
         }
       }
     },
+    "Book %lld" : {
+
+    },
     "Dark" : {
       "localizations" : {
         "es" : {
@@ -87,6 +90,7 @@
       }
     },
     "Home" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -141,6 +145,9 @@
           }
         }
       }
+    },
+    "Library" : {
+
     },
     "Light" : {
       "localizations" : {
@@ -201,6 +208,9 @@
         }
       }
     },
+    "Opening %@" : {
+
+    },
     "Powered by %@" : {
       "localizations" : {
         "es" : {
@@ -229,7 +239,11 @@
         }
       }
     },
+    "Reading" : {
+
+    },
     "Screen %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -314,6 +328,7 @@
       }
     },
     "Welcome" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {

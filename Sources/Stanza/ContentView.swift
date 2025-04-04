@@ -14,27 +14,27 @@ public struct ContentView: View {
 
     public var body: some View {
         TabView(selection: $tab) {
-            #if SKIP || canImport(ReadiumNavigator)
-            ReaderView()
-            .tabItem { Label("Welcome", systemImage: "heart.fill") }
-            .tag(Tab.welcome)
-            #endif
-
             NavigationStack {
                 List {
                     ForEach(1..<1_000) { i in
                         NavigationLink("Item \(i)", value: i)
                     }
                 }
-                .navigationTitle("Home")
+                .navigationTitle("Library")
                 .navigationDestination(for: Int.self) { i in
-                    Text("Item \(i)")
+                    Text("Book \(i)")
                         .font(.title)
-                        .navigationTitle("Screen \(i)")
+                        .navigationTitle("Book \(i)")
                 }
             }
-            .tabItem { Label("Home", systemImage: "house.fill") }
+            .tabItem { Label("Library", systemImage: "list.bullet") }
             .tag(Tab.home)
+
+            #if SKIP || canImport(ReadiumNavigator)
+            ReaderView()
+                .tabItem { Label("Reading", systemImage: "heart.fill") }
+                .tag(Tab.welcome)
+            #endif
 
             NavigationStack {
                 Form {

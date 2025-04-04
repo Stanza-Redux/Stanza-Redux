@@ -1,4 +1,9 @@
 -keeppackagenames **
 -keep class skip.** { *; }
--keep class com.sun.jna.Pointer { *; }
+-keep class tools.skip.** { *; }
+-keep class kotlin.jvm.functions.** {*;}
+-keep class com.sun.jna.** { *; }
+-keep class * implements com.sun.jna.** { *; }
+-dontwarn java.awt.**
 -keep class stanza.module.** { *; }
+
