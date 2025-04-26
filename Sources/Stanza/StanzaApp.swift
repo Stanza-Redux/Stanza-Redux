@@ -1,5 +1,5 @@
 // Copyright 2025 The App Fair Project
-// SPDX-License-Identifier: GPL-3.0-only
+// SPDX-License-Identifier: GPL-2.0-or-later
 import Foundation
 import OSLog
 import SwiftUI
@@ -29,8 +29,7 @@ public struct StanzaRootView : View {
 
 /// Global application delegate functions.
 ///
-/// This functions can update a shared observable object to communicate app state changes to interested views.
-/// The sender for each of these functions will be either a `UIApplication` (iOS) or `AppCompatActivity` (Android)
+/// These functions can update a shared observable object to communicate app state changes to interested views.
 public class StanzaAppDelegate: ObservableObject {
     public static let shared = StanzaAppDelegate()
 
