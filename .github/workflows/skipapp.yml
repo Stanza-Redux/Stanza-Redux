@@ -15,8 +15,10 @@ permissions:
 
 jobs:
   call-workflow:
-    #uses: skiptools/actions/.github/workflows/skip-app.yml@main
     uses: skiptools/actions/.github/workflows/skip-app.yml@v1
+    with:
+      # Readium Swift library doesn't build for macOS
+      run-local-tests: false
     secrets:
       # These optional secrets enable the Android app to be signed
       KEYSTORE_JKS: ${{ secrets.KEYSTORE_JKS }}
