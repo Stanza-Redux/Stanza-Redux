@@ -22,8 +22,8 @@ let package = Package(
         .package(url: "https://source.skip.tools/skip-sql.git", "0.0.0"..<"2.0.0"),
         .package(url: "https://source.skip.tools/skip-kit.git", "0.0.0"..<"2.0.0"),
         //.package(url: "https://source.skip.tools/skip-script.git", "0.0.0"..<"2.0.0"),
-        .package(url: "https://github.com/Stanza-Redux/readium-swift-toolkit.git", branch: "develop"),
-        //.package(url: "https://github.com/readium/swift-toolkit.git", from: "3.1.0"),
+        //.package(url: "https://github.com/Stanza-Redux/readium-swift-toolkit.git", branch: "develop"),
+        .package(url: "https://github.com/readium/swift-toolkit.git", from: "3.3.0"),
     ],
     targets: [
         .target(name: "Stanza", dependencies: [
@@ -31,7 +31,7 @@ let package = Package(
             .product(name: "AppFairUI", package: "appfair-app"),
             .product(name: "SkipUI", package: "skip-ui"),
             .product(name: "SkipKit", package: "skip-kit"),
-            .product(name: "ReadiumNavigator", package: "readium-swift-toolkit", condition: .when(platforms: [.iOS])),
+            .product(name: "ReadiumNavigator", package: "swift-toolkit", condition: .when(platforms: [.iOS])),
         ], resources: [.process("Resources")], plugins: [.plugin(name: "skipstone", package: "skip")]),
         .testTarget(name: "StanzaTests", dependencies: [
             "Stanza",
@@ -42,11 +42,11 @@ let package = Package(
             .product(name: "SkipModel", package: "skip-model"),
             .product(name: "SkipSQL", package: "skip-sql"),
             //.product(name: "SkipScript", package: "skip-script"),
-            .product(name: "ReadiumShared", package: "readium-swift-toolkit"),
-            .product(name: "ReadiumOPDS", package: "readium-swift-toolkit"),
-            //.product(name: "ReadiumLCP", package: "readium-swift-toolkit"),
-            .product(name: "ReadiumStreamer", package: "readium-swift-toolkit"),
-            .product(name: "ReadiumAdapterGCDWebServer", package: "readium-swift-toolkit"),
+            .product(name: "ReadiumShared", package: "swift-toolkit"),
+            .product(name: "ReadiumOPDS", package: "swift-toolkit"),
+            //.product(name: "ReadiumLCP", package: "swift-toolkit"),
+            .product(name: "ReadiumStreamer", package: "swift-toolkit"),
+            .product(name: "ReadiumAdapterGCDWebServer", package: "swift-toolkit"),
         ], resources: [.process("Resources")], plugins: [.plugin(name: "skipstone", package: "skip")]),
         .testTarget(name: "StanzaModelTests", dependencies: [
             "StanzaModel",
