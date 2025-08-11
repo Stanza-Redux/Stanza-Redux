@@ -7,7 +7,7 @@ settings:
           contents:
             - block: 'create("libs")'
               contents:
-                - 'version("readium", "3.0.3")'
+                - 'version("readium", "3.1.1")'
                 - 'library("readium-shared", "org.readium.kotlin-toolkit", "readium-shared").versionRef("readium")'
                 - 'library("readium-streamer", "org.readium.kotlin-toolkit", "readium-streamer").versionRef("readium")'
                 - 'library("readium-opds", "org.readium.kotlin-toolkit", "readium-opds").versionRef("readium")'

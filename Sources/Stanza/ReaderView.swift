@@ -14,6 +14,8 @@ import ReadiumStreamer
 import ReadiumOPDS
 //import ReadiumLCP
 #else
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.ContentResolver
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
@@ -126,8 +128,11 @@ struct ReaderView: View {
             // https://github.com/readium/kotlin-toolkit/blob/develop/docs/guides/navigator/navigator.md#epubnavigatorfragment
             let navigatorFactory = EpubNavigatorFactory(publication: publication.platformValue, configuration: navConfig)
             let fragmentFactory = navigatorFactory.createFragmentFactory(initialLocator: locator?.platformValue, listener: nil)
-
-            let fragmentManager = (LocalContext.current as FragmentActivity).supportFragmentManager
+            //let fragmentManager = (LocalContext.current as FragmentActivity).supportFragmentManager
+            guard let fragmentActivity = LocalContext.current.fragmentActivity else {
+                fatalError("could not extract FragmentActivity from LocalContext.current")
+            }
+            let fragmentManager = fragmentActivity.supportFragmentManager
             fragmentManager.fragmentFactory = fragmentFactory
             AndroidFragment<EpubNavigatorFragment>(
                 onUpdate: { fragment in
@@ -139,6 +144,21 @@ struct ReaderView: View {
         #endif
     }
 }
+
+#if SKIP
+extension android.content.Context {
+    /// Extract the `FragmentActivity` from unwrapping this `Context`
+    var fragmentActivity: FragmentActivity? {
+        if let activity = self as? FragmentActivity {
+            return activity
+        }
+        guard let contextWrapper = self as? ContextWrapper else {
+            return nil
+        }
+        return contextWrapper.baseContext.fragmentActivity
+    }
+}
+#endif
 
 #if !SKIP
 struct ReaderViewContainer: View {
