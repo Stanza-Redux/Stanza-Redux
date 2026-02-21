@@ -60,6 +60,9 @@
         }
       }
     },
+    "Error: %@" : {
+
+    },
     "Hello [%@](https://skip.tools)!" : {
       "extractionState" : "stale",
       "localizations" : {
