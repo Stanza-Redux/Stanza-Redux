@@ -15,4 +15,4 @@ build:
     - block: 'dependencies'
       contents:
         - 'implementation(libs.readium.navigator)'
-        - 'implementation("androidx.fragment:fragment-compose:1.8.5")'
+        - 'implementation("androidx.fragment:fragment-compose:1.8.9")'
