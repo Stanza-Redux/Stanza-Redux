@@ -411,9 +411,8 @@ struct LibraryReaderView: View {
     @State var showTOC: Bool = false
     @State var bookmarks: [BookmarkRecord] = []
     @State var isCurrentPageBookmarked: Bool = false
-    @AppStorage("readerFontSize") var currentFontSize: Double = 1.0
-    @AppStorage("animatePageTurns") var animatePageTurns: Bool = true
-    @State var fontSizeApplied: Bool = false
+    @Environment(StanzaSettings.self) var settings: StanzaSettings
+    @State var initialPrefsApplied: Bool = false
     @Environment(\.dismiss) var dismiss
 
     #if !SKIP
@@ -450,6 +449,17 @@ struct LibraryReaderView: View {
         .onDisappear {
             saveCurrentLocator()
         }
+        .onChange(of: settings.fontSize) { applyPreferences() }
+        .onChange(of: settings.columnCount) { applyPreferences() }
+        .onChange(of: settings.fit) { applyPreferences() }
+        .onChange(of: settings.hyphens) { applyPreferences() }
+        .onChange(of: settings.lineHeight) { applyPreferences() }
+        .onChange(of: settings.pageMargins) { applyPreferences() }
+        .onChange(of: settings.paragraphSpacing) { applyPreferences() }
+        .onChange(of: settings.publisherStyles) { applyPreferences() }
+        .onChange(of: settings.textAlign) { applyPreferences() }
+        .onChange(of: settings.textNormalization) { applyPreferences() }
+        .onChange(of: settings.wordSpacing) { applyPreferences() }
     }
 
     func loadBook() async {
@@ -479,8 +489,8 @@ struct LibraryReaderView: View {
             }
             self.navigatorDelegate = delegate
             self.navigator?.delegate = delegate
-            if currentFontSize != 1.0 {
-                applyFontSize()
+            if hasNonDefaultPreferences() {
+                applyPreferences()
             }
             #endif
             if let db = database {
@@ -533,7 +543,7 @@ struct LibraryReaderView: View {
     // MARK: - Navigation
 
     func goForward() {
-        let animated = animatePageTurns
+        let animated = settings.animatePageTurns
         #if !SKIP
         if let nav = navigator {
             Task { await nav.goForward(options: animated ? .animated : .init()) }
@@ -546,7 +556,7 @@ struct LibraryReaderView: View {
     }
 
     func goBackward() {
-        let animated = animatePageTurns
+        let animated = settings.animatePageTurns
         #if !SKIP
         if let nav = navigator {
             Task { await nav.goBackward(options: animated ? .animated : .init()) }
@@ -560,7 +570,7 @@ struct LibraryReaderView: View {
 
     func navigateToTOCEntry(_ link: Lnk) {
         logger.info("Navigating to TOC entry: '\(link.title ?? "unknown")' href=\(link.href)")
-        let animated = animatePageTurns
+        let animated = settings.animatePageTurns
         #if !SKIP
         if let nav = navigator {
             Task { await nav.go(to: link.platformValue, options: animated ? .animated : .init()) }
@@ -574,27 +584,80 @@ struct LibraryReaderView: View {
         showHUD = false
     }
 
-    // MARK: - Font Size
+    // MARK: - Preferences
+
+    /// Returns `true` if any reading preference differs from its default value.
+    func hasNonDefaultPreferences() -> Bool {
+        let s = settings
+        return s.fontSize != 1.0
+            || !s.columnCount.isEmpty
+            || !s.fit.isEmpty
+            || !s.hyphens.isEmpty
+            || s.lineHeight > 0.0
+            || s.pageMargins > 0.0
+            || s.paragraphSpacing > 0.0
+            || !s.publisherStyles.isEmpty
+            || !s.textAlign.isEmpty
+            || !s.textNormalization.isEmpty
+            || s.wordSpacing > 0.0
+    }
 
     func adjustFontSize(increase: Bool) {
         if increase {
-            currentFontSize = min(currentFontSize + 0.1, 3.0)
+            settings.fontSize = min(settings.fontSize + 0.1, 3.0)
         } else {
-            currentFontSize = max(currentFontSize - 0.1, 0.5)
+            settings.fontSize = max(settings.fontSize - 0.1, 0.5)
         }
-        logger.info("Reader font size changed to: \(Int(currentFontSize * 100))%")
-        applyFontSize()
+        logger.info("Reader font size changed to: \(Int(settings.fontSize * 100))%")
+        applyPreferences()
     }
 
-    func applyFontSize() {
+    func applyPreferences() {
+        let s = settings
+
+        // Map string settings to typed optionals
+        let hyphensVal: Bool? = s.hyphens == "true" ? true : s.hyphens == "false" ? false : nil
+        let lineHeightVal: Double? = s.lineHeight > 0.0 ? s.lineHeight : nil
+        let pageMarginsVal: Double? = s.pageMargins > 0.0 ? s.pageMargins : nil
+        let paragraphSpacingVal: Double? = s.paragraphSpacing > 0.0 ? s.paragraphSpacing : nil
+        let publisherStylesVal: Bool? = s.publisherStyles == "true" ? true : s.publisherStyles == "false" ? false : nil
+        let textNormalizationVal: Bool? = s.textNormalization == "true" ? true : s.textNormalization == "false" ? false : nil
+        let wordSpacingVal: Double? = s.wordSpacing > 0.0 ? s.wordSpacing : nil
+
         #if !SKIP
         if let nav = navigator {
-            let prefs = EPUBPreferences(fontSize: currentFontSize)
+            let columnCountVal = s.columnCount.isEmpty ? nil : ReadiumNavigator.ColumnCount(rawValue: s.columnCount)
+            let fitVal = s.fit.isEmpty ? nil : ReadiumNavigator.Fit(rawValue: s.fit)
+            let textAlignVal = s.textAlign.isEmpty ? nil : ReadiumNavigator.TextAlignment(rawValue: s.textAlign)
+            let prefs = EPUBPreferences(
+                columnCount: columnCountVal,
+                fit: fitVal,
+                fontSize: s.fontSize,
+                hyphens: hyphensVal,
+                lineHeight: lineHeightVal,
+                pageMargins: pageMarginsVal,
+                paragraphSpacing: paragraphSpacingVal,
+                publisherStyles: publisherStylesVal,
+                textAlign: textAlignVal,
+                textNormalization: textNormalizationVal,
+                wordSpacing: wordSpacingVal
+            )
             nav.submitPreferences(prefs)
         }
         #else
         if let fragment = epubFragment {
-            let prefs = org.readium.r2.navigator.epub.EpubPreferences(fontSize: currentFontSize)
+            // On Android, pass supported numeric/boolean preferences
+            // Enum preferences (columnCount, fit, textAlign) require Kotlin enum types
+            let prefs = org.readium.r2.navigator.epub.EpubPreferences(
+                fontSize: s.fontSize,
+                hyphens: hyphensVal,
+                lineHeight: lineHeightVal,
+                pageMargins: pageMarginsVal,
+                paragraphSpacing: paragraphSpacingVal,
+                publisherStyles: publisherStylesVal,
+                textNormalization: textNormalizationVal,
+                wordSpacing: wordSpacingVal
+            )
             fragment.submitPreferences(prefs)
         }
         #endif
@@ -686,7 +749,7 @@ struct LibraryReaderView: View {
             return
         }
         logger.info("Navigating to bookmark id=\(bookmark.id): \(bookmark.progressLabel)")
-        let animated = animatePageTurns
+        let animated = settings.animatePageTurns
         #if !SKIP
         if let nav = navigator {
             Task { await nav.go(to: loc.platformValue, options: animated ? .animated : .init()) }
@@ -860,10 +923,10 @@ struct LibraryReaderView: View {
                             fragment.go(savedLoc, false)
                         }
                     }
-                    if !self.fontSizeApplied {
-                        self.fontSizeApplied = true
-                        if self.currentFontSize != 1.0 {
-                            self.applyFontSize()
+                    if !self.initialPrefsApplied {
+                        self.initialPrefsApplied = true
+                        if self.hasNonDefaultPreferences() {
+                            self.applyPreferences()
                         }
                     }
                 }
