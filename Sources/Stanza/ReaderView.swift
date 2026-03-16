@@ -239,6 +239,30 @@ class ReaderViewController: UIViewController {
         //viewModel.makeHighlight()
     }
 }
+
+/// Delegate that receives location change callbacks from the Readium Navigator.
+@MainActor class ReaderLocationDelegate: NSObject, EPUBNavigatorDelegate {
+    let onLocationChanged: (Loc) -> Void
+    var onTap: ((CGPoint, CGSize) -> Void)? = nil
+
+    init(onLocationChanged: @escaping (Loc) -> Void) {
+        self.onLocationChanged = onLocationChanged
+    }
+
+    func navigator(_ navigator: Navigator, locationDidChange locator: Locator) {
+        let loc = Loc(platformValue: locator)
+        onLocationChanged(loc)
+    }
+
+    func navigator(_ navigator: Navigator, presentError error: NavigatorError) {
+        logger.error("Navigator error: \(error)")
+    }
+
+    func navigator(_ navigator: VisualNavigator, didTapAt point: CGPoint) {
+        let viewSize = (navigator as? UIViewController)?.view.bounds.size ?? CGSize(width: 1.0, height: 1.0)
+        onTap?(point, viewSize)
+    }
+}
 #endif
 
 

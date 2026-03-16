@@ -51,11 +51,15 @@ public struct BookRecord: Identifiable, Hashable, SQLCodable {
     public var dateLastOpened: Date?
     static let dateLastOpened = SQLColumn(name: "DATE_LAST_OPENED", type: .real)
 
+    /// JSON representation of the Readium Locator for the last reading position.
+    public var locatorJSON: String?
+    static let locatorJSON = SQLColumn(name: "LOCATOR_JSON", type: .text)
+
     public static let table = SQLTable(name: "BOOK", columns: [
-        id, title, author, filePath, identifier, totalItems, currentItem, progress, dateAdded, dateLastOpened
+        id, title, author, filePath, identifier, totalItems, currentItem, progress, dateAdded, dateLastOpened, locatorJSON
     ])
 
-    public init(id: Int64 = 0, title: String, author: String, filePath: String, identifier: String? = nil, totalItems: Int64 = 0, currentItem: Int64 = 0, progress: Double = 0.0, dateAdded: Date = Date(), dateLastOpened: Date? = nil) {
+    public init(id: Int64 = 0, title: String, author: String, filePath: String, identifier: String? = nil, totalItems: Int64 = 0, currentItem: Int64 = 0, progress: Double = 0.0, dateAdded: Date = Date(), dateLastOpened: Date? = nil, locatorJSON: String? = nil) {
         self.id = id
         self.title = title
         self.author = author
@@ -66,6 +70,7 @@ public struct BookRecord: Identifiable, Hashable, SQLCodable {
         self.progress = progress
         self.dateAdded = dateAdded
         self.dateLastOpened = dateLastOpened
+        self.locatorJSON = locatorJSON
     }
 
     public init(row: SQLRow, context: SQLContext) throws {
@@ -79,6 +84,7 @@ public struct BookRecord: Identifiable, Hashable, SQLCodable {
         self.progress = try Self.progress.realValueRequired(in: row)
         self.dateAdded = try Self.dateAdded.dateValueRequired(in: row)
         self.dateLastOpened = Self.dateLastOpened.dateValue(in: row)
+        self.locatorJSON = Self.locatorJSON.textValue(in: row)
     }
 
     public func encode(row: inout SQLRow) throws {
@@ -92,6 +98,7 @@ public struct BookRecord: Identifiable, Hashable, SQLCodable {
         row[Self.progress] = SQLValue(self.progress)
         row[Self.dateAdded] = SQLValue(self.dateAdded.timeIntervalSince1970)
         row[Self.dateLastOpened] = SQLValue(self.dateLastOpened?.timeIntervalSince1970)
+        row[Self.locatorJSON] = SQLValue(self.locatorJSON)
     }
 }
 
@@ -122,6 +129,10 @@ public class BookDatabase {
                 try context.exec(ddl)
             }
             context.userVersion = 1
+        }
+        if context.userVersion < 2 {
+            try context.exec(SQLExpression("ALTER TABLE BOOK ADD COLUMN LOCATOR_JSON TEXT"))
+            context.userVersion = 2
         }
     }
 
@@ -175,6 +186,16 @@ public class BookDatabase {
         record.currentItem = currentItem
         record.totalItems = totalItems
         record.progress = totalItems > 0 ? Double(currentItem) / Double(totalItems) : 0.0
+        record.dateLastOpened = Date()
+        try context.update(record)
+    }
+
+    /// Saves the reading position for a book as a serialized Readium Locator JSON string,
+    /// along with the overall progress (0.0 to 1.0).
+    public func saveReadingPosition(bookID: Int64, locatorJSON: String, progress: Double) throws {
+        guard var record = try book(id: bookID) else { return }
+        record.locatorJSON = locatorJSON
+        record.progress = progress
         record.dateLastOpened = Date()
         try context.update(record)
     }
