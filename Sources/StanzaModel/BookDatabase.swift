@@ -4,7 +4,9 @@
 import Foundation
 import OSLog
 import SkipSQL
-import SkipSQLCore // DO NOT REMOVE
+#if SKIP
+import SkipSQLCore // needed for transpiled SkipSQL on Android
+#endif
 
 let dbLogger = Logger(subsystem: "Stanza", category: "BookDatabase")
 
@@ -93,22 +95,6 @@ public struct BookRecord: Identifiable, Hashable, SQLCodable {
     }
 }
 
-// MARK: - Helper to convert raw SQL rows to BookRecord
-
-/// Converts the raw `[[SQLValue]]` rows returned by `selectAll` into `BookRecord` instances.
-private func decodeBookRecords(from rows: [[SQLValue]], context: SQLContext) throws -> [BookRecord] {
-    let columns = BookRecord.table.columns
-    return try rows.map { values in
-        var row = SQLRow()
-        for i in 0..<columns.count {
-            if i < values.count {
-                row[columns[i]] = values[i]
-            }
-        }
-        return try BookRecord(row: row, context: context)
-    }
-}
-
 /// Manages the local book library database.
 public class BookDatabase {
     private let context: SQLContext
@@ -149,14 +135,12 @@ public class BookDatabase {
 
     /// Returns all books, ordered by most recently added first.
     public func allBooks() throws -> [BookRecord] {
-        let rows = try context.selectAll(sql: "SELECT * FROM BOOK ORDER BY DATE_ADDED DESC")
-        return try decodeBookRecords(from: rows, context: context)
+        try context.fetchAll(BookRecord.self, orderBy: BookRecord.dateAdded, order: .descending)
     }
 
     /// Fetches a single book by its database ID, or `nil` if not found.
     public func book(id: Int64) throws -> BookRecord? {
-        let rows = try context.selectAll(sql: "SELECT * FROM BOOK WHERE ID = ?", parameters: [SQLValue(id)])
-        return try decodeBookRecords(from: rows, context: context).first
+        try context.fetch(BookRecord.self, primaryKeys: [SQLValue(id)])
     }
 
     /// Updates an existing book record in the database.
@@ -166,9 +150,7 @@ public class BookDatabase {
 
     /// Deletes a book record from the database.
     public func deleteBook(id: Int64) throws {
-        if let record = try book(id: id) {
-            try context.delete(instances: [record])
-        }
+        try context.delete(BookRecord.self, where: BookRecord.id.equals(SQLValue(id)))
     }
 
     /// Returns the number of books in the database.
@@ -181,11 +163,8 @@ public class BookDatabase {
     /// Searches books by title or author. Case-insensitive substring match.
     public func searchBooks(query: String) throws -> [BookRecord] {
         let pattern = SQLValue("%" + query + "%")
-        let rows = try context.selectAll(
-            sql: "SELECT * FROM BOOK WHERE TITLE LIKE ? OR AUTHOR LIKE ? ORDER BY DATE_ADDED DESC",
-            parameters: [pattern, pattern]
-        )
-        return try decodeBookRecords(from: rows, context: context)
+        let predicate = BookRecord.title.like(pattern).or(BookRecord.author.like(pattern))
+        return try context.fetchAll(BookRecord.self, where: predicate, orderBy: BookRecord.dateAdded, order: .descending)
     }
 
     // MARK: - Progress tracking

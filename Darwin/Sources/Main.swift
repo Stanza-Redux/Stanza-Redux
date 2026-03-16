@@ -1,6 +1,9 @@
 import SwiftUI
 import Stanza
 
+private typealias AppRootView = StanzaRootView
+private typealias AppDelegate = StanzaAppDelegate
+
 /// The entry point to the app simply loads the App implementation from SPM module.
 @main struct AppMain: App {
     #if canImport(UIKit)
@@ -15,11 +18,11 @@ import Stanza
         .onChange(of: scenePhase) { oldPhase, newPhase in
             switch newPhase {
             case .active:
-                StanzaAppDelegate.shared.onResume(appDelegate.application!)
+                AppDelegate.shared.onResume()
             case .inactive:
-                StanzaAppDelegate.shared.onPause(appDelegate.application!)
+                AppDelegate.shared.onPause()
             case .background:
-                StanzaAppDelegate.shared.onStop(appDelegate.application!)
+                AppDelegate.shared.onStop()
             @unknown default:
                 print("unknown app phase: \(newPhase)")
             }
@@ -28,21 +31,58 @@ import Stanza
 }
 
 #if canImport(UIKit)
-class AppMainDelegate: UIResponder, UIApplicationDelegate {
-    unowned var application: UIApplication? = nil
+typealias AppDelegateAdaptor = UIApplicationDelegateAdaptor
+typealias AppMainDelegateBase = UIApplicationDelegate
+typealias AppType = UIApplication
+#elseif canImport(AppKit)
+typealias AppDelegateAdaptor = NSApplicationDelegateAdaptor
+typealias AppMainDelegateBase = NSApplicationDelegate
+typealias AppType = NSApplication
+#endif
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]?) -> Bool {
-        self.application = application
-        StanzaAppDelegate.shared.onStart(application)
+@MainActor final class AppMainDelegate: NSObject, AppMainDelegateBase {
+    let application = AppType.shared
+
+    #if canImport(UIKit)
+    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        AppDelegate.shared.onInit()
+        return true
+    }
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        AppDelegate.shared.onLaunch()
         return true
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        StanzaAppDelegate.shared.onDestroy(application)
+        AppDelegate.shared.onDestroy()
     }
 
     func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
-        StanzaAppDelegate.shared.onLowMemory(application)
+        AppDelegate.shared.onLowMemory()
     }
+
+    // support for SkipNotify.fetchNotificationToken()
+
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        NotificationCenter.default.post(name: NSNotification.Name("didRegisterForRemoteNotificationsWithDeviceToken"), object: application, userInfo: ["deviceToken": deviceToken])
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: any Error) {
+        NotificationCenter.default.post(name: NSNotification.Name("didFailToRegisterForRemoteNotificationsWithError"), object: application, userInfo: ["error": error])
+    }
+    #elseif canImport(AppKit)
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        AppDelegate.shared.onInit()
+    }
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        AppDelegate.shared.onLaunch()
+    }
+
+    func applicationWillTerminate(_ application: Notification) {
+        AppDelegate.shared.onDestroy()
+    }
+    #endif
+
 }
-#endif

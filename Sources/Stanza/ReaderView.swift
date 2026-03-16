@@ -68,19 +68,13 @@ struct ReaderView: View {
         if let publication = viewModel?.publication {
             Text("Opening \(publication.metadata.title ?? "Book")")
                 .fullScreenCover(isPresented: $isFullscreen) {
-                    ZStack(alignment: .topLeading) {
-                        readerViewContainer(publication: publication)
-                        Button {
-                            isFullscreen = false
-                            tab = .home
-                        } label: {
-                            Label("Close", systemImage: "xmark.circle.fill")
-                                .labelStyle(.iconOnly)
-                                .font(.title)
-                                .foregroundStyle(.secondary)
+                    readerViewContainer(publication: publication)
+                        .overlay(alignment: .topTrailing) {
+                            closeButton {
+                                isFullscreen = false
+                                tab = .home
+                            }
                         }
-                        .padding()
-                    }
                 }
         } else {
             VStack {
@@ -116,6 +110,17 @@ struct ReaderView: View {
         #if !SKIP
         self.navigator = try EPUBNavigatorViewController(publication: publication.platformValue, initialLocation: locator?.platformValue, config: navConfig)
         #endif
+    }
+
+    func closeButton(action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: "xmark.circle.fill")
+                .font(.system(size: 28))
+                .foregroundStyle(.white)
+                .background(Circle().fill(.black.opacity(0.5)))
+        }
+        .padding(.top, 54)
+        .padding(.trailing, 16)
     }
 
     func readerViewContainer(publication: Pub) -> some View {

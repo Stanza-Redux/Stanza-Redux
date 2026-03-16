@@ -14,6 +14,9 @@
     "%lld%%" : {
 
     },
+    "Add Book" : {
+
+    },
     "Appearance" : {
       "localizations" : {
         "es" : {
@@ -162,9 +165,6 @@
 
     },
     "Import a book to get started." : {
-
-    },
-    "Import Sample" : {
 
     },
     "Import Sample Book" : {

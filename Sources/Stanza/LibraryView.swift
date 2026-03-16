@@ -3,6 +3,7 @@
 
 import SwiftUI
 import StanzaModel
+import SkipKit
 #if !SKIP && canImport(ReadiumNavigator)
 import ReadiumNavigator
 import ReadiumShared
@@ -21,6 +22,10 @@ struct LibraryView: View {
     @State var errorMessage: String? = nil
     @State var isImporting = false
     @State var searchText: String = ""
+    @State var showDocumentPicker = false
+    @State var pickedDocumentURL: URL? = nil
+    @State var pickedFilename: String? = nil
+    @State var pickedMimeType: String? = nil
 
     var filteredBooks: [BookRecord] {
         if searchText.isEmpty {
@@ -84,11 +89,28 @@ struct LibraryView: View {
             .toolbar {
                 ToolbarItem {
                     Button {
-                        Task {
-                            await importSampleBook()
-                        }
+                        showDocumentPicker = true
                     } label: {
-                        Label("Import Sample", systemImage: "plus")
+                        Label("Add Book", systemImage: "plus")
+                    }
+                }
+            }
+            .withDocumentPicker(
+                isPresented: $showDocumentPicker,
+                allowedContentTypes: [.epub],
+                selectedDocumentURL: $pickedDocumentURL,
+                selectedFilename: $pickedFilename,
+                selectedFileMimeType: $pickedMimeType
+            )
+            .onChange(of: pickedDocumentURL) { oldURL, newURL in
+                if var url = newURL {
+                    if !url.absoluteString.hasPrefix("file:/") {
+                        // FIXME: bug in withDocumentPicker URL: the url is sometimes just a path without a scheme, like /data/user/0/org.appfair.app.Stanza_Redux/cache/marcus-aurelius_meditations_george-long.epub
+                        url = URL(fileURLWithPath: url.absoluteString)
+                    }
+                    pickedDocumentURL = nil
+                    Task {
+                        await importBookFromURL(url)
                     }
                 }
             }
@@ -119,6 +141,21 @@ struct LibraryView: View {
             self.books = try db.allBooks()
         } catch {
             logger.error("Failed to refresh books: \(error)")
+        }
+    }
+
+    private func importBookFromURL(_ url: URL) async {
+        logger.info("importBookFromURL: \(url.absoluteString)")
+        guard let db = database else { return }
+        do {
+            try await db.importBook(from: url)
+            self.books = try db.allBooks()
+        } catch {
+            logger.error("Failed to import book: \(error)")
+            errorMessage = "Failed to import book: \(error.localizedDescription)"
+            #if SKIP
+            android.util.Log.e("Stanza", "Error importing book", error as? Throwable)
+            #endif
         }
     }
 
@@ -325,19 +362,13 @@ struct LibraryReaderView: View {
     var body: some View {
         Group {
             if let publication = viewModel?.publication {
-                ZStack(alignment: .topLeading) {
-                    readerViewContainer(publication: publication)
-                    Button {
-                        saveProgress()
-                        dismiss()
-                    } label: {
-                        Label("Close", systemImage: "xmark.circle.fill")
-                            .labelStyle(.iconOnly)
-                            .font(.title)
-                            .foregroundStyle(.secondary)
+                readerViewContainer(publication: publication)
+                    .overlay(alignment: .topTrailing) {
+                        closeButton {
+                            saveProgress()
+                            dismiss()
+                        }
                     }
-                    .padding()
-                }
             } else if let error = error {
                 VStack {
                     Text("Error: \(String(describing: error))")
@@ -377,6 +408,17 @@ struct LibraryReaderView: View {
         // Save current position — default to item 0 if no locator tracked
         let currentItem: Int64 = 0
         try? db.updateProgress(bookID: bookID, currentItem: currentItem, totalItems: totalItems)
+    }
+
+    func closeButton(action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: "xmark.circle.fill")
+                .font(.system(size: 28))
+                .foregroundStyle(.white)
+                .background(Circle().fill(.black.opacity(0.5)))
+        }
+        .padding(.top, 54)
+        .padding(.trailing, 16)
     }
 
     func readerViewContainer(publication: Pub) -> some View {
