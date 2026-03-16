@@ -131,7 +131,7 @@ struct LibraryView: View {
                     Button {
                         showDocumentPicker = true
                     } label: {
-                        Label("Add Book", systemImage: "add")
+                        Label({ Text("Add Book"), icon: Image("add", bundle: .module) })
                     }
                 }
             }
@@ -157,11 +157,15 @@ struct LibraryView: View {
             .task {
                 initDatabase()
             }
+            .onAppear {
+                refreshBooks()
+            }
         }
     }
 
     private func initDatabase() {
         guard database == nil else { return }
+        logger.info("Initializing library database")
         do {
             let dir = URL.applicationSupportDirectory
             try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
@@ -169,6 +173,7 @@ struct LibraryView: View {
             let db = try BookDatabase(path: dbPath)
             self.database = db
             self.books = try db.allBooks()
+            logger.info("Library initialized with \(books.count) books")
         } catch {
             logger.error("Failed to open database: \(error)")
             errorMessage = "Failed to open library: \(error.localizedDescription)"
@@ -205,9 +210,11 @@ struct LibraryView: View {
             logger.error("Sample book not found in bundle")
             return
         }
+        logger.info("Importing sample book from bundle")
         do {
             try await db.importBook(from: sampleURL)
             self.books = try db.allBooks()
+            logger.info("Sample book imported successfully")
         } catch {
             logger.error("Failed to import sample book: \(error)")
             errorMessage = "Failed to import book: \(error.localizedDescription)"
@@ -219,10 +226,12 @@ struct LibraryView: View {
         let booksToDelete = filteredBooks
         for index in indices {
             let book = booksToDelete[index]
+            logger.info("Deleting book: '\(book.title)' (id=\(book.id)) at \(book.filePath)")
             do {
                 try db.deleteBook(id: book.id)
                 let fileURL = URL(fileURLWithPath: book.filePath)
                 try? FileManager.default.removeItem(at: fileURL)
+                logger.debug("Book file removed: \(book.filePath)")
             } catch {
                 logger.error("Failed to delete book: \(error)")
             }
@@ -371,12 +380,14 @@ struct BookEditView: View {
 
     private func saveChanges() {
         guard let db = database else { return }
+        logger.info("Saving book edits for id=\(bookID): title='\(editTitle)', author='\(editAuthor)'")
         do {
             guard var record = try db.book(id: bookID) else { return }
             record.title = editTitle
             record.author = editAuthor
             record.identifier = editIdentifier.isEmpty ? nil : editIdentifier
             try db.updateBook(record)
+            logger.info("Book edits saved successfully")
             onSave(record)
             dismiss()
         } catch {
@@ -439,6 +450,7 @@ struct LibraryReaderView: View {
     }
 
     func loadBook() async {
+        logger.info("Opening book id=\(bookID) from \(filePath)")
         do {
             // Load saved locator from database
             if let db = database, let record = try? db.book(id: bookID),
@@ -446,10 +458,12 @@ struct LibraryReaderView: View {
                 let savedLoc = Loc.fromJSON(json)
                 self.locator = savedLoc
                 self.initialLocator = savedLoc
+                logger.debug("Restored reading position: progress=\(savedLoc?.totalProgression ?? 0.0)")
             }
 
             let bookURL = URL(fileURLWithPath: filePath)
             let publication = try await Pub.loadPublication(from: bookURL)
+            logger.info("Publication loaded: '\(publication.metadata.title ?? "Unknown")' with \(publication.manifest.readingOrder.count) chapters")
             self.viewModel = ReaderViewModel(publication: publication)
             #if !SKIP
             self.navigator = try EPUBNavigatorViewController(publication: publication.platformValue, initialLocation: locator?.platformValue, config: navConfig)
@@ -470,6 +484,7 @@ struct LibraryReaderView: View {
                 try? db.markOpened(bookID: bookID)
             }
         } catch {
+            logger.error("Failed to open book id=\(bookID): \(error)")
             self.error = error
         }
     }
@@ -478,10 +493,12 @@ struct LibraryReaderView: View {
         guard let db = database else { return }
         guard let json = loc.jsonString else { return }
         let progress = loc.totalProgression ?? 0.0
+        logger.debug("Persisting reading position for book id=\(bookID): progress=\(progress)")
         try? db.saveReadingPosition(bookID: bookID, locatorJSON: json, progress: progress)
     }
 
     func saveCurrentLocator() {
+        logger.info("Saving current locator for book id=\(bookID)")
         #if !SKIP
         if let nav = navigator, let platformLoc = nav.currentLocation {
             let loc = Loc(platformValue: platformLoc)
@@ -537,6 +554,7 @@ struct LibraryReaderView: View {
     }
 
     func navigateToTOCEntry(_ link: Lnk) {
+        logger.info("Navigating to TOC entry: '\(link.title ?? "unknown")' href=\(link.href)")
         let animated = animatePageTurns
         #if !SKIP
         if let nav = navigator {
@@ -559,6 +577,7 @@ struct LibraryReaderView: View {
         } else {
             currentFontSize = max(currentFontSize - 0.1, 0.5)
         }
+        logger.info("Reader font size changed to: \(Int(currentFontSize * 100))%")
         applyFontSize()
     }
 

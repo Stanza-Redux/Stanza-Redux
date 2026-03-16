@@ -6,4 +6,4 @@
 -keep class * implements com.sun.jna.** { *; }
 -dontwarn java.awt.**
 -keep class stanza.module.** { *; }
-
+-keep class org.appfair.app.stanza.** { *; }

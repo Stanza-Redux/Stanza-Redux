@@ -166,13 +166,13 @@ extension Pub {
         let asset = assetRetriever.retrieve(absoluteUrl)
             .getOrElse { error in
                 logger.error("could not retrieve: \(absoluteUrl): \(error)")
-                throw error
+                throw ErrorException(error)
             }
 
         let publication: Publication = publicationOpener.open(asset: asset, allowUserInteraction: allowUserInteraction)
             .getOrElse { error in
                 logger.error("could not open: \(absoluteUrl): \(error)")
-                throw error
+                throw ErrorException(error)
             }
         logger.info("opened publication: \(publication)")
 

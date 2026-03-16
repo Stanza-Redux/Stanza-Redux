@@ -2,7 +2,10 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import SwiftUI
+import OSLog
 import StanzaModel
+
+let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
 
 public struct ContentView: View {
     @AppStorage("tab") var tab = Tab.home
@@ -22,7 +25,7 @@ public struct ContentView: View {
                 .tag(Tab.home)
 
             BrowseView()
-                .tabItem { Label("Browse", systemImage: "explore") }
+                .tabItem { Label({ Text("Browse"), icon: Image("explore", bundle: .module) }) }
                 .tag(Tab.browse)
 
             NavigationStack {
@@ -66,10 +69,25 @@ public struct ContentView: View {
                 }
                 .navigationTitle("Settings")
             }
-            .tabItem { Label("Settings", systemImage: "settings") }
+            .tabItem { Label({ Text("Settings"), icon: Image("settings", bundle: .module) }) }
             .tag(Tab.settings)
         }
         .preferredColorScheme(appearance == "dark" ? .dark : appearance == "light" ? .light : nil)
+        .onChange(of: tab) { oldValue, newValue in
+            settingsLogger.info("Tab changed: \(oldValue.rawValue) -> \(newValue.rawValue)")
+        }
+        .onChange(of: readerFontSize) { oldValue, newValue in
+            settingsLogger.info("Reader font size changed: \(Int(oldValue * 100))% -> \(Int(newValue * 100))%")
+        }
+        .onChange(of: animatePageTurns) { oldValue, newValue in
+            settingsLogger.info("Animate page turns: \(newValue)")
+        }
+        .onChange(of: appearance) { oldValue, newValue in
+            settingsLogger.info("Appearance changed: '\(oldValue)' -> '\(newValue)'")
+        }
+        .onChange(of: name) { oldValue, newValue in
+            settingsLogger.debug("Name changed: '\(oldValue)' -> '\(newValue)'")
+        }
     }
 }
 

@@ -1,4 +1,6 @@
 # Configuration file for https://skip.tools project
+skip:
+  package: 'org.appfair.app.stanza.model'
 settings:
   contents:
     - block: 'dependencyResolutionManagement'

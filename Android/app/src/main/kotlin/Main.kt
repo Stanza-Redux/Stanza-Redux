@@ -1,4 +1,4 @@
-package stanza.module
+package org.appfair.app.stanza.ui
 
 import skip.lib.*
 import skip.model.*

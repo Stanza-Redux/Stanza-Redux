@@ -109,6 +109,7 @@ public class BookDatabase {
     /// Opens or creates the book database at the given path.
     /// Pass `nil` for an in-memory database (useful for testing).
     public init(path: String? = nil) throws {
+        dbLogger.info("Opening book database at: \(path ?? ":memory:")")
         if let path = path {
             let dir = URL(fileURLWithPath: path).deletingLastPathComponent()
             try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
@@ -120,18 +121,24 @@ public class BookDatabase {
     }
 
     private func createOrMigrateSchema() throws {
+        dbLogger.info("Book database schema version: \(self.context.userVersion)")
         if context.userVersion < 1 {
+            dbLogger.info("Creating BOOK table (schema v1)")
             for ddl in BookRecord.table.createTableSQL(columns: [
                 BookRecord.id, BookRecord.title, BookRecord.author, BookRecord.filePath,
                 BookRecord.identifier, BookRecord.totalItems, BookRecord.currentItem,
                 BookRecord.progress, BookRecord.dateAdded, BookRecord.dateLastOpened
             ]) {
+                dbLogger.debug("SQL: \(String(describing: ddl))")
                 try context.exec(ddl)
             }
             context.userVersion = 1
         }
         if context.userVersion < 2 {
-            try context.exec(SQLExpression("ALTER TABLE BOOK ADD COLUMN LOCATOR_JSON TEXT"))
+            dbLogger.info("Migrating BOOK table to schema v2 (adding LOCATOR_JSON)")
+            let ddl = SQLExpression("ALTER TABLE BOOK ADD COLUMN LOCATOR_JSON TEXT")
+            dbLogger.debug("SQL: \(String(describing: ddl))")
+            try context.exec(ddl)
             context.userVersion = 2
         }
     }
@@ -141,48 +148,66 @@ public class BookDatabase {
     /// Adds a new book record to the database and returns it with its assigned ID.
     @discardableResult
     public func addBook(_ record: BookRecord) throws -> BookRecord {
-        try context.insert(record)
+        dbLogger.info("Adding book: '\(record.title)' by '\(record.author)' at \(record.filePath)")
+        let result = try context.insert(record)
+        dbLogger.info("Added book with id: \(result.id)")
+        return result
     }
 
     /// Returns all books, ordered by most recently added first.
     public func allBooks() throws -> [BookRecord] {
-        try context.fetchAll(BookRecord.self, orderBy: BookRecord.dateAdded, order: .descending)
+        let books = try context.fetchAll(BookRecord.self, orderBy: BookRecord.dateAdded, order: .descending)
+        dbLogger.debug("Fetched \(books.count) books")
+        return books
     }
 
     /// Fetches a single book by its database ID, or `nil` if not found.
     public func book(id: Int64) throws -> BookRecord? {
-        try context.fetch(BookRecord.self, primaryKeys: [SQLValue(id)])
+        let result = try context.fetch(BookRecord.self, primaryKeys: [SQLValue(id)])
+        dbLogger.debug("Fetched book id=\(id): \(result != nil ? result!.title : "not found")")
+        return result
     }
 
     /// Updates an existing book record in the database.
     public func updateBook(_ record: BookRecord) throws {
+        dbLogger.info("Updating book id=\(record.id): '\(record.title)'")
         try context.update(record)
     }
 
     /// Deletes a book record from the database.
     public func deleteBook(id: Int64) throws {
+        dbLogger.info("Deleting book id=\(id)")
         try context.delete(BookRecord.self, where: BookRecord.id.equals(SQLValue(id)))
     }
 
     /// Returns the number of books in the database.
     public func count() throws -> Int64 {
-        try context.count(BookRecord.self)
+        let n = try context.count(BookRecord.self)
+        dbLogger.debug("Book count: \(n)")
+        return n
     }
 
     // MARK: - Search
 
     /// Searches books by title or author. Case-insensitive substring match.
     public func searchBooks(query: String) throws -> [BookRecord] {
+        dbLogger.info("Searching books for: '\(query)'")
         let pattern = SQLValue("%" + query + "%")
         let predicate = BookRecord.title.like(pattern).or(BookRecord.author.like(pattern))
-        return try context.fetchAll(BookRecord.self, where: predicate, orderBy: BookRecord.dateAdded, order: .descending)
+        let results = try context.fetchAll(BookRecord.self, where: predicate, orderBy: BookRecord.dateAdded, order: .descending)
+        dbLogger.debug("Search returned \(results.count) results")
+        return results
     }
 
     // MARK: - Progress tracking
 
     /// Updates the reading progress for a book.
     public func updateProgress(bookID: Int64, currentItem: Int64, totalItems: Int64) throws {
-        guard var record = try book(id: bookID) else { return }
+        dbLogger.debug("Updating progress for book id=\(bookID): item \(currentItem)/\(totalItems)")
+        guard var record = try book(id: bookID) else {
+            dbLogger.warning("updateProgress: book id=\(bookID) not found")
+            return
+        }
         record.currentItem = currentItem
         record.totalItems = totalItems
         record.progress = totalItems > 0 ? Double(currentItem) / Double(totalItems) : 0.0
@@ -193,7 +218,11 @@ public class BookDatabase {
     /// Saves the reading position for a book as a serialized Readium Locator JSON string,
     /// along with the overall progress (0.0 to 1.0).
     public func saveReadingPosition(bookID: Int64, locatorJSON: String, progress: Double) throws {
-        guard var record = try book(id: bookID) else { return }
+        dbLogger.debug("Saving reading position for book id=\(bookID): progress=\(progress)")
+        guard var record = try book(id: bookID) else {
+            dbLogger.warning("saveReadingPosition: book id=\(bookID) not found")
+            return
+        }
         record.locatorJSON = locatorJSON
         record.progress = progress
         record.dateLastOpened = Date()
@@ -202,7 +231,11 @@ public class BookDatabase {
 
     /// Marks a book as having been opened now.
     public func markOpened(bookID: Int64) throws {
-        guard var record = try book(id: bookID) else { return }
+        dbLogger.info("Marking book id=\(bookID) as opened")
+        guard var record = try book(id: bookID) else {
+            dbLogger.warning("markOpened: book id=\(bookID) not found")
+            return
+        }
         record.dateLastOpened = Date()
         try context.update(record)
     }
@@ -214,20 +247,25 @@ public class BookDatabase {
     /// Returns the newly created `BookRecord`.
     @discardableResult
     public func importBook(from sourceURL: URL) async throws -> BookRecord {
+        dbLogger.info("Importing book from: \(sourceURL.absoluteString)")
         let booksDir = URL.documentsDirectory.appendingPathComponent("Books")
         try FileManager.default.createDirectory(at: booksDir, withIntermediateDirectories: true)
         let destinationURL = booksDir.appendingPathComponent(sourceURL.lastPathComponent)
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
+            dbLogger.debug("Removing existing file at: \(destinationURL.path)")
             try FileManager.default.removeItem(at: destinationURL)
         }
+        dbLogger.debug("Copying book to: \(destinationURL.path)")
         try FileManager.default.copyItem(at: sourceURL, to: destinationURL)
 
+        dbLogger.debug("Loading publication metadata")
         let pub = try await Pub.loadPublication(from: destinationURL)
         let metadata = pub.metadata
         let bookTitle = metadata.title ?? sourceURL.deletingPathExtension().lastPathComponent
         let bookAuthor = metadata.identifier ?? ""
         let totalItems = Int64(pub.manifest.readingOrder.count)
+        dbLogger.info("Imported book: '\(bookTitle)' with \(totalItems) reading order items")
 
         let record = BookRecord(
             title: bookTitle,
@@ -241,6 +279,7 @@ public class BookDatabase {
 
     /// Closes the database connection.
     public func close() {
+        dbLogger.info("Closing book database")
         try? context.close()
     }
 }

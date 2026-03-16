@@ -17,7 +17,19 @@
     "Aa" : {
 
     },
+    "Add an OPDS catalog to start browsing books." : {
+
+    },
     "Add Book" : {
+
+    },
+    "Add Catalog" : {
+
+    },
+    "Add Custom Catalog" : {
+
+    },
+    "All Books" : {
 
     },
     "Animate Page Turns" : {
@@ -60,16 +72,25 @@
     "Book not found" : {
 
     },
-    "Browse" : {
+    "Books" : {
 
     },
-    "Browse book catalogs to discover and download new books." : {
+    "Browse" : {
 
     },
     "Cancel" : {
 
     },
+    "Catalog Name" : {
+
+    },
+    "Categories" : {
+
+    },
     "Chapters" : {
+
+    },
+    "Custom Catalog" : {
 
     },
     "Dark" : {
@@ -106,6 +127,15 @@
     "Done" : {
 
     },
+    "Download Book" : {
+
+    },
+    "Downloaded" : {
+
+    },
+    "Downloading... %lld%%" : {
+
+    },
     "Edit" : {
 
     },
@@ -115,10 +145,16 @@
     "Error: %@" : {
 
     },
+    "Failed to Load" : {
+
+    },
     "File" : {
 
     },
     "Font Size" : {
+
+    },
+    "Format" : {
 
     },
     "General" : {
@@ -257,6 +293,9 @@
     "Load Book" : {
 
     },
+    "Loading catalog..." : {
+
+    },
     "Loading..." : {
 
     },
@@ -292,6 +331,15 @@
       }
     },
     "No Books" : {
+
+    },
+    "No Catalogs" : {
+
+    },
+    "No download available" : {
+
+    },
+    "OPDS Feed URL" : {
 
     },
     "Open Book" : {
@@ -334,7 +382,13 @@
     "Reading" : {
 
     },
+    "Recommended Catalogs" : {
+
+    },
     "Reset to Default" : {
+
+    },
+    "Retry" : {
 
     },
     "Save" : {
@@ -370,6 +424,12 @@
       }
     },
     "Search books" : {
+
+    },
+    "Search catalog" : {
+
+    },
+    "See All" : {
 
     },
     "Settings" : {
