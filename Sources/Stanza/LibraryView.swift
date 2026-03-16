@@ -131,7 +131,7 @@ struct LibraryView: View {
                     Button {
                         showDocumentPicker = true
                     } label: {
-                        Label({ Text("Add Book"), icon: Image("add", bundle: .module) })
+                        Label(title: { Text("Add Book") }, icon: { Image("add", bundle: .module) })
                     }
                 }
             }

@@ -67,7 +67,7 @@ struct BrowseView: View {
                     Button {
                         showAddCatalog = true
                     } label: {
-                        Label({ Text("Add Catalog"), icon: Image("add", bundle: .module) })
+                        Label(title: { Text("Add Catalog") }, icon: { Image("add", bundle: .module) })
                     }
                 }
             }
@@ -633,7 +633,7 @@ struct OPDSBookDetailView: View {
                 // Download / Open actions
                 VStack(spacing: 12) {
                     if downloadComplete {
-                        Label({ Text("Downloaded"), icon: Image("checkmark.circle.fill", bundle: .module) })
+                        Label(title: { Text("Downloaded") }, icon: { Image("checkmark.circle.fill", bundle: .module) })
                             .foregroundStyle(.green)
                             .font(.headline)
 
@@ -642,7 +642,8 @@ struct OPDSBookDetailView: View {
                             Button {
                                 showReader = true
                             } label: {
-                                Label({ Text("Open Book"), icon: Image("book", bundle: .module) })                                    .frame(maxWidth: .infinity)
+                                Label(title: { Text("Open Book") }, icon: { Image("book", bundle: .module) })
+                                    .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(.borderedProminent)
                             .padding(.horizontal)
@@ -664,7 +665,7 @@ struct OPDSBookDetailView: View {
                         Button {
                             Task { await downloadBook() }
                         } label: {
-                            Label({ Text("Download Book"), icon: Image("arrow.down.circle", bundle: .module) })
+                            Label(title: { Text("Download Book") }, icon: { Image("arrow.down.circle", bundle: .module) })
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.borderedProminent)

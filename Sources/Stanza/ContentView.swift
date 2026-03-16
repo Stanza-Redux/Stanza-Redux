@@ -25,7 +25,7 @@ public struct ContentView: View {
                 .tag(Tab.home)
 
             BrowseView()
-                .tabItem { Label({ Text("Browse"), icon: Image("explore", bundle: .module) }) }
+                .tabItem { Label(title: { Text("Browse") }, icon: { Image("explore", bundle: .module) }) }
                 .tag(Tab.browse)
 
             NavigationStack {
@@ -69,7 +69,7 @@ public struct ContentView: View {
                 }
                 .navigationTitle("Settings")
             }
-            .tabItem { Label({ Text("Settings"), icon: Image("settings", bundle: .module) }) }
+            .tabItem { Label(title: { Text("Settings") }, icon: { Image("settings", bundle: .module) }) }
             .tag(Tab.settings)
         }
         .preferredColorScheme(appearance == "dark" ? .dark : appearance == "light" ? .light : nil)
