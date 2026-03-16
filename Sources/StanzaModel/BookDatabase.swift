@@ -106,28 +106,21 @@ public struct BookRecord: Identifiable, Hashable, SQLCodable {
 public class BookDatabase {
     private let context: SQLContext
 
-    /// The documents directory used as the base for relative file paths.
-    private static var documentsPath: String {
-        URL.documentsDirectory.path
-    }
-
-    /// Converts an absolute file path to a path relative to the documents directory.
-    /// If the path is not under the documents directory, it is returned as-is.
+    /// Strips the documents directory prefix from an absolute path, returning a relative path
+    /// like `Books/Alice.epub`. If the path is not under the documents directory, returns it as-is.
     public static func relativePath(for absolutePath: String) -> String {
-        let docs = documentsPath
-        if absolutePath.hasPrefix(docs) {
-            var relative = String(absolutePath.dropFirst(docs.count))
-            // Remove leading slash if present
-            if relative.hasPrefix("/") {
-                relative = String(relative.dropFirst())
-            }
-            return relative
+        let docsPath = URL.documentsDirectory.path
+        if absolutePath.hasPrefix(docsPath + "/") {
+            return String(absolutePath.dropFirst(docsPath.count + 1))
+        }
+        if absolutePath.hasPrefix(docsPath) {
+            return String(absolutePath.dropFirst(docsPath.count))
         }
         return absolutePath
     }
 
-    /// Resolves a stored (relative) file path to an absolute path under the documents directory.
-    /// If the path is already absolute, it is returned as-is.
+    /// Resolves a stored relative path to an absolute path under the documents directory.
+    /// If the path is already absolute, returns it as-is.
     public static func absolutePath(for storedPath: String) -> String {
         if storedPath.hasPrefix("/") {
             return storedPath
@@ -172,6 +165,16 @@ public class BookDatabase {
         }
         if context.userVersion < 3 {
             dbLogger.info("Migrating BOOK table to schema v3 (converting absolute paths to relative)")
+            let books = try context.fetchAll(BookRecord.self)
+            for var book in books {
+                let oldPath = book.filePath
+                let newPath = BookDatabase.relativePath(for: oldPath)
+                if newPath != oldPath {
+                    dbLogger.debug("Migrating path: '\(oldPath)' -> '\(newPath)'")
+                    book.filePath = newPath
+                    try context.update(book)
+                }
+            }
             context.userVersion = 3
         }
     }
@@ -259,7 +262,7 @@ public class BookDatabase {
         record.totalItems = totalItems
         record.progress = totalItems > 0 ? Double(currentItem) / Double(totalItems) : 0.0
         record.dateLastOpened = Date()
-        try context.update(record)
+        try updateBook(record)
     }
 
     /// Saves the reading position for a book as a serialized Readium Locator JSON string,
@@ -273,7 +276,7 @@ public class BookDatabase {
         record.locatorJSON = locatorJSON
         record.progress = progress
         record.dateLastOpened = Date()
-        try context.update(record)
+        try updateBook(record)
     }
 
     /// Marks a book as having been opened now.
@@ -284,7 +287,7 @@ public class BookDatabase {
             return
         }
         record.dateLastOpened = Date()
-        try context.update(record)
+        try updateBook(record)
     }
 
     // MARK: - Import

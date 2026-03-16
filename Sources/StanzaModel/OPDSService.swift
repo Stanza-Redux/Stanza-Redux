@@ -363,9 +363,12 @@ public final class OPDSService {
         let thumbnailLink = images.first(where: { $0.rels.contains(.opdsImageThumbnail) }) ?? images.first
         let imageLink = images.first(where: { $0.rels.contains(.opdsImage) }) ?? thumbnailLink
 
-        let acquisitionLink = pub.manifest.links.first(where: { link in
+        // Prefer EPUB acquisition link, fall back to any acquisition link
+        let allAcquisitionLinks = pub.manifest.links.filter { link in
             link.rels.contains(where: { $0.string.contains("http://opds-spec.org/acquisition") })
-        })
+        }
+        let acquisitionLink = allAcquisitionLinks.first(where: { $0.mediaType?.string.contains("epub") == true })
+            ?? allAcquisitionLinks.first
 
         return OPDSPubEntry(
             id: identifier,
@@ -516,16 +519,29 @@ public final class OPDSService {
             }
         }
 
-        // Find acquisition link
+        // Find acquisition link — prefer EPUB, fall back to any format
         var acqHref: String? = nil
         var acqType: String? = nil
+        var fallbackHref: String? = nil
+        var fallbackType: String? = nil
         for link in pub.manifest.links {
             for rel in link.rels {
                 if rel.contains("http://opds-spec.org/acquisition") {
-                    acqHref = resolveHrefKotlin(link.href.toString(), base: baseURL)
-                    acqType = link.mediaType?.toString()
+                    let href = resolveHrefKotlin(link.href.toString(), base: baseURL)
+                    let mediaType = link.mediaType?.toString()
+                    if mediaType != nil && mediaType!.contains("epub") {
+                        acqHref = href
+                        acqType = mediaType
+                    } else if fallbackHref == nil {
+                        fallbackHref = href
+                        fallbackType = mediaType
+                    }
                 }
             }
+        }
+        if acqHref == nil {
+            acqHref = fallbackHref
+            acqType = fallbackType
         }
 
         return OPDSPubEntry(
