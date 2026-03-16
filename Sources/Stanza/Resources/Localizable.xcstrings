@@ -1,6 +1,25 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%lld/%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "%lld%%" : {
+
+    },
+    "Aa" : {
+
+    },
+    "Add Book" : {
+
+    },
     "Appearance" : {
       "localizations" : {
         "es" : {
@@ -29,7 +48,19 @@
         }
       }
     },
-    "Book %lld" : {
+    "Author" : {
+
+    },
+    "Book Info" : {
+
+    },
+    "Book not found" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Chapters" : {
 
     },
     "Dark" : {
@@ -60,7 +91,28 @@
         }
       }
     },
+    "Dismiss" : {
+
+    },
+    "Done" : {
+
+    },
+    "Edit" : {
+
+    },
+    "Edit Book" : {
+
+    },
     "Error: %@" : {
+
+    },
+    "File" : {
+
+    },
+    "Font Size" : {
+
+    },
+    "General" : {
 
     },
     "Hello [%@](https://skip.tools)!" : {
@@ -121,7 +173,17 @@
         }
       }
     },
+    "Identifier" : {
+
+    },
+    "Import a book to get started." : {
+
+    },
+    "Import Sample Book" : {
+
+    },
     "Item %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -148,6 +210,9 @@
           }
         }
       }
+    },
+    "Last Opened" : {
+
     },
     "Library" : {
 
@@ -183,6 +248,12 @@
     "Load Book" : {
 
     },
+    "Loading..." : {
+
+    },
+    "Metadata" : {
+
+    },
     "Name" : {
       "localizations" : {
         "es" : {
@@ -210,6 +281,12 @@
           }
         }
       }
+    },
+    "No Books" : {
+
+    },
+    "Open Book" : {
+
     },
     "Opening %@" : {
 
@@ -242,7 +319,16 @@
         }
       }
     },
+    "Progress" : {
+
+    },
     "Reading" : {
+
+    },
+    "Reset to Default" : {
+
+    },
+    "Save" : {
 
     },
     "Screen %lld" : {
@@ -273,6 +359,9 @@
           }
         }
       }
+    },
+    "Search books" : {
+
     },
     "Settings" : {
       "localizations" : {
@@ -329,6 +418,12 @@
           }
         }
       }
+    },
+    "Table of Contents" : {
+
+    },
+    "Title" : {
+
     },
     "Welcome" : {
       "extractionState" : "stale",

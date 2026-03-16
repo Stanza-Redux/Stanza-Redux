@@ -6,7 +6,7 @@ import OSLog
 #if !SKIP
 import ReadiumOPDS
 //import ReadiumLCP
-import ReadiumAdapterGCDWebServer
+//import ReadiumAdapterGCDWebServer
 import ReadiumShared
 import ReadiumStreamer
 #else
@@ -60,7 +60,6 @@ let logger = Logger(subsystem: "Stanza", category: "StanzaModelTests")
 public let httpClient: DefaultHTTPClient = DefaultHTTPClient(userAgent: "Readium")
 
 #if !SKIP
-public let httpServer: GCDHTTPServer = GCDHTTPServer(assetRetriever: assetRetriever)
 public let assetRetriever = AssetRetriever(httpClient: httpClient)
 let pdfDocumentFactory = DefaultPDFDocumentFactory()
 let publicationOpener = PublicationOpener(
@@ -369,6 +368,42 @@ public struct Loc {
 
     public init(platformValue: PlatformLocator) {
         self.platformValue = platformValue
+    }
+
+    /// The overall progress through the entire publication (0.0 to 1.0), if available.
+    public var totalProgression: Double? {
+        platformValue.locations.totalProgression
+    }
+
+    /// The progress within the current resource (0.0 to 1.0), if available.
+    public var progression: Double? {
+        platformValue.locations.progression
+    }
+
+    /// The title of the current location (e.g. chapter name).
+    public var title: String? {
+        platformValue.title
+    }
+
+    /// Serializes this locator to a JSON string for persistence.
+    public var jsonString: String? {
+        #if !SKIP
+        return platformValue.jsonString
+        #else
+        return platformValue.toJSON().toString()
+        #endif
+    }
+
+    /// Creates a Loc from a JSON string, or returns nil if the JSON is invalid.
+    public static func fromJSON(_ jsonString: String) -> Loc? {
+        #if !SKIP
+        guard let locator = try? PlatformLocator(jsonString: jsonString) else { return nil }
+        return Loc(platformValue: locator)
+        #else
+        let json = org.json.JSONObject(jsonString)
+        guard let locator = PlatformLocator.Companion.fromJSON(json) else { return nil }
+        return Loc(platformValue: locator)
+        #endif
     }
 }
 

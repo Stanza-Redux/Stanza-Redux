@@ -54,6 +54,7 @@ var navConfig: org.readium.r2.navigator.epub.EpubNavigatorFactory.Configuration 
 
 struct ReaderView: View {
     let bookURL: URL = Bundle.module.url(forResource: "Alice", withExtension: "epub")!
+    @Binding var tab: Tab
     @State var viewModel: ReaderViewModel? = nil
     @State var error: Error? = nil
     @State var locator: Loc? = nil
@@ -68,6 +69,12 @@ struct ReaderView: View {
             Text("Opening \(publication.metadata.title ?? "Book")")
                 .fullScreenCover(isPresented: $isFullscreen) {
                     readerViewContainer(publication: publication)
+                        .overlay(alignment: .topTrailing) {
+                            closeButton {
+                                isFullscreen = false
+                                tab = .home
+                            }
+                        }
                 }
         } else {
             VStack {
@@ -78,7 +85,7 @@ struct ReaderView: View {
                 }
 
                 if let error {
-                    Text("Error: \(error)")
+                    Text("Error: \(String(describing: error))")
                 }
             }
             .task {
@@ -86,12 +93,6 @@ struct ReaderView: View {
                 self.isFullscreen = true
             }
         }
-//        config.editingActions.append(
-//            EditingAction(
-//                title: "Highlight"
-//                action: #selector(highlightSelection)
-//            )
-//        )
 
     }
 
@@ -107,8 +108,19 @@ struct ReaderView: View {
         let publication: Pub = try await Pub.loadPublication(from: bookURL)
         self.viewModel = ReaderViewModel(publication: publication)
         #if !SKIP
-        self.navigator = try EPUBNavigatorViewController(publication: publication.platformValue, initialLocation: locator?.platformValue, config: navConfig, httpServer: httpServer)
+        self.navigator = try EPUBNavigatorViewController(publication: publication.platformValue, initialLocation: locator?.platformValue, config: navConfig)
         #endif
+    }
+
+    func closeButton(action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: "xmark.circle.fill")
+                .font(.system(size: 28))
+                .foregroundStyle(.white)
+                .background(Circle().fill(.black.opacity(0.5)))
+        }
+        .padding(.top, 54)
+        .padding(.trailing, 16)
     }
 
     func readerViewContainer(publication: Pub) -> some View {
@@ -225,6 +237,30 @@ class ReaderViewController: UIViewController {
     /// Handler for a custom editing action.
     @objc func makeHighlight(_ sender: Any) {
         //viewModel.makeHighlight()
+    }
+}
+
+/// Delegate that receives location change callbacks from the Readium Navigator.
+@MainActor class ReaderLocationDelegate: NSObject, EPUBNavigatorDelegate {
+    let onLocationChanged: (Loc) -> Void
+    var onTap: ((CGPoint, CGSize) -> Void)? = nil
+
+    init(onLocationChanged: @escaping (Loc) -> Void) {
+        self.onLocationChanged = onLocationChanged
+    }
+
+    func navigator(_ navigator: Navigator, locationDidChange locator: Locator) {
+        let loc = Loc(platformValue: locator)
+        onLocationChanged(loc)
+    }
+
+    func navigator(_ navigator: Navigator, presentError error: NavigatorError) {
+        logger.error("Navigator error: \(error)")
+    }
+
+    func navigator(_ navigator: VisualNavigator, didTapAt point: CGPoint) {
+        let viewSize = (navigator as? UIViewController)?.view.bounds.size ?? CGSize(width: 1.0, height: 1.0)
+        onTap?(point, viewSize)
     }
 }
 #endif

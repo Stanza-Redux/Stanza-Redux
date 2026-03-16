@@ -13,8 +13,6 @@ let androidSDK = ProcessInfo.processInfo.environment["android.os.Build.VERSION.S
 ///
 /// The default implementation merely loads the `ContentView` for the app and logs a message.
 public struct StanzaRootView : View {
-    @ObservedObject var appDelegate = StanzaAppDelegate.shared
-
     public init() {
     }
 
@@ -30,33 +28,37 @@ public struct StanzaRootView : View {
 /// Global application delegate functions.
 ///
 /// These functions can update a shared observable object to communicate app state changes to interested views.
-public class StanzaAppDelegate: ObservableObject {
+public final class StanzaAppDelegate : Sendable {
     public static let shared = StanzaAppDelegate()
 
     private init() {
     }
 
-    public func onStart(_ sender: Any) {
-        logger.debug("onStart")
+    public func onInit() {
+        logger.debug("onInit")
     }
 
-    public func onResume(_ sender: Any) {
+    public func onLaunch() {
+        logger.debug("onLaunch")
+    }
+
+    public func onResume() {
         logger.debug("onResume")
     }
 
-    public func onPause(_ sender: Any) {
+    public func onPause() {
         logger.debug("onPause")
     }
 
-    public func onStop(_ sender: Any) {
+    public func onStop() {
         logger.debug("onStop")
     }
 
-    public func onDestroy(_ sender: Any) {
+    public func onDestroy() {
         logger.debug("onDestroy")
     }
 
-    public func onLowMemory(_ sender: Any) {
+    public func onLowMemory() {
         logger.debug("onLowMemory")
     }
 }
