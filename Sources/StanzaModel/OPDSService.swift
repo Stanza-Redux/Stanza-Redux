@@ -233,64 +233,6 @@ public final class OPDSService {
         #endif
     }
 
-    /// Downloads a file from a URL to a local destination.
-    public static func downloadBook(from url: URL, to destination: URL, progress: @escaping (Double) -> Void) async throws {
-        opdsLogger.info("Downloading book from: \(url.absoluteString) to: \(destination.path)")
-        #if !SKIP
-        let (asyncBytes, response) = try await URLSession.shared.bytes(from: url)
-        let totalBytes = response.expectedContentLength
-        var receivedBytes: Int64 = 0
-
-        let dir = destination.deletingLastPathComponent()
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-
-        let fileHandle = try FileHandle(forWritingTo: {
-            FileManager.default.createFile(atPath: destination.path, contents: nil)
-            return destination
-        }())
-
-        for try await byte in asyncBytes {
-            fileHandle.write(Data([byte]))
-            receivedBytes += 1
-            if totalBytes > 0 {
-                let prog = Double(receivedBytes) / Double(totalBytes)
-                progress(prog)
-            }
-        }
-        fileHandle.closeFile()
-        opdsLogger.info("Download complete: \(receivedBytes) bytes written to \(destination.path)")
-        progress(1.0)
-        #else
-        let dir = destination.deletingLastPathComponent()
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-
-        let javaUrl = java.net.URL(url.absoluteString)
-        let connection = javaUrl.openConnection() as! java.net.HttpURLConnection
-        connection.requestMethod = "GET"
-        connection.setRequestProperty("User-Agent", "Readium")
-        let totalBytes = Int64(connection.contentLength)
-        let inputStream = connection.inputStream
-        let outputStream = java.io.FileOutputStream(destination.path)
-        let buffer = kotlin.ByteArray(8192)
-        var receivedBytes: Int64 = 0
-        var bytesRead = inputStream.read(buffer)
-        while bytesRead != -1 {
-            outputStream.write(buffer, 0, bytesRead)
-            receivedBytes = receivedBytes + Int64(bytesRead)
-            if totalBytes > Int64(0) {
-                let prog = Double(receivedBytes) / Double(totalBytes)
-                progress(prog)
-            }
-            bytesRead = inputStream.read(buffer)
-        }
-        outputStream.close()
-        inputStream.close()
-        connection.disconnect()
-        opdsLogger.info("Download complete: \(receivedBytes) bytes written to \(destination.path)")
-        progress(1.0)
-        #endif
-    }
-
     // MARK: - iOS Feed Conversion
 
     #if !SKIP
@@ -569,5 +511,4 @@ public enum OPDSServiceError: Error {
     case noFeedContent
     case parseFailed
     case invalidURL
-    case downloadFailed
 }

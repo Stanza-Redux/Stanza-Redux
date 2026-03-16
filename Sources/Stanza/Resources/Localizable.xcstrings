@@ -81,6 +81,9 @@
     "Cancel" : {
 
     },
+    "Cancelled" : {
+
+    },
     "Catalog Name" : {
 
     },
@@ -130,10 +133,10 @@
     "Download Book" : {
 
     },
-    "Downloaded" : {
+    "Download cancelled" : {
 
     },
-    "Downloading... %lld%%" : {
+    "Downloaded" : {
 
     },
     "Edit" : {
@@ -380,6 +383,9 @@
 
     },
     "Reading" : {
+
+    },
+    "Ready to download" : {
 
     },
     "Recommended Catalogs" : {

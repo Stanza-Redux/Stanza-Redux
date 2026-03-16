@@ -573,11 +573,9 @@ struct PublicationRow: View {
 struct OPDSBookDetailView: View {
     let entry: OPDSPubEntry
     let bookDB: BookDatabase?
-    @State var isDownloading = false
-    @State var downloadProgress = 0.0
-    @State var downloadComplete = false
+    @State var downloader: FileDownloader? = nil
     @State var downloadedBookID: Int64? = nil
-    @State var errorMessage: String? = nil
+    @State var importError: String? = nil
     @State var showReader = false
 
     var body: some View {
@@ -632,38 +630,33 @@ struct OPDSBookDetailView: View {
 
                 // Download / Open actions
                 VStack(spacing: 12) {
-                    if downloadComplete {
+                    if downloadedBookID != nil {
                         Label(title: { Text("Downloaded") }, icon: { Image("checkmark.circle.fill", bundle: .module) })
                             .foregroundStyle(.green)
                             .font(.headline)
 
                         #if SKIP || canImport(ReadiumNavigator)
-                        if downloadedBookID != nil {
-                            Button {
-                                showReader = true
-                            } label: {
-                                Label(title: { Text("Open Book") }, icon: { Image("book", bundle: .module) })
-                                    .frame(maxWidth: .infinity)
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .padding(.horizontal)
+                        Button {
+                            showReader = true
+                        } label: {
+                            Label(title: { Text("Open Book") }, icon: { Image("book", bundle: .module) })
+                                .frame(maxWidth: .infinity)
                         }
+                        .buttonStyle(.borderedProminent)
+                        .padding(.horizontal)
                         #endif
-                    } else if isDownloading {
-                        VStack(spacing: 8) {
-                            ProgressView(value: downloadProgress)
-                                .padding(.horizontal)
-                            Text("Downloading... \(Int(downloadProgress * 100))%")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            Button("Cancel") {
-                                isDownloading = false
+                    } else if let dl = downloader {
+                        FileDownloadView(
+                            downloader: dl,
+                            downloadLabel: "Download Book",
+                            onCompleted: {
+                                importDownloadedBook()
                             }
-                            .foregroundStyle(.red)
-                        }
+                        )
+                        .padding(.horizontal)
                     } else if entry.acquisitionURL != nil {
                         Button {
-                            Task { await downloadBook() }
+                            startDownload()
                         } label: {
                             Label(title: { Text("Download Book") }, icon: { Image("arrow.down.circle", bundle: .module) })
                                 .frame(maxWidth: .infinity)
@@ -676,7 +669,7 @@ struct OPDSBookDetailView: View {
                     }
                 }
 
-                if let error = errorMessage {
+                if let error = importError {
                     Text(error)
                         .font(.caption)
                         .foregroundStyle(.red)
@@ -735,81 +728,69 @@ struct OPDSBookDetailView: View {
             }
     }
 
-    func downloadBook() async {
+    func startDownload() {
         guard let urlString = entry.acquisitionURL, let url = URL(string: urlString) else {
             logger.error("No download URL for book: '\(entry.title)'")
-            errorMessage = "No download URL available"
+            importError = "No download URL available"
             return
         }
+
+        let booksDir = URL.documentsDirectory.appendingPathComponent("Books")
+        var filename = entry.title
+            .replacingOccurrences(of: "/", with: "-")
+            .replacingOccurrences(of: ":", with: "-")
+            .replacingOccurrences(of: "?", with: "-")
+            .replacingOccurrences(of: " ", with: "_")
+        if filename.isEmpty {
+            filename = url.lastPathComponent
+        }
+        if !filename.hasSuffix(".epub") {
+            filename += ".epub"
+        }
+        let destinationURL = booksDir.appendingPathComponent(filename)
+
+        logger.info("Starting download: '\(entry.title)' from \(urlString) to \(destinationURL.path)")
+        let dl = FileDownloader(sourceURL: url, destinationURL: destinationURL, displayName: entry.title)
+        self.downloader = dl
+        dl.start()
+    }
+
+    func importDownloadedBook() {
+        guard let dl = downloader else { return }
         guard let db = bookDB else {
-            logger.error("Library database not available for download")
-            errorMessage = "Library not available"
+            logger.error("Library database not available for import")
+            importError = "Library not available"
             return
         }
 
-        logger.info("Starting download: '\(entry.title)' from \(urlString)")
-        isDownloading = true
-        downloadProgress = 0.0
-        errorMessage = nil
+        let destinationURL = dl.destinationURL
+        logger.info("Download complete, importing: '\(entry.title)' from \(destinationURL.path)")
 
-        do {
-            let booksDir = URL.documentsDirectory.appendingPathComponent("Books")
-            logger.info("booksDir: \(booksDir)")
+        Task {
+            do {
+                let pub = try await Pub.loadPublication(from: destinationURL)
+                let metadata = pub.metadata
+                let bookTitle = metadata.title ?? entry.title
+                let bookAuthor = entry.authors.joined(separator: ", ")
+                let totalItems = Int64(pub.manifest.readingOrder.count)
 
-            try FileManager.default.createDirectory(at: booksDir, withIntermediateDirectories: true)
-
-            // Generate a filename ensuring .epub extension so Readium can detect the format
-            var filename = entry.title
-                .replacingOccurrences(of: "/", with: "-")
-                .replacingOccurrences(of: ":", with: "-")
-                .replacingOccurrences(of: "?", with: "-")
-                .replacingOccurrences(of: " ", with: "_")
-            if filename.isEmpty {
-                filename = url.lastPathComponent
+                let record = BookRecord(
+                    title: bookTitle,
+                    author: bookAuthor,
+                    filePath: BookDatabase.relativePath(for: destinationURL.path),
+                    identifier: metadata.identifier,
+                    totalItems: totalItems
+                )
+                let savedRecord = try db.addBook(record)
+                logger.info("Book imported to library: '\(bookTitle)' (id=\(savedRecord.id))")
+                self.downloadedBookID = savedRecord.id
+            } catch {
+                logger.error("Failed to import downloaded book: \(error)")
+                importError = "Import failed: \(error.localizedDescription)"
+                #if SKIP
+                android.util.Log.e("Stanza", "Error importing book", error as? Throwable)
+                #endif
             }
-            if !filename.hasSuffix(".epub") {
-                filename += ".epub"
-            }
-            logger.info("destinationURL for filename: \(filename)")
-            let destinationURL = booksDir.appendingPathComponent(filename)
-            logger.info("destinationURL: \(destinationURL)")
-
-            try await OPDSService.downloadBook(from: url, to: destinationURL) { progress in
-                self.downloadProgress = progress
-            }
-
-            guard isDownloading else {
-                logger.info("Download cancelled for: '\(entry.title)'")
-                return
-            }
-
-            // Import into library
-            logger.info("Download complete, importing: '\(entry.title)'")
-            let pub = try await Pub.loadPublication(from: destinationURL)
-            let metadata = pub.metadata
-            let bookTitle = metadata.title ?? entry.title
-            let bookAuthor = entry.authors.joined(separator: ", ")
-            let totalItems = Int64(pub.manifest.readingOrder.count)
-
-            let record = BookRecord(
-                title: bookTitle,
-                author: bookAuthor,
-                filePath: BookDatabase.relativePath(for: destinationURL.path),
-                identifier: metadata.identifier,
-                totalItems: totalItems
-            )
-            let savedRecord = try db.addBook(record)
-            logger.info("Book imported to library: '\(bookTitle)' (id=\(savedRecord.id))")
-            self.downloadedBookID = savedRecord.id
-            self.downloadComplete = true
-            self.isDownloading = false
-        } catch {
-            self.isDownloading = false
-            errorMessage = "Download failed: \(error.localizedDescription)"
-            logger.error("Download failed: \(error)")
-            #if SKIP
-            android.util.Log.e("Stanza", "Error downloading book", error as? Throwable)
-            #endif
         }
     }
 
