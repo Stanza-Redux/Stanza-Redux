@@ -6,7 +6,7 @@ import OSLog
 #if !SKIP
 import ReadiumOPDS
 //import ReadiumLCP
-import ReadiumAdapterGCDWebServer
+//import ReadiumAdapterGCDWebServer
 import ReadiumShared
 import ReadiumStreamer
 #else
@@ -60,7 +60,6 @@ let logger = Logger(subsystem: "Stanza", category: "StanzaModelTests")
 public let httpClient: DefaultHTTPClient = DefaultHTTPClient(userAgent: "Readium")
 
 #if !SKIP
-public let httpServer: GCDHTTPServer = GCDHTTPServer(assetRetriever: assetRetriever)
 public let assetRetriever = AssetRetriever(httpClient: httpClient)
 let pdfDocumentFactory = DefaultPDFDocumentFactory()
 let publicationOpener = PublicationOpener(

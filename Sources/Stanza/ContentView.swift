@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import SwiftUI
+import StanzaModel
 
 public struct ContentView: View {
     @AppStorage("tab") var tab = Tab.welcome
@@ -14,24 +15,12 @@ public struct ContentView: View {
 
     public var body: some View {
         TabView(selection: $tab) {
-            NavigationStack {
-                List {
-                    ForEach(1..<1_000) { i in
-                        NavigationLink("Item \(i)", value: i)
-                    }
-                }
-                .navigationTitle("Library")
-                .navigationDestination(for: Int.self) { i in
-                    Text("Book \(i)")
-                        .font(.title)
-                        .navigationTitle("Book \(i)")
-                }
-            }
-            .tabItem { Label("Library", systemImage: "list.bullet") }
-            .tag(Tab.home)
+            LibraryView()
+                .tabItem { Label("Library", systemImage: "books.vertical") }
+                .tag(Tab.home)
 
             #if SKIP || canImport(ReadiumNavigator)
-            ReaderView()
+            ReaderView(tab: $tab)
                 .tabItem { Label("Reading", systemImage: "heart.fill") }
                 .tag(Tab.welcome)
             #endif

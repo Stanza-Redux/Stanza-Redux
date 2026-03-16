@@ -1,0 +1,246 @@
+// Copyright 2025 The App Fair Project
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+import Foundation
+import OSLog
+import SkipSQL
+import SkipSQLCore // DO NOT REMOVE
+
+let dbLogger = Logger(subsystem: "Stanza", category: "BookDatabase")
+
+/// Metadata for a book stored in the local library database.
+public struct BookRecord: Identifiable, Hashable, SQLCodable {
+    public var id: Int64
+    static let id = SQLColumn(name: "ID", type: .long, primaryKey: true, autoincrement: true)
+
+    /// The title of the book.
+    public var title: String
+    static let title = SQLColumn(name: "TITLE", type: .text, index: SQLIndex(name: "IDX_TITLE"))
+
+    /// The author of the book.
+    public var author: String
+    static let author = SQLColumn(name: "AUTHOR", type: .text, index: SQLIndex(name: "IDX_AUTHOR"))
+
+    /// The file path where the book is stored on disk.
+    public var filePath: String
+    static let filePath = SQLColumn(name: "FILE_PATH", type: .text)
+
+    /// A unique identifier for the book (e.g. from the EPUB metadata).
+    public var identifier: String?
+    static let identifier = SQLColumn(name: "IDENTIFIER", type: .text)
+
+    /// The total number of reading order items (chapters/sections) in the book.
+    public var totalItems: Int64
+    static let totalItems = SQLColumn(name: "TOTAL_ITEMS", type: .long)
+
+    /// The index of the last reading order item the user viewed (0-based).
+    public var currentItem: Int64
+    static let currentItem = SQLColumn(name: "CURRENT_ITEM", type: .long)
+
+    /// A fractional progress value from 0.0 to 1.0.
+    public var progress: Double
+    static let progress = SQLColumn(name: "PROGRESS", type: .real)
+
+    /// The date the book was added to the library.
+    public var dateAdded: Date
+    static let dateAdded = SQLColumn(name: "DATE_ADDED", type: .real)
+
+    /// The date the book was last opened.
+    public var dateLastOpened: Date?
+    static let dateLastOpened = SQLColumn(name: "DATE_LAST_OPENED", type: .real)
+
+    public static let table = SQLTable(name: "BOOK", columns: [
+        id, title, author, filePath, identifier, totalItems, currentItem, progress, dateAdded, dateLastOpened
+    ])
+
+    public init(id: Int64 = 0, title: String, author: String, filePath: String, identifier: String? = nil, totalItems: Int64 = 0, currentItem: Int64 = 0, progress: Double = 0.0, dateAdded: Date = Date(), dateLastOpened: Date? = nil) {
+        self.id = id
+        self.title = title
+        self.author = author
+        self.filePath = filePath
+        self.identifier = identifier
+        self.totalItems = totalItems
+        self.currentItem = currentItem
+        self.progress = progress
+        self.dateAdded = dateAdded
+        self.dateLastOpened = dateLastOpened
+    }
+
+    public init(row: SQLRow, context: SQLContext) throws {
+        self.id = try Self.id.longValueRequired(in: row)
+        self.title = try Self.title.textValueRequired(in: row)
+        self.author = try Self.author.textValueRequired(in: row)
+        self.filePath = try Self.filePath.textValueRequired(in: row)
+        self.identifier = Self.identifier.textValue(in: row)
+        self.totalItems = try Self.totalItems.longValueRequired(in: row)
+        self.currentItem = try Self.currentItem.longValueRequired(in: row)
+        self.progress = try Self.progress.realValueRequired(in: row)
+        self.dateAdded = try Self.dateAdded.dateValueRequired(in: row)
+        self.dateLastOpened = Self.dateLastOpened.dateValue(in: row)
+    }
+
+    public func encode(row: inout SQLRow) throws {
+        row[Self.id] = SQLValue(self.id)
+        row[Self.title] = SQLValue(self.title)
+        row[Self.author] = SQLValue(self.author)
+        row[Self.filePath] = SQLValue(self.filePath)
+        row[Self.identifier] = SQLValue(self.identifier)
+        row[Self.totalItems] = SQLValue(self.totalItems)
+        row[Self.currentItem] = SQLValue(self.currentItem)
+        row[Self.progress] = SQLValue(self.progress)
+        row[Self.dateAdded] = SQLValue(self.dateAdded.timeIntervalSince1970)
+        row[Self.dateLastOpened] = SQLValue(self.dateLastOpened?.timeIntervalSince1970)
+    }
+}
+
+// MARK: - Helper to convert raw SQL rows to BookRecord
+
+/// Converts the raw `[[SQLValue]]` rows returned by `selectAll` into `BookRecord` instances.
+private func decodeBookRecords(from rows: [[SQLValue]], context: SQLContext) throws -> [BookRecord] {
+    let columns = BookRecord.table.columns
+    return try rows.map { values in
+        var row = SQLRow()
+        for i in 0..<columns.count {
+            if i < values.count {
+                row[columns[i]] = values[i]
+            }
+        }
+        return try BookRecord(row: row, context: context)
+    }
+}
+
+/// Manages the local book library database.
+public class BookDatabase {
+    private let context: SQLContext
+
+    /// Opens or creates the book database at the given path.
+    /// Pass `nil` for an in-memory database (useful for testing).
+    public init(path: String? = nil) throws {
+        if let path = path {
+            let dir = URL(fileURLWithPath: path).deletingLastPathComponent()
+            try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+            self.context = try SQLContext(path: path, flags: [.create, .readWrite], configuration: SQLiteConfiguration.platform)
+        } else {
+            self.context = try SQLContext(path: ":memory:", configuration: SQLiteConfiguration.platform)
+        }
+        try createOrMigrateSchema()
+    }
+
+    private func createOrMigrateSchema() throws {
+        if context.userVersion < 1 {
+            for ddl in BookRecord.table.createTableSQL(columns: [
+                BookRecord.id, BookRecord.title, BookRecord.author, BookRecord.filePath,
+                BookRecord.identifier, BookRecord.totalItems, BookRecord.currentItem,
+                BookRecord.progress, BookRecord.dateAdded, BookRecord.dateLastOpened
+            ]) {
+                try context.exec(ddl)
+            }
+            context.userVersion = 1
+        }
+    }
+
+    // MARK: - CRUD operations
+
+    /// Adds a new book record to the database and returns it with its assigned ID.
+    @discardableResult
+    public func addBook(_ record: BookRecord) throws -> BookRecord {
+        try context.insert(record)
+    }
+
+    /// Returns all books, ordered by most recently added first.
+    public func allBooks() throws -> [BookRecord] {
+        let rows = try context.selectAll(sql: "SELECT * FROM BOOK ORDER BY DATE_ADDED DESC")
+        return try decodeBookRecords(from: rows, context: context)
+    }
+
+    /// Fetches a single book by its database ID, or `nil` if not found.
+    public func book(id: Int64) throws -> BookRecord? {
+        let rows = try context.selectAll(sql: "SELECT * FROM BOOK WHERE ID = ?", parameters: [SQLValue(id)])
+        return try decodeBookRecords(from: rows, context: context).first
+    }
+
+    /// Updates an existing book record in the database.
+    public func updateBook(_ record: BookRecord) throws {
+        try context.update(record)
+    }
+
+    /// Deletes a book record from the database.
+    public func deleteBook(id: Int64) throws {
+        if let record = try book(id: id) {
+            try context.delete(instances: [record])
+        }
+    }
+
+    /// Returns the number of books in the database.
+    public func count() throws -> Int64 {
+        try context.count(BookRecord.self)
+    }
+
+    // MARK: - Search
+
+    /// Searches books by title or author. Case-insensitive substring match.
+    public func searchBooks(query: String) throws -> [BookRecord] {
+        let pattern = SQLValue("%" + query + "%")
+        let rows = try context.selectAll(
+            sql: "SELECT * FROM BOOK WHERE TITLE LIKE ? OR AUTHOR LIKE ? ORDER BY DATE_ADDED DESC",
+            parameters: [pattern, pattern]
+        )
+        return try decodeBookRecords(from: rows, context: context)
+    }
+
+    // MARK: - Progress tracking
+
+    /// Updates the reading progress for a book.
+    public func updateProgress(bookID: Int64, currentItem: Int64, totalItems: Int64) throws {
+        guard var record = try book(id: bookID) else { return }
+        record.currentItem = currentItem
+        record.totalItems = totalItems
+        record.progress = totalItems > 0 ? Double(currentItem) / Double(totalItems) : 0.0
+        record.dateLastOpened = Date()
+        try context.update(record)
+    }
+
+    /// Marks a book as having been opened now.
+    public func markOpened(bookID: Int64) throws {
+        guard var record = try book(id: bookID) else { return }
+        record.dateLastOpened = Date()
+        try context.update(record)
+    }
+
+    // MARK: - Import
+
+    /// Imports a book from the given file URL by loading its publication metadata.
+    /// The file is copied into the app's documents directory for persistent storage.
+    /// Returns the newly created `BookRecord`.
+    @discardableResult
+    public func importBook(from sourceURL: URL) async throws -> BookRecord {
+        let booksDir = URL.documentsDirectory.appendingPathComponent("Books")
+        try FileManager.default.createDirectory(at: booksDir, withIntermediateDirectories: true)
+        let destinationURL = booksDir.appendingPathComponent(sourceURL.lastPathComponent)
+
+        if FileManager.default.fileExists(atPath: destinationURL.path) {
+            try FileManager.default.removeItem(at: destinationURL)
+        }
+        try FileManager.default.copyItem(at: sourceURL, to: destinationURL)
+
+        let pub = try await Pub.loadPublication(from: destinationURL)
+        let metadata = pub.metadata
+        let bookTitle = metadata.title ?? sourceURL.deletingPathExtension().lastPathComponent
+        let bookAuthor = metadata.identifier ?? ""
+        let totalItems = Int64(pub.manifest.readingOrder.count)
+
+        let record = BookRecord(
+            title: bookTitle,
+            author: bookAuthor,
+            filePath: destinationURL.path,
+            identifier: metadata.identifier,
+            totalItems: totalItems
+        )
+        return try addBook(record)
+    }
+
+    /// Closes the database connection.
+    public func close() {
+        try? context.close()
+    }
+}

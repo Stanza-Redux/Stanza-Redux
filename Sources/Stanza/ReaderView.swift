@@ -54,6 +54,7 @@ var navConfig: org.readium.r2.navigator.epub.EpubNavigatorFactory.Configuration 
 
 struct ReaderView: View {
     let bookURL: URL = Bundle.module.url(forResource: "Alice", withExtension: "epub")!
+    @Binding var tab: Tab
     @State var viewModel: ReaderViewModel? = nil
     @State var error: Error? = nil
     @State var locator: Loc? = nil
@@ -67,7 +68,19 @@ struct ReaderView: View {
         if let publication = viewModel?.publication {
             Text("Opening \(publication.metadata.title ?? "Book")")
                 .fullScreenCover(isPresented: $isFullscreen) {
-                    readerViewContainer(publication: publication)
+                    ZStack(alignment: .topLeading) {
+                        readerViewContainer(publication: publication)
+                        Button {
+                            isFullscreen = false
+                            tab = .home
+                        } label: {
+                            Label("Close", systemImage: "xmark.circle.fill")
+                                .labelStyle(.iconOnly)
+                                .font(.title)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding()
+                    }
                 }
         } else {
             VStack {
@@ -78,7 +91,7 @@ struct ReaderView: View {
                 }
 
                 if let error {
-                    Text("Error: \(error)")
+                    Text("Error: \(String(describing: error))")
                 }
             }
             .task {
@@ -86,12 +99,6 @@ struct ReaderView: View {
                 self.isFullscreen = true
             }
         }
-//        config.editingActions.append(
-//            EditingAction(
-//                title: "Highlight"
-//                action: #selector(highlightSelection)
-//            )
-//        )
 
     }
 
@@ -107,7 +114,7 @@ struct ReaderView: View {
         let publication: Pub = try await Pub.loadPublication(from: bookURL)
         self.viewModel = ReaderViewModel(publication: publication)
         #if !SKIP
-        self.navigator = try EPUBNavigatorViewController(publication: publication.platformValue, initialLocation: locator?.platformValue, config: navConfig, httpServer: httpServer)
+        self.navigator = try EPUBNavigatorViewController(publication: publication.platformValue, initialLocation: locator?.platformValue, config: navConfig)
         #endif
     }
 
