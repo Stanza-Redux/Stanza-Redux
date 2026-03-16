@@ -131,7 +131,7 @@ struct LibraryView: View {
                     Button {
                         showDocumentPicker = true
                     } label: {
-                        Label("Add Book", systemImage: "plus")
+                        Label("Add Book", systemImage: "add")
                     }
                 }
             }
@@ -398,6 +398,7 @@ struct LibraryReaderView: View {
     @State var showHUD: Bool = false
     @State var showTOC: Bool = false
     @AppStorage("readerFontSize") var currentFontSize: Double = 1.0
+    @AppStorage("animatePageTurns") var animatePageTurns: Bool = true
     @State var fontSizeApplied: Bool = false
     @Environment(\.dismiss) var dismiss
 
@@ -510,37 +511,40 @@ struct LibraryReaderView: View {
     // MARK: - Navigation
 
     func goForward() {
+        let animated = animatePageTurns
         #if !SKIP
         if let nav = navigator {
-            Task { await nav.goForward(options: .animated) }
+            Task { await nav.goForward(options: animated ? .animated : .init()) }
         }
         #else
         if let fragment = epubFragment {
-            fragment.goForward(true)
+            Task { fragment.goForward(animated) }
         }
         #endif
     }
 
     func goBackward() {
+        let animated = animatePageTurns
         #if !SKIP
         if let nav = navigator {
-            Task { await nav.goBackward(options: .animated) }
+            Task { await nav.goBackward(options: animated ? .animated : .init()) }
         }
         #else
         if let fragment = epubFragment {
-            fragment.goBackward(true)
+            Task { fragment.goBackward(animated) }
         }
         #endif
     }
 
     func navigateToTOCEntry(_ link: Lnk) {
+        let animated = animatePageTurns
         #if !SKIP
         if let nav = navigator {
-            Task { await nav.go(to: link.platformValue, options: .animated) }
+            Task { await nav.go(to: link.platformValue, options: animated ? .animated : .init()) }
         }
         #else
         if let fragment = epubFragment {
-            fragment.go(link.platformValue, true)
+            Task { fragment.go(link.platformValue, animated) }
         }
         #endif
         showTOC = false
@@ -584,7 +588,7 @@ struct LibraryReaderView: View {
                         saveCurrentLocator()
                         dismiss()
                     } label: {
-                        Image(systemName: "xmark.circle.fill")
+                        Image(systemName: "cancel")
                             .font(.system(size: 28))
                             .foregroundStyle(.white)
                             .background(Circle().fill(Color.black.opacity(0.5)))
@@ -620,7 +624,7 @@ struct LibraryReaderView: View {
                         Button {
                             adjustFontSize(increase: false)
                         } label: {
-                            Image(systemName: "minus.circle")
+                            Image(systemName: "remove_circle")
                                 .font(.title2)
                                 .foregroundStyle(.white)
                         }
@@ -632,7 +636,7 @@ struct LibraryReaderView: View {
                         Button {
                             adjustFontSize(increase: true)
                         } label: {
-                            Image(systemName: "plus.circle")
+                            Image(systemName: "add_circle")
                                 .font(.title2)
                                 .foregroundStyle(.white)
                         }
@@ -642,7 +646,7 @@ struct LibraryReaderView: View {
                         Button {
                             showTOC = true
                         } label: {
-                            Image(systemName: "list.bullet")
+                            Image(systemName: "toc")
                                 .font(.title2)
                                 .foregroundStyle(.white)
                         }

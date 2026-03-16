@@ -8,6 +8,7 @@ public struct ContentView: View {
     @AppStorage("tab") var tab = Tab.welcome
     @AppStorage("name") var name = "Skipper"
     @AppStorage("readerFontSize") var readerFontSize: Double = 1.0
+    @AppStorage("animatePageTurns") var animatePageTurns: Bool = true
     @State var appearance = ""
     @State var isBeating = false
 
@@ -17,12 +18,12 @@ public struct ContentView: View {
     public var body: some View {
         TabView(selection: $tab) {
             LibraryView()
-                .tabItem { Label("Library", systemImage: "books.vertical") }
+                .tabItem { Label("Library", systemImage: "library_books") }
                 .tag(Tab.home)
 
             #if SKIP || canImport(ReadiumNavigator)
             ReaderView(tab: $tab)
-                .tabItem { Label("Reading", systemImage: "heart.fill") }
+                .tabItem { Label("Reading", systemImage: "favorite") }
                 .tag(Tab.welcome)
             #endif
 
@@ -41,6 +42,7 @@ public struct ContentView: View {
                                 readerFontSize = 1.0
                             }
                         }
+                        Toggle("Animate Page Turns", isOn: $animatePageTurns)
                     }
                     Section("General") {
                         TextField("Name", text: $name)
@@ -66,7 +68,7 @@ public struct ContentView: View {
                 }
                 .navigationTitle("Settings")
             }
-            .tabItem { Label("Settings", systemImage: "gearshape.fill") }
+            .tabItem { Label("Settings", systemImage: "settings") }
             .tag(Tab.settings)
         }
         .preferredColorScheme(appearance == "dark" ? .dark : appearance == "light" ? .light : nil)
