@@ -21,7 +21,7 @@ let package = Package(
         .package(url: "https://source.skip.tools/skip-ui.git", from: "1.0.0"),
         .package(url: "https://source.skip.tools/skip-sql.git", "0.0.0"..<"2.0.0"),
         .package(url: "https://source.skip.tools/skip-kit.git", "0.0.0"..<"2.0.0"),
-        .package(url: "https://github.com/readium/swift-toolkit.git", from: "3.7.0"),
+        .package(url: "https://github.com/readium/swift-toolkit.git", from: "3.8.0"),
     ],
     targets: [
         .target(name: "Stanza", dependencies: [
