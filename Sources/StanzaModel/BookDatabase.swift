@@ -106,6 +106,35 @@ public struct BookRecord: Identifiable, Hashable, SQLCodable {
 public class BookDatabase {
     private let context: SQLContext
 
+    /// The documents directory used as the base for relative file paths.
+    private static var documentsPath: String {
+        URL.documentsDirectory.path
+    }
+
+    /// Converts an absolute file path to a path relative to the documents directory.
+    /// If the path is not under the documents directory, it is returned as-is.
+    public static func relativePath(for absolutePath: String) -> String {
+        let docs = documentsPath
+        if absolutePath.hasPrefix(docs) {
+            var relative = String(absolutePath.dropFirst(docs.count))
+            // Remove leading slash if present
+            if relative.hasPrefix("/") {
+                relative = String(relative.dropFirst())
+            }
+            return relative
+        }
+        return absolutePath
+    }
+
+    /// Resolves a stored (relative) file path to an absolute path under the documents directory.
+    /// If the path is already absolute, it is returned as-is.
+    public static func absolutePath(for storedPath: String) -> String {
+        if storedPath.hasPrefix("/") {
+            return storedPath
+        }
+        return URL.documentsDirectory.appendingPathComponent(storedPath).path
+    }
+
     /// Opens or creates the book database at the given path.
     /// Pass `nil` for an in-memory database (useful for testing).
     public init(path: String? = nil) throws {
@@ -141,6 +170,10 @@ public class BookDatabase {
             try context.exec(ddl)
             context.userVersion = 2
         }
+        if context.userVersion < 3 {
+            dbLogger.info("Migrating BOOK table to schema v3 (converting absolute paths to relative)")
+            context.userVersion = 3
+        }
     }
 
     // MARK: - CRUD operations
@@ -155,23 +188,34 @@ public class BookDatabase {
     }
 
     /// Returns all books, ordered by most recently added first.
+    /// File paths are resolved to absolute paths.
     public func allBooks() throws -> [BookRecord] {
-        let books = try context.fetchAll(BookRecord.self, orderBy: BookRecord.dateAdded, order: .descending)
+        var books = try context.fetchAll(BookRecord.self, orderBy: BookRecord.dateAdded, order: .descending)
+        for i in books.indices {
+            books[i].filePath = BookDatabase.absolutePath(for: books[i].filePath)
+        }
         dbLogger.debug("Fetched \(books.count) books")
         return books
     }
 
     /// Fetches a single book by its database ID, or `nil` if not found.
+    /// The file path is resolved to an absolute path.
     public func book(id: Int64) throws -> BookRecord? {
-        let result = try context.fetch(BookRecord.self, primaryKeys: [SQLValue(id)])
+        var result = try context.fetch(BookRecord.self, primaryKeys: [SQLValue(id)])
+        if result != nil {
+            result!.filePath = BookDatabase.absolutePath(for: result!.filePath)
+        }
         dbLogger.debug("Fetched book id=\(id): \(result != nil ? result!.title : "not found")")
         return result
     }
 
     /// Updates an existing book record in the database.
+    /// The file path is converted to a relative path before storage.
     public func updateBook(_ record: BookRecord) throws {
         dbLogger.info("Updating book id=\(record.id): '\(record.title)'")
-        try context.update(record)
+        var stored = record
+        stored.filePath = BookDatabase.relativePath(for: record.filePath)
+        try context.update(stored)
     }
 
     /// Deletes a book record from the database.
@@ -194,7 +238,10 @@ public class BookDatabase {
         dbLogger.info("Searching books for: '\(query)'")
         let pattern = SQLValue("%" + query + "%")
         let predicate = BookRecord.title.like(pattern).or(BookRecord.author.like(pattern))
-        let results = try context.fetchAll(BookRecord.self, where: predicate, orderBy: BookRecord.dateAdded, order: .descending)
+        var results = try context.fetchAll(BookRecord.self, where: predicate, orderBy: BookRecord.dateAdded, order: .descending)
+        for i in results.indices {
+            results[i].filePath = BookDatabase.absolutePath(for: results[i].filePath)
+        }
         dbLogger.debug("Search returned \(results.count) results")
         return results
     }
@@ -267,10 +314,12 @@ public class BookDatabase {
         let totalItems = Int64(pub.manifest.readingOrder.count)
         dbLogger.info("Imported book: '\(bookTitle)' with \(totalItems) reading order items")
 
+        let relativePath = BookDatabase.relativePath(for: destinationURL.path)
+        dbLogger.debug("Storing relative path: '\(relativePath)'")
         let record = BookRecord(
             title: bookTitle,
             author: bookAuthor,
-            filePath: destinationURL.path,
+            filePath: relativePath,
             identifier: metadata.identifier,
             totalItems: totalItems
         )

@@ -794,7 +794,7 @@ struct OPDSBookDetailView: View {
             let record = BookRecord(
                 title: bookTitle,
                 author: bookAuthor,
-                filePath: destinationURL.path,
+                filePath: BookDatabase.relativePath(for: destinationURL.path),
                 identifier: metadata.identifier,
                 totalItems: totalItems
             )
