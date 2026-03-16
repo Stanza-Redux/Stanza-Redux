@@ -114,7 +114,7 @@ struct ReaderView: View {
 
     func closeButton(action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Image(systemName: "cancel")
+            Image("cancel", bundle: .module)
                 .font(.system(size: 28))
                 .foregroundStyle(.white)
                 .background(Circle().fill(.black.opacity(0.5)))

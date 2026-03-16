@@ -5,7 +5,7 @@ import SwiftUI
 import StanzaModel
 
 public struct ContentView: View {
-    @AppStorage("tab") var tab = Tab.welcome
+    @AppStorage("tab") var tab = Tab.home
     @AppStorage("name") var name = "Skipper"
     @AppStorage("readerFontSize") var readerFontSize: Double = 1.0
     @AppStorage("animatePageTurns") var animatePageTurns: Bool = true
@@ -18,14 +18,12 @@ public struct ContentView: View {
     public var body: some View {
         TabView(selection: $tab) {
             LibraryView()
-                .tabItem { Label("Library", systemImage: "library_books") }
+                .tabItem { Label(title: { Text("Library") }, icon: { Image("library_books", bundle: .module) }) }
                 .tag(Tab.home)
 
-            #if SKIP || canImport(ReadiumNavigator)
-            ReaderView(tab: $tab)
-                .tabItem { Label("Reading", systemImage: "favorite") }
-                .tag(Tab.welcome)
-            #endif
+            BrowseView()
+                .tabItem { Label("Browse", systemImage: "explore") }
+                .tag(Tab.browse)
 
             NavigationStack {
                 Form {
@@ -76,5 +74,5 @@ public struct ContentView: View {
 }
 
 enum Tab : String, Hashable {
-    case welcome, home, settings
+    case home, browse, settings
 }

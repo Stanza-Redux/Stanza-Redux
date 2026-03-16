@@ -588,7 +588,7 @@ struct LibraryReaderView: View {
                         saveCurrentLocator()
                         dismiss()
                     } label: {
-                        Image(systemName: "cancel")
+                        Image("cancel", bundle: .module)
                             .font(.system(size: 28))
                             .foregroundStyle(.white)
                             .background(Circle().fill(Color.black.opacity(0.5)))
@@ -624,7 +624,7 @@ struct LibraryReaderView: View {
                         Button {
                             adjustFontSize(increase: false)
                         } label: {
-                            Image(systemName: "remove_circle")
+                            Image("remove_circle", bundle: .module)
                                 .font(.title2)
                                 .foregroundStyle(.white)
                         }
@@ -636,7 +636,7 @@ struct LibraryReaderView: View {
                         Button {
                             adjustFontSize(increase: true)
                         } label: {
-                            Image(systemName: "add_circle")
+                            Image("add_circle", bundle: .module)
                                 .font(.title2)
                                 .foregroundStyle(.white)
                         }
@@ -646,7 +646,7 @@ struct LibraryReaderView: View {
                         Button {
                             showTOC = true
                         } label: {
-                            Image(systemName: "toc")
+                            Image("toc", bundle: .module)
                                 .font(.title2)
                                 .foregroundStyle(.white)
                         }
