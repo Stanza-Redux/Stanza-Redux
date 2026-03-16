@@ -385,6 +385,33 @@ public struct Loc {
         platformValue.title
     }
 
+    /// The highlighted text at the current location, if available.
+    public var textHighlight: String? {
+        #if !SKIP
+        return platformValue.text.highlight
+        #else
+        return platformValue.text.highlight
+        #endif
+    }
+
+    /// The text before the current location, if available.
+    public var textBefore: String? {
+        #if !SKIP
+        return platformValue.text.before
+        #else
+        return platformValue.text.before
+        #endif
+    }
+
+    /// The text after the current location, if available.
+    public var textAfter: String? {
+        #if !SKIP
+        return platformValue.text.after
+        #else
+        return platformValue.text.after
+        #endif
+    }
+
     /// Serializes this locator to a JSON string for persistence.
     public var jsonString: String? {
         #if !SKIP

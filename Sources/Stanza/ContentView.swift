@@ -9,7 +9,6 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
 
 public struct ContentView: View {
     @AppStorage("tab") var tab = Tab.home
-    @AppStorage("name") var name = "Skipper"
     @AppStorage("readerFontSize") var readerFontSize: Double = 1.0
     @AppStorage("animatePageTurns") var animatePageTurns: Bool = true
     @State var appearance = ""
@@ -46,7 +45,6 @@ public struct ContentView: View {
                         Toggle("Animate Page Turns", isOn: $animatePageTurns)
                     }
                     Section("General") {
-                        TextField("Name", text: $name)
                         Picker("Appearance", selection: $appearance) {
                             Text("System").tag("")
                             Text("Light").tag("light")
@@ -84,9 +82,6 @@ public struct ContentView: View {
         }
         .onChange(of: appearance) { oldValue, newValue in
             settingsLogger.info("Appearance changed: '\(oldValue)' -> '\(newValue)'")
-        }
-        .onChange(of: name) { oldValue, newValue in
-            settingsLogger.debug("Name changed: '\(oldValue)' -> '\(newValue)'")
         }
     }
 }

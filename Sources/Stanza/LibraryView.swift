@@ -7,6 +7,7 @@ import SkipKit
 #if !SKIP && canImport(ReadiumNavigator)
 import ReadiumNavigator
 import ReadiumShared
+import UIKit
 #endif
 #if SKIP
 import androidx.fragment.app.FragmentActivity
@@ -408,6 +409,8 @@ struct LibraryReaderView: View {
     @State var hasRestoredPosition: Bool = false
     @State var showHUD: Bool = false
     @State var showTOC: Bool = false
+    @State var bookmarks: [BookmarkRecord] = []
+    @State var isCurrentPageBookmarked: Bool = false
     @AppStorage("readerFontSize") var currentFontSize: Double = 1.0
     @AppStorage("animatePageTurns") var animatePageTurns: Bool = true
     @State var fontSizeApplied: Bool = false
@@ -482,6 +485,7 @@ struct LibraryReaderView: View {
             #endif
             if let db = database {
                 try? db.markOpened(bookID: bookID)
+                self.bookmarks = (try? db.bookmarks(forBookID: bookID)) ?? []
             }
         } catch {
             logger.error("Failed to open book id=\(bookID): \(error)")
@@ -495,6 +499,7 @@ struct LibraryReaderView: View {
         let progress = loc.totalProgression ?? 0.0
         logger.debug("Persisting reading position for book id=\(bookID): progress=\(progress)")
         try? db.saveReadingPosition(bookID: bookID, locatorJSON: json, progress: progress)
+        updateBookmarkState()
     }
 
     func saveCurrentLocator() {
@@ -595,19 +600,127 @@ struct LibraryReaderView: View {
         #endif
     }
 
+    // MARK: - Bookmarks
+
+    func refreshBookmarks() {
+        guard let db = database else { return }
+        do {
+            self.bookmarks = try db.bookmarks(forBookID: bookID)
+            updateBookmarkState()
+        } catch {
+            logger.error("Failed to refresh bookmarks: \(error)")
+        }
+    }
+
+    func updateBookmarkState() {
+        guard let loc = locator, let json = loc.jsonString else {
+            isCurrentPageBookmarked = false
+            return
+        }
+        // Check if current locator matches any bookmark by comparing locator JSON
+        var found = false
+        for bookmark in bookmarks {
+            if bookmark.locatorJSON == json {
+                found = true
+            }
+        }
+        isCurrentPageBookmarked = found
+    }
+
+    func toggleBookmark() {
+        guard let db = database else { return }
+        guard let loc = locator, let json = loc.jsonString else {
+            logger.warning("Cannot bookmark: no current locator")
+            return
+        }
+
+        if isCurrentPageBookmarked {
+            // Remove the bookmark matching the current locator
+            for bookmark in bookmarks {
+                if bookmark.locatorJSON == json {
+                    logger.info("Removing bookmark id=\(bookmark.id)")
+                    do {
+                        try db.deleteBookmark(id: bookmark.id)
+                    } catch {
+                        logger.error("Failed to delete bookmark: \(error)")
+                    }
+                }
+            }
+        } else {
+            // Add a new bookmark
+            let prog = loc.totalProgression ?? 0.0
+            let progressLabel = "\(Int(prog * 100))%"
+            let chapter = loc.title ?? ""
+            var excerpt = ""
+            if let highlight = loc.textHighlight {
+                excerpt = highlight
+            } else if let before = loc.textBefore {
+                excerpt = before
+            }
+            // Truncate excerpt to 200 characters
+            if excerpt.count > 200 {
+                excerpt = String(excerpt.prefix(200))
+            }
+            let sortOrder = Int64(bookmarks.count)
+            let record = BookmarkRecord(
+                bookID: bookID,
+                locatorJSON: json,
+                progressLabel: progressLabel,
+                excerpt: excerpt,
+                chapter: chapter,
+                sortOrder: sortOrder
+            )
+            logger.info("Adding bookmark at \(progressLabel) chapter='\(chapter)'")
+            do {
+                try db.addBookmark(record)
+            } catch {
+                logger.error("Failed to add bookmark: \(error)")
+            }
+        }
+        refreshBookmarks()
+    }
+
+    func navigateToBookmark(_ bookmark: BookmarkRecord) {
+        guard let loc = Loc.fromJSON(bookmark.locatorJSON) else {
+            logger.error("Invalid bookmark locator JSON")
+            return
+        }
+        logger.info("Navigating to bookmark id=\(bookmark.id): \(bookmark.progressLabel)")
+        let animated = animatePageTurns
+        #if !SKIP
+        if let nav = navigator {
+            Task { await nav.go(to: loc.platformValue, options: animated ? .animated : .init()) }
+        }
+        #else
+        if let fragment = epubFragment {
+            Task { fragment.go(loc.platformValue, animated) }
+        }
+        #endif
+        showTOC = false
+        showHUD = false
+    }
+
     // MARK: - HUD Overlay
 
     @ViewBuilder func hudOverlay(publication: Pub) -> some View {
         if showHUD {
             VStack {
-                // Top bar with close button
+                // Top bar with close button (left) and bookmark button (right)
                 HStack {
-                    Spacer()
                     Button {
                         saveCurrentLocator()
                         dismiss()
                     } label: {
                         Image("cancel", bundle: .module)
+                            .font(.system(size: 28))
+                            .foregroundStyle(.white)
+                            .background(Circle().fill(Color.black.opacity(0.5)))
+                    }
+                    Spacer()
+                    Button {
+                        toggleBookmark()
+                    } label: {
+                        Image(isCurrentPageBookmarked ? "bookmark_filled" : "bookmark", bundle: .module)
                             .font(.system(size: 28))
                             .foregroundStyle(.white)
                             .background(Circle().fill(Color.black.opacity(0.5)))
@@ -679,38 +792,27 @@ struct LibraryReaderView: View {
         }
     }
 
-    // MARK: - Table of Contents
+    // MARK: - Table of Contents & Bookmarks Sheet
 
     func tocSheet(publication: Pub) -> some View {
-        NavigationStack {
-            List {
-                ForEach(Array(publication.manifest.tableOfContents.enumerated()), id: \.offset) { index, link in
-                    Button {
-                        navigateToTOCEntry(link)
-                    } label: {
-                        Text(link.title ?? "Chapter \(index + 1)")
-                    }
-                    if !link.children.isEmpty {
-                        ForEach(Array(link.children.enumerated()), id: \.offset) { childIndex, child in
-                            Button {
-                                navigateToTOCEntry(child)
-                            } label: {
-                                Text(child.title ?? "Section \(childIndex + 1)")
-                                    .padding(.leading, 20)
-                            }
-                        }
-                    }
-                }
+        TOCAndBookmarksSheet(
+            publication: publication,
+            bookmarks: bookmarks,
+            database: database,
+            bookID: bookID,
+            onNavigateToTOC: { link in
+                navigateToTOCEntry(link)
+            },
+            onNavigateToBookmark: { bookmark in
+                navigateToBookmark(bookmark)
+            },
+            onBookmarksChanged: {
+                refreshBookmarks()
+            },
+            onDismiss: {
+                showTOC = false
             }
-            .navigationTitle("Table of Contents")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Done") {
-                        showTOC = false
-                    }
-                }
-            }
-        }
+        )
     }
 
     // MARK: - Reader Container
@@ -768,6 +870,316 @@ struct LibraryReaderView: View {
             )
         }
         #endif
+    }
+}
+
+// MARK: - TOC & Bookmarks Sheet
+
+enum TOCTab: String, CaseIterable {
+    case contents = "Contents"
+    case bookmarks = "Bookmarks"
+}
+
+struct TOCAndBookmarksSheet: View {
+    let publication: Pub
+    @State var bookmarks: [BookmarkRecord]
+    let database: BookDatabase?
+    let bookID: Int64
+    let onNavigateToTOC: (Lnk) -> Void
+    let onNavigateToBookmark: (BookmarkRecord) -> Void
+    let onBookmarksChanged: () -> Void
+    let onDismiss: () -> Void
+    @State var selectedTab: TOCTab = .contents
+    @State var editingBookmark: BookmarkRecord? = nil
+    @State var showEditSheet: Bool = false
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                Picker("View", selection: $selectedTab) {
+                    ForEach(TOCTab.allCases, id: \.self) { tab in
+                        Text(tab.rawValue).tag(tab)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+
+                if selectedTab == .contents {
+                    tocList
+                } else {
+                    bookmarksList
+                }
+            }
+            .navigationTitle(selectedTab == .contents ? "Table of Contents" : "Bookmarks")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") {
+                        onDismiss()
+                    }
+                }
+            }
+            .sheet(isPresented: $showEditSheet) {
+                if let bookmark = editingBookmark {
+                    BookmarkEditSheet(bookmark: bookmark, database: database) { updated in
+                        refreshBookmarks()
+                        onBookmarksChanged()
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder var tocList: some View {
+        List {
+            ForEach(Array(publication.manifest.tableOfContents.enumerated()), id: \.offset) { index, link in
+                Button {
+                    onNavigateToTOC(link)
+                } label: {
+                    Text(link.title ?? "Chapter \(index + 1)")
+                }
+                if !link.children.isEmpty {
+                    ForEach(Array(link.children.enumerated()), id: \.offset) { childIndex, child in
+                        Button {
+                            onNavigateToTOC(child)
+                        } label: {
+                            Text(child.title ?? "Section \(childIndex + 1)")
+                                .padding(.leading, 20)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder var bookmarksList: some View {
+        if bookmarks.isEmpty {
+            VStack(spacing: 12) {
+                Image("bookmark", bundle: .module)
+                    .font(.system(size: 48))
+                    .foregroundStyle(.secondary)
+                Text("No Bookmarks")
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+                Text("Tap the bookmark icon while reading to add one.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+            }
+            .frame(maxHeight: .infinity)
+        } else {
+            List {
+                ForEach(Array(bookmarks.enumerated()), id: \.offset) { index, bookmark in
+                    Button {
+                        onNavigateToBookmark(bookmark)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack {
+                                Text(bookmark.chapter.isEmpty ? "Bookmark" : bookmark.chapter)
+                                    .font(.headline)
+                                    .foregroundStyle(.primary)
+                                    .lineLimit(1)
+                                Spacer()
+                                Text(bookmark.progressLabel)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            if !bookmark.excerpt.isEmpty {
+                                Text(bookmark.excerpt)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(2)
+                            }
+                            if !bookmark.notes.isEmpty {
+                                Text(bookmark.notes)
+                                    .font(.caption2)
+                                    .foregroundStyle(.blue)
+                                    .lineLimit(1)
+                            }
+                        }
+                        .padding(.vertical, 2)
+                    }
+                    // 'fun contextMenu(menuItems: () -> View): View' is deprecated. This API is not yet available in Skip. Consider placing it within a #if !SKIP block. You can file an issue against the owning library at https://github.com/skiptools, or see the library README for information on adding support.
+                    #if !SKIP
+                    .contextMenu {
+                        Button {
+                            shareBookmark(bookmark)
+                        } label: {
+                            Label("Share", systemImage: "square.and.arrow.up")
+                        }
+                        Button {
+                            editingBookmark = bookmark
+                            showEditSheet = true
+                        } label: {
+                            Label("Edit Notes", systemImage: "pencil")
+                        }
+                        Button(role: .destructive) {
+                            deleteBookmark(bookmark)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
+                    #endif
+                }
+                .onDelete { indices in
+                    let sorted = Array(indices).sorted(by: >)
+                    for index in sorted {
+                        let bookmark = bookmarks[index]
+                        deleteBookmark(bookmark)
+                    }
+                }
+                .onMove { source, destination in
+                    moveBookmarks(from: source, to: destination)
+                }
+            }
+        }
+    }
+
+    func refreshBookmarks() {
+        guard let db = database else { return }
+        do {
+            self.bookmarks = try db.bookmarks(forBookID: bookID)
+        } catch {
+            logger.error("Failed to refresh bookmarks: \(error)")
+        }
+    }
+
+    func deleteBookmark(_ bookmark: BookmarkRecord) {
+        guard let db = database else { return }
+        do {
+            try db.deleteBookmark(id: bookmark.id)
+            refreshBookmarks()
+            onBookmarksChanged()
+        } catch {
+            logger.error("Failed to delete bookmark: \(error)")
+        }
+    }
+
+    func moveBookmarks(from source: IndexSet, to destination: Int) {
+        guard let db = database else { return }
+        var reordered = bookmarks
+        reordered.move(fromOffsets: source, toOffset: destination)
+        for i in reordered.indices {
+            var bm = reordered[i]
+            bm.sortOrder = Int64(i)
+            do {
+                try db.updateBookmark(bm)
+            } catch {
+                logger.error("Failed to reorder bookmark: \(error)")
+            }
+        }
+        refreshBookmarks()
+        onBookmarksChanged()
+    }
+
+    func shareBookmark(_ bookmark: BookmarkRecord) {
+        var text = ""
+        if !bookmark.chapter.isEmpty {
+            text += bookmark.chapter + "\n"
+        }
+        text += "Progress: " + bookmark.progressLabel + "\n"
+        if !bookmark.excerpt.isEmpty {
+            text += "\"\(bookmark.excerpt)\"\n"
+        }
+        if !bookmark.notes.isEmpty {
+            text += "Notes: " + bookmark.notes + "\n"
+        }
+
+        #if !SKIP
+        let activityVC = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let rootVC = windowScene.windows.first?.rootViewController {
+            var topVC = rootVC
+            while let presented = topVC.presentedViewController {
+                topVC = presented
+            }
+            topVC.present(activityVC, animated: true)
+        }
+        #else
+        let context = ProcessInfo.processInfo.androidContext
+        let intent = android.content.Intent(android.content.Intent.ACTION_SEND)
+        intent.setType("text/plain")
+        intent.putExtra(android.content.Intent.EXTRA_TEXT, text)
+        let chooser = android.content.Intent.createChooser(intent, "Share Bookmark")
+        chooser.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(chooser)
+        #endif
+    }
+}
+
+struct BookmarkEditSheet: View {
+    let bookmark: BookmarkRecord
+    let database: BookDatabase?
+    let onSave: (BookmarkRecord) -> Void
+    @State var editNotes: String
+    @Environment(\.dismiss) var dismiss
+
+    init(bookmark: BookmarkRecord, database: BookDatabase?, onSave: @escaping (BookmarkRecord) -> Void) {
+        self.bookmark = bookmark
+        self.database = database
+        self.onSave = onSave
+        self._editNotes = State(initialValue: bookmark.notes)
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Bookmark Info") {
+                    if !bookmark.chapter.isEmpty {
+                        HStack {
+                            Text("Chapter")
+                            Spacer()
+                            Text(bookmark.chapter)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    HStack {
+                        Text("Progress")
+                        Spacer()
+                        Text(bookmark.progressLabel)
+                            .foregroundStyle(.secondary)
+                    }
+                    if !bookmark.excerpt.isEmpty {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Excerpt")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            Text(bookmark.excerpt)
+                                .font(.body)
+                        }
+                    }
+                }
+                Section("Notes") {
+                    TextField("Add notes...", text: $editNotes)
+                }
+            }
+            .navigationTitle("Edit Bookmark")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        saveNotes()
+                    }
+                }
+            }
+        }
+    }
+
+    func saveNotes() {
+        guard let db = database else { return }
+        var updated = bookmark
+        updated.notes = editNotes
+        do {
+            try db.updateBookmark(updated)
+            logger.info("Updated bookmark notes for id=\(bookmark.id)")
+            onSave(updated)
+            dismiss()
+        } catch {
+            logger.error("Failed to save bookmark notes: \(error)")
+        }
     }
 }
 #endif

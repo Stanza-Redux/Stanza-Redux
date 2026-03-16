@@ -102,6 +102,84 @@ public struct BookRecord: Identifiable, Hashable, SQLCodable {
     }
 }
 
+/// A bookmark stored for a specific book.
+public struct BookmarkRecord: Identifiable, Hashable, SQLCodable {
+    public var id: Int64
+    static let id = SQLColumn(name: "ID", type: .long, primaryKey: true, autoincrement: true)
+
+    /// The ID of the book this bookmark belongs to.
+    public var bookID: Int64
+    static let bookID = SQLColumn(name: "BOOK_ID", type: .long, index: SQLIndex(name: "IDX_BOOKMARK_BOOK_ID"))
+
+    /// JSON representation of the Readium Locator for this bookmark.
+    public var locatorJSON: String
+    static let locatorJSON = SQLColumn(name: "LOCATOR_JSON", type: .text)
+
+    /// Human-readable progress indication (e.g. "42%").
+    public var progressLabel: String
+    static let progressLabel = SQLColumn(name: "PROGRESS_LABEL", type: .text)
+
+    /// A small excerpt of the text on the page with the bookmark.
+    public var excerpt: String
+    static let excerpt = SQLColumn(name: "EXCERPT", type: .text)
+
+    /// The name of the chapter for the bookmark (if available).
+    public var chapter: String
+    static let chapter = SQLColumn(name: "CHAPTER", type: .text)
+
+    /// User notes for the bookmark.
+    public var notes: String
+    static let notes = SQLColumn(name: "NOTES", type: .text)
+
+    /// Display order for user reordering.
+    public var sortOrder: Int64
+    static let sortOrder = SQLColumn(name: "SORT_ORDER", type: .long)
+
+    /// The date the bookmark was created.
+    public var dateCreated: Date
+    static let dateCreated = SQLColumn(name: "DATE_CREATED", type: .real)
+
+    public static let table = SQLTable(name: "BOOKMARK", columns: [
+        id, bookID, locatorJSON, progressLabel, excerpt, chapter, notes, sortOrder, dateCreated
+    ])
+
+    public init(id: Int64 = 0, bookID: Int64, locatorJSON: String, progressLabel: String = "", excerpt: String = "", chapter: String = "", notes: String = "", sortOrder: Int64 = 0, dateCreated: Date = Date()) {
+        self.id = id
+        self.bookID = bookID
+        self.locatorJSON = locatorJSON
+        self.progressLabel = progressLabel
+        self.excerpt = excerpt
+        self.chapter = chapter
+        self.notes = notes
+        self.sortOrder = sortOrder
+        self.dateCreated = dateCreated
+    }
+
+    public init(row: SQLRow, context: SQLContext) throws {
+        self.id = try Self.id.longValueRequired(in: row)
+        self.bookID = try Self.bookID.longValueRequired(in: row)
+        self.locatorJSON = try Self.locatorJSON.textValueRequired(in: row)
+        self.progressLabel = try Self.progressLabel.textValueRequired(in: row)
+        self.excerpt = try Self.excerpt.textValueRequired(in: row)
+        self.chapter = try Self.chapter.textValueRequired(in: row)
+        self.notes = try Self.notes.textValueRequired(in: row)
+        self.sortOrder = try Self.sortOrder.longValueRequired(in: row)
+        self.dateCreated = try Self.dateCreated.dateValueRequired(in: row)
+    }
+
+    public func encode(row: inout SQLRow) throws {
+        row[Self.id] = SQLValue(self.id)
+        row[Self.bookID] = SQLValue(self.bookID)
+        row[Self.locatorJSON] = SQLValue(self.locatorJSON)
+        row[Self.progressLabel] = SQLValue(self.progressLabel)
+        row[Self.excerpt] = SQLValue(self.excerpt)
+        row[Self.chapter] = SQLValue(self.chapter)
+        row[Self.notes] = SQLValue(self.notes)
+        row[Self.sortOrder] = SQLValue(self.sortOrder)
+        row[Self.dateCreated] = SQLValue(self.dateCreated.timeIntervalSince1970)
+    }
+}
+
 /// Manages the local book library database.
 public class BookDatabase {
     private let context: SQLContext
@@ -177,6 +255,18 @@ public class BookDatabase {
             }
             context.userVersion = 3
         }
+        if context.userVersion < 4 {
+            dbLogger.info("Creating BOOKMARK table (schema v4)")
+            for ddl in BookmarkRecord.table.createTableSQL(columns: [
+                BookmarkRecord.id, BookmarkRecord.bookID, BookmarkRecord.locatorJSON,
+                BookmarkRecord.progressLabel, BookmarkRecord.excerpt, BookmarkRecord.chapter,
+                BookmarkRecord.notes, BookmarkRecord.sortOrder, BookmarkRecord.dateCreated
+            ]) {
+                dbLogger.debug("SQL: \(String(describing: ddl))")
+                try context.exec(ddl)
+            }
+            context.userVersion = 4
+        }
     }
 
     // MARK: - CRUD operations
@@ -221,9 +311,10 @@ public class BookDatabase {
         try context.update(stored)
     }
 
-    /// Deletes a book record from the database.
+    /// Deletes a book record and its associated bookmarks from the database.
     public func deleteBook(id: Int64) throws {
-        dbLogger.info("Deleting book id=\(id)")
+        dbLogger.info("Deleting book id=\(id) and its bookmarks")
+        try context.delete(BookmarkRecord.self, where: BookmarkRecord.bookID.equals(SQLValue(id)))
         try context.delete(BookRecord.self, where: BookRecord.id.equals(SQLValue(id)))
     }
 
@@ -327,6 +418,37 @@ public class BookDatabase {
             totalItems: totalItems
         )
         return try addBook(record)
+    }
+
+    // MARK: - Bookmarks
+
+    /// Adds a bookmark and returns it with its assigned ID.
+    @discardableResult
+    public func addBookmark(_ record: BookmarkRecord) throws -> BookmarkRecord {
+        dbLogger.info("Adding bookmark for book id=\(record.bookID): chapter='\(record.chapter)'")
+        let result = try context.insert(record)
+        dbLogger.info("Added bookmark with id: \(result.id)")
+        return result
+    }
+
+    /// Returns all bookmarks for a given book, ordered by sort order then date created.
+    public func bookmarks(forBookID bookID: Int64) throws -> [BookmarkRecord] {
+        let predicate = BookmarkRecord.bookID.equals(SQLValue(bookID))
+        let results = try context.fetchAll(BookmarkRecord.self, where: predicate, orderBy: BookmarkRecord.sortOrder, order: .ascending)
+        dbLogger.debug("Fetched \(results.count) bookmarks for book id=\(bookID)")
+        return results
+    }
+
+    /// Updates an existing bookmark record.
+    public func updateBookmark(_ record: BookmarkRecord) throws {
+        dbLogger.info("Updating bookmark id=\(record.id)")
+        try context.update(record)
+    }
+
+    /// Deletes a bookmark by its ID.
+    public func deleteBookmark(id: Int64) throws {
+        dbLogger.info("Deleting bookmark id=\(id)")
+        try context.delete(BookmarkRecord.self, where: BookmarkRecord.id.equals(SQLValue(id)))
     }
 
     /// Closes the database connection.

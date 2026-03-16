@@ -29,6 +29,9 @@
     "Add Custom Catalog" : {
 
     },
+    "Add notes..." : {
+
+    },
     "All Books" : {
 
     },
@@ -72,6 +75,12 @@
     "Book not found" : {
 
     },
+    "Bookmark Info" : {
+
+    },
+    "Bookmarks" : {
+
+    },
     "Books" : {
 
     },
@@ -88,6 +97,9 @@
 
     },
     "Categories" : {
+
+    },
+    "Chapter" : {
 
     },
     "Chapters" : {
@@ -124,6 +136,9 @@
         }
       }
     },
+    "Delete" : {
+
+    },
     "Dismiss" : {
 
     },
@@ -145,7 +160,16 @@
     "Edit Book" : {
 
     },
+    "Edit Bookmark" : {
+
+    },
+    "Edit Notes" : {
+
+    },
     "Error: %@" : {
+
+    },
+    "Excerpt" : {
 
     },
     "Failed to Load" : {
@@ -333,6 +357,9 @@
         }
       }
     },
+    "No Bookmarks" : {
+
+    },
     "No Books" : {
 
     },
@@ -340,6 +367,9 @@
 
     },
     "No download available" : {
+
+    },
+    "Notes" : {
 
     },
     "OPDS Feed URL" : {
@@ -466,6 +496,9 @@
         }
       }
     },
+    "Share" : {
+
+    },
     "System" : {
       "localizations" : {
         "es" : {
@@ -497,7 +530,13 @@
     "Table of Contents" : {
 
     },
+    "Tap the bookmark icon while reading to add one." : {
+
+    },
     "Title" : {
+
+    },
+    "View" : {
 
     },
     "Welcome" : {
