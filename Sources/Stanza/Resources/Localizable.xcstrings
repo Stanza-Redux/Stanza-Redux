@@ -66,6 +66,9 @@
         }
       }
     },
+    "Athelas" : {
+
+    },
     "Author" : {
 
     },
@@ -109,6 +112,9 @@
 
     },
     "Chapters" : {
+
+    },
+    "Charter" : {
 
     },
     "Columns" : {
@@ -193,6 +199,9 @@
     "File" : {
 
     },
+    "Font" : {
+
+    },
     "Font Size" : {
 
     },
@@ -200,6 +209,9 @@
 
     },
     "General" : {
+
+    },
+    "Georgia" : {
 
     },
     "Hello [%@](https://skip.tools)!" : {
@@ -270,6 +282,9 @@
 
     },
     "Import Sample Book" : {
+
+    },
+    "Iowan Old Style" : {
 
     },
     "Item %lld" : {
@@ -356,6 +371,9 @@
     "Metadata" : {
 
     },
+    "Montserrat" : {
+
+    },
     "Name" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -384,6 +402,9 @@
           }
         }
       }
+    },
+    "New York" : {
+
     },
     "No Bookmarks" : {
 
@@ -424,10 +445,14 @@
     "Page Margins" : {
 
     },
+    "Palatino" : {
+
+    },
     "Paragraph Spacing" : {
 
     },
     "Powered by %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -458,6 +483,9 @@
     "Progress" : {
 
     },
+    "Publisher Default" : {
+
+    },
     "Publisher Styles" : {
 
     },
@@ -480,6 +508,9 @@
 
     },
     "Right" : {
+
+    },
+    "San Francisco" : {
 
     },
     "Save" : {
@@ -521,6 +552,9 @@
 
     },
     "See All" : {
+
+    },
+    "Seravek" : {
 
     },
     "Settings" : {

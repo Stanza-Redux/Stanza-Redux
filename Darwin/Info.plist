@@ -4,5 +4,11 @@
 <dict>
     <key>ITSAppUsesNonExemptEncryption</key>
     <false/>
+    <key>ATSApplicationFontsPath</key>
+    <string>./</string>
+    <key>UIAppFonts</key>
+    <array>
+        <string>Montserrat-Regular.ttf</string>
+    </array>
 </dict>
 </plist>

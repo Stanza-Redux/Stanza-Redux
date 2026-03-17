@@ -420,7 +420,7 @@ struct LibraryReaderView: View {
     @State var navigatorDelegate: ReaderLocationDelegate? = nil
     #endif
     #if SKIP
-    @State var epubFragment: EpubNavigatorFragment? = nil
+    @State var navigator: EpubNavigatorFragment? = nil
     @State var inputListenerAdded: Bool = false
     #endif
 
@@ -450,6 +450,7 @@ struct LibraryReaderView: View {
             saveCurrentLocator()
         }
         .onChange(of: settings.fontSize) { applyPreferences() }
+        .onChange(of: settings.fontFamily) { applyPreferences() }
         .onChange(of: settings.columnCount) { applyPreferences() }
         .onChange(of: settings.fit) { applyPreferences() }
         .onChange(of: settings.hyphens) { applyPreferences() }
@@ -546,11 +547,11 @@ struct LibraryReaderView: View {
         let animated = settings.animatePageTurns
         #if !SKIP
         if let nav = navigator {
-            Task { await nav.goForward(options: animated ? .animated : .init()) }
+            Task { await nav.goForward(options: animated ? .animated : .none) }
         }
         #else
-        if let fragment = epubFragment {
-            Task { fragment.goForward(animated) }
+        if let nav = navigator {
+            Task { nav.goForward(animated) }
         }
         #endif
     }
@@ -559,11 +560,11 @@ struct LibraryReaderView: View {
         let animated = settings.animatePageTurns
         #if !SKIP
         if let nav = navigator {
-            Task { await nav.goBackward(options: animated ? .animated : .init()) }
+            Task { await nav.goBackward(options: animated ? .animated : .none) }
         }
         #else
-        if let fragment = epubFragment {
-            Task { fragment.goBackward(animated) }
+        if let nav = navigator {
+            Task { nav.goBackward(animated) }
         }
         #endif
     }
@@ -573,11 +574,11 @@ struct LibraryReaderView: View {
         let animated = settings.animatePageTurns
         #if !SKIP
         if let nav = navigator {
-            Task { await nav.go(to: link.platformValue, options: animated ? .animated : .init()) }
+            Task { await nav.go(to: link.platformValue, options: animated ? .animated : .none) }
         }
         #else
-        if let fragment = epubFragment {
-            Task { fragment.go(link.platformValue, animated) }
+        if let nav = navigator {
+            Task { nav.go(link.platformValue, animated) }
         }
         #endif
         showTOC = false
@@ -590,6 +591,7 @@ struct LibraryReaderView: View {
     func hasNonDefaultPreferences() -> Bool {
         let s = settings
         return s.fontSize != 1.0
+            || !s.fontFamily.isEmpty
             || !s.columnCount.isEmpty
             || !s.fit.isEmpty
             || !s.hyphens.isEmpty
@@ -626,12 +628,14 @@ struct LibraryReaderView: View {
 
         #if !SKIP
         if let nav = navigator {
+            let fontFamilyVal: ReadiumNavigator.FontFamily? = s.fontFamily.isEmpty ? nil : ReadiumNavigator.FontFamily(rawValue: s.fontFamily)
             let columnCountVal = s.columnCount.isEmpty ? nil : ReadiumNavigator.ColumnCount(rawValue: s.columnCount)
             let fitVal = s.fit.isEmpty ? nil : ReadiumNavigator.Fit(rawValue: s.fit)
             let textAlignVal = s.textAlign.isEmpty ? nil : ReadiumNavigator.TextAlignment(rawValue: s.textAlign)
             let prefs = EPUBPreferences(
                 columnCount: columnCountVal,
                 fit: fitVal,
+                fontFamily: fontFamilyVal,
                 fontSize: s.fontSize,
                 hyphens: hyphensVal,
                 lineHeight: lineHeightVal,
@@ -645,10 +649,10 @@ struct LibraryReaderView: View {
             nav.submitPreferences(prefs)
         }
         #else
-        if let fragment = epubFragment {
-            // On Android, pass supported numeric/boolean preferences
-            // Enum preferences (columnCount, fit, textAlign) require Kotlin enum types
+        if let nav = navigator {
+            let fontFamilyVal: org.readium.r2.navigator.preferences.FontFamily? = s.fontFamily.isEmpty ? nil : org.readium.r2.navigator.preferences.FontFamily(s.fontFamily)
             let prefs = org.readium.r2.navigator.epub.EpubPreferences(
+                fontFamily: fontFamilyVal,
                 fontSize: s.fontSize,
                 hyphens: hyphensVal,
                 lineHeight: lineHeightVal,
@@ -658,7 +662,7 @@ struct LibraryReaderView: View {
                 textNormalization: textNormalizationVal,
                 wordSpacing: wordSpacingVal
             )
-            fragment.submitPreferences(prefs)
+            nav.submitPreferences(prefs)
         }
         #endif
     }
@@ -752,11 +756,11 @@ struct LibraryReaderView: View {
         let animated = settings.animatePageTurns
         #if !SKIP
         if let nav = navigator {
-            Task { await nav.go(to: loc.platformValue, options: animated ? .animated : .init()) }
+            Task { await nav.go(to: loc.platformValue, options: animated ? .animated : .none) }
         }
         #else
-        if let fragment = epubFragment {
-            Task { fragment.go(loc.platformValue, animated) }
+        if let nav = navigator {
+            Task { nav.go(loc.platformValue, animated) }
         }
         #endif
         showTOC = false
@@ -907,20 +911,20 @@ struct LibraryReaderView: View {
             let fragmentManager = fragmentActivity.supportFragmentManager
             fragmentManager.fragmentFactory = fragmentFactory
             AndroidFragment<EpubNavigatorFragment>(
-                onUpdate: { fragment in
-                    self.epubFragment = fragment
+                onUpdate: { nav in
+                    self.navigator = nav
                     if !self.inputListenerAdded {
                         self.inputListenerAdded = true
                         let listener = ReaderTapListener(tapHandler: { x, y in
-                            let w = Double(fragment.view?.width ?? 1)
+                            let w = Double(nav.view?.width ?? 1)
                             self.handleTap(x: x, width: w)
                         })
-                        fragment.addInputListener(listener)
+                        nav.addInputListener(listener)
                     }
                     if !self.hasRestoredPosition {
                         self.hasRestoredPosition = true
                         if let savedLoc = self.initialLocator?.platformValue {
-                            fragment.go(savedLoc, false)
+                            nav.go(savedLoc, false)
                         }
                     }
                     if !self.initialPrefsApplied {

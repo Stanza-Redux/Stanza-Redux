@@ -31,6 +31,11 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         didSet { defaults.set(fontSize, forKey: "readerFontSize"); settingsLogger.info("Font size changed to: \(Int(self.fontSize * 100))%") }
     }
 
+    /// Font family for reading: "" = publisher default.
+    public var fontFamily: String {
+        didSet { defaults.set(fontFamily, forKey: "epubFontFamily"); settingsLogger.info("Font family: '\(self.fontFamily)'") }
+    }
+
     // MARK: - EPUB Preferences
 
     /// Number of columns: "" = auto, "1" = one, "2" = two.
@@ -92,6 +97,7 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         self.appearance = defaults.string(forKey: "appearance") ?? ""
         self.animatePageTurns = defaults.object(forKey: "animatePageTurns") != nil ? defaults.bool(forKey: "animatePageTurns") : true
         self.fontSize = defaults.object(forKey: "readerFontSize") != nil ? defaults.double(forKey: "readerFontSize") : 1.0
+        self.fontFamily = defaults.string(forKey: "epubFontFamily") ?? ""
 
         // EPUB preferences
         self.columnCount = defaults.string(forKey: "epubColumnCount") ?? ""
@@ -112,6 +118,7 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
     public func resetReadingPreferences() {
         settingsLogger.info("Resetting all reading preferences to defaults")
         fontSize = 1.0
+        fontFamily = ""
         columnCount = ""
         fit = ""
         hyphens = ""
