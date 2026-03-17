@@ -89,6 +89,11 @@ public class CatalogDatabase {
         } else {
             self.context = try SQLContext(path: ":memory:", configuration: SQLiteConfiguration.platform)
         }
+
+        self.context.trace { sql in
+            catalogLogger.info("SQL: \(sql)")
+        }
+
         try createOrMigrateSchema()
     }
 

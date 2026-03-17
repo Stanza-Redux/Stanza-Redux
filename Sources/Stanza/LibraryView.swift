@@ -666,7 +666,7 @@ struct LibraryReaderView: View {
         } else if x < third {
             if settings.leftTapAdvances { goForward() } else { goBackward() }
         } else if x > third * 2.0 {
-            if settings.leftTapAdvances { goBackward() } else { goForward() }
+            goForward()
         } else {
             showHUD = true
         }

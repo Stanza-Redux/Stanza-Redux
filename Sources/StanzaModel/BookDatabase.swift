@@ -224,6 +224,11 @@ public class BookDatabase {
         } else {
             self.context = try SQLContext(path: ":memory:", configuration: SQLiteConfiguration.platform)
         }
+
+        self.context.trace { sql in
+            dbLogger.info("SQL: \(sql)")
+        }
+
         try createOrMigrateSchema()
     }
 
