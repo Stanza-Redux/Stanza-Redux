@@ -220,7 +220,7 @@ public final class OPDSService {
         throw OPDSServiceError.parseFailed
         #else
         let javaUrl = java.net.URL(url.absoluteString)
-        let bodyString: String = String(javaUrl.readText())
+        let bodyString: String = javaUrl.readText()
         let marker = "template=\""
         guard let markerIndex = bodyString.range(of: marker) else {
             throw OPDSServiceError.parseFailed

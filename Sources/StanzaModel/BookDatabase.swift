@@ -55,11 +55,15 @@ public struct BookRecord: Identifiable, Hashable, SQLCodable {
     public var locatorJSON: String?
     static let locatorJSON = SQLColumn(name: "LOCATOR_JSON", type: .text)
 
+    /// Relative path to the extracted cover image file, or nil if no cover.
+    public var coverImagePath: String?
+    static let coverImagePath = SQLColumn(name: "COVER_IMAGE_PATH", type: .text)
+
     public static let table = SQLTable(name: "BOOK", columns: [
-        id, title, author, filePath, identifier, totalItems, currentItem, progress, dateAdded, dateLastOpened, locatorJSON
+        id, title, author, filePath, identifier, totalItems, currentItem, progress, dateAdded, dateLastOpened, locatorJSON, coverImagePath
     ])
 
-    public init(id: Int64 = 0, title: String, author: String, filePath: String, identifier: String? = nil, totalItems: Int64 = 0, currentItem: Int64 = 0, progress: Double = 0.0, dateAdded: Date = Date(), dateLastOpened: Date? = nil, locatorJSON: String? = nil) {
+    public init(id: Int64 = 0, title: String, author: String, filePath: String, identifier: String? = nil, totalItems: Int64 = 0, currentItem: Int64 = 0, progress: Double = 0.0, dateAdded: Date = Date(), dateLastOpened: Date? = nil, locatorJSON: String? = nil, coverImagePath: String? = nil) {
         self.id = id
         self.title = title
         self.author = author
@@ -71,6 +75,7 @@ public struct BookRecord: Identifiable, Hashable, SQLCodable {
         self.dateAdded = dateAdded
         self.dateLastOpened = dateLastOpened
         self.locatorJSON = locatorJSON
+        self.coverImagePath = coverImagePath
     }
 
     public init(row: SQLRow, context: SQLContext) throws {
@@ -85,6 +90,7 @@ public struct BookRecord: Identifiable, Hashable, SQLCodable {
         self.dateAdded = try Self.dateAdded.dateValueRequired(in: row)
         self.dateLastOpened = Self.dateLastOpened.dateValue(in: row)
         self.locatorJSON = Self.locatorJSON.textValue(in: row)
+        self.coverImagePath = Self.coverImagePath.textValue(in: row)
     }
 
     public func encode(row: inout SQLRow) throws {
@@ -99,6 +105,7 @@ public struct BookRecord: Identifiable, Hashable, SQLCodable {
         row[Self.dateAdded] = SQLValue(self.dateAdded.timeIntervalSince1970)
         row[Self.dateLastOpened] = SQLValue(self.dateLastOpened?.timeIntervalSince1970)
         row[Self.locatorJSON] = SQLValue(self.locatorJSON)
+        row[Self.coverImagePath] = SQLValue(self.coverImagePath)
     }
 }
 
@@ -267,6 +274,13 @@ public class BookDatabase {
             }
             context.userVersion = 4
         }
+        if context.userVersion < 5 {
+            dbLogger.info("Migrating BOOK table to schema v5 (adding COVER_IMAGE_PATH)")
+            let ddl = SQLExpression("ALTER TABLE BOOK ADD COLUMN COVER_IMAGE_PATH TEXT")
+            dbLogger.debug("SQL: \(String(describing: ddl))")
+            try context.exec(ddl)
+            context.userVersion = 5
+        }
     }
 
     // MARK: - CRUD operations
@@ -280,12 +294,21 @@ public class BookDatabase {
         return result
     }
 
-    /// Returns all books, ordered by most recently added first.
+    /// Returns all books, ordered by the most recent activity (last opened or
+    /// date added) first so that new and recently-read books appear at the top.
     /// File paths are resolved to absolute paths.
     public func allBooks() throws -> [BookRecord] {
-        var books = try context.fetchAll(BookRecord.self, orderBy: BookRecord.dateAdded, order: .descending)
+        var books = try context.fetchAll(BookRecord.self)
         for i in books.indices {
             books[i].filePath = BookDatabase.absolutePath(for: books[i].filePath)
+            if let cover = books[i].coverImagePath {
+                books[i].coverImagePath = BookDatabase.absolutePath(for: cover)
+            }
+        }
+        books.sort { a, b in
+            let aDate = max(a.dateAdded, a.dateLastOpened ?? a.dateAdded)
+            let bDate = max(b.dateAdded, b.dateLastOpened ?? b.dateAdded)
+            return aDate > bDate
         }
         dbLogger.debug("Fetched \(books.count) books")
         return books
@@ -297,6 +320,9 @@ public class BookDatabase {
         var result = try context.fetch(BookRecord.self, primaryKeys: [SQLValue(id)])
         if result != nil {
             result!.filePath = BookDatabase.absolutePath(for: result!.filePath)
+            if let cover = result!.coverImagePath {
+                result!.coverImagePath = BookDatabase.absolutePath(for: cover)
+            }
         }
         dbLogger.debug("Fetched book id=\(id): \(result != nil ? result!.title : "not found")")
         return result
@@ -418,6 +444,14 @@ public class BookDatabase {
             totalItems: totalItems
         )
         return try addBook(record)
+    }
+
+    /// Updates the cover image path for a book.
+    public func setCoverImagePath(bookID: Int64, coverPath: String) throws {
+        guard var record = try context.fetch(BookRecord.self, primaryKeys: [SQLValue(bookID)]) else { return }
+        record.coverImagePath = coverPath
+        try context.update(record)
+        dbLogger.info("Updated cover image path for book id=\(bookID): '\(coverPath)'")
     }
 
     // MARK: - Bookmarks

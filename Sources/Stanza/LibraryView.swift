@@ -19,6 +19,13 @@ import org.readium.r2.navigator.input.InputListener
 import org.readium.r2.navigator.input.TapEvent
 import org.readium.r2.navigator.input.DragEvent
 import org.readium.r2.navigator.input.KeyEvent
+import org.readium.r2.shared.publication.services.cover
+import org.readium.r2.navigator.preferences.Theme
+import android.view.WindowInsets
+
+/// Module-level reference to the current Activity, used for brightness and status bar control.
+/// Set from the ComposeView context where LocalContext is available.
+var currentAndroidActivity: android.app.Activity? = nil
 
 class ReaderTapListener: InputListener {
     let tapHandler: (Double, Double) -> Void
@@ -56,6 +63,64 @@ class ReaderPaginationListener: EpubNavigatorFragment.PaginationListener {
     }
 }
 #endif
+
+/// Displays a book cover image, or a generic book icon if no cover is available.
+struct BookCoverView: View {
+    let coverImagePath: String?
+
+    var body: some View {
+        if let path = coverImagePath {
+            AsyncImage(url: URL(fileURLWithPath: path)) { phase in
+                if let image = phase.image {
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                } else {
+                    placeholderImage
+                }
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 4))
+        } else {
+            placeholderImage
+                .clipShape(RoundedRectangle(cornerRadius: 4))
+        }
+    }
+
+    var placeholderImage: some View {
+        Image("book_3", bundle: .module)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .foregroundStyle(.secondary)
+            .padding(6)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.gray.opacity(0.15))
+    }
+}
+
+/// A vertical brightness slider: drag up to brighten, down to dim.
+struct BrightnessSlider: View {
+    @Binding var value: Double
+
+    var body: some View {
+        GeometryReader { geo in
+            let height = geo.size.height
+            ZStack(alignment: .bottom) {
+                Capsule()
+                    .fill(Color.white.opacity(0.3))
+                Capsule()
+                    .fill(Color.yellow.opacity(0.8))
+                    .frame(height: max(4.0, height * value))
+            }
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { drag in
+                        let newValue = 1.0 - (drag.location.y / height)
+                        value = min(1.0, max(0.01, newValue))
+                    }
+            )
+        }
+    }
+}
 
 struct LibraryView: View {
     @State var books: [BookRecord] = []
@@ -97,7 +162,9 @@ struct LibraryView: View {
                     List {
                         ForEach(filteredBooks) { book in
                             NavigationLink(value: book.id) {
-                                HStack {
+                                HStack(spacing: 12) {
+                                    BookCoverView(coverImagePath: book.coverImagePath)
+                                        .frame(width: 50, height: 70)
                                     VStack(alignment: .leading) {
                                         Text(book.title)
                                             .font(.headline)
@@ -194,7 +261,8 @@ struct LibraryView: View {
         logger.info("importBookFromURL: \(url.absoluteString)")
         guard let db = database else { return }
         do {
-            try await db.importBook(from: url)
+            let record = try await db.importBook(from: url)
+            await extractAndSaveCover(for: record)
             self.books = try db.allBooks()
         } catch {
             logger.error("Failed to import book: \(error)")
@@ -213,13 +281,53 @@ struct LibraryView: View {
         }
         logger.info("Importing sample book from bundle")
         do {
-            try await db.importBook(from: sampleURL)
+            let record = try await db.importBook(from: sampleURL)
+            await extractAndSaveCover(for: record)
             self.books = try db.allBooks()
             logger.info("Sample book imported successfully")
         } catch {
             logger.error("Failed to import sample book: \(error)")
             errorMessage = "Failed to import book: \(error.localizedDescription)"
         }
+    }
+
+    private func extractAndSaveCover(for record: BookRecord) async {
+        guard let db = database else { return }
+        let bookPath = BookDatabase.absolutePath(for: record.filePath)
+        let bookURL = URL(fileURLWithPath: bookPath)
+        let coverURL = bookURL.deletingPathExtension().appendingPathExtension("jpg")
+        do {
+            let pub = try await Pub.loadPublication(from: bookURL)
+            let coverData = await extractCoverData(from: pub)
+            if let data = coverData {
+                try data.write(to: coverURL)
+                let relativePath = BookDatabase.relativePath(for: coverURL.path)
+                try db.setCoverImagePath(bookID: record.id, coverPath: relativePath)
+                logger.info("Saved cover image for '\(record.title)'")
+            }
+        } catch {
+            logger.warning("Failed to extract cover for '\(record.title)': \(error)")
+        }
+    }
+
+    private func extractCoverData(from pub: Pub) async -> Data? {
+        #if !SKIP && canImport(ReadiumNavigator)
+        switch await pub.platformValue.cover() {
+        case .success(let image):
+            guard let image = image else { return nil }
+            return image.jpegData(compressionQuality: 0.85)
+        case .failure:
+            return nil
+        }
+        #elseif SKIP
+        let bitmap: android.graphics.Bitmap? = pub.platformValue.cover()
+        guard let bitmap = bitmap else { return nil }
+        let stream = java.io.ByteArrayOutputStream()
+        bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 85, stream)
+        return Data(platformValue: stream.toByteArray())
+        #else
+        return nil
+        #endif
     }
 
     private func deleteBooks(at indices: [Int]) {
@@ -232,6 +340,9 @@ struct LibraryView: View {
                 try db.deleteBook(id: book.id)
                 let fileURL = URL(fileURLWithPath: book.filePath)
                 try? FileManager.default.removeItem(at: fileURL)
+                if let coverPath = book.coverImagePath {
+                    try? FileManager.default.removeItem(at: URL(fileURLWithPath: coverPath))
+                }
                 logger.debug("Book file removed: \(book.filePath)")
             } catch {
                 logger.error("Failed to delete book: \(error)")
@@ -412,7 +523,10 @@ struct LibraryReaderView: View {
     @State var bookmarks: [BookmarkRecord] = []
     @State var isCurrentPageBookmarked: Bool = false
     @Environment(StanzaSettings.self) var settings: StanzaSettings
+    @Environment(\.colorScheme) var colorScheme
     @State var initialPrefsApplied: Bool = false
+    @State var screenBrightness: Double = 0.5
+    @State var originalBrightness: Double = 0.5
     @Environment(\.dismiss) var dismiss
 
     #if !SKIP
@@ -425,6 +539,28 @@ struct LibraryReaderView: View {
     #endif
 
     var body: some View {
+        readerBody
+        .onChange(of: settings.fontSize) { applyPreferences() }
+        .onChange(of: settings.fontFamily) { applyPreferences() }
+        .onChange(of: settings.columnCount) { applyPreferences() }
+        .onChange(of: settings.fit) { applyPreferences() }
+        .onChange(of: settings.hyphens) { applyPreferences() }
+        .onChange(of: settings.lineHeight) { applyPreferences() }
+        .onChange(of: settings.pageMargins) { applyPreferences() }
+        .onChange(of: settings.paragraphSpacing) { applyPreferences() }
+        .onChange(of: settings.publisherStyles) { applyPreferences() }
+        .onChange(of: settings.textAlign) { applyPreferences() }
+        .onChange(of: settings.textNormalization) { applyPreferences() }
+        .onChange(of: settings.wordSpacing) { applyPreferences() }
+        .onChange(of: settings.appearance) { applyPreferences() }
+        .onChange(of: colorScheme) { applyPreferences() }
+        .onChange(of: screenBrightness) { applyScreenBrightness(screenBrightness) }
+        #if SKIP
+        .onChange(of: showHUD) { updateAndroidStatusBar() }
+        #endif
+    }
+
+    var readerBody: some View {
         Group {
             if let publication = viewModel?.publication {
                 readerViewContainer(publication: publication)
@@ -443,24 +579,21 @@ struct LibraryReaderView: View {
                 ProgressView("Loading...")
             }
         }
+        .preferredColorScheme(settings.appearance == "dark" ? .dark : settings.appearance == "light" ? .light : nil)
+        .background(colorScheme == .dark ? Color.black : Color.white)
+        #if !SKIP
+        .statusBarHidden(settings.hideStatusBarInReader && !showHUD)
+        #endif
         .task {
             await loadBook()
         }
+        .onAppear {
+            initBrightness()
+        }
         .onDisappear {
             saveCurrentLocator()
+            restoreBrightness()
         }
-        .onChange(of: settings.fontSize) { applyPreferences() }
-        .onChange(of: settings.fontFamily) { applyPreferences() }
-        .onChange(of: settings.columnCount) { applyPreferences() }
-        .onChange(of: settings.fit) { applyPreferences() }
-        .onChange(of: settings.hyphens) { applyPreferences() }
-        .onChange(of: settings.lineHeight) { applyPreferences() }
-        .onChange(of: settings.pageMargins) { applyPreferences() }
-        .onChange(of: settings.paragraphSpacing) { applyPreferences() }
-        .onChange(of: settings.publisherStyles) { applyPreferences() }
-        .onChange(of: settings.textAlign) { applyPreferences() }
-        .onChange(of: settings.textNormalization) { applyPreferences() }
-        .onChange(of: settings.wordSpacing) { applyPreferences() }
     }
 
     func loadBook() async {
@@ -490,9 +623,7 @@ struct LibraryReaderView: View {
             }
             self.navigatorDelegate = delegate
             self.navigator?.delegate = delegate
-            if hasNonDefaultPreferences() {
-                applyPreferences()
-            }
+            applyPreferences()
             #endif
             if let db = database {
                 try? db.markOpened(bookID: bookID)
@@ -533,9 +664,9 @@ struct LibraryReaderView: View {
         if showHUD {
             showHUD = false
         } else if x < third {
-            goBackward()
+            if settings.leftTapAdvances { goForward() } else { goBackward() }
         } else if x > third * 2.0 {
-            goForward()
+            if settings.leftTapAdvances { goBackward() } else { goForward() }
         } else {
             showHUD = true
         }
@@ -614,8 +745,16 @@ struct LibraryReaderView: View {
         applyPreferences()
     }
 
+    /// Determines whether the effective appearance is dark.
+    func effectiveIsDark() -> Bool {
+        if settings.appearance == "dark" { return true }
+        if settings.appearance == "light" { return false }
+        return colorScheme == .dark
+    }
+
     func applyPreferences() {
         let s = settings
+        let isDark = effectiveIsDark()
 
         // Map string settings to typed optionals
         let hyphensVal: Bool? = s.hyphens == "true" ? true : s.hyphens == "false" ? false : nil
@@ -632,6 +771,7 @@ struct LibraryReaderView: View {
             let columnCountVal = s.columnCount.isEmpty ? nil : ReadiumNavigator.ColumnCount(rawValue: s.columnCount)
             let fitVal = s.fit.isEmpty ? nil : ReadiumNavigator.Fit(rawValue: s.fit)
             let textAlignVal = s.textAlign.isEmpty ? nil : ReadiumNavigator.TextAlignment(rawValue: s.textAlign)
+            let themeVal: ReadiumNavigator.Theme = isDark ? .dark : .light
             let prefs = EPUBPreferences(
                 columnCount: columnCountVal,
                 fit: fitVal,
@@ -644,6 +784,7 @@ struct LibraryReaderView: View {
                 publisherStyles: publisherStylesVal,
                 textAlign: textAlignVal,
                 textNormalization: textNormalizationVal,
+                theme: themeVal,
                 wordSpacing: wordSpacingVal
             )
             nav.submitPreferences(prefs)
@@ -651,6 +792,7 @@ struct LibraryReaderView: View {
         #else
         if let nav = navigator {
             let fontFamilyVal: org.readium.r2.navigator.preferences.FontFamily? = s.fontFamily.isEmpty ? nil : org.readium.r2.navigator.preferences.FontFamily(s.fontFamily)
+            let themeVal: org.readium.r2.navigator.preferences.Theme = isDark ? Theme.DARK : Theme.LIGHT
             let prefs = org.readium.r2.navigator.epub.EpubPreferences(
                 fontFamily: fontFamilyVal,
                 fontSize: s.fontSize,
@@ -660,12 +802,70 @@ struct LibraryReaderView: View {
                 paragraphSpacing: paragraphSpacingVal,
                 publisherStyles: publisherStylesVal,
                 textNormalization: textNormalizationVal,
+                theme: themeVal,
                 wordSpacing: wordSpacingVal
             )
             nav.submitPreferences(prefs)
         }
         #endif
     }
+
+    // MARK: - Brightness
+
+    func initBrightness() {
+        #if !SKIP
+        let current = Double(UIScreen.main.brightness)
+        screenBrightness = current
+        originalBrightness = current
+        #endif
+    }
+
+    func restoreBrightness() {
+        #if !SKIP
+        UIScreen.main.brightness = CGFloat(originalBrightness)
+        #else
+        if let activity = currentAndroidActivity {
+            activity.runOnUiThread {
+                let lp = activity.window.attributes
+                lp.screenBrightness = Float(-1.0) // restore system default
+                activity.window.attributes = lp
+            }
+            // Restore status bar
+            activity.window.insetsController?.show(android.view.WindowInsets.Type.statusBars())
+        }
+        currentAndroidActivity = nil
+        #endif
+    }
+
+    func applyScreenBrightness(_ value: Double) {
+        #if !SKIP
+        UIScreen.main.brightness = CGFloat(value)
+        #else
+        if let activity = currentAndroidActivity {
+            activity.runOnUiThread {
+                let lp = activity.window.attributes
+                lp.screenBrightness = Float(value)
+                activity.window.attributes = lp
+            }
+        }
+        #endif
+    }
+
+    // MARK: - Status Bar (Android)
+
+    #if SKIP
+    func updateAndroidStatusBar() {
+        guard settings.hideStatusBarInReader else { return }
+        if let activity = currentAndroidActivity {
+            let controller = activity.window.insetsController
+            if showHUD {
+                controller?.show(android.view.WindowInsets.Type.statusBars())
+            } else {
+                controller?.hide(android.view.WindowInsets.Type.statusBars())
+            }
+        }
+    }
+    #endif
 
     // MARK: - Bookmarks
 
@@ -771,90 +971,113 @@ struct LibraryReaderView: View {
 
     @ViewBuilder func hudOverlay(publication: Pub) -> some View {
         if showHUD {
-            VStack {
-                // Top bar with close button (left) and bookmark button (right)
+            ZStack {
+                // Left column: close button + brightness slider
                 HStack {
-                    Button {
-                        saveCurrentLocator()
-                        dismiss()
-                    } label: {
-                        Image("cancel", bundle: .module)
-                            .font(.system(size: 28))
+                    VStack(spacing: 12) {
+                        // Close button aligned with brightness slider
+                        Button {
+                            saveCurrentLocator()
+                            dismiss()
+                        } label: {
+                            Image("cancel", bundle: .module)
+                                .font(.system(size: 28))
+                                .foregroundStyle(.white)
+                                .background(Circle().fill(Color.black.opacity(0.5)))
+                        }
+
+                        Image(systemName: "sun.max.fill")
+                            .font(.caption)
                             .foregroundStyle(.white)
-                            .background(Circle().fill(Color.black.opacity(0.5)))
+                        BrightnessSlider(value: $screenBrightness)
+                        Image(systemName: "sun.min")
+                            .font(.caption)
+                            .foregroundStyle(.white)
                     }
+                    .frame(width: 36)
+                    .padding(.top, 16)
+                    .padding(.bottom, 160)
+                    .padding(.leading, 10)
                     Spacer()
-                    Button {
-                        toggleBookmark()
-                    } label: {
-                        Image(isCurrentPageBookmarked ? "bookmark_filled" : "bookmark", bundle: .module)
-                            .font(.system(size: 28))
-                            .foregroundStyle(.white)
-                            .background(Circle().fill(Color.black.opacity(0.5)))
-                    }
                 }
-                .padding(.top, 54)
-                .padding(.horizontal, 16)
 
-                Spacer()
-
-                // Bottom controls
-                VStack(spacing: 16) {
-                    // Progress indicator
+                // Main HUD content
+                VStack {
+                    // Top bar with bookmark button (right-aligned)
                     HStack {
-                        Text(locator?.title ?? "")
-                            .font(.caption)
-                            .foregroundStyle(.white)
-                            .lineLimit(1)
                         Spacer()
-                        let prog = locator?.totalProgression ?? 0.0
-                        Text("\(Int(prog * 100))%")
-                            .font(.caption)
-                            .foregroundStyle(.white)
+                        Button {
+                            toggleBookmark()
+                        } label: {
+                            Image(isCurrentPageBookmarked ? "bookmark_filled" : "bookmark", bundle: .module)
+                                .font(.system(size: 28))
+                                .foregroundStyle(.white)
+                                .background(Circle().fill(Color.black.opacity(0.5)))
+                        }
                     }
+                    .padding(.top, 16)
                     .padding(.horizontal, 16)
 
-                    ProgressView(value: locator?.totalProgression ?? 0.0)
-                        .tint(.white)
+                    Spacer()
+
+                    // Bottom controls
+                    VStack(spacing: 16) {
+                        // Progress indicator
+                        HStack {
+                            Text(locator?.title ?? "")
+                                .font(.caption)
+                                .foregroundStyle(.white)
+                                .lineLimit(1)
+                            Spacer()
+                            let prog = locator?.totalProgression ?? 0.0
+                            Text("\(Int(prog * 100))%")
+                                .font(.caption)
+                                .foregroundStyle(.white)
+                        }
                         .padding(.horizontal, 16)
 
-                    // Font size and TOC controls
-                    HStack(spacing: 32) {
-                        Button {
-                            adjustFontSize(increase: false)
-                        } label: {
-                            Image("remove_circle", bundle: .module)
-                                .font(.title2)
+                        ProgressView(value: locator?.totalProgression ?? 0.0)
+                            .tint(.white)
+                            .padding(.horizontal, 16)
+
+                        // Font size and TOC controls
+                        HStack(spacing: 32) {
+                            Button {
+                                adjustFontSize(increase: false)
+                            } label: {
+                                Image("remove_circle", bundle: .module)
+                                    .font(.title2)
+                                    .foregroundStyle(.white)
+                            }
+
+                            Text("Aa")
+                                .font(.headline)
                                 .foregroundStyle(.white)
+
+                            Button {
+                                adjustFontSize(increase: true)
+                            } label: {
+                                Image("add_circle", bundle: .module)
+                                    .font(.title2)
+                                    .foregroundStyle(.white)
+                            }
+
+                            Spacer()
+
+                            Button {
+                                showTOC = true
+                            } label: {
+                                Image("toc", bundle: .module)
+                                    .font(.title2)
+                                    .foregroundStyle(.white)
+                            }
                         }
-
-                        Text("Aa")
-                            .font(.headline)
-                            .foregroundStyle(.white)
-
-                        Button {
-                            adjustFontSize(increase: true)
-                        } label: {
-                            Image("add_circle", bundle: .module)
-                                .font(.title2)
-                                .foregroundStyle(.white)
-                        }
-
-                        Spacer()
-
-                        Button {
-                            showTOC = true
-                        } label: {
-                            Image("toc", bundle: .module)
-                                .font(.title2)
-                                .foregroundStyle(.white)
-                        }
+                        .padding(.horizontal, 24)
+                        .padding(.bottom, 40)
                     }
-                    .padding(.horizontal, 24)
-                    .padding(.bottom, 40)
+                    .padding(.top, 12)
+                    .background(Color.black.opacity(0.7))
                 }
-                .padding(.top, 12)
-                .background(Color.black.opacity(0.7))
             }
         }
     }
@@ -865,6 +1088,7 @@ struct LibraryReaderView: View {
         TOCAndBookmarksSheet(
             publication: publication,
             bookmarks: bookmarks,
+            currentLocator: locator,
             database: database,
             bookID: bookID,
             onNavigateToTOC: { link in
@@ -908,6 +1132,20 @@ struct LibraryReaderView: View {
             guard let fragmentActivity = LocalContext.current.fragmentActivity else {
                 fatalError("could not extract FragmentActivity from LocalContext.current")
             }
+
+            // Capture activity for brightness and status bar control
+            if currentAndroidActivity == nil {
+                currentAndroidActivity = fragmentActivity
+                let wb = Double(fragmentActivity.window.attributes.screenBrightness)
+                if wb >= 0.0 {
+                    self.screenBrightness = wb
+                    self.originalBrightness = wb
+                }
+                if self.settings.hideStatusBarInReader {
+                    fragmentActivity.window.insetsController?.hide(android.view.WindowInsets.Type.statusBars())
+                }
+            }
+
             let fragmentManager = fragmentActivity.supportFragmentManager
             fragmentManager.fragmentFactory = fragmentFactory
             AndroidFragment<EpubNavigatorFragment>(
@@ -929,9 +1167,7 @@ struct LibraryReaderView: View {
                     }
                     if !self.initialPrefsApplied {
                         self.initialPrefsApplied = true
-                        if self.hasNonDefaultPreferences() {
-                            self.applyPreferences()
-                        }
+                        self.applyPreferences()
                     }
                 }
             )
@@ -950,6 +1186,7 @@ enum TOCTab: String, CaseIterable {
 struct TOCAndBookmarksSheet: View {
     let publication: Pub
     @State var bookmarks: [BookmarkRecord]
+    let currentLocator: Loc?
     let database: BookDatabase?
     let bookID: Int64
     let onNavigateToTOC: (Lnk) -> Void
@@ -959,6 +1196,11 @@ struct TOCAndBookmarksSheet: View {
     @State var selectedTab: TOCTab = .contents
     @State var editingBookmark: BookmarkRecord? = nil
     @State var showEditSheet: Bool = false
+
+    /// The title of the chapter the reader is currently in.
+    var currentChapterTitle: String? {
+        currentLocator?.title
+    }
 
     var body: some View {
         NavigationStack {
@@ -997,6 +1239,12 @@ struct TOCAndBookmarksSheet: View {
         }
     }
 
+    /// Whether the given TOC link matches the current reading position.
+    func isCurrentChapter(_ link: Lnk) -> Bool {
+        guard let current = currentChapterTitle, let linkTitle = link.title else { return false }
+        return current == linkTitle
+    }
+
     @ViewBuilder var tocList: some View {
         List {
             ForEach(Array(publication.manifest.tableOfContents.enumerated()), id: \.offset) { index, link in
@@ -1004,15 +1252,21 @@ struct TOCAndBookmarksSheet: View {
                     onNavigateToTOC(link)
                 } label: {
                     Text(link.title ?? "Chapter \(index + 1)")
+                        .foregroundStyle(.primary)
                 }
+                .buttonStyle(.plain)
+                .listRowBackground(isCurrentChapter(link) ? Color.accentColor.opacity(0.12) : nil)
                 if !link.children.isEmpty {
                     ForEach(Array(link.children.enumerated()), id: \.offset) { childIndex, child in
                         Button {
                             onNavigateToTOC(child)
                         } label: {
                             Text(child.title ?? "Section \(childIndex + 1)")
+                                .foregroundStyle(.primary)
                                 .padding(.leading, 20)
                         }
+                        .buttonStyle(.plain)
+                        .listRowBackground(isCurrentChapter(child) ? Color.accentColor.opacity(0.12) : nil)
                     }
                 }
             }
@@ -1061,12 +1315,13 @@ struct TOCAndBookmarksSheet: View {
                             if !bookmark.notes.isEmpty {
                                 Text(bookmark.notes)
                                     .font(.caption2)
-                                    .foregroundStyle(.blue)
+                                    .foregroundStyle(.secondary)
                                     .lineLimit(1)
                             }
                         }
                         .padding(.vertical, 2)
                     }
+                    .buttonStyle(.plain)
                     // 'fun contextMenu(menuItems: () -> View): View' is deprecated. This API is not yet available in Skip. Consider placing it within a #if !SKIP block. You can file an issue against the owning library at https://github.com/skiptools, or see the library README for information on adding support.
                     #if !SKIP
                     .contextMenu {

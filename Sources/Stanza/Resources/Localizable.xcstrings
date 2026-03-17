@@ -208,9 +208,6 @@
     "Format" : {
 
     },
-    "General" : {
-
-    },
     "Georgia" : {
 
     },
@@ -242,6 +239,9 @@
           }
         }
       }
+    },
+    "Hide Status Bar in Reader" : {
+
     },
     "Home" : {
       "extractionState" : "stale",

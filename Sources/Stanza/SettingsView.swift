@@ -12,6 +12,11 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section("Reading") {
+                    Picker("Appearance", selection: $settings.appearance) {
+                        Text("System").tag("")
+                        Text("Light").tag("light")
+                        Text("Dark").tag("dark")
+                    }
                     HStack {
                         Text("Font Size")
                         Spacer()
@@ -49,6 +54,8 @@ struct SettingsView: View {
                     }
 
                     Toggle("Animate Page Turns", isOn: $settings.animatePageTurns)
+                    Toggle("Left Tap Advances", isOn: $settings.leftTapAdvances)
+                    Toggle("Hide Status Bar in Reader", isOn: $settings.hideStatusBarInReader)
                 }
 
                 Section("Text Layout") {
@@ -139,14 +146,6 @@ struct SettingsView: View {
                         settings.resetReadingPreferences()
                     }
                     .foregroundStyle(.red)
-                }
-
-                Section("General") {
-                    Picker("Appearance", selection: $settings.appearance) {
-                        Text("System").tag("")
-                        Text("Light").tag("light")
-                        Text("Dark").tag("dark")
-                    }
                 }
             }
             .navigationTitle("Settings")

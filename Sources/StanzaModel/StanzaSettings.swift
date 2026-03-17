@@ -88,6 +88,16 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         didSet { defaults.set(wordSpacing, forKey: "epubWordSpacing"); settingsLogger.info("Word spacing: \(self.wordSpacing)") }
     }
 
+    /// Whether to hide the system status bar when the reader is active and HUD is not shown.
+    public var hideStatusBarInReader: Bool {
+        didSet { defaults.set(hideStatusBarInReader, forKey: "hideStatusBarInReader"); settingsLogger.info("Hide status bar in reader: \(self.hideStatusBarInReader)") }
+    }
+
+    /// When enabled, tapping the left 1/3 of the reader advances forward instead of going back.
+    public var leftTapAdvances: Bool {
+        didSet { defaults.set(leftTapAdvances, forKey: "leftTapAdvances"); settingsLogger.info("Left tap advances: \(self.leftTapAdvances)") }
+    }
+
     // MARK: - Init
 
     public init(defaults: UserDefaults = UserDefaults.standard) {
@@ -95,6 +105,8 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
 
         // General
         self.appearance = defaults.string(forKey: "appearance") ?? ""
+        self.hideStatusBarInReader = defaults.bool(forKey: "hideStatusBarInReader")
+        self.leftTapAdvances = defaults.bool(forKey: "leftTapAdvances")
         self.animatePageTurns = defaults.object(forKey: "animatePageTurns") != nil ? defaults.bool(forKey: "animatePageTurns") : true
         self.fontSize = defaults.object(forKey: "readerFontSize") != nil ? defaults.double(forKey: "readerFontSize") : 1.0
         self.fontFamily = defaults.string(forKey: "epubFontFamily") ?? ""
