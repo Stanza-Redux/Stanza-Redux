@@ -750,7 +750,7 @@ struct OPDSBookDetailView: View {
         .fullScreenCover(isPresented: $showReader) {
             if let bookID = downloadedBookID, let bookDB = bookDB {
                 if let book = try? bookDB.book(id: bookID) {
-                    LibraryReaderView(bookID: bookID, filePath: book.filePath, database: bookDB)
+                    ReaderView(bookID: bookID, filePath: book.filePath, database: bookDB)
                 }
             }
         }

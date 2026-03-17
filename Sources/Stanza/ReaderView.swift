@@ -1,30 +1,34 @@
 // Copyright 2025 The App Fair Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Foundation
 import SwiftUI
-import Observation
 import StanzaModel
-
+import SkipKit
 #if !SKIP
 import ReadiumNavigator
 import ReadiumShared
-import ReadiumStreamer
-import ReadiumOPDS
-//import ReadiumLCP
+import UIKit
 #else
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.ContentResolver
+import android.view.WindowInsets
+
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.compose.AndroidFragment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
-import org.readium.r2.navigator.epub.EpubNavigatorFactory
+
 import org.readium.r2.navigator.epub.EpubDefaults
+import org.readium.r2.navigator.epub.EpubNavigatorFactory
 import org.readium.r2.navigator.epub.EpubNavigatorFragment
+import org.readium.r2.navigator.input.InputListener
+import org.readium.r2.navigator.input.TapEvent
+import org.readium.r2.navigator.input.DragEvent
+import org.readium.r2.navigator.input.KeyEvent
+import org.readium.r2.shared.publication.services.cover
+import org.readium.r2.navigator.preferences.Theme
 #endif
 
 #if !SKIP
@@ -41,69 +45,636 @@ var navConfig: EPUBNavigatorViewController.Configuration = EPUBNavigatorViewCont
 var navConfig: org.readium.r2.navigator.epub.EpubNavigatorFactory.Configuration = EpubNavigatorFactory.Configuration(defaults: defaults)
 #endif
 
-@Observable class ReaderViewModel {
-    var publication: Pub
-    var isFullscreen = false
-
-    init(publication: Pub, isFullscreen: Bool = false) {
-        self.publication = publication
-        self.isFullscreen = isFullscreen
-    }
-}
-
 struct ReaderView: View {
-    let bookURL: URL = Bundle.module.url(forResource: "Alice", withExtension: "epub")!
-    @Binding var tab: Tab
+    let bookID: Int64
+    let filePath: String
+    let database: BookDatabase?
     @State var viewModel: ReaderViewModel? = nil
     @State var error: Error? = nil
     @State var locator: Loc? = nil
-    @State var isFullscreen: Bool = false
+    @State var initialLocator: Loc? = nil
+    @State var hasRestoredPosition: Bool = false
+    @State var showHUD: Bool = false
+    @State var showTOC: Bool = false
+    @State var bookmarks: [BookmarkRecord] = []
+    @State var isCurrentPageBookmarked: Bool = false
+    @Environment(StanzaSettings.self) var settings: StanzaSettings
+    @Environment(\.colorScheme) var colorScheme
+    @State var initialPrefsApplied: Bool = false
+    @State var screenBrightness: Double = 0.5
+    @State var originalBrightness: Double = 0.5
+    @Environment(\.dismiss) var dismiss
 
     #if !SKIP
     @State var navigator: EPUBNavigatorViewController? = nil
+    @State var navigatorDelegate: ReaderLocationDelegate? = nil
+    #endif
+    #if SKIP
+    @State var navigator: EpubNavigatorFragment? = nil
+    @State var inputListenerAdded: Bool = false
     #endif
 
     var body: some View {
-        if let publication = viewModel?.publication {
-            Text("Opening \(publication.metadata.title ?? "Book")")
-                .fullScreenCover(isPresented: $isFullscreen) {
-                    readerViewContainer(publication: publication)
-                }
-        } else {
-            VStack {
-                Button("Load Book") {
-                    Task {
-                        await loadDefaultBook()
-                    }
-                }
-
-                if let error {
-                    Text("Error: \(String(describing: error))")
-                }
-            }
-            .task {
-                await loadDefaultBook()
-                self.isFullscreen = true
-            }
-        }
-
+        readerBody
+        .onChange(of: settings.fontSize) { applyPreferences() }
+        .onChange(of: settings.fontFamily) { applyPreferences() }
+        .onChange(of: settings.columnCount) { applyPreferences() }
+        .onChange(of: settings.fit) { applyPreferences() }
+        .onChange(of: settings.hyphens) { applyPreferences() }
+        .onChange(of: settings.lineHeight) { applyPreferences() }
+        .onChange(of: settings.pageMargins) { applyPreferences() }
+        .onChange(of: settings.paragraphSpacing) { applyPreferences() }
+        .onChange(of: settings.publisherStyles) { applyPreferences() }
+        .onChange(of: settings.textAlign) { applyPreferences() }
+        .onChange(of: settings.textNormalization) { applyPreferences() }
+        .onChange(of: settings.wordSpacing) { applyPreferences() }
+        .onChange(of: settings.appearance) { applyPreferences() }
+        .onChange(of: colorScheme) { applyPreferences() }
+        .onChange(of: screenBrightness) { applyScreenBrightness(screenBrightness) }
+        #if SKIP
+        .onChange(of: showHUD) { updateAndroidStatusBar() }
+        #endif
     }
 
-    func loadDefaultBook() async {
+    var readerBody: some View {
+        Group {
+            if let publication = viewModel?.publication {
+                readerViewContainer(publication: publication)
+                    .overlay {
+                        hudOverlay(publication: publication)
+                    }
+                    .sheet(isPresented: $showTOC) {
+                        tocSheet(publication: publication)
+                    }
+            } else if let error = error {
+                VStack {
+                    Text("Error: \(String(describing: error))")
+                        .accessibilityIdentifier("readerErrorMessage")
+                    Button("Dismiss") { dismiss() }
+                        .accessibilityIdentifier("readerErrorDismissButton")
+                }
+            } else {
+                ProgressView("Loading...")
+                    .accessibilityIdentifier("readerLoadingIndicator")
+            }
+        }
+        .preferredColorScheme(settings.appearance == "dark" ? .dark : settings.appearance == "light" ? .light : nil)
+        .background(colorScheme == .dark ? Color.black : Color.white)
+        #if !SKIP
+        .statusBarHidden(settings.hideStatusBarInReader && !showHUD)
+        #endif
+        .task {
+            await loadBook()
+        }
+        .onAppear {
+            initBrightness()
+        }
+        .onDisappear {
+            saveCurrentLocator()
+            restoreBrightness()
+        }
+    }
+
+    func loadBook() async {
+        logger.info("Opening book id=\(bookID) from \(filePath)")
         do {
-            try await loadPublication()
+            // Load saved locator from database
+            if let db = database, let record = try? db.book(id: bookID),
+               let json = record.locatorJSON {
+                let savedLoc = Loc.fromJSON(json)
+                self.locator = savedLoc
+                self.initialLocator = savedLoc
+                logger.debug("Restored reading position: progress=\(savedLoc?.totalProgression ?? 0.0)")
+            }
+
+            let bookURL = URL(fileURLWithPath: filePath)
+            let publication = try await Pub.loadPublication(from: bookURL)
+            logger.info("Publication loaded: '\(publication.metadata.title ?? "Unknown")' with \(publication.manifest.readingOrder.count) chapters")
+            self.viewModel = ReaderViewModel(publication: publication)
+            #if !SKIP
+            self.navigator = try EPUBNavigatorViewController(publication: publication.platformValue, initialLocation: locator?.platformValue, config: navConfig)
+            let delegate = ReaderLocationDelegate { loc in
+                self.locator = loc
+                self.persistLocator(loc)
+            }
+            delegate.onTap = { point, viewSize in
+                self.handleTap(x: Double(point.x), width: Double(viewSize.width))
+            }
+            self.navigatorDelegate = delegate
+            self.navigator?.delegate = delegate
+            applyPreferences()
+            #endif
+            if let db = database {
+                try? db.markOpened(bookID: bookID)
+                self.bookmarks = (try? db.bookmarks(forBookID: bookID)) ?? []
+            }
         } catch {
+            logger.error("Failed to open book id=\(bookID): \(error)")
             self.error = error
         }
     }
 
-    func loadPublication() async throws {
-        let publication: Pub = try await Pub.loadPublication(from: bookURL)
-        self.viewModel = ReaderViewModel(publication: publication)
+    func persistLocator(_ loc: Loc) {
+        guard let db = database else { return }
+        guard let json = loc.jsonString else { return }
+        let progress = loc.totalProgression ?? 0.0
+        logger.debug("Persisting reading position for book id=\(bookID): progress=\(progress)")
+        try? db.saveReadingPosition(bookID: bookID, locatorJSON: json, progress: progress)
+        updateBookmarkState()
+    }
+
+    func saveCurrentLocator() {
+        logger.info("Saving current locator for book id=\(bookID)")
         #if !SKIP
-        self.navigator = try EPUBNavigatorViewController(publication: publication.platformValue, initialLocation: locator?.platformValue, config: navConfig)
+        if let nav = navigator, let platformLoc = nav.currentLocation {
+            let loc = Loc(platformValue: platformLoc)
+            persistLocator(loc)
+        }
+        #endif
+        if let loc = locator {
+            persistLocator(loc)
+        }
+    }
+
+    // MARK: - Tap Handling
+
+    func handleTap(x: Double, width: Double) {
+        let third = width / 3.0
+        if showHUD {
+            showHUD = false
+        } else if x < third {
+            if settings.leftTapAdvances { goForward() } else { goBackward() }
+        } else if x > third * 2.0 {
+            goForward()
+        } else {
+            showHUD = true
+        }
+    }
+
+    // MARK: - Navigation
+
+    func goForward() {
+        let animated = settings.animatePageTurns
+        #if !SKIP
+        if let nav = navigator {
+            Task { await nav.goForward(options: animated ? .animated : .none) }
+        }
+        #else
+        if let nav = navigator {
+            Task { nav.goForward(animated) }
+        }
         #endif
     }
+
+    func goBackward() {
+        let animated = settings.animatePageTurns
+        #if !SKIP
+        if let nav = navigator {
+            Task { await nav.goBackward(options: animated ? .animated : .none) }
+        }
+        #else
+        if let nav = navigator {
+            Task { nav.goBackward(animated) }
+        }
+        #endif
+    }
+
+    func navigateToTOCEntry(_ link: Lnk) {
+        logger.info("Navigating to TOC entry: '\(link.title ?? "unknown")' href=\(link.href)")
+        let animated = settings.animatePageTurns
+        #if !SKIP
+        if let nav = navigator {
+            Task { await nav.go(to: link.platformValue, options: animated ? .animated : .none) }
+        }
+        #else
+        if let nav = navigator {
+            Task { nav.go(link.platformValue, animated) }
+        }
+        #endif
+        showTOC = false
+        showHUD = false
+    }
+
+    // MARK: - Preferences
+
+    /// Returns `true` if any reading preference differs from its default value.
+    func hasNonDefaultPreferences() -> Bool {
+        let s = settings
+        return s.fontSize != 1.0
+            || !s.fontFamily.isEmpty
+            || !s.columnCount.isEmpty
+            || !s.fit.isEmpty
+            || !s.hyphens.isEmpty
+            || s.lineHeight > 0.0
+            || s.pageMargins > 0.0
+            || s.paragraphSpacing > 0.0
+            || !s.publisherStyles.isEmpty
+            || !s.textAlign.isEmpty
+            || !s.textNormalization.isEmpty
+            || s.wordSpacing > 0.0
+    }
+
+    func adjustFontSize(increase: Bool) {
+        if increase {
+            settings.fontSize = min(settings.fontSize + 0.1, 3.0)
+        } else {
+            settings.fontSize = max(settings.fontSize - 0.1, 0.5)
+        }
+        logger.info("Reader font size changed to: \(Int(settings.fontSize * 100))%")
+        applyPreferences()
+    }
+
+    /// Determines whether the effective appearance is dark.
+    func effectiveIsDark() -> Bool {
+        if settings.appearance == "dark" { return true }
+        if settings.appearance == "light" { return false }
+        return colorScheme == .dark
+    }
+
+    func applyPreferences() {
+        let s = settings
+        let isDark = effectiveIsDark()
+
+        // Map string settings to typed optionals
+        let hyphensVal: Bool? = s.hyphens == "true" ? true : s.hyphens == "false" ? false : nil
+        let lineHeightVal: Double? = s.lineHeight > 0.0 ? s.lineHeight : nil
+        let pageMarginsVal: Double? = s.pageMargins > 0.0 ? s.pageMargins : nil
+        let paragraphSpacingVal: Double? = s.paragraphSpacing > 0.0 ? s.paragraphSpacing : nil
+        let publisherStylesVal: Bool? = s.publisherStyles == "true" ? true : s.publisherStyles == "false" ? false : nil
+        let textNormalizationVal: Bool? = s.textNormalization == "true" ? true : s.textNormalization == "false" ? false : nil
+        let wordSpacingVal: Double? = s.wordSpacing > 0.0 ? s.wordSpacing : nil
+
+        #if !SKIP
+        if let nav = navigator {
+            let fontFamilyVal: ReadiumNavigator.FontFamily? = s.fontFamily.isEmpty ? nil : ReadiumNavigator.FontFamily(rawValue: s.fontFamily)
+            let columnCountVal = s.columnCount.isEmpty ? nil : ReadiumNavigator.ColumnCount(rawValue: s.columnCount)
+            let fitVal = s.fit.isEmpty ? nil : ReadiumNavigator.Fit(rawValue: s.fit)
+            let textAlignVal = s.textAlign.isEmpty ? nil : ReadiumNavigator.TextAlignment(rawValue: s.textAlign)
+            let themeVal: ReadiumNavigator.Theme = isDark ? .dark : .light
+            let prefs = EPUBPreferences(
+                columnCount: columnCountVal,
+                fit: fitVal,
+                fontFamily: fontFamilyVal,
+                fontSize: s.fontSize,
+                hyphens: hyphensVal,
+                lineHeight: lineHeightVal,
+                pageMargins: pageMarginsVal,
+                paragraphSpacing: paragraphSpacingVal,
+                publisherStyles: publisherStylesVal,
+                textAlign: textAlignVal,
+                textNormalization: textNormalizationVal,
+                theme: themeVal,
+                wordSpacing: wordSpacingVal
+            )
+            nav.submitPreferences(prefs)
+        }
+        #else
+        if let nav = navigator {
+            let fontFamilyVal: org.readium.r2.navigator.preferences.FontFamily? = s.fontFamily.isEmpty ? nil : org.readium.r2.navigator.preferences.FontFamily(s.fontFamily)
+            let themeVal: org.readium.r2.navigator.preferences.Theme = isDark ? Theme.DARK : Theme.LIGHT
+            let prefs = org.readium.r2.navigator.epub.EpubPreferences(
+                fontFamily: fontFamilyVal,
+                fontSize: s.fontSize,
+                hyphens: hyphensVal,
+                lineHeight: lineHeightVal,
+                pageMargins: pageMarginsVal,
+                paragraphSpacing: paragraphSpacingVal,
+                publisherStyles: publisherStylesVal,
+                textNormalization: textNormalizationVal,
+                theme: themeVal,
+                wordSpacing: wordSpacingVal
+            )
+            nav.submitPreferences(prefs)
+        }
+        #endif
+    }
+
+    // MARK: - Brightness
+
+    func initBrightness() {
+        #if !SKIP
+        let current = Double(UIScreen.main.brightness)
+        screenBrightness = current
+        originalBrightness = current
+        #endif
+    }
+
+    func restoreBrightness() {
+        #if !SKIP
+        UIScreen.main.brightness = CGFloat(originalBrightness)
+        #else
+        if let activity = currentAndroidActivity {
+            activity.runOnUiThread {
+                let lp = activity.window.attributes
+                lp.screenBrightness = Float(-1.0) // restore system default
+                activity.window.attributes = lp
+            }
+            // Restore status bar
+            activity.window.insetsController?.show(android.view.WindowInsets.Type.statusBars())
+        }
+        currentAndroidActivity = nil
+        #endif
+    }
+
+    func applyScreenBrightness(_ value: Double) {
+        #if !SKIP
+        UIScreen.main.brightness = CGFloat(value)
+        #else
+        if let activity = currentAndroidActivity {
+            activity.runOnUiThread {
+                let lp = activity.window.attributes
+                lp.screenBrightness = Float(value)
+                activity.window.attributes = lp
+            }
+        }
+        #endif
+    }
+
+    // MARK: - Status Bar (Android)
+
+    #if SKIP
+    func updateAndroidStatusBar() {
+        guard settings.hideStatusBarInReader else { return }
+        if let activity = currentAndroidActivity {
+            let controller = activity.window.insetsController
+            if showHUD {
+                controller?.show(android.view.WindowInsets.Type.statusBars())
+            } else {
+                controller?.hide(android.view.WindowInsets.Type.statusBars())
+            }
+        }
+    }
+    #endif
+
+    // MARK: - Bookmarks
+
+    func refreshBookmarks() {
+        guard let db = database else { return }
+        do {
+            self.bookmarks = try db.bookmarks(forBookID: bookID)
+            updateBookmarkState()
+        } catch {
+            logger.error("Failed to refresh bookmarks: \(error)")
+        }
+    }
+
+    func updateBookmarkState() {
+        guard let loc = locator, let json = loc.jsonString else {
+            isCurrentPageBookmarked = false
+            return
+        }
+        // Check if current locator matches any bookmark by comparing locator JSON
+        var found = false
+        for bookmark in bookmarks {
+            if bookmark.locatorJSON == json {
+                found = true
+            }
+        }
+        isCurrentPageBookmarked = found
+    }
+
+    func toggleBookmark() {
+        guard let db = database else { return }
+        guard let loc = locator, let json = loc.jsonString else {
+            logger.warning("Cannot bookmark: no current locator")
+            return
+        }
+
+        if isCurrentPageBookmarked {
+            // Remove the bookmark matching the current locator
+            for bookmark in bookmarks {
+                if bookmark.locatorJSON == json {
+                    logger.info("Removing bookmark id=\(bookmark.id)")
+                    do {
+                        try db.deleteBookmark(id: bookmark.id)
+                    } catch {
+                        logger.error("Failed to delete bookmark: \(error)")
+                    }
+                }
+            }
+        } else {
+            // Add a new bookmark
+            let prog = loc.totalProgression ?? 0.0
+            let progressLabel = "\(Int(prog * 100))%"
+            let chapter = loc.title ?? ""
+            var excerpt = ""
+            if let highlight = loc.textHighlight {
+                excerpt = highlight
+            } else if let before = loc.textBefore {
+                excerpt = before
+            }
+            // Truncate excerpt to 200 characters
+            if excerpt.count > 200 {
+                excerpt = String(excerpt.prefix(200))
+            }
+            let sortOrder = Int64(bookmarks.count)
+            let record = BookmarkRecord(
+                bookID: bookID,
+                locatorJSON: json,
+                progressLabel: progressLabel,
+                excerpt: excerpt,
+                chapter: chapter,
+                sortOrder: sortOrder
+            )
+            logger.info("Adding bookmark at \(progressLabel) chapter='\(chapter)'")
+            do {
+                try db.addBookmark(record)
+            } catch {
+                logger.error("Failed to add bookmark: \(error)")
+            }
+        }
+        refreshBookmarks()
+    }
+
+    func navigateToBookmark(_ bookmark: BookmarkRecord) {
+        guard let loc = Loc.fromJSON(bookmark.locatorJSON) else {
+            logger.error("Invalid bookmark locator JSON")
+            return
+        }
+        logger.info("Navigating to bookmark id=\(bookmark.id): \(bookmark.progressLabel)")
+        let animated = settings.animatePageTurns
+        #if !SKIP
+        if let nav = navigator {
+            Task { await nav.go(to: loc.platformValue, options: animated ? .animated : .none) }
+        }
+        #else
+        if let nav = navigator {
+            Task { nav.go(loc.platformValue, animated) }
+        }
+        #endif
+        showTOC = false
+        showHUD = false
+    }
+
+    // MARK: - HUD Overlay
+
+    @ViewBuilder func hudOverlay(publication: Pub) -> some View {
+        if showHUD {
+            ZStack {
+                // Left column: close button + brightness slider
+                HStack {
+                    VStack(spacing: 12) {
+                        // Close button aligned with brightness slider
+                        Button {
+                            saveCurrentLocator()
+                            dismiss()
+                        } label: {
+                            Image("cancel", bundle: .module)
+                                .font(.system(size: 28))
+                                .foregroundStyle(Color.white)
+                                .background(Circle().fill(Color.black.opacity(0.5)))
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(Color.white)
+                        .accessibilityIdentifier("readerCloseButton")
+                        .accessibilityLabel("Close reader")
+
+                        Image("brightness_high", bundle: .module)
+                            .font(.caption)
+                            .foregroundStyle(Color.white)
+                            .accessibilityIdentifier("brightnessHighIcon")
+                            .accessibilityLabel("Maximum brightness")
+                        BrightnessSlider(value: $screenBrightness)
+                        Image("brightness_low", bundle: .module)
+                            .font(.caption)
+                            .foregroundStyle(Color.white)
+                            .accessibilityIdentifier("brightnessLowIcon")
+                            .accessibilityLabel("Minimum brightness")
+                    }
+                    .frame(width: 36)
+                    .padding(.top, 16)
+                    .padding(.bottom, 160)
+                    .padding(.leading, 10)
+                    Spacer()
+                }
+
+                // Main HUD content
+                VStack {
+                    // Top bar with bookmark button (right-aligned)
+                    HStack {
+                        Spacer()
+                        Button {
+                            toggleBookmark()
+                        } label: {
+                            Image(isCurrentPageBookmarked ? "bookmark_filled" : "bookmark", bundle: .module)
+                                .font(.system(size: 28))
+                                .foregroundStyle(Color.white)
+                                .background(Circle().fill(Color.black.opacity(0.5)))
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(Color.white)
+                        .accessibilityIdentifier("toggleBookmarkButton")
+                        .accessibilityLabel(isCurrentPageBookmarked ? "Remove bookmark" : "Add bookmark")
+                    }
+                    .padding(.top, 16)
+                    .padding(.horizontal, 16)
+
+                    Spacer()
+
+                    // Bottom controls
+                    VStack(spacing: 16) {
+                        // Progress indicator
+                        HStack {
+                            Text(locator?.title ?? "")
+                                .font(.caption)
+                                .foregroundStyle(Color.white)
+                                .lineLimit(1)
+                                .accessibilityIdentifier("readerChapterTitle")
+                            Spacer()
+                            let prog = locator?.totalProgression ?? 0.0
+                            Text("\(Int(prog * 100))%")
+                                .font(.caption)
+                                .foregroundStyle(Color.white)
+                                .accessibilityIdentifier("readerProgressPercent")
+                        }
+                        .padding(.horizontal, 16)
+
+                        ProgressView(value: locator?.totalProgression ?? 0.0)
+                            .tint(.white)
+                            .padding(.horizontal, 16)
+                            .accessibilityIdentifier("readerProgressBar")
+                            .accessibilityLabel("Reading progress")
+
+                        // Font size and TOC controls
+                        HStack(spacing: 32) {
+                            Button {
+                                adjustFontSize(increase: false)
+                            } label: {
+                                Image("remove_circle", bundle: .module)
+                                    .font(.title2)
+                                    .foregroundStyle(Color.white)
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(Color.white)
+                            .accessibilityIdentifier("decreaseFontSizeButton")
+                            .accessibilityLabel("Decrease font size")
+
+                            Text("Aa")
+                                .font(.headline)
+                                .foregroundStyle(Color.white)
+                                .accessibilityIdentifier("fontSizeIndicator")
+
+                            Button {
+                                adjustFontSize(increase: true)
+                            } label: {
+                                Image("add_circle", bundle: .module)
+                                    .font(.title2)
+                                    .foregroundStyle(Color.white)
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(Color.white)
+                            .accessibilityIdentifier("increaseFontSizeButton")
+                            .accessibilityLabel("Increase font size")
+
+                            Spacer()
+
+                            Button {
+                                showTOC = true
+                            } label: {
+                                Image("toc", bundle: .module)
+                                    .font(.title2)
+                                    .foregroundStyle(Color.white)
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(Color.white)
+                            .accessibilityIdentifier("tableOfContentsButton")
+                            .accessibilityLabel("Table of contents")
+                        }
+                        .padding(.horizontal, 24)
+                        .padding(.bottom, 40)
+                    }
+                    .padding(.top, 12)
+                    .background(Color.black.opacity(0.7))
+                }
+            }
+        }
+    }
+
+    // MARK: - Table of Contents & Bookmarks Sheet
+
+    func tocSheet(publication: Pub) -> some View {
+        BookLocationsBrowser(
+            publication: publication,
+            bookmarks: bookmarks,
+            currentLocator: locator,
+            database: database,
+            bookID: bookID,
+            onNavigateToTOC: { link in
+                navigateToTOCEntry(link)
+            },
+            onNavigateToBookmark: { bookmark in
+                navigateToBookmark(bookmark)
+            },
+            onBookmarksChanged: {
+                refreshBookmarks()
+            },
+            onDismiss: {
+                showTOC = false
+            }
+        )
+    }
+
+    // MARK: - Reader Container
 
     func readerViewContainer(publication: Pub) -> some View {
         #if !SKIP
@@ -118,26 +689,141 @@ struct ReaderView: View {
         )
         #else
         ComposeView { context in
-            // create a EpubReaderFragment
-            // https://github.com/readium/kotlin-toolkit/blob/develop/docs/guides/navigator/navigator.md#epubnavigatorfragment
+            let savedLocator = initialLocator?.platformValue
             let navigatorFactory = EpubNavigatorFactory(publication: publication.platformValue, configuration: navConfig)
-            let fragmentFactory = navigatorFactory.createFragmentFactory(initialLocator: locator?.platformValue, listener: nil)
-            //let fragmentManager = (LocalContext.current as FragmentActivity).supportFragmentManager
+            let paginationListener = ReaderPaginationListener(pageChanged: { pageIndex, totalPages, platformLocator in
+                let loc = Loc(platformValue: platformLocator)
+                self.locator = loc
+                self.persistLocator(loc)
+            })
+            let fragmentFactory = navigatorFactory.createFragmentFactory(initialLocator: savedLocator, listener: nil, paginationListener: paginationListener)
             guard let fragmentActivity = LocalContext.current.fragmentActivity else {
                 fatalError("could not extract FragmentActivity from LocalContext.current")
             }
+
+            // Capture activity for brightness and status bar control
+            if currentAndroidActivity == nil {
+                currentAndroidActivity = fragmentActivity
+                let wb = Double(fragmentActivity.window.attributes.screenBrightness)
+                if wb >= 0.0 {
+                    self.screenBrightness = wb
+                    self.originalBrightness = wb
+                }
+                if self.settings.hideStatusBarInReader {
+                    fragmentActivity.window.insetsController?.hide(android.view.WindowInsets.Type.statusBars())
+                }
+            }
+
             let fragmentManager = fragmentActivity.supportFragmentManager
             fragmentManager.fragmentFactory = fragmentFactory
             AndroidFragment<EpubNavigatorFragment>(
-                onUpdate: { fragment in
-                    // e.g. ReaderView: onUpdate: EpubNavigatorFragment{14dad07} (42dc86aa-c6a4-49a6-87a2-0341674f9485 id=0x88427037 tag=-2008911817)
-                    logger.info("ReaderView: onUpdate: \(fragment)")
+                onUpdate: { nav in
+                    self.navigator = nav
+                    if !self.inputListenerAdded {
+                        self.inputListenerAdded = true
+                        let listener = ReaderTapListener(tapHandler: { x, y in
+                            let w = Double(nav.view?.width ?? 1)
+                            self.handleTap(x: x, width: w)
+                        })
+                        nav.addInputListener(listener)
+                    }
+                    if !self.hasRestoredPosition {
+                        self.hasRestoredPosition = true
+                        if let savedLoc = self.initialLocator?.platformValue {
+                            nav.go(savedLoc, false)
+                        }
+                    }
+                    if !self.initialPrefsApplied {
+                        self.initialPrefsApplied = true
+                        self.applyPreferences()
+                    }
                 }
             )
         }
         #endif
     }
 }
+
+@Observable class ReaderViewModel {
+    var publication: Pub
+    var isFullscreen = false
+
+    init(publication: Pub, isFullscreen: Bool = false) {
+        self.publication = publication
+        self.isFullscreen = isFullscreen
+    }
+}
+
+#if SKIP
+
+/// Module-level reference to the current Activity, used for brightness and status bar control.
+/// Set from the ComposeView context where LocalContext is available.
+var currentAndroidActivity: android.app.Activity? = nil
+
+class ReaderTapListener: InputListener {
+    let tapHandler: (Double, Double) -> Void
+
+    init(tapHandler: @escaping (Double, Double) -> Void) {
+        self.tapHandler = tapHandler
+    }
+
+    override func onTap(_ event: TapEvent) -> Bool {
+        tapHandler(Double(event.point.x), Double(event.point.y))
+        return true
+    }
+
+    override func onDrag(_ event: DragEvent) -> Bool {
+        return false
+    }
+
+    override func onKey(_ event: KeyEvent) -> Bool {
+        return false
+    }
+}
+
+class ReaderPaginationListener: EpubNavigatorFragment.PaginationListener {
+    let pageChanged: (Int, Int, org.readium.r2.shared.publication.Locator) -> Void
+
+    init(pageChanged: @escaping (Int, Int, org.readium.r2.shared.publication.Locator) -> Void) {
+        self.pageChanged = pageChanged
+    }
+
+    override func onPageChanged(_ pageIndex: Int, _ totalPages: Int, _ locator: org.readium.r2.shared.publication.Locator) {
+        pageChanged(pageIndex, totalPages, locator)
+    }
+
+    override func onPageLoaded() {
+    }
+}
+#endif
+
+/// A vertical brightness slider: drag up to brighten, down to dim.
+struct BrightnessSlider: View {
+    @Binding var value: Double
+
+    var body: some View {
+        GeometryReader { geo in
+            let height = geo.size.height
+            ZStack(alignment: .bottom) {
+                Capsule()
+                    .fill(Color.white.opacity(0.3))
+                Capsule()
+                    .fill(Color.yellow.opacity(0.8))
+                    .frame(height: max(4.0, height * value))
+            }
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { drag in
+                        let newValue = 1.0 - (drag.location.y / height)
+                        value = min(1.0, max(0.01, newValue))
+                    }
+            )
+            .accessibilityIdentifier("brightnessSlider")
+            .accessibilityLabel("Screen brightness")
+        }
+    }
+}
+
 
 #if SKIP
 extension android.content.Context {
@@ -243,189 +929,6 @@ class ReaderViewController: UIViewController {
     func navigator(_ navigator: VisualNavigator, didTapAt point: CGPoint) {
         let viewSize = (navigator as? UIViewController)?.view.bounds.size ?? CGSize(width: 1.0, height: 1.0)
         onTap?(point, viewSize)
-    }
-}
-#endif
-
-
-#if !SKIP
-public typealias PlatformPrefs = ReadiumNavigator.EPUBPreferences
-#else
-public typealias PlatformPrefs = org.readium.r2.navigator.epub.EpubPreferences
-#endif
-
-/// A wrapper for an underlying `Link` type.
-public class Prefs {
-    public var platformValue: PlatformPrefs
-
-    public init(platformValue: PlatformPrefs) {
-        self.platformValue = platformValue
-    }
-
-//    /// Default page background color.
-//    public var backgroundColor: Color? {
-//        get { platformValue.backgroundColor }
-//        set { platformValue.backgroundColor = newValue }
-//    }
-
-//    /// Number of reflowable columns to display (one-page view or two-page
-//    /// spread).
-//    public var columnCount: ColumnCount? {
-//        get { platformValue.columnCount }
-//        set { platformValue.columnCount = newValue }
-//    }
-
-//    /// Default typeface for the text.
-//    public var fontFamily: FontFamily? {
-//        get { platformValue.fontFamily }
-//        set { platformValue.fontFamily = newValue }
-//    }
-
-    /// Base text font size.
-    public var fontSize: Double? {
-        get { platformValue.fontSize }
-        //set { platformValue.fontSize = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
-    }
-
-    /// Default boldness for the text.
-    public var fontWeight: Double? {
-        get { platformValue.fontWeight }
-        //set { platformValue.fontWeight = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
-    }
-
-    /// Enable hyphenation.
-    public var hyphens: Bool? {
-        get { platformValue.hyphens }
-        //set { platformValue.hyphens = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
-    }
-
-//    /// Filter applied to images in dark theme.
-//    public var imageFilter: ImageFilter? {
-//        get { platformValue.imageFilter }
-//        set { platformValue.imageFilter = newValue }
-//    }
-
-//    /// Language of the publication content.
-//    public var language: Language? {
-//        get { platformValue.language }
-//        set { platformValue.language = newValue }
-//    }
-
-    /// Space between letters.
-    public var letterSpacing: Double? {
-        get { platformValue.letterSpacing }
-        //set { platformValue.letterSpacing = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
-    }
-
-    /// Enable ligatures in Arabic.
-    public var ligatures: Bool? {
-        get { platformValue.ligatures }
-        //set { platformValue.ligatures = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
-    }
-
-    /// Leading line height.
-    public var lineHeight: Double? {
-        get { platformValue.lineHeight }
-        //set { platformValue.lineHeight = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
-    }
-
-    /// Factor applied to horizontal margins.
-    public var pageMargins: Double? {
-        get { platformValue.pageMargins }
-        //set { platformValue.pageMargins = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
-    }
-
-    /// Text indentation for paragraphs.
-    public var paragraphIndent: Double? {
-        get { platformValue.paragraphIndent }
-        //set { platformValue.paragraphIndent = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
-    }
-
-    /// Vertical margins for paragraphs.
-    public var paragraphSpacing: Double? {
-        get { platformValue.paragraphSpacing }
-        //set { platformValue.paragraphSpacing = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
-    }
-
-    /// Indicates whether the original publisher styles should be observed.
-    ///
-    /// Many settings require this to be off.
-    public var publisherStyles: Bool? {
-        get { platformValue.publisherStyles }
-        //set { platformValue.publisherStyles = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
-    }
-
-//    /// Direction of the reading progression across resources.
-//    public var readingProgression: ReadingProgression? {
-//        get { platformValue.readingProgression }
-//        set { platformValue.readingProgression = newValue }
-//    }
-
-    /// Indicates if the overflow of resources should be handled using
-    /// scrolling instead of synthetic pagination.
-    public var scroll: Bool? {
-        get { platformValue.scroll }
-        //set { platformValue.scroll = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
-    }
-
-//    /// Indicates if the fixed-layout publication should be rendered with a
-//    /// synthetic spread (dual-page).
-//    public var spread: Spread? {
-//        get { platformValue.spread }
-//        set { platformValue.spread = newValue }
-//    }
-
-//    /// Page text alignment.
-//    public var textAlign: TextAlignment? {
-//        get { platformValue.textAlign }
-//        set { platformValue.textAlign = newValue }
-//    }
-
-//    /// Default page text color.
-//    public var textColor: Color? {
-//        get { platformValue.textColor }
-//        set { platformValue.textColor = newValue }
-//    }
-
-//    /// Normalize text styles to increase accessibility.
-//    public var textColor: Bool? {
-//        get { platformValue.textColor }
-//        set { platformValue.textColor = newValue }
-//    }
-
-//    /// Reader theme.
-//    public var theme: Theme? {
-//        get { platformValue.theme }
-//        set { platformValue.theme = newValue }
-//    }
-
-    /// Scale applied to all element font sizes.
-    public var typeScale: Double? {
-        get { platformValue.typeScale }
-        //set { platformValue.typeScale = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
-    }
-
-    /// Indicates whether the text should be laid out vertically.
-    ///
-    /// This is used for example with CJK languages. This setting is
-    /// automatically derived from the language if no preference is given.
-    public var verticalText: Bool? {
-        get { platformValue.verticalText }
-        //set { platformValue.verticalText = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
-    }
-
-    /// Space between words.
-    public var wordSpacing: Double? {
-        get { platformValue.wordSpacing }
-        //set { platformValue.wordSpacing = newValue } // needs EpubNavigatorFactory(publication).createPreferencesEditor(preferences).apply { }
-    }
-
-}
-
-#if SKIP
-extension Prefs: KotlinConverting<PlatformPrefs> {
-    public override func kotlin(nocopy: Bool = false) -> PlatformPrefs {
-        return platformValue
     }
 }
 #endif
