@@ -4,12 +4,11 @@
 import SwiftUI
 import StanzaModel
 import SkipKit
-#if !SKIP && canImport(ReadiumNavigator)
+#if !SKIP
 import ReadiumNavigator
 import ReadiumShared
 import UIKit
-#endif
-#if SKIP
+#else
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.compose.AndroidFragment
 import androidx.compose.ui.platform.LocalContext
@@ -94,6 +93,7 @@ struct BookCoverView: View {
             .padding(6)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.gray.opacity(0.15))
+//            .accessibilityLabel("Book placeholder")
     }
 }
 
@@ -118,6 +118,8 @@ struct BrightnessSlider: View {
                         value = min(1.0, max(0.01, newValue))
                     }
             )
+            .accessibilityIdentifier("brightnessSlider")
+            .accessibilityLabel("Screen brightness")
         }
     }
 }
@@ -150,13 +152,16 @@ struct LibraryView: View {
                     VStack(spacing: 16) {
                         Text("No Books")
                             .font(.title2)
+                            .accessibilityIdentifier("noBooksTitle")
                         Text("Import a book to get started.")
                             .foregroundStyle(.secondary)
+                            .accessibilityIdentifier("noBooksMessage")
                         Button("Import Sample Book") {
                             Task {
                                 await importSampleBook()
                             }
                         }
+                        .accessibilityIdentifier("importSampleBookButton")
                     }
                 } else {
                     List {
@@ -187,6 +192,7 @@ struct LibraryView: View {
                             deleteBooks(at: Array(indices))
                         }
                     }
+                    //.accessibilityIdentifier("bookList") // this crashes the build for some reason
                     .searchable(text: $searchText, prompt: "Search books")
                     .navigationDestination(for: Int64.self) { bookID in
                         BookDetailView(bookID: bookID, database: database, onUpdate: { refreshBooks() })
@@ -201,6 +207,7 @@ struct LibraryView: View {
                     } label: {
                         Label(title: { Text("Add Book") }, icon: { Image("add", bundle: .module) })
                     }
+                    .accessibilityIdentifier("addBookButton")
                 }
             }
             .withDocumentPicker(
@@ -311,7 +318,7 @@ struct LibraryView: View {
     }
 
     private func extractCoverData(from pub: Pub) async -> Data? {
-        #if !SKIP && canImport(ReadiumNavigator)
+        #if !SKIP
         switch await pub.platformValue.cover() {
         case .success(let image):
             guard let image = image else { return nil }
@@ -319,14 +326,12 @@ struct LibraryView: View {
         case .failure:
             return nil
         }
-        #elseif SKIP
+        #else
         let bitmap: android.graphics.Bitmap? = pub.platformValue.cover()
         guard let bitmap = bitmap else { return nil }
         let stream = java.io.ByteArrayOutputStream()
         bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 85, stream)
         return Data(platformValue: stream.toByteArray())
-        #else
-        return nil
         #endif
     }
 
@@ -411,11 +416,10 @@ struct BookDetailView: View {
                             .foregroundStyle(.secondary)
                     }
                     Section {
-                        #if SKIP || canImport(ReadiumNavigator)
                         Button("Open Book") {
                             showReader = true
                         }
-                        #endif
+                        .accessibilityIdentifier("openBookButton")
                     }
                 }
                 .navigationTitle(book.title)
@@ -424,6 +428,7 @@ struct BookDetailView: View {
                         Button("Edit") {
                             isEditing = true
                         }
+                        .accessibilityIdentifier("editBookButton")
                     }
                 }
                 .sheet(isPresented: $isEditing) {
@@ -432,11 +437,9 @@ struct BookDetailView: View {
                         onUpdate?()
                     }
                 }
-                #if SKIP || canImport(ReadiumNavigator)
                 .fullScreenCover(isPresented: $showReader) {
                     LibraryReaderView(bookID: bookID, filePath: book.filePath, database: database)
                 }
-                #endif
             } else {
                 Text("Book not found")
             }
@@ -474,17 +477,22 @@ struct BookEditView: View {
             Form {
                 Section("Metadata") {
                     TextField("Title", text: $editTitle)
+                        .accessibilityIdentifier("editTitleField")
                     TextField("Author", text: $editAuthor)
+                        .accessibilityIdentifier("editAuthorField")
                     TextField("Identifier", text: $editIdentifier)
+                        .accessibilityIdentifier("editIdentifierField")
                 }
             }
             .navigationTitle("Edit Book")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
+                        .accessibilityIdentifier("editCancelButton")
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") { saveChanges() }
+                        .accessibilityIdentifier("editSaveButton")
                 }
             }
         }
@@ -508,7 +516,6 @@ struct BookEditView: View {
     }
 }
 
-#if SKIP || canImport(ReadiumNavigator)
 struct LibraryReaderView: View {
     let bookID: Int64
     let filePath: String
@@ -573,10 +580,13 @@ struct LibraryReaderView: View {
             } else if let error = error {
                 VStack {
                     Text("Error: \(String(describing: error))")
+                        .accessibilityIdentifier("readerErrorMessage")
                     Button("Dismiss") { dismiss() }
+                        .accessibilityIdentifier("readerErrorDismissButton")
                 }
             } else {
                 ProgressView("Loading...")
+                    .accessibilityIdentifier("readerLoadingIndicator")
             }
         }
         .preferredColorScheme(settings.appearance == "dark" ? .dark : settings.appearance == "light" ? .light : nil)
@@ -982,17 +992,25 @@ struct LibraryReaderView: View {
                         } label: {
                             Image("cancel", bundle: .module)
                                 .font(.system(size: 28))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(Color.white)
                                 .background(Circle().fill(Color.black.opacity(0.5)))
                         }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(Color.white)
+                        .accessibilityIdentifier("readerCloseButton")
+                        .accessibilityLabel("Close reader")
 
-                        Image(systemName: "sun.max.fill")
+                        Image("brightness_high", bundle: .module)
                             .font(.caption)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Color.white)
+                            .accessibilityIdentifier("brightnessHighIcon")
+                            .accessibilityLabel("Maximum brightness")
                         BrightnessSlider(value: $screenBrightness)
-                        Image(systemName: "sun.min")
+                        Image("brightness_low", bundle: .module)
                             .font(.caption)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Color.white)
+                            .accessibilityIdentifier("brightnessLowIcon")
+                            .accessibilityLabel("Minimum brightness")
                     }
                     .frame(width: 36)
                     .padding(.top, 16)
@@ -1011,9 +1029,13 @@ struct LibraryReaderView: View {
                         } label: {
                             Image(isCurrentPageBookmarked ? "bookmark_filled" : "bookmark", bundle: .module)
                                 .font(.system(size: 28))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(Color.white)
                                 .background(Circle().fill(Color.black.opacity(0.5)))
                         }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(Color.white)
+                        .accessibilityIdentifier("toggleBookmarkButton")
+                        .accessibilityLabel(isCurrentPageBookmarked ? "Remove bookmark" : "Add bookmark")
                     }
                     .padding(.top, 16)
                     .padding(.horizontal, 16)
@@ -1026,19 +1048,23 @@ struct LibraryReaderView: View {
                         HStack {
                             Text(locator?.title ?? "")
                                 .font(.caption)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(Color.white)
                                 .lineLimit(1)
+                                .accessibilityIdentifier("readerChapterTitle")
                             Spacer()
                             let prog = locator?.totalProgression ?? 0.0
                             Text("\(Int(prog * 100))%")
                                 .font(.caption)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(Color.white)
+                                .accessibilityIdentifier("readerProgressPercent")
                         }
                         .padding(.horizontal, 16)
 
                         ProgressView(value: locator?.totalProgression ?? 0.0)
                             .tint(.white)
                             .padding(.horizontal, 16)
+                            .accessibilityIdentifier("readerProgressBar")
+                            .accessibilityLabel("Reading progress")
 
                         // Font size and TOC controls
                         HStack(spacing: 32) {
@@ -1047,20 +1073,29 @@ struct LibraryReaderView: View {
                             } label: {
                                 Image("remove_circle", bundle: .module)
                                     .font(.title2)
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(Color.white)
                             }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(Color.white)
+                            .accessibilityIdentifier("decreaseFontSizeButton")
+                            .accessibilityLabel("Decrease font size")
 
                             Text("Aa")
                                 .font(.headline)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(Color.white)
+                                .accessibilityIdentifier("fontSizeIndicator")
 
                             Button {
                                 adjustFontSize(increase: true)
                             } label: {
                                 Image("add_circle", bundle: .module)
                                     .font(.title2)
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(Color.white)
                             }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(Color.white)
+                            .accessibilityIdentifier("increaseFontSizeButton")
+                            .accessibilityLabel("Increase font size")
 
                             Spacer()
 
@@ -1069,8 +1104,12 @@ struct LibraryReaderView: View {
                             } label: {
                                 Image("toc", bundle: .module)
                                     .font(.title2)
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(Color.white)
                             }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(Color.white)
+                            .accessibilityIdentifier("tableOfContentsButton")
+                            .accessibilityLabel("Table of contents")
                         }
                         .padding(.horizontal, 24)
                         .padding(.bottom, 40)
@@ -1213,6 +1252,7 @@ struct TOCAndBookmarksSheet: View {
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
                 .padding(.vertical, 8)
+                .accessibilityIdentifier("tocTabPicker")
 
                 if selectedTab == .contents {
                     tocList
@@ -1226,6 +1266,7 @@ struct TOCAndBookmarksSheet: View {
                     Button("Done") {
                         onDismiss()
                     }
+                    .accessibilityIdentifier("tocDoneButton")
                 }
             }
             .sheet(isPresented: $showEditSheet) {
@@ -1279,14 +1320,18 @@ struct TOCAndBookmarksSheet: View {
                 Image("bookmark", bundle: .module)
                     .font(.system(size: 48))
                     .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("noBookmarksIcon")
+                    .accessibilityLabel("No bookmarks")
                 Text("No Bookmarks")
                     .font(.title3)
                     .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("noBookmarksTitle")
                 Text("Tap the bookmark icon while reading to add one.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
+                    .accessibilityIdentifier("noBookmarksMessage")
             }
             .frame(maxHeight: .infinity)
         } else {
@@ -1328,19 +1373,22 @@ struct TOCAndBookmarksSheet: View {
                         Button {
                             shareBookmark(bookmark)
                         } label: {
-                            Label("Share", systemImage: "square.and.arrow.up")
+                            Label(title: { Text("Share") }, icon: { Image("share", bundle: .module) })
                         }
+                        .accessibilityIdentifier("shareBookmarkButton")
                         Button {
                             editingBookmark = bookmark
                             showEditSheet = true
                         } label: {
-                            Label("Edit Notes", systemImage: "pencil")
+                            Label(title: { Text("Edit Notes") }, icon: { Image("edit", bundle: .module) })
                         }
+                        .accessibilityIdentifier("editBookmarkButton")
                         Button(role: .destructive) {
                             deleteBookmark(bookmark)
                         } label: {
-                            Label("Delete", systemImage: "trash")
+                            Label(title: { Text("Delete") }, icon: { Image("delete", bundle: .module) })
                         }
+                        .accessibilityIdentifier("deleteBookmarkButton")
                     }
                     #endif
                 }
@@ -1474,17 +1522,20 @@ struct BookmarkEditSheet: View {
                 }
                 Section("Notes") {
                     TextField("Add notes...", text: $editNotes)
+                        .accessibilityIdentifier("bookmarkNotesField")
                 }
             }
             .navigationTitle("Edit Bookmark")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
+                        .accessibilityIdentifier("bookmarkEditCancelButton")
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
                         saveNotes()
                     }
+                    .accessibilityIdentifier("bookmarkEditSaveButton")
                 }
             }
         }
@@ -1504,4 +1555,3 @@ struct BookmarkEditSheet: View {
         }
     }
 }
-#endif

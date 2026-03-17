@@ -6,7 +6,6 @@ import SwiftUI
 import Observation
 import StanzaModel
 
-#if SKIP || canImport(ReadiumNavigator)
 #if !SKIP
 import ReadiumNavigator
 import ReadiumShared
@@ -69,12 +68,6 @@ struct ReaderView: View {
             Text("Opening \(publication.metadata.title ?? "Book")")
                 .fullScreenCover(isPresented: $isFullscreen) {
                     readerViewContainer(publication: publication)
-                        .overlay(alignment: .topTrailing) {
-                            closeButton {
-                                isFullscreen = false
-                                tab = .home
-                            }
-                        }
                 }
         } else {
             VStack {
@@ -110,17 +103,6 @@ struct ReaderView: View {
         #if !SKIP
         self.navigator = try EPUBNavigatorViewController(publication: publication.platformValue, initialLocation: locator?.platformValue, config: navConfig)
         #endif
-    }
-
-    func closeButton(action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Image("cancel", bundle: .module)
-                .font(.system(size: 28))
-                .foregroundStyle(.white)
-                .background(Circle().fill(.black.opacity(0.5)))
-        }
-        .padding(.top, 54)
-        .padding(.trailing, 16)
     }
 
     func readerViewContainer(publication: Pub) -> some View {
@@ -446,6 +428,4 @@ extension Prefs: KotlinConverting<PlatformPrefs> {
         return platformValue
     }
 }
-#endif
-
 #endif

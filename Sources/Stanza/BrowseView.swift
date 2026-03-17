@@ -21,19 +21,25 @@ struct BrowseView: View {
                         Image("explore", bundle: .module)
                             .font(.system(size: 48))
                             .foregroundStyle(.secondary)
+                            .accessibilityIdentifier("noCatalogsIcon")
+                            .accessibilityLabel("No catalogs")
                         Text("No Catalogs")
                             .font(.title2)
+                            .accessibilityIdentifier("noCatalogsTitle")
                         Text("Add an OPDS catalog to start browsing books.")
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
+                            .accessibilityIdentifier("noCatalogsMessage")
                         Button("Add Catalog") {
                             showAddCatalog = true
                         }
                         .buttonStyle(.borderedProminent)
+                        .accessibilityIdentifier("addCatalogEmptyButton")
                     }
                 } else if catalogDB == nil {
                     ProgressView("Loading...")
+                        .accessibilityIdentifier("browseLoadingIndicator")
                 } else {
                     List {
                         ForEach(catalogs) { catalog in
@@ -54,11 +60,13 @@ struct BrowseView: View {
                                 }
                                 .padding(.vertical, 2)
                             }
+                            .accessibilityIdentifier("catalogRow_\(catalog.id)")
                         }
                         .onDelete { indices in
                             deleteCatalogs(at: Array(indices))
                         }
                     }
+                    .accessibilityIdentifier("catalogList")
                 }
             }
             .navigationTitle("Browse")
@@ -69,6 +77,7 @@ struct BrowseView: View {
                     } label: {
                         Label(title: { Text("Add Catalog") }, icon: { Image("add", bundle: .module) })
                     }
+                    .accessibilityIdentifier("addCatalogButton")
                 }
             }
             .sheet(isPresented: $showAddCatalog) {
@@ -181,12 +190,15 @@ struct AddCatalogView: View {
                             }
                             .padding(.vertical, 2)
                         }
+                        .accessibilityIdentifier("recommendedCatalog_\(catalog.id)")
                     }
                 }
 
                 Section("Custom Catalog") {
                     TextField("Catalog Name", text: $customName)
+                        .accessibilityIdentifier("customCatalogNameField")
                     TextField("OPDS Feed URL", text: $customURL)
+                        .accessibilityIdentifier("customCatalogURLField")
                         #if !SKIP
                         .textInputAutocapitalization(.never)
                         .keyboardType(.URL)
@@ -196,12 +208,14 @@ struct AddCatalogView: View {
                         addCatalog(name: name, url: customURL, desc: nil)
                     }
                     .disabled(customURL.isEmpty)
+                    .accessibilityIdentifier("addCustomCatalogButton")
                 }
 
                 if let error = errorMessage {
                     Section {
                         Text(error)
                             .foregroundStyle(.red)
+                            .accessibilityIdentifier("addCatalogError")
                     }
                 }
             }
@@ -209,6 +223,7 @@ struct AddCatalogView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
+                        .accessibilityIdentifier("addCatalogCancelButton")
                 }
             }
         }
@@ -271,25 +286,31 @@ struct CatalogFeedView: View {
             if isLoading && feedContent == nil {
                 VStack(spacing: 12) {
                     ProgressView()
+                        .accessibilityIdentifier("feedLoadingSpinner")
                     Text("Loading catalog...")
                         .foregroundStyle(.secondary)
                 }
             } else if let error = errorMessage, feedContent == nil {
                 VStack(spacing: 16) {
-                    Image(systemName: "exclamationmark.triangle")
+                    Image("warning", bundle: .module)
                         .font(.system(size: 48))
                         .foregroundStyle(.secondary)
+                        .accessibilityIdentifier("feedErrorIcon")
+                        .accessibilityLabel("Error")
                     Text("Failed to Load")
                         .font(.title3)
+                        .accessibilityIdentifier("feedErrorTitle")
                     Text(error)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
+                        .accessibilityIdentifier("feedErrorMessage")
                     Button("Retry") {
                         Task { await loadFeed() }
                     }
                     .buttonStyle(.bordered)
+                    .accessibilityIdentifier("feedRetryButton")
                 }
             } else {
                 feedList
@@ -332,9 +353,10 @@ struct CatalogFeedView: View {
                                 Label {
                                     Text(nav.title)
                                 } icon: {
-                                    Image(systemName: "folder")
+                                    Image("folder", bundle: .module)
                                 }
                             }
+                            .accessibilityIdentifier("categoryLink_\(index)")
                         }
                     }
                 }
@@ -349,6 +371,7 @@ struct CatalogFeedView: View {
                             NavigationLink(value: PubLink(entry: pub)) {
                                 PublicationRow(entry: pub)
                             }
+                            .accessibilityIdentifier("groupPub_\(index)_\(pubIndex)")
                         }
                         // Group navigation
                         ForEach(Array(group.navigation.enumerated()), id: \.offset) { navIndex, nav in
@@ -357,9 +380,10 @@ struct CatalogFeedView: View {
                                     Label {
                                         Text(nav.title)
                                     } icon: {
-                                        Image(systemName: "folder")
+                                        Image("folder", bundle: .module)
                                     }
                                 }
+                                .accessibilityIdentifier("groupNav_\(index)_\(navIndex)")
                             }
                         }
                         // "More" link for groups
@@ -368,6 +392,7 @@ struct CatalogFeedView: View {
                                 Text("See All")
                                     .foregroundStyle(Color.accentColor)
                             }
+                            .accessibilityIdentifier("groupSeeAll_\(index)")
                         }
                     } header: {
                         Text(group.title)
@@ -383,6 +408,7 @@ struct CatalogFeedView: View {
                             NavigationLink(value: FeedLink(href: link.href, title: link.title)) {
                                 Text(link.title)
                             }
+                            .accessibilityIdentifier("facetLink_\(index)_\(linkIndex)")
                         }
                     }
                 }
@@ -395,6 +421,7 @@ struct CatalogFeedView: View {
                         NavigationLink(value: PubLink(entry: pub)) {
                             PublicationRow(entry: pub)
                         }
+                        .accessibilityIdentifier("publicationRow_\(index)")
                         .onAppear {
                             if index == allPublications.count - 1 {
                                 Task { await loadNextPage() }
@@ -405,12 +432,14 @@ struct CatalogFeedView: View {
                         HStack {
                             Spacer()
                             ProgressView()
+                                .accessibilityIdentifier("loadMoreSpinner")
                             Spacer()
                         }
                     }
                 }
             }
         }
+        .accessibilityIdentifier("feedList")
     }
 
     // MARK: - Data Loading
@@ -532,26 +561,33 @@ struct PublicationRow: View {
                 }
                 .frame(width: 50, height: 70)
                 .clipShape(RoundedRectangle(cornerRadius: 4))
+                .accessibilityIdentifier("pubRowCover")
+                .accessibilityLabel("\(entry.title) cover")
             } else {
                 bookPlaceholder
                     .frame(width: 50, height: 70)
+                    .accessibilityIdentifier("pubRowPlaceholder")
+                    .accessibilityLabel("\(entry.title) placeholder")
             }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(entry.title)
                     .font(.headline)
                     .lineLimit(2)
+                    .accessibilityIdentifier("pubRowTitle")
                 if !entry.authors.isEmpty {
                     Text(entry.authors.joined(separator: ", "))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
+                        .accessibilityIdentifier("pubRowAuthor")
                 }
                 if let summary = entry.summary {
                     Text(summary)
                         .font(.caption)
                         .foregroundStyle(.secondary).opacity(0.7)
                         .lineLimit(2)
+                        .accessibilityIdentifier("pubRowSummary")
                 }
             }
         }
@@ -562,8 +598,9 @@ struct PublicationRow: View {
         RoundedRectangle(cornerRadius: 4)
             .fill(Color.secondary.opacity(0.2))
             .overlay {
-                Image(systemName: "book")
+                Image("menu_book", bundle: .module)
                     .foregroundStyle(.secondary)
+                    .accessibilityLabel("Book placeholder")
             }
     }
 }
@@ -594,13 +631,17 @@ struct OPDSBookDetailView: View {
                         default:
                             ProgressView()
                                 .frame(height: 200)
+                                .accessibilityIdentifier("bookDetailCoverLoading")
                         }
                     }
                     .frame(maxHeight: 300)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .shadow(radius: 4)
+                    .accessibilityIdentifier("bookDetailCover")
+                    .accessibilityLabel("\(entry.title) cover image")
                 } else {
                     coverPlaceholder
+                        .accessibilityIdentifier("bookDetailCoverPlaceholder")
                 }
 
                 // Title and author
@@ -609,11 +650,13 @@ struct OPDSBookDetailView: View {
                         .font(.title2)
                         .fontWeight(.bold)
                         .multilineTextAlignment(.center)
+                        .accessibilityIdentifier("bookDetailTitle")
 
                     if !entry.authors.isEmpty {
                         Text(entry.authors.joined(separator: ", "))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
+                            .accessibilityIdentifier("bookDetailAuthor")
                     }
                 }
 
@@ -623,6 +666,7 @@ struct OPDSBookDetailView: View {
                         .font(.body)
                         .foregroundStyle(.secondary)
                         .padding(.horizontal)
+                        .accessibilityIdentifier("bookDetailSummary")
                 }
 
                 Divider()
@@ -634,8 +678,8 @@ struct OPDSBookDetailView: View {
                         Label(title: { Text("Downloaded") }, icon: { Image("checkmark.circle.fill", bundle: .module) })
                             .foregroundStyle(.green)
                             .font(.headline)
+                            .accessibilityIdentifier("bookDetailDownloadedLabel")
 
-                        #if SKIP || canImport(ReadiumNavigator)
                         Button {
                             showReader = true
                         } label: {
@@ -644,7 +688,7 @@ struct OPDSBookDetailView: View {
                         }
                         .buttonStyle(.borderedProminent)
                         .padding(.horizontal)
-                        #endif
+                        .accessibilityIdentifier("bookDetailOpenButton")
                     } else if let dl = downloader {
                         FileDownloadView(
                             downloader: dl,
@@ -654,6 +698,7 @@ struct OPDSBookDetailView: View {
                             }
                         )
                         .padding(.horizontal)
+                        .accessibilityIdentifier("bookDetailDownloadView")
                     } else if entry.acquisitionURL != nil {
                         Button {
                             startDownload()
@@ -663,9 +708,11 @@ struct OPDSBookDetailView: View {
                         }
                         .buttonStyle(.borderedProminent)
                         .padding(.horizontal)
+                        .accessibilityIdentifier("bookDetailDownloadButton")
                     } else {
                         Text("No download available")
                             .foregroundStyle(.secondary)
+                            .accessibilityIdentifier("bookDetailNoDownload")
                     }
                 }
 
@@ -674,6 +721,7 @@ struct OPDSBookDetailView: View {
                         .font(.caption)
                         .foregroundStyle(.red)
                         .padding(.horizontal)
+                        .accessibilityIdentifier("bookDetailImportError")
                 }
 
                 // Metadata
@@ -686,6 +734,7 @@ struct OPDSBookDetailView: View {
                             Text(formatDisplayName(acqType))
                                 .foregroundStyle(.secondary)
                         }
+                        .accessibilityIdentifier("bookDetailFormat")
                     }
                 }
                 .padding(.horizontal)
@@ -698,7 +747,6 @@ struct OPDSBookDetailView: View {
         #if !SKIP
         .navigationBarTitleDisplayMode(.inline)
         #endif
-        #if SKIP || canImport(ReadiumNavigator)
         .fullScreenCover(isPresented: $showReader) {
             if let bookID = downloadedBookID, let bookDB = bookDB {
                 if let book = try? bookDB.book(id: bookID) {
@@ -706,7 +754,6 @@ struct OPDSBookDetailView: View {
                 }
             }
         }
-        #endif
     }
 
     var coverPlaceholder: some View {
@@ -715,9 +762,10 @@ struct OPDSBookDetailView: View {
             .frame(width: 180, height: 260)
             .overlay {
                 VStack(spacing: 8) {
-                    Image(systemName: "book")
+                    Image("menu_book", bundle: .module)
                         .font(.system(size: 40))
                         .foregroundStyle(.secondary)
+                        .accessibilityLabel("Book placeholder")
                     Text(entry.title)
                         .font(.caption)
                         .foregroundStyle(.secondary)

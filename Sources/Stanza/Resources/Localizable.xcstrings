@@ -1,6 +1,15 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ cover" : {
+
+    },
+    "%@ cover image" : {
+
+    },
+    "%@ placeholder" : {
+
+    },
     "%lld/%lld" : {
       "localizations" : {
         "en" : {
@@ -21,6 +30,9 @@
 
     },
     "Add Book" : {
+
+    },
+    "Add bookmark" : {
 
     },
     "Add Catalog" : {
@@ -81,6 +93,9 @@
     "Book not found" : {
 
     },
+    "Book placeholder" : {
+
+    },
     "Bookmark Info" : {
 
     },
@@ -94,6 +109,9 @@
 
     },
     "Cancel" : {
+
+    },
+    "Cancel download" : {
 
     },
     "Cancelled" : {
@@ -115,6 +133,9 @@
 
     },
     "Charter" : {
+
+    },
+    "Close reader" : {
 
     },
     "Columns" : {
@@ -154,6 +175,9 @@
         }
       }
     },
+    "Decrease font size" : {
+
+    },
     "Default" : {
 
     },
@@ -166,10 +190,19 @@
     "Done" : {
 
     },
+    "Download" : {
+
+    },
     "Download Book" : {
 
     },
     "Download cancelled" : {
+
+    },
+    "Download complete" : {
+
+    },
+    "Download progress" : {
 
     },
     "Downloaded" : {
@@ -185,6 +218,9 @@
 
     },
     "Edit Notes" : {
+
+    },
+    "Error" : {
 
     },
     "Error: %@" : {
@@ -284,6 +320,9 @@
     "Import Sample Book" : {
 
     },
+    "Increase font size" : {
+
+    },
     "Iowan Old Style" : {
 
     },
@@ -371,7 +410,13 @@
     "Loading..." : {
 
     },
+    "Maximum brightness" : {
+
+    },
     "Metadata" : {
+
+    },
+    "Minimum brightness" : {
 
     },
     "Montserrat" : {
@@ -409,10 +454,16 @@
     "New York" : {
 
     },
+    "No bookmarks" : {
+
+    },
     "No Bookmarks" : {
 
     },
     "No Books" : {
+
+    },
+    "No catalogs" : {
 
     },
     "No Catalogs" : {
@@ -495,10 +546,16 @@
     "Reading" : {
 
     },
+    "Reading progress" : {
+
+    },
     "Ready to download" : {
 
     },
     "Recommended Catalogs" : {
+
+    },
+    "Remove bookmark" : {
 
     },
     "Reset All Reading Preferences" : {
@@ -508,6 +565,9 @@
 
     },
     "Retry" : {
+
+    },
+    "Retry download" : {
 
     },
     "Right" : {
@@ -547,6 +607,9 @@
           }
         }
       }
+    },
+    "Screen brightness" : {
+
     },
     "Search books" : {
 
@@ -624,6 +687,9 @@
           }
         }
       }
+    },
+    "Table of contents" : {
+
     },
     "Table of Contents" : {
 

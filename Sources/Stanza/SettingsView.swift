@@ -17,17 +17,22 @@ struct SettingsView: View {
                         Text("Light").tag("light")
                         Text("Dark").tag("dark")
                     }
+                    .accessibilityIdentifier("appearancePicker")
                     HStack {
                         Text("Font Size")
                         Spacer()
                         Text("\(Int(settings.fontSize * 100))%")
                             .foregroundStyle(.secondary)
+                            .accessibilityIdentifier("fontSizeValue")
                     }
                     Slider(value: $settings.fontSize, in: 0.5...3.0, step: 0.1)
+                        .accessibilityIdentifier("fontSizeSlider")
+                        .accessibilityLabel("Font Size")
                     if settings.fontSize != 1.0 {
                         Button("Reset Font Size") {
                             settings.fontSize = 1.0
                         }
+                        .accessibilityIdentifier("resetFontSizeButton")
                     }
                     Picker("Font", selection: $settings.fontFamily) {
                         Text("Publisher Default").tag("")
@@ -52,10 +57,14 @@ struct SettingsView: View {
                         // Embedded custom font (both platforms)
                         Text("Montserrat").tag("Montserrat")
                     }
+                    .accessibilityIdentifier("fontPicker")
 
                     Toggle("Animate Page Turns", isOn: $settings.animatePageTurns)
+                        .accessibilityIdentifier("animatePageTurnsToggle")
                     Toggle("Left Tap Advances", isOn: $settings.leftTapAdvances)
+                        .accessibilityIdentifier("leftTapAdvancesToggle")
                     Toggle("Hide Status Bar in Reader", isOn: $settings.hideStatusBarInReader)
+                        .accessibilityIdentifier("hideStatusBarToggle")
                 }
 
                 Section("Text Layout") {
@@ -64,18 +73,21 @@ struct SettingsView: View {
                         Text("One").tag("1")
                         Text("Two").tag("2")
                     }
+                    .accessibilityIdentifier("columnsPicker")
 
                     Picker("Content Fit", selection: $settings.fit) {
                         Text("Auto").tag("")
                         Text("Page").tag("page")
                         Text("Width").tag("width")
                     }
+                    .accessibilityIdentifier("contentFitPicker")
 
                     Picker("Hyphenation", selection: $settings.hyphens) {
                         Text("Default").tag("")
                         Text("On").tag("true")
                         Text("Off").tag("false")
                     }
+                    .accessibilityIdentifier("hyphenationPicker")
 
                     Picker("Text Alignment", selection: $settings.textAlign) {
                         Text("Default").tag("")
@@ -85,18 +97,21 @@ struct SettingsView: View {
                         Text("Right").tag("right")
                         Text("Justify").tag("justify")
                     }
+                    .accessibilityIdentifier("textAlignmentPicker")
 
                     Picker("Text Normalization", selection: $settings.textNormalization) {
                         Text("Default").tag("")
                         Text("On").tag("true")
                         Text("Off").tag("false")
                     }
+                    .accessibilityIdentifier("textNormalizationPicker")
 
                     Picker("Publisher Styles", selection: $settings.publisherStyles) {
                         Text("Default").tag("")
                         Text("On").tag("true")
                         Text("Off").tag("false")
                     }
+                    .accessibilityIdentifier("publisherStylesPicker")
                 }
 
                 Section("Spacing") {
@@ -106,8 +121,11 @@ struct SettingsView: View {
                             Spacer()
                             Text(settings.lineHeight > 0.0 ? String(format: "%.1f", settings.lineHeight) : "Default")
                                 .foregroundStyle(.secondary)
+                                .accessibilityIdentifier("lineHeightValue")
                         }
                         Slider(value: $settings.lineHeight, in: 0.0...3.0, step: 0.1)
+                            .accessibilityIdentifier("lineHeightSlider")
+                            .accessibilityLabel("Line Height")
                     }
 
                     VStack(alignment: .leading) {
@@ -116,8 +134,11 @@ struct SettingsView: View {
                             Spacer()
                             Text(settings.pageMargins > 0.0 ? String(format: "%.1f", settings.pageMargins) : "Default")
                                 .foregroundStyle(.secondary)
+                                .accessibilityIdentifier("pageMarginsValue")
                         }
                         Slider(value: $settings.pageMargins, in: 0.0...4.0, step: 0.1)
+                            .accessibilityIdentifier("pageMarginsSlider")
+                            .accessibilityLabel("Page Margins")
                     }
 
                     VStack(alignment: .leading) {
@@ -126,8 +147,11 @@ struct SettingsView: View {
                             Spacer()
                             Text(settings.paragraphSpacing > 0.0 ? String(format: "%.1f", settings.paragraphSpacing) : "Default")
                                 .foregroundStyle(.secondary)
+                                .accessibilityIdentifier("paragraphSpacingValue")
                         }
                         Slider(value: $settings.paragraphSpacing, in: 0.0...4.0, step: 0.1)
+                            .accessibilityIdentifier("paragraphSpacingSlider")
+                            .accessibilityLabel("Paragraph Spacing")
                     }
 
                     VStack(alignment: .leading) {
@@ -136,8 +160,11 @@ struct SettingsView: View {
                             Spacer()
                             Text(settings.wordSpacing > 0.0 ? String(format: "%.1f", settings.wordSpacing) : "Default")
                                 .foregroundStyle(.secondary)
+                                .accessibilityIdentifier("wordSpacingValue")
                         }
                         Slider(value: $settings.wordSpacing, in: 0.0...2.0, step: 0.05)
+                            .accessibilityIdentifier("wordSpacingSlider")
+                            .accessibilityLabel("Word Spacing")
                     }
                 }
 
@@ -146,6 +173,7 @@ struct SettingsView: View {
                         settings.resetReadingPreferences()
                     }
                     .foregroundStyle(.red)
+                    .accessibilityIdentifier("resetAllPreferencesButton")
                 }
             }
             .navigationTitle("Settings")

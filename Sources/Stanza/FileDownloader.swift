@@ -308,25 +308,30 @@ public struct FileDownloadView: View {
         Button {
             downloader.start()
         } label: {
-            Label(downloadLabel, systemImage: "arrow.down.circle")
+            Label(title: { Text(downloadLabel) }, icon: { Image("download", bundle: .module) })
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(.borderedProminent)
+        .accessibilityIdentifier("downloadStartButton")
     }
 
     @ViewBuilder private var downloadingView: some View {
         VStack(spacing: 6) {
             ProgressView(value: downloader.progress >= 0.0 ? downloader.progress : nil)
+                .accessibilityIdentifier("downloadProgressBar")
+                .accessibilityLabel("Download progress")
 
             HStack {
                 Text(downloader.displayName)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
+                    .accessibilityIdentifier("downloadFileName")
                 Spacer()
                 Text(progressText)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("downloadProgressText")
             }
 
             Button(cancelLabel) {
@@ -334,13 +339,15 @@ public struct FileDownloadView: View {
             }
             .foregroundStyle(.red)
             .font(.caption)
+            .accessibilityIdentifier("downloadCancelButton")
         }
     }
 
     @ViewBuilder private var completedView: some View {
-        Label(completedLabel, systemImage: "checkmark.circle.fill")
+        Label(title: { Text(completedLabel) }, icon: { Image("check_circle", bundle: .module) })
             .foregroundStyle(.green)
             .font(.headline)
+            .accessibilityIdentifier("downloadCompletedLabel")
             .onAppear {
                 onCompleted?()
             }
@@ -348,14 +355,16 @@ public struct FileDownloadView: View {
 
     @ViewBuilder private func failedView(message: String) -> some View {
         VStack(spacing: 4) {
-            Label(message, systemImage: "exclamationmark.triangle")
+            Label(title: { Text(message) }, icon: { Image("warning", bundle: .module) })
                 .foregroundStyle(.red)
                 .font(.caption)
+                .accessibilityIdentifier("downloadErrorLabel")
             Button("Retry") {
                 downloader.reset()
                 downloader.start()
             }
             .font(.caption)
+            .accessibilityIdentifier("downloadRetryButton")
         }
     }
 
@@ -364,11 +373,13 @@ public struct FileDownloadView: View {
             Text("Download cancelled")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+                .accessibilityIdentifier("downloadCancelledLabel")
             Button("Retry") {
                 downloader.reset()
                 downloader.start()
             }
             .font(.caption)
+            .accessibilityIdentifier("downloadRetryCancelledButton")
         }
     }
 
@@ -465,25 +476,33 @@ public struct FileDownloadRowView: View {
             Button {
                 downloader.start()
             } label: {
-                Image(systemName: "arrow.down.circle")
+                Image("download", bundle: .module)
             }
+            .accessibilityIdentifier("rowDownloadButton")
+            .accessibilityLabel("Download")
         case .downloading:
             Button {
                 downloader.cancel()
             } label: {
-                Image(systemName: "xmark.circle")
+                Image("cancel", bundle: .module)
                     .foregroundStyle(.red)
             }
+            .accessibilityIdentifier("rowCancelButton")
+            .accessibilityLabel("Cancel download")
         case .completed:
-            Image(systemName: "checkmark.circle.fill")
+            Image("check_circle", bundle: .module)
                 .foregroundStyle(.green)
+                .accessibilityIdentifier("rowCompletedIcon")
+                .accessibilityLabel("Download complete")
         case .failed, .cancelled:
             Button {
                 downloader.reset()
                 downloader.start()
             } label: {
-                Image(systemName: "arrow.clockwise.circle")
+                Image("refresh", bundle: .module)
             }
+            .accessibilityIdentifier("rowRetryButton")
+            .accessibilityLabel("Retry download")
         }
     }
 
