@@ -1,7 +1,17 @@
 # Stanza
 
-This is a [Skip](https://skip.dev) dual-platform app project.
-It builds a native app for both iOS and Android.
+This is a [Skip](https://skip.dev) dual-platform ebook reader built on top of the [Readium SDK](https://readium.org/development/readium-sdk-overview/).
+
+<img width="240" height="507" alt="Stanza_Reader_Android" src="https://github.com/user-attachments/assets/e05784a0-69e4-4805-8ca6-a2deb490c8d3" />
+<img width="244" height="492" alt="Stanza_Reader_iOS" src="https://github.com/user-attachments/assets/14c60926-1508-4a7d-b543-e957e242ae63" />
+<img width="240" height="507" alt="Stanza_Library_Android" src="https://github.com/user-attachments/assets/a957654c-9c8c-403b-9de2-25be40c60dcc" />
+<img width="244" height="491" alt="Stanza_Library_iOS" src="https://github.com/user-attachments/assets/9765e846-f7f6-4067-9bb7-44918600e508" />
+
+<img width="240" height="507" alt="Stanza_Browse_Android" src="https://github.com/user-attachments/assets/691e249a-d4ed-41c7-abb1-a4ec66a59c99" />
+<img width="244" height="492" alt="Stanza_Browse_iOS" src="https://github.com/user-attachments/assets/0450099f-78a2-4a9a-9268-c2e8bb58f807" />
+<img width="240" height="507" alt="Stanza_Settings_Android" src="https://github.com/user-attachments/assets/b8735a4b-e219-47b6-9187-29608bf0476c" />
+<img width="244" height="494" alt="Stanza_Settings_iOS" src="https://github.com/user-attachments/assets/4bc6a3a1-aadc-4184-ba06-6faa700bda8c" />
+
 
 ## Building
 
