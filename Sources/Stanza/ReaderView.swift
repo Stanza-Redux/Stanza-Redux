@@ -61,8 +61,6 @@ struct ReaderView: View {
     @Environment(StanzaSettings.self) var settings: StanzaSettings
     @Environment(\.colorScheme) var colorScheme
     @State var initialPrefsApplied: Bool = false
-    @State var screenBrightness: Double = 0.5
-    @State var originalBrightness: Double = 0.5
     @Environment(\.dismiss) var dismiss
 
     #if !SKIP
@@ -90,7 +88,6 @@ struct ReaderView: View {
         .onChange(of: settings.wordSpacing) { applyPreferences() }
         .onChange(of: settings.appearance) { applyPreferences() }
         .onChange(of: colorScheme) { applyPreferences() }
-        .onChange(of: screenBrightness) { applyScreenBrightness(screenBrightness) }
         #if SKIP
         .onChange(of: showHUD) { updateAndroidStatusBar() }
         #endif
@@ -126,12 +123,8 @@ struct ReaderView: View {
         .task {
             await loadBook()
         }
-        .onAppear {
-            initBrightness()
-        }
         .onDisappear {
             saveCurrentLocator()
-            restoreBrightness()
         }
     }
 
@@ -349,47 +342,6 @@ struct ReaderView: View {
         #endif
     }
 
-    // MARK: - Brightness
-
-    func initBrightness() {
-        #if !SKIP
-        let current = Double(UIScreen.main.brightness)
-        screenBrightness = current
-        originalBrightness = current
-        #endif
-    }
-
-    func restoreBrightness() {
-        #if !SKIP
-        UIScreen.main.brightness = CGFloat(originalBrightness)
-        #else
-        if let activity = currentAndroidActivity {
-            activity.runOnUiThread {
-                let lp = activity.window.attributes
-                lp.screenBrightness = Float(-1.0) // restore system default
-                activity.window.attributes = lp
-            }
-            // Restore status bar
-            activity.window.insetsController?.show(android.view.WindowInsets.Type.statusBars())
-        }
-        currentAndroidActivity = nil
-        #endif
-    }
-
-    func applyScreenBrightness(_ value: Double) {
-        #if !SKIP
-        UIScreen.main.brightness = CGFloat(value)
-        #else
-        if let activity = currentAndroidActivity {
-            activity.runOnUiThread {
-                let lp = activity.window.attributes
-                lp.screenBrightness = Float(value)
-                activity.window.attributes = lp
-            }
-        }
-        #endif
-    }
-
     // MARK: - Status Bar (Android)
 
     #if SKIP
@@ -510,142 +462,113 @@ struct ReaderView: View {
 
     @ViewBuilder func hudOverlay(publication: Pub) -> some View {
         if showHUD {
-            ZStack {
-                // Left column: close button + brightness slider
+            // Main HUD content
+            VStack {
                 HStack {
-                    VStack(spacing: 12) {
-                        // Close button aligned with brightness slider
-                        Button {
-                            saveCurrentLocator()
-                            dismiss()
-                        } label: {
-                            Image("cancel", bundle: .module)
-                                .font(.system(size: 28))
-                                .foregroundStyle(Color.white)
-                                .background(Circle().fill(Color.black.opacity(0.5)))
-                        }
-                        .buttonStyle(.plain)
-                        .foregroundStyle(Color.white)
-                        .accessibilityIdentifier("readerCloseButton")
-                        .accessibilityLabel("Close reader")
-
-                        Image("brightness_high", bundle: .module)
-                            .font(.caption)
-                            .foregroundStyle(Color.white)
-                            .accessibilityIdentifier("brightnessHighIcon")
-                            .accessibilityLabel("Maximum brightness")
-                        BrightnessSlider(value: $screenBrightness)
-                        Image("brightness_low", bundle: .module)
-                            .font(.caption)
-                            .foregroundStyle(Color.white)
-                            .accessibilityIdentifier("brightnessLowIcon")
-                            .accessibilityLabel("Minimum brightness")
+                    // Close button
+                    Button {
+                        saveCurrentLocator()
+                        dismiss()
+                    } label: {
+                        Image("cancel", bundle: .module)
+                            .font(.system(size: 28))
                     }
-                    .frame(width: 36)
-                    .padding(.top, 16)
-                    .padding(.bottom, 160)
-                    .padding(.leading, 10)
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("readerCloseButton")
+                    .accessibilityLabel("Close reader")
+
                     Spacer()
-                }
 
-                // Main HUD content
-                VStack {
-                    // Top bar with bookmark button (right-aligned)
-                    HStack {
-                        Spacer()
-                        Button {
-                            toggleBookmark()
-                        } label: {
-                            Image(isCurrentPageBookmarked ? "bookmark_filled" : "bookmark", bundle: .module)
-                                .font(.system(size: 28))
-                                .foregroundStyle(Color.white)
-                                .background(Circle().fill(Color.black.opacity(0.5)))
-                        }
-                        .buttonStyle(.plain)
-                        .foregroundStyle(Color.white)
-                        .accessibilityIdentifier("toggleBookmarkButton")
-                        .accessibilityLabel(isCurrentPageBookmarked ? "Remove bookmark" : "Add bookmark")
+                    // Bookmark Button
+                    Button {
+                        toggleBookmark()
+                    } label: {
+                        Image(isCurrentPageBookmarked ? "bookmark_filled" : "bookmark", bundle: .module)
+                            .font(.system(size: 28))
                     }
-                    .padding(.top, 16)
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("toggleBookmarkButton")
+                    .accessibilityLabel(isCurrentPageBookmarked ? "Remove bookmark" : "Add bookmark")
+                }
+                .padding(.top, 16)
+                .padding(.horizontal, 16)
+
+                Spacer()
+
+                // Bottom controls
+                VStack(spacing: 16) {
+                    // Progress indicator
+                    HStack {
+                        Text(locator?.title ?? "")
+                            .font(.caption)
+                            .foregroundStyle(Color.white)
+                            .lineLimit(1)
+                            .accessibilityIdentifier("readerChapterTitle")
+                        Spacer()
+                        let prog = locator?.totalProgression ?? 0.0
+                        Text("\(Int(prog * 100))%")
+                            .font(.caption)
+                            .foregroundStyle(Color.white)
+                            .accessibilityIdentifier("readerProgressPercent")
+                    }
                     .padding(.horizontal, 16)
 
-                    Spacer()
-
-                    // Bottom controls
-                    VStack(spacing: 16) {
-                        // Progress indicator
-                        HStack {
-                            Text(locator?.title ?? "")
-                                .font(.caption)
-                                .foregroundStyle(Color.white)
-                                .lineLimit(1)
-                                .accessibilityIdentifier("readerChapterTitle")
-                            Spacer()
-                            let prog = locator?.totalProgression ?? 0.0
-                            Text("\(Int(prog * 100))%")
-                                .font(.caption)
-                                .foregroundStyle(Color.white)
-                                .accessibilityIdentifier("readerProgressPercent")
-                        }
+                    ProgressView(value: locator?.totalProgression ?? 0.0)
+                        .tint(.white)
                         .padding(.horizontal, 16)
+                        .accessibilityIdentifier("readerProgressBar")
+                        .accessibilityLabel("Reading progress")
 
-                        ProgressView(value: locator?.totalProgression ?? 0.0)
-                            .tint(.white)
-                            .padding(.horizontal, 16)
-                            .accessibilityIdentifier("readerProgressBar")
-                            .accessibilityLabel("Reading progress")
-
-                        // Font size and TOC controls
-                        HStack(spacing: 32) {
-                            Button {
-                                adjustFontSize(increase: false)
-                            } label: {
-                                Image("remove_circle", bundle: .module)
-                                    .font(.title2)
-                                    .foregroundStyle(Color.white)
-                            }
-                            .buttonStyle(.plain)
-                            .foregroundStyle(Color.white)
-                            .accessibilityIdentifier("decreaseFontSizeButton")
-                            .accessibilityLabel("Decrease font size")
-
-                            Text("Aa")
-                                .font(.headline)
+                    // Font size and TOC controls
+                    HStack(spacing: 32) {
+                        Button {
+                            adjustFontSize(increase: false)
+                        } label: {
+                            Image("remove_circle", bundle: .module)
+                                .font(.title2)
                                 .foregroundStyle(Color.white)
-                                .accessibilityIdentifier("fontSizeIndicator")
-
-                            Button {
-                                adjustFontSize(increase: true)
-                            } label: {
-                                Image("add_circle", bundle: .module)
-                                    .font(.title2)
-                                    .foregroundStyle(Color.white)
-                            }
-                            .buttonStyle(.plain)
-                            .foregroundStyle(Color.white)
-                            .accessibilityIdentifier("increaseFontSizeButton")
-                            .accessibilityLabel("Increase font size")
-
-                            Spacer()
-
-                            Button {
-                                showTOC = true
-                            } label: {
-                                Image("toc", bundle: .module)
-                                    .font(.title2)
-                                    .foregroundStyle(Color.white)
-                            }
-                            .buttonStyle(.plain)
-                            .foregroundStyle(Color.white)
-                            .accessibilityIdentifier("tableOfContentsButton")
-                            .accessibilityLabel("Table of contents")
                         }
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 40)
+                        .buttonStyle(.plain)
+                        .foregroundStyle(Color.white)
+                        .accessibilityIdentifier("decreaseFontSizeButton")
+                        .accessibilityLabel("Decrease font size")
+
+                        Text("Aa")
+                            .font(.headline)
+                            .foregroundStyle(Color.white)
+                            .accessibilityIdentifier("fontSizeIndicator")
+
+                        Button {
+                            adjustFontSize(increase: true)
+                        } label: {
+                            Image("add_circle", bundle: .module)
+                                .font(.title2)
+                                .foregroundStyle(Color.white)
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(Color.white)
+                        .accessibilityIdentifier("increaseFontSizeButton")
+                        .accessibilityLabel("Increase font size")
+
+                        Spacer()
+
+                        Button {
+                            showTOC = true
+                        } label: {
+                            Image("toc", bundle: .module)
+                                .font(.title2)
+                                .foregroundStyle(Color.white)
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(Color.white)
+                        .accessibilityIdentifier("tableOfContentsButton")
+                        .accessibilityLabel("Table of contents")
                     }
-                    .padding(.top, 12)
-                    .background(Color.black.opacity(0.7))
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 40)
                 }
+                .padding(.top, 12)
+                .background(Color.black.opacity(0.7))
             }
         }
     }
@@ -701,14 +624,9 @@ struct ReaderView: View {
                 fatalError("could not extract FragmentActivity from LocalContext.current")
             }
 
-            // Capture activity for brightness and status bar control
+            // Capture activity for status bar control
             if currentAndroidActivity == nil {
                 currentAndroidActivity = fragmentActivity
-                let wb = Double(fragmentActivity.window.attributes.screenBrightness)
-                if wb >= 0.0 {
-                    self.screenBrightness = wb
-                    self.originalBrightness = wb
-                }
                 if self.settings.hideStatusBarInReader {
                     fragmentActivity.window.insetsController?.hide(android.view.WindowInsets.Type.statusBars())
                 }
@@ -756,7 +674,7 @@ struct ReaderView: View {
 
 #if SKIP
 
-/// Module-level reference to the current Activity, used for brightness and status bar control.
+/// Module-level reference to the current Activity, used for status bar control.
 /// Set from the ComposeView context where LocalContext is available.
 var currentAndroidActivity: android.app.Activity? = nil
 
@@ -796,33 +714,6 @@ class ReaderPaginationListener: EpubNavigatorFragment.PaginationListener {
     }
 }
 #endif
-
-/// A vertical brightness slider: drag up to brighten, down to dim.
-struct BrightnessSlider: View {
-    @Binding var value: Double
-
-    var body: some View {
-        GeometryReader { geo in
-            let height = geo.size.height
-            ZStack(alignment: .bottom) {
-                Capsule()
-                    .fill(Color.white.opacity(0.3))
-                Capsule()
-                    .fill(Color.yellow.opacity(0.8))
-                    .frame(height: max(4.0, height * value))
-            }
-            .gesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { drag in
-                        let newValue = 1.0 - (drag.location.y / height)
-                        value = min(1.0, max(0.01, newValue))
-                    }
-            )
-            .accessibilityIdentifier("brightnessSlider")
-            .accessibilityLabel("Screen brightness")
-        }
-    }
-}
 
 
 #if SKIP
