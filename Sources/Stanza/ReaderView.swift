@@ -66,6 +66,7 @@ struct ReaderView: View {
     @State var showExtendedHUD: Bool = false
     @State var chapterPageIndex: Int = 0
     @State var chapterPageCount: Int = 0
+    @State var positionCountsByChapter: [Int] = []
     @State var bookmarks: [BookmarkRecord] = []
     @State var isCurrentPageBookmarked: Bool = false
     @Environment(StanzaSettings.self) var settings: StanzaSettings
@@ -161,8 +162,13 @@ struct ReaderView: View {
             self.viewModel = ReaderViewModel(publication: publication)
             #if !SKIP
             self.navigator = try EPUBNavigatorViewController(publication: publication.platformValue, initialLocation: locator?.platformValue, config: navConfig)
+            // Load position counts per chapter for accurate page estimation
+            if case .success(let positionsByChapter) = await publication.platformValue.positionsByReadingOrder() {
+                self.positionCountsByChapter = positionsByChapter.map { $0.count }
+            }
             let delegate = ReaderLocationDelegate { loc in
                 self.locator = loc
+                self.updateChapterPageInfo(loc: loc)
                 self.persistLocator(loc)
             }
             delegate.onTap = { point, viewSize in
@@ -476,21 +482,39 @@ struct ReaderView: View {
 
     // MARK: - Page Estimation
 
-    /// Estimated number of pages remaining in the current chapter.
-    var pagesLeftInChapter: Int? {
-        // Android: use exact page data from the pagination listener
-        if chapterPageCount > 0 {
-            return chapterPageCount - chapterPageIndex - 1
+    #if !SKIP
+    /// Updates chapterPageIndex/chapterPageCount on iOS using the position
+    /// counts loaded from the publication and the locator's progression.
+    func updateChapterPageInfo(loc: Loc) {
+        guard let publication = viewModel?.publication else { return }
+        let readingOrder = publication.manifest.readingOrder
+        let hrefString = loc.platformValue.href.string
+
+        // Find which reading order index this locator belongs to
+        var chapterIndex: Int? = nil
+        for i in 0..<readingOrder.count {
+            if hrefString == readingOrder[i].href || hrefString.hasSuffix(readingOrder[i].href) || readingOrder[i].href.hasSuffix(hrefString) {
+                chapterIndex = i
+                break
+            }
         }
 
-        // Fallback (iOS and Android before first page event): estimate from
-        // the within-chapter progression reported by the Readium locator.
-        guard let progression = locator?.progression, progression > 0.0 else {
-            return nil
+        guard let idx = chapterIndex, idx < positionCountsByChapter.count else { return }
+        let totalPositions = positionCountsByChapter[idx]
+        guard totalPositions > 0 else { return }
+
+        let progression = loc.progression ?? 0.0
+        self.chapterPageCount = totalPositions
+        self.chapterPageIndex = min(Int((progression * Double(totalPositions)).rounded()), totalPositions - 1)
+    }
+    #endif
+
+    /// Number of pages remaining in the current chapter, or nil if unknown.
+    var pagesLeftInChapter: Int? {
+        if chapterPageCount > 0 {
+            return max(0, chapterPageCount - chapterPageIndex - 1)
         }
-        let estimatedTotal = 1.0 / progression
-        let remaining = estimatedTotal * (1.0 - progression)
-        return max(0, Int(remaining.rounded()))
+        return nil
     }
 
     // MARK: - Font Picker
