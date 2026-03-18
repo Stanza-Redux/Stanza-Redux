@@ -35,27 +35,9 @@ struct SettingsView: View {
                         .accessibilityIdentifier("resetFontSizeButton")
                     }
                     Picker("Font", selection: $settings.fontFamily) {
-                        Text("Publisher Default").tag("")
-                        #if SKIP
-                        // Android system fonts good for reading
-                        Text("Noto Serif").tag("Noto Serif")
-                        Text("Roboto").tag("Roboto")
-                        Text("Roboto Slab").tag("Roboto Slab")
-                        Text("Serif").tag("serif")
-                        Text("Sans-Serif").tag("sans-serif")
-                        #else
-                        // iOS system fonts good for reading
-                        Text("Athelas").tag("Athelas")
-                        Text("Charter").tag("Charter")
-                        Text("Georgia").tag("Georgia")
-                        Text("Iowan Old Style").tag("Iowan Old Style")
-                        Text("Palatino").tag("Palatino")
-                        Text("Seravek").tag("Seravek")
-                        Text("New York").tag("New York")
-                        Text("San Francisco").tag("SF Pro")
-                        #endif
-                        // Embedded custom font (both platforms)
-                        Text("Montserrat").tag("Montserrat")
+                        ForEach(FontManager.allFonts) { font in
+                            Text(font.name == "Default" ? "Publisher Default" : font.name).tag(font.tag)
+                        }
                     }
                     .accessibilityIdentifier("fontPicker")
 

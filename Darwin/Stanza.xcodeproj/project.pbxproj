@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,7 +12,6 @@
 		496BDBEE2B8A7E9C00C09264 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 496BDBED2B8A7E9C00C09264 /* Localizable.xcstrings */; };
 		499CD43B2AC5B799001AE8D8 /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F90C2B2A52156200F06D93 /* Main.swift */; };
 		499CD4402AC5B799001AE8D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49F90C2F2A52156300F06D93 /* Assets.xcassets */; };
-		49A001012BACD83F0000DE33 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49A001002BACD83F0000DE33 /* Montserrat-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -38,11 +37,14 @@
 		496EB72F2A6AE4DE00C1253B /* Stanza.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Stanza.xcconfig; sourceTree = "<group>"; };
 		496EB72F2A6AE4DE00C1253C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		499AB9082B0581F4005E8330 /* plugins */ = {isa = PBXFileReference; lastKnownFileType = folder; name = plugins; path = ../../../SourcePackages/plugins; sourceTree = BUILT_PRODUCTS_DIR; };
-		49A001002BACD83F0000DE33 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Montserrat-Regular.ttf"; path = "../Sources/Stanza/Resources/Montserrat-Regular.ttf"; sourceTree = "<group>"; };
 		49F90C2B2A52156200F06D93 /* Main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Main.swift; path = Sources/Main.swift; sourceTree = SOURCE_ROOT; };
 		49F90C2F2A52156300F06D93 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		49F90C312A52156300F06D93 /* Entitlements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Entitlements.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		499A0A3B2F6B093A002F3509 /* Fonts */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Fonts; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		499CD43C2AC5B799001AE8D8 /* Frameworks */ = {
@@ -93,7 +95,7 @@
 				49F90C2F2A52156300F06D93 /* Assets.xcassets */,
 				49F90C312A52156300F06D93 /* Entitlements.plist */,
 				4900101C2BACEA710000DE33 /* Info.plist */,
-				49A001002BACD83F0000DE33 /* Montserrat-Regular.ttf */,
+				499A0A3B2F6B093A002F3509 /* Fonts */,
 			);
 			name = App;
 			sourceTree = "<group>";
@@ -114,6 +116,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				499A0A3B2F6B093A002F3509 /* Fonts */,
 			);
 			name = Stanza;
 			packageProductDependencies = (
@@ -163,7 +168,6 @@
 			files = (
 				499CD4402AC5B799001AE8D8 /* Assets.xcassets in Resources */,
 				496BDBEE2B8A7E9C00C09264 /* Localizable.xcstrings in Resources */,
-				49A001012BACD83F0000DE33 /* Montserrat-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,6 +9,8 @@
     <key>UIAppFonts</key>
     <array>
         <string>Montserrat-Regular.ttf</string>
+        <string>NotoSerif.ttf</string>
+        <string>NotoSans.ttf</string>
     </array>
 </dict>
 </plist>

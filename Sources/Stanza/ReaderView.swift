@@ -44,7 +44,7 @@ typealias PlatformDefaults = org.readium.r2.navigator.epub.EpubDefaults
 let defaults = PlatformDefaults(columnCount: nil, fontSize: nil, fontWeight: nil, hyphens: nil, imageFilter: nil, language: nil, letterSpacing: nil, ligatures: nil, lineHeight: nil, pageMargins: nil, paragraphIndent: nil, paragraphSpacing: nil, publisherStyles: nil, readingProgression: nil, scroll: nil, spread: nil, textAlign: nil, textNormalization: nil, typeScale: nil, wordSpacing: nil)
 
 #if !SKIP
-var navConfig: EPUBNavigatorViewController.Configuration = EPUBNavigatorViewController.Configuration(defaults: defaults)
+var navConfig: EPUBNavigatorViewController.Configuration = EPUBNavigatorViewController.Configuration(defaults: defaults, fontFamilyDeclarations: FontManager.fontFamilyDeclarations)
 #else
 var navConfig: org.readium.r2.navigator.epub.EpubNavigatorFactory.Configuration = EpubNavigatorFactory.Configuration(defaults: defaults)
 #endif
@@ -474,39 +474,12 @@ struct ReaderView: View {
 
     // MARK: - Font Picker
 
-    /// Available fonts as (display name, settings tag) pairs.
-    var availableFonts: [(String, String)] {
-        var fonts: [(String, String)] = [("Default", "")]
-        #if SKIP
-        fonts += [
-            ("Noto Serif", "Noto Serif"),
-            ("Roboto", "Roboto"),
-            ("Roboto Slab", "Roboto Slab"),
-            ("Serif", "serif"),
-            ("Sans-Serif", "sans-serif"),
-        ]
-        #else
-        fonts += [
-            ("Athelas", "Athelas"),
-            ("Charter", "Charter"),
-            ("Georgia", "Georgia"),
-            ("Iowan Old Style", "Iowan Old Style"),
-            ("Palatino", "Palatino"),
-            ("Seravek", "Seravek"),
-            ("New York", "New York"),
-            ("San Francisco", "SF Pro"),
-        ]
-        #endif
-        fonts.append(("Montserrat", "Montserrat"))
-        return fonts
-    }
-
     @ViewBuilder func fontPickerPanel() -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 16) {
-                ForEach(Array(availableFonts.enumerated()), id: \.offset) { index, font in
-                    let name = font.0
-                    let tag = font.1
+                ForEach(FontManager.allFonts) { font in
+                    let name = font.name
+                    let tag = font.tag
                     let isSelected = settings.fontFamily == tag
                     Button {
                         settings.fontFamily = tag
