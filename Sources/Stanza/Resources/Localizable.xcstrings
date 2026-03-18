@@ -10,6 +10,9 @@
     "%@ placeholder" : {
 
     },
+    "%lld pages left in chapter" : {
+
+    },
     "%lld/%lld" : {
       "localizations" : {
         "en" : {

@@ -64,6 +64,8 @@ struct ReaderView: View {
     @State var showTOC: Bool = false
     @State var showBookDetail: Bool = false
     @State var showExtendedHUD: Bool = false
+    @State var chapterPageIndex: Int = 0
+    @State var chapterPageCount: Int = 0
     @State var bookmarks: [BookmarkRecord] = []
     @State var isCurrentPageBookmarked: Bool = false
     @Environment(StanzaSettings.self) var settings: StanzaSettings
@@ -472,6 +474,25 @@ struct ReaderView: View {
         showHUD = false
     }
 
+    // MARK: - Page Estimation
+
+    /// Estimated number of pages remaining in the current chapter.
+    var pagesLeftInChapter: Int? {
+        // Android: use exact page data from the pagination listener
+        if chapterPageCount > 0 {
+            return chapterPageCount - chapterPageIndex - 1
+        }
+
+        // Fallback (iOS and Android before first page event): estimate from
+        // the within-chapter progression reported by the Readium locator.
+        guard let progression = locator?.progression, progression > 0.0 else {
+            return nil
+        }
+        let estimatedTotal = 1.0 / progression
+        let remaining = estimatedTotal * (1.0 - progression)
+        return max(0, Int(remaining.rounded()))
+    }
+
     // MARK: - Font Picker
 
     @ViewBuilder func fontPickerPanel() -> some View {
@@ -559,17 +580,21 @@ struct ReaderView: View {
                     // Progress indicator
                     HStack {
                         Text(locator?.title ?? "")
-                            .font(.caption)
                             .foregroundStyle(Color.white)
                             .lineLimit(1)
                             .accessibilityIdentifier("readerChapterTitle")
                         Spacer()
+                        if let pagesLeft = pagesLeftInChapter {
+                            Text("\(pagesLeft) pages left in chapter")
+                                .foregroundStyle(Color.white.opacity(0.7))
+                                .accessibilityIdentifier("readerPagesLeft")
+                        }
                         let prog = locator?.totalProgression ?? 0.0
                         Text("\(Int(prog * 100))%")
-                            .font(.caption)
                             .foregroundStyle(Color.white)
                             .accessibilityIdentifier("readerProgressPercent")
                     }
+                    .font(.headline)
                     .padding(.horizontal, 16)
 
                     ProgressView(value: locator?.totalProgression ?? 0.0)
@@ -701,6 +726,8 @@ struct ReaderView: View {
             let paginationListener = ReaderPaginationListener(pageChanged: { pageIndex, totalPages, platformLocator in
                 let loc = Loc(platformValue: platformLocator)
                 self.locator = loc
+                self.chapterPageIndex = pageIndex
+                self.chapterPageCount = totalPages
                 self.persistLocator(loc)
             })
             let fragmentFactory = navigatorFactory.createFragmentFactory(initialLocator: savedLocator, listener: nil, paginationListener: paginationListener)
