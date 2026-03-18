@@ -56,6 +56,7 @@ struct ReaderView: View {
     @State var hasRestoredPosition: Bool = false
     @State var showHUD: Bool = false
     @State var showTOC: Bool = false
+    @State var showBookDetail: Bool = false
     @State var bookmarks: [BookmarkRecord] = []
     @State var isCurrentPageBookmarked: Bool = false
     @Environment(StanzaSettings.self) var settings: StanzaSettings
@@ -102,6 +103,11 @@ struct ReaderView: View {
                     }
                     .sheet(isPresented: $showTOC) {
                         tocSheet(publication: publication)
+                    }
+                    .sheet(isPresented: $showBookDetail) {
+                        NavigationStack {
+                            BookDetailView(bookID: bookID, database: database)
+                        }
                     }
             } else if let error = error {
                 VStack {
@@ -461,6 +467,9 @@ struct ReaderView: View {
     // MARK: - HUD Overlay
 
     @ViewBuilder func hudOverlay(publication: Pub) -> some View {
+        let overlayButtonSize: CGFloat = 28
+        let hudButtonSize: CGFloat = 28
+
         if showHUD {
             // Main HUD content
             VStack {
@@ -471,7 +480,7 @@ struct ReaderView: View {
                         dismiss()
                     } label: {
                         Image("cancel", bundle: .module)
-                            .font(.system(size: 28))
+                            .font(.system(size: overlayButtonSize))
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("readerCloseButton")
@@ -484,7 +493,7 @@ struct ReaderView: View {
                         toggleBookmark()
                     } label: {
                         Image(isCurrentPageBookmarked ? "bookmark_filled" : "bookmark", bundle: .module)
-                            .font(.system(size: 28))
+                            .font(.system(size: overlayButtonSize))
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("toggleBookmarkButton")
@@ -520,12 +529,27 @@ struct ReaderView: View {
                         .accessibilityLabel("Reading progress")
 
                     // Font size and TOC controls
-                    HStack(spacing: 32) {
+                    HStack {
+                        // Book info button
+                        Button {
+                            showBookDetail = true
+                        } label: {
+                            Image("info", bundle: .module)
+                                .font(.system(size: hudButtonSize))
+                                .foregroundStyle(Color.white)
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(Color.white)
+                        .accessibilityIdentifier("bookInfoButton")
+                        .accessibilityLabel("Book info")
+
+                        Spacer()
+
                         Button {
                             adjustFontSize(increase: false)
                         } label: {
                             Image("remove_circle", bundle: .module)
-                                .font(.title2)
+                                .font(.system(size: hudButtonSize))
                                 .foregroundStyle(Color.white)
                         }
                         .buttonStyle(.plain)
@@ -542,7 +566,7 @@ struct ReaderView: View {
                             adjustFontSize(increase: true)
                         } label: {
                             Image("add_circle", bundle: .module)
-                                .font(.title2)
+                                .font(.system(size: hudButtonSize))
                                 .foregroundStyle(Color.white)
                         }
                         .buttonStyle(.plain)
@@ -556,7 +580,7 @@ struct ReaderView: View {
                             showTOC = true
                         } label: {
                             Image("toc", bundle: .module)
-                                .font(.title2)
+                                .font(.system(size: hudButtonSize))
                                 .foregroundStyle(Color.white)
                         }
                         .buttonStyle(.plain)

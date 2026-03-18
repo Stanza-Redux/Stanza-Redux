@@ -78,6 +78,9 @@
         }
       }
     },
+    "Are you sure you want to delete \"%@\"? This cannot be undone." : {
+
+    },
     "Athelas" : {
 
     },
@@ -85,6 +88,9 @@
 
     },
     "Auto" : {
+
+    },
+    "Book info" : {
 
     },
     "Book Info" : {
@@ -182,6 +188,9 @@
 
     },
     "Delete" : {
+
+    },
+    "Delete Book" : {
 
     },
     "Dismiss" : {
@@ -637,6 +646,9 @@
       }
     },
     "Share" : {
+
+    },
+    "Show Book Info" : {
 
     },
     "Spacing" : {

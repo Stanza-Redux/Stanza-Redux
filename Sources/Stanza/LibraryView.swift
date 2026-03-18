@@ -54,6 +54,9 @@ struct LibraryView: View {
     @State var pickedDocumentURL: URL? = nil
     @State var pickedFilename: String? = nil
     @State var pickedMimeType: String? = nil
+    @State var selectedBook: BookRecord? = nil
+    @State var bookForDetail: BookRecord? = nil
+    @State var bookToDelete: BookRecord? = nil
 
     var filteredBooks: [BookRecord] {
         if searchText.isEmpty {
@@ -84,39 +87,7 @@ struct LibraryView: View {
                         .accessibilityIdentifier("importSampleBookButton")
                     }
                 } else {
-                    List {
-                        ForEach(filteredBooks) { book in
-                            NavigationLink(value: book.id) {
-                                HStack(spacing: 12) {
-                                    BookCoverView(coverImagePath: book.coverImagePath)
-                                        .frame(width: 50, height: 70)
-                                    VStack(alignment: .leading) {
-                                        Text(book.title)
-                                            .font(.headline)
-                                        if !book.author.isEmpty {
-                                            Text(book.author)
-                                                .font(.subheadline)
-                                                .foregroundStyle(.secondary)
-                                        }
-                                    }
-                                    Spacer()
-                                    if book.progress > 0.0 {
-                                        Text("\(Int(book.progress * 100))%")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
-                            }
-                        }
-                        .onDelete { indices in
-                            deleteBooks(at: Array(indices))
-                        }
-                    }
-                    //.accessibilityIdentifier("bookList") // this crashes the build for some reason
-                    .searchable(text: $searchText, prompt: "Search books")
-                    .navigationDestination(for: Int64.self) { bookID in
-                        BookDetailView(bookID: bookID, database: database, onUpdate: { refreshBooks() })
-                    }
+                    booksListView()
                 }
             }
             .navigationTitle("Library")
@@ -158,6 +129,86 @@ struct LibraryView: View {
         }
     }
 
+    func booksListView() -> some View {
+        List {
+            ForEach(filteredBooks) { book in
+                Button {
+                    logger.info("Opening book: \(book.filePath)")
+                    selectedBook = book
+                } label: {
+                    HStack(spacing: 12) {
+                        BookCoverView(coverImagePath: book.coverImagePath)
+                            .frame(width: 50, height: 70)
+                        VStack(alignment: .leading) {
+                            Text(book.title)
+                                .font(.headline)
+                            if !book.author.isEmpty {
+                                Text(book.author)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        Spacer()
+                        if book.progress > 0.0 {
+                            Text("\(Int(book.progress * 100))%")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                .buttonStyle(.plain)
+                .contextMenu {
+                    Button {
+                        selectedBook = book
+                    } label: {
+                        Label("Open Book", image: "newsstand")
+                    }
+                    Button {
+                        bookForDetail = book
+                    } label: {
+                        Label("Show Book Info", systemImage: "info.circle")
+                    }
+                    Button(role: .destructive) {
+                        bookToDelete = book
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
+            }
+            .onDelete { indices in
+                let booksToDelete = filteredBooks
+                if let index = indices.first {
+                    bookToDelete = booksToDelete[index]
+                }
+            }
+        }
+        .accessibilityIdentifier("bookList") // this crashes the build for some reason
+        .searchable(text: $searchText, prompt: "Search books")
+        .fullScreenCover(item: $selectedBook, onDismiss: { refreshBooks() }) { book in
+            ReaderView(bookID: book.id, filePath: book.filePath, database: database)
+        }
+        .sheet(item: $bookForDetail) { book in
+            NavigationStack {
+                BookDetailView(bookID: book.id, database: database, onUpdate: { refreshBooks() })
+            }
+        }
+        .alert("Delete Book", isPresented: Binding(get: { bookToDelete != nil }, set: { if !$0 { bookToDelete = nil } })) {
+            Button("Delete", role: .destructive) {
+                if let book = bookToDelete {
+                    deleteBook(book)
+                    bookToDelete = nil
+                }
+            }
+            Button("Cancel", role: .cancel) {
+                bookToDelete = nil
+            }
+        } message: {
+            if let book = bookToDelete {
+                Text("Are you sure you want to delete \"\(book.title)\"? This cannot be undone.")
+            }
+        }
+    }
+
     private func initDatabase() {
         guard database == nil else { return }
         logger.info("Initializing library database")
@@ -178,7 +229,10 @@ struct LibraryView: View {
     private func refreshBooks() {
         guard let db = database else { return }
         do {
-            self.books = try db.allBooks()
+            let allBooks = try db.allBooks()
+            withAnimation {
+                self.books = allBooks
+            }
         } catch {
             logger.error("Failed to refresh books: \(error)")
         }
@@ -255,23 +309,19 @@ struct LibraryView: View {
         #endif
     }
 
-    private func deleteBooks(at indices: [Int]) {
+    private func deleteBook(_ book: BookRecord) {
         guard let db = database else { return }
-        let booksToDelete = filteredBooks
-        for index in indices {
-            let book = booksToDelete[index]
-            logger.info("Deleting book: '\(book.title)' (id=\(book.id)) at \(book.filePath)")
-            do {
-                try db.deleteBook(id: book.id)
-                let fileURL = URL(fileURLWithPath: book.filePath)
-                try? FileManager.default.removeItem(at: fileURL)
-                if let coverPath = book.coverImagePath {
-                    try? FileManager.default.removeItem(at: URL(fileURLWithPath: coverPath))
-                }
-                logger.debug("Book file removed: \(book.filePath)")
-            } catch {
-                logger.error("Failed to delete book: \(error)")
+        logger.info("Deleting book: '\(book.title)' (id=\(book.id)) at \(book.filePath)")
+        do {
+            try db.deleteBook(id: book.id)
+            let fileURL = URL(fileURLWithPath: book.filePath)
+            try? FileManager.default.removeItem(at: fileURL)
+            if let coverPath = book.coverImagePath {
+                try? FileManager.default.removeItem(at: URL(fileURLWithPath: coverPath))
             }
+            logger.debug("Book file removed: \(book.filePath)")
+        } catch {
+            logger.error("Failed to delete book: \(error)")
         }
         refreshBooks()
     }

@@ -10,7 +10,6 @@ struct BookDetailView: View {
     var onUpdate: (() -> Void)? = nil
     @State var book: BookRecord? = nil
     @State var isEditing = false
-    @State var showReader = false
 
     var body: some View {
         Group {
@@ -62,12 +61,6 @@ struct BookDetailView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
-                    Section {
-                        Button("Open Book") {
-                            showReader = true
-                        }
-                        .accessibilityIdentifier("openBookButton")
-                    }
                 }
                 .navigationTitle(book.title)
                 .toolbar {
@@ -83,9 +76,6 @@ struct BookDetailView: View {
                         self.book = updatedBook
                         onUpdate?()
                     }
-                }
-                .fullScreenCover(isPresented: $showReader) {
-                    ReaderView(bookID: bookID, filePath: book.filePath, database: database)
                 }
             } else {
                 Text("Book not found")
