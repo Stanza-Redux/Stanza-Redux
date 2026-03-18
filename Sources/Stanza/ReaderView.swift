@@ -32,8 +32,12 @@ import org.readium.r2.navigator.preferences.Theme
 #endif
 
 #if !SKIP
+typealias PlatformNavigator = EPUBNavigatorViewController
+typealias PlatformPreferences = EPUBPreferences
 typealias PlatformDefaults = ReadiumNavigator.EPUBDefaults
 #else
+typealias PlatformNavigator = org.readium.r2.navigator.epub.EpubNavigatorFragment
+typealias PlatformPreferences = org.readium.r2.navigator.epub.EpubPreferences
 typealias PlatformDefaults = org.readium.r2.navigator.epub.EpubDefaults
 #endif
 
@@ -44,6 +48,8 @@ var navConfig: EPUBNavigatorViewController.Configuration = EPUBNavigatorViewCont
 #else
 var navConfig: org.readium.r2.navigator.epub.EpubNavigatorFactory.Configuration = EpubNavigatorFactory.Configuration(defaults: defaults)
 #endif
+
+
 
 struct ReaderView: View {
     let bookID: Int64
@@ -57,6 +63,7 @@ struct ReaderView: View {
     @State var showHUD: Bool = false
     @State var showTOC: Bool = false
     @State var showBookDetail: Bool = false
+    @State var showExtendedHUD: Bool = false
     @State var bookmarks: [BookmarkRecord] = []
     @State var isCurrentPageBookmarked: Bool = false
     @Environment(StanzaSettings.self) var settings: StanzaSettings
@@ -64,12 +71,12 @@ struct ReaderView: View {
     @State var initialPrefsApplied: Bool = false
     @Environment(\.dismiss) var dismiss
 
+    @State var navigator: PlatformNavigator? = nil
+
     #if !SKIP
-    @State var navigator: EPUBNavigatorViewController? = nil
     @State var navigatorDelegate: ReaderLocationDelegate? = nil
     #endif
     #if SKIP
-    @State var navigator: EpubNavigatorFragment? = nil
     @State var inputListenerAdded: Bool = false
     #endif
 
@@ -201,6 +208,7 @@ struct ReaderView: View {
         let third = width / 3.0
         if showHUD {
             showHUD = false
+            showExtendedHUD = false
         } else if x < third {
             if settings.leftTapAdvances { goForward() } else { goBackward() }
         } else if x > third * 2.0 {
@@ -310,7 +318,7 @@ struct ReaderView: View {
             let fitVal = s.fit.isEmpty ? nil : ReadiumNavigator.Fit(rawValue: s.fit)
             let textAlignVal = s.textAlign.isEmpty ? nil : ReadiumNavigator.TextAlignment(rawValue: s.textAlign)
             let themeVal: ReadiumNavigator.Theme = isDark ? .dark : .light
-            let prefs = EPUBPreferences(
+            let prefs: PlatformPreferences = EPUBPreferences(
                 columnCount: columnCountVal,
                 fit: fitVal,
                 fontFamily: fontFamilyVal,
@@ -331,7 +339,7 @@ struct ReaderView: View {
         if let nav = navigator {
             let fontFamilyVal: org.readium.r2.navigator.preferences.FontFamily? = s.fontFamily.isEmpty ? nil : org.readium.r2.navigator.preferences.FontFamily(s.fontFamily)
             let themeVal: org.readium.r2.navigator.preferences.Theme = isDark ? Theme.DARK : Theme.LIGHT
-            let prefs = org.readium.r2.navigator.epub.EpubPreferences(
+            let prefs: PlatformPreferences = org.readium.r2.navigator.epub.EpubPreferences(
                 fontFamily: fontFamilyVal,
                 fontSize: s.fontSize,
                 hyphens: hyphensVal,
@@ -464,6 +472,70 @@ struct ReaderView: View {
         showHUD = false
     }
 
+    // MARK: - Font Picker
+
+    /// Available fonts as (display name, settings tag) pairs.
+    var availableFonts: [(String, String)] {
+        var fonts: [(String, String)] = [("Default", "")]
+        #if SKIP
+        fonts += [
+            ("Noto Serif", "Noto Serif"),
+            ("Roboto", "Roboto"),
+            ("Roboto Slab", "Roboto Slab"),
+            ("Serif", "serif"),
+            ("Sans-Serif", "sans-serif"),
+        ]
+        #else
+        fonts += [
+            ("Athelas", "Athelas"),
+            ("Charter", "Charter"),
+            ("Georgia", "Georgia"),
+            ("Iowan Old Style", "Iowan Old Style"),
+            ("Palatino", "Palatino"),
+            ("Seravek", "Seravek"),
+            ("New York", "New York"),
+            ("San Francisco", "SF Pro"),
+        ]
+        #endif
+        fonts.append(("Montserrat", "Montserrat"))
+        return fonts
+    }
+
+    @ViewBuilder func fontPickerPanel() -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 16) {
+                ForEach(Array(availableFonts.enumerated()), id: \.offset) { index, font in
+                    let name = font.0
+                    let tag = font.1
+                    let isSelected = settings.fontFamily == tag
+                    Button {
+                        settings.fontFamily = tag
+                        applyPreferences()
+                    } label: {
+                        VStack(spacing: 4) {
+                            Text("Abc")
+                                .font(tag.isEmpty ? .system(size: 22) : .custom(tag, size: 22))
+                                .foregroundStyle(isSelected ? Color.accentColor : Color.white)
+                                .frame(width: 64, height: 44)
+                                .background(isSelected ? Color.white.opacity(0.2) : Color.white.opacity(0.1))
+                                .cornerRadius(8)
+                            Text(name)
+                                .font(.caption2)
+                                .foregroundStyle(isSelected ? Color.accentColor : Color.white.opacity(0.7))
+                                .lineLimit(1)
+                        }
+                        .frame(width: 72)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Font: \(name)")
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+        }
+        .background(Color.black.opacity(0.7))
+    }
+
     // MARK: - HUD Overlay
 
     @ViewBuilder func hudOverlay(publication: Pub) -> some View {
@@ -472,7 +544,7 @@ struct ReaderView: View {
 
         if showHUD {
             // Main HUD content
-            VStack {
+            VStack(spacing: 0) {
                 HStack {
                     // Close button
                     Button {
@@ -503,6 +575,11 @@ struct ReaderView: View {
                 .padding(.horizontal, 16)
 
                 Spacer()
+
+                // Extended HUD: font picker
+                if showExtendedHUD {
+                    fontPickerPanel()
+                }
 
                 // Bottom controls
                 VStack(spacing: 16) {
@@ -557,10 +634,20 @@ struct ReaderView: View {
                         .accessibilityIdentifier("decreaseFontSizeButton")
                         .accessibilityLabel("Decrease font size")
 
-                        Text("Aa")
-                            .font(.headline)
-                            .foregroundStyle(Color.white)
-                            .accessibilityIdentifier("fontSizeIndicator")
+                        Spacer()
+
+                        Button {
+                            showExtendedHUD.toggle()
+                        } label: {
+                            Text("Aa")
+                                .font(.largeTitle)
+                                .foregroundStyle(showExtendedHUD ? Color.accentColor : Color.white)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier("fontSizeIndicator")
+                        .accessibilityLabel("Font options")
+
+                        Spacer()
 
                         Button {
                             adjustFontSize(increase: true)

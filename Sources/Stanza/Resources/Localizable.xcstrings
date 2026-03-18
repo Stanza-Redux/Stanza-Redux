@@ -26,6 +26,9 @@
     "Aa" : {
 
     },
+    "Abc" : {
+
+    },
     "Add an OPDS catalog to start browsing books." : {
 
     },
@@ -247,7 +250,13 @@
     "Font" : {
 
     },
+    "Font options" : {
+
+    },
     "Font Size" : {
+
+    },
+    "Font: %@" : {
 
     },
     "Format" : {
