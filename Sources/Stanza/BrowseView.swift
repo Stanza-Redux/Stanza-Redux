@@ -7,9 +7,9 @@ import StanzaModel
 // MARK: - BrowseView
 
 struct BrowseView: View {
+    @Environment(LibraryManager.self) var library: LibraryManager
     @State var catalogs: [CatalogRecord] = []
     @State var catalogDB: CatalogDatabase? = nil
-    @State var bookDB: BookDatabase? = nil
     @State var showAddCatalog = false
     @State var errorMessage: String? = nil
 
@@ -88,8 +88,7 @@ struct BrowseView: View {
             .navigationDestination(for: CatalogRecord.self) { catalog in
                 CatalogFeedView(
                     feedURL: catalog.url,
-                    feedTitle: catalog.name,
-                    bookDB: bookDB
+                    feedTitle: catalog.name
                 )
             }
             .task {
@@ -101,6 +100,7 @@ struct BrowseView: View {
     private func initDatabases() {
         guard catalogDB == nil else { return }
         logger.info("Initializing Browse databases")
+        library.initialize()
         do {
             let dir = URL.applicationSupportDirectory
             try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
@@ -109,9 +109,6 @@ struct BrowseView: View {
             let catDB = try CatalogDatabase(path: catalogPath)
             try catDB.seedDefaults()
             self.catalogDB = catDB
-
-            let bookPath = dir.appendingPathComponent("library.sqlite").path
-            self.bookDB = try BookDatabase(path: bookPath)
 
             self.catalogs = try catDB.allCatalogs()
             logger.info("Browse databases initialized with \(catalogs.count) catalogs")
@@ -257,7 +254,7 @@ struct AddCatalogView: View {
 struct CatalogFeedView: View {
     let feedURL: String
     let feedTitle: String
-    let bookDB: BookDatabase?
+    @Environment(LibraryManager.self) var library: LibraryManager
     @State var feedContent: OPDSFeedContent? = nil
     @State var isLoading = true
     @State var errorMessage: String? = nil
@@ -330,12 +327,11 @@ struct CatalogFeedView: View {
         .navigationDestination(for: FeedLink.self) { link in
             CatalogFeedView(
                 feedURL: link.href,
-                feedTitle: link.title,
-                bookDB: bookDB
+                feedTitle: link.title
             )
         }
         .navigationDestination(for: PubLink.self) { pubLink in
-            OPDSBookDetailView(entry: pubLink.entry, bookDB: bookDB)
+            OPDSBookDetailView(entry: pubLink.entry)
         }
         .task {
             await loadFeed()
@@ -609,7 +605,7 @@ struct PublicationRow: View {
 
 struct OPDSBookDetailView: View {
     let entry: OPDSPubEntry
-    let bookDB: BookDatabase?
+    @Environment(LibraryManager.self) var library: LibraryManager
     @State var downloader: FileDownloader? = nil
     @State var downloadedBookID: Int64? = nil
     @State var importError: String? = nil
@@ -748,9 +744,9 @@ struct OPDSBookDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .fullScreenCover(isPresented: $showReader) {
-            if let bookID = downloadedBookID, let bookDB = bookDB {
-                if let book = try? bookDB.book(id: bookID) {
-                    ReaderView(bookID: bookID, filePath: book.filePath, database: bookDB)
+            if let bookID = downloadedBookID, let db = library.database {
+                if let book = try? db.book(id: bookID) {
+                    ReaderView(bookID: bookID, filePath: book.filePath, database: db)
                 }
             }
         }
@@ -805,39 +801,20 @@ struct OPDSBookDetailView: View {
 
     func importDownloadedBook() {
         guard let dl = downloader else { return }
-        guard let db = bookDB else {
-            logger.error("Library database not available for import")
-            importError = "Library not available"
-            return
-        }
 
         let destinationURL = dl.destinationURL
         logger.info("Download complete, importing: '\(entry.title)' from \(destinationURL.path)")
 
         Task {
-            do {
-                let pub = try await Pub.loadPublication(from: destinationURL)
-                let metadata = pub.metadata
-                let bookTitle = metadata.title ?? entry.title
-                let bookAuthor = entry.authors.joined(separator: ", ")
-                let totalItems = Int64(pub.manifest.readingOrder.count)
-
-                let record = BookRecord(
-                    title: bookTitle,
-                    author: bookAuthor,
-                    filePath: BookDatabase.relativePath(for: destinationURL.path),
-                    identifier: metadata.identifier,
-                    totalItems: totalItems
-                )
-                let savedRecord = try db.addBook(record)
-                logger.info("Book imported to library: '\(bookTitle)' (id=\(savedRecord.id))")
-                self.downloadedBookID = savedRecord.id
-            } catch {
-                logger.error("Failed to import downloaded book: \(error)")
-                importError = "Import failed: \(error.localizedDescription)"
-                #if SKIP
-                android.util.Log.e("Stanza", "Error importing book", error as? Throwable)
-                #endif
+            if let record = await library.importDownloadedBook(
+                from: destinationURL,
+                title: entry.title,
+                authors: entry.authors,
+                identifier: nil
+            ) {
+                self.downloadedBookID = record.id
+            } else {
+                importError = library.errorMessage ?? "Import failed"
             }
         }
     }

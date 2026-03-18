@@ -159,8 +159,9 @@ public class CatalogDatabase {
         }
         catalogLogger.info("Seeding default catalogs")
         let defaults: [(String, String, String?, String?)] = [
+            ("Standard Ebooks", "https://standardebooks.org/feeds/opds", nil, ""),
             ("Project Gutenberg", "https://www.gutenberg.org/ebooks/search.opds/", nil, "Over 70,000 free ebooks"),
-            ("Internet Archive", "https://bookserver.archive.org/catalog/", nil, "Open library of digital books"),
+            //("Internet Archive", "https://bookserver.archive.org/catalog/", nil, "Open library of digital books"),
             ("Ebooks Gratuits", "https://www.ebooksgratuits.com/opds/", nil, "Free French-language ebooks"),
         ]
         for (index, entry) in defaults.enumerated() {

@@ -11,7 +11,10 @@ let logger: Logger = Logger(subsystem: "org.appfair.app.Stanza", category: "Stan
 let androidSDK = ProcessInfo.processInfo.environment["android.os.Build.VERSION.SDK_INT"].flatMap({ Int($0) })
 
 /// The shared app settings instance.
-let appSettings = StanzaSettings()
+private let appSettings = StanzaSettings()
+
+/// The shared library manager instance.
+private let appLibraryManager = LibraryManager()
 
 /// The shared top-level view for the app, loaded from the platform-specific App delegates below.
 ///
@@ -23,6 +26,7 @@ public struct StanzaRootView : View {
     public var body: some View {
         ContentView()
             .environment(appSettings)
+            .environment(appLibraryManager)
             .task {
                 logger.info("Welcome to Skip on \(androidSDK != nil ? "Android" : "Darwin")!")
                 logger.info("Skip app logs are viewable in the Xcode console for iOS; Android logs can be viewed in Studio or using adb logcat")
