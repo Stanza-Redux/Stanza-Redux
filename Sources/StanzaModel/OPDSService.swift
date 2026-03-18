@@ -121,29 +121,30 @@ public final class OPDSService {
         opdsLogger.info("Fetching OPDS feed: \(url.absoluteString)")
 
         #if !SKIP
-        return try await withCheckedThrowingContinuation { continuation in
-            OPDSParser.parseURL(url: url) { parseData, error in
-                if let error = error {
-                    opdsLogger.error("OPDS parse error for \(url.absoluteString): \(error)")
-                    continuation.resume(throwing: error)
-                    return
-                }
-                guard let feed = parseData?.feed else {
-                    opdsLogger.error("No feed content from \(url.absoluteString)")
-                    continuation.resume(throwing: OPDSServiceError.noFeedContent)
-                    return
-                }
-                let content = convertFeed(feed, baseURL: url)
-                opdsLogger.info("Parsed feed '\(content.title)': \(content.publications.count) publications, \(content.navigation.count) nav links, \(content.groups.count) groups")
-                continuation.resume(returning: content)
-            }
+        // Fetch the data ourselves so we can set our User-Agent header,
+        // then parse with the Readium OPDS parsers directly.
+        var request = URLRequest(url: url)
+        request.setValue(stanzaUserAgent, forHTTPHeaderField: "User-Agent")
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        var parseData: ParseData? = nil
+        parseData = try? OPDS1Parser.parse(xmlData: data, url: url, response: response)
+        if parseData == nil {
+            parseData = try? OPDS2Parser.parse(jsonData: data, url: url, response: response)
         }
+        guard let feed = parseData?.feed else {
+            opdsLogger.error("No feed content from \(url.absoluteString)")
+            throw OPDSServiceError.noFeedContent
+        }
+        let content = convertFeed(feed, baseURL: url)
+        opdsLogger.info("Parsed feed '\(content.title)': \(content.publications.count) publications, \(content.navigation.count) nav links, \(content.groups.count) groups")
+        return content
         #else
         // On Android, fetch data via java.net.URL and parse with Readium OPDS parsers
         let javaUrl = java.net.URL(url.absoluteString)
         let connection = javaUrl.openConnection() as! java.net.HttpURLConnection
         connection.requestMethod = "GET"
-        connection.setRequestProperty("User-Agent", "Readium")
+        connection.setRequestProperty("User-Agent", stanzaUserAgent)
         let inputStream = connection.inputStream
         let data = inputStream.readBytes()
         inputStream.close()
@@ -206,7 +207,9 @@ public final class OPDSService {
         }
 
         #if !SKIP
-        let (data, _) = try await URLSession.shared.data(from: url)
+        var request = URLRequest(url: url)
+        request.setValue(stanzaUserAgent, forHTTPHeaderField: "User-Agent")
+        let (data, _) = try await URLSession.shared.data(for: request)
         guard let xmlString = String(data: data, encoding: .utf8) else {
             throw OPDSServiceError.parseFailed
         }
@@ -220,7 +223,10 @@ public final class OPDSService {
         throw OPDSServiceError.parseFailed
         #else
         let javaUrl = java.net.URL(url.absoluteString)
-        let bodyString: String = javaUrl.readText()
+        let searchConn = javaUrl.openConnection() as! java.net.HttpURLConnection
+        searchConn.setRequestProperty("User-Agent", stanzaUserAgent)
+        let bodyString: String = String(data: Data(platformValue: searchConn.inputStream.readBytes()), encoding: .utf8) ?? ""
+        searchConn.disconnect()
         let marker = "template=\""
         guard let markerIndex = bodyString.range(of: marker) else {
             throw OPDSServiceError.parseFailed

@@ -5,6 +5,7 @@ import Foundation
 import SwiftUI
 import OSLog
 import Observation
+import StanzaModel
 
 let downloadLogger = Logger(subsystem: "FileDownloader", category: "FileDownloader")
 
@@ -117,8 +118,10 @@ public enum FileDownloadState {
     private func startIOSDownload() {
         let del = DownloadDelegate(downloader: self)
         self.delegate = del
+        var request = URLRequest(url: sourceURL)
+        request.setValue(stanzaUserAgent, forHTTPHeaderField: "User-Agent")
         let session = URLSession(configuration: .default, delegate: del, delegateQueue: .main)
-        let task = session.downloadTask(with: sourceURL)
+        let task = session.downloadTask(with: request)
         self.downloadTask = task
         task.resume()
     }
@@ -173,7 +176,7 @@ public enum FileDownloadState {
                 let javaUrl = java.net.URL(sourceURL.absoluteString)
                 let connection = javaUrl.openConnection() as! java.net.HttpURLConnection
                 connection.requestMethod = "GET"
-                connection.setRequestProperty("User-Agent", "Mozilla/5.0")
+                connection.setRequestProperty("User-Agent", stanzaUserAgent)
                 let totalBytes = Int64(connection.contentLength)
                 self.bytesTotal = totalBytes > 0 ? totalBytes : -1
 

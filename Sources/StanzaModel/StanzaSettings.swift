@@ -98,6 +98,14 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         didSet { defaults.set(leftTapAdvances, forKey: "leftTapAdvances"); settingsLogger.info("Left tap advances: \(self.leftTapAdvances)") }
     }
 
+    // MARK: - Book Restoration
+
+    /// The book ID that is currently open in the reader, or 0 if none.
+    /// Persisted so we can re-open the book on next launch.
+    public var lastOpenBookID: Int64 {
+        didSet { defaults.set(Int(lastOpenBookID), forKey: "lastOpenBookID") }
+    }
+
     // MARK: - Init
 
     public init(defaults: UserDefaults = UserDefaults.standard) {
@@ -110,6 +118,7 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         self.animatePageTurns = defaults.object(forKey: "animatePageTurns") != nil ? defaults.bool(forKey: "animatePageTurns") : true
         self.fontSize = defaults.object(forKey: "readerFontSize") != nil ? defaults.double(forKey: "readerFontSize") : 1.0
         self.fontFamily = defaults.string(forKey: "epubFontFamily") ?? ""
+        self.lastOpenBookID = Int64(defaults.integer(forKey: "lastOpenBookID"))
 
         // EPUB preferences
         self.columnCount = defaults.string(forKey: "epubColumnCount") ?? ""

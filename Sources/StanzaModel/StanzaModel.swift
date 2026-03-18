@@ -57,7 +57,13 @@ typealias DefaultHTTPClient = org.readium.r2.shared.util.http.DefaultHttpClient
 #endif
 
 let logger = Logger(subsystem: "Stanza", category: "StanzaModelTests")
-public let httpClient: DefaultHTTPClient = DefaultHTTPClient(userAgent: "Readium")
+
+let stanzaVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0.0"
+
+/// The User-Agent string used for all network requests in the app.
+public let stanzaUserAgent = "Stanza-Redux/\(stanzaVersion)"
+
+public let httpClient: DefaultHTTPClient = DefaultHTTPClient(userAgent: stanzaUserAgent)
 
 #if !SKIP
 public let assetRetriever = AssetRetriever(httpClient: httpClient)

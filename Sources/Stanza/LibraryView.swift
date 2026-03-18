@@ -57,6 +57,7 @@ struct LibraryView: View {
     @State var selectedBook: BookRecord? = nil
     @State var bookForDetail: BookRecord? = nil
     @State var bookToDelete: BookRecord? = nil
+    @Environment(StanzaSettings.self) var settings: StanzaSettings
 
     var filteredBooks: [BookRecord] {
         if searchText.isEmpty {
@@ -220,6 +221,17 @@ struct LibraryView: View {
             self.database = db
             self.books = try db.allBooks()
             logger.info("Library initialized with \(books.count) books")
+
+            // Restore previously open book if the app was exited while reading
+            let savedBookID = settings.lastOpenBookID
+            if savedBookID != Int64(0) {
+                // Clear immediately so a crash during open won't loop on next launch
+                settings.lastOpenBookID = 0
+                if let book = try? db.book(id: savedBookID) {
+                    logger.info("Restoring previously open book: '\(book.title)' (id=\(savedBookID))")
+                    self.selectedBook = book
+                }
+            }
         } catch {
             logger.error("Failed to open database: \(error)")
             errorMessage = "Failed to open library: \(error.localizedDescription)"

@@ -137,10 +137,12 @@ struct ReaderView: View {
         .statusBarHidden(settings.hideStatusBarInReader && !showHUD)
         #endif
         .task {
+            settings.lastOpenBookID = bookID
             await loadBook()
         }
         .onDisappear {
             saveCurrentLocator()
+            settings.lastOpenBookID = 0
         }
     }
 
