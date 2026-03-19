@@ -98,6 +98,7 @@ struct ReaderView: View {
         .onChange(of: settings.textNormalization) { applyPreferences() }
         .onChange(of: settings.wordSpacing) { applyPreferences() }
         .onChange(of: settings.appearance) { applyPreferences() }
+        .onChange(of: settings.sepiaTheme) { applyPreferences() }
         .onChange(of: colorScheme) { applyPreferences() }
         #if SKIP
         .onChange(of: showHUD) { updateAndroidStatusBar() }
@@ -131,9 +132,9 @@ struct ReaderView: View {
                     .accessibilityIdentifier("readerLoadingIndicator")
             }
         }
-        .preferredColorScheme(settings.appearance == "dark" ? .dark : settings.appearance == "light" ? .light : nil)
-        .background(colorScheme == .dark ? Color.black : Color.white)
-        #if !SKIP
+        .preferredColorScheme(settings.sepiaTheme ? .light : settings.appearance == "dark" ? .dark : settings.appearance == "light" ? .light : nil)
+        .background(settings.sepiaTheme ? Color(red: 250.0/255.0, green: 244.0/255.0, blue: 232.0/255.0) : colorScheme == .dark ? Color.black : Color.white)
+        #if !SKIP // unavailable in Skip
         .statusBarHidden(settings.hideStatusBarInReader && !showHUD)
         #endif
         .task {
@@ -327,7 +328,7 @@ struct ReaderView: View {
             let columnCountVal = s.columnCount.isEmpty ? nil : ReadiumNavigator.ColumnCount(rawValue: s.columnCount)
             let fitVal = s.fit.isEmpty ? nil : ReadiumNavigator.Fit(rawValue: s.fit)
             let textAlignVal = s.textAlign.isEmpty ? nil : ReadiumNavigator.TextAlignment(rawValue: s.textAlign)
-            let themeVal: ReadiumNavigator.Theme = isDark ? .dark : .light
+            let themeVal: ReadiumNavigator.Theme = s.sepiaTheme ? .sepia : isDark ? .dark : .light
             let prefs: PlatformPreferences = EPUBPreferences(
                 columnCount: columnCountVal,
                 fit: fitVal,
@@ -348,7 +349,7 @@ struct ReaderView: View {
         #else
         if let nav = navigator {
             let fontFamilyVal: org.readium.r2.navigator.preferences.FontFamily? = s.fontFamily.isEmpty ? nil : org.readium.r2.navigator.preferences.FontFamily(s.fontFamily)
-            let themeVal: org.readium.r2.navigator.preferences.Theme = isDark ? Theme.DARK : Theme.LIGHT
+            let themeVal: org.readium.r2.navigator.preferences.Theme = s.sepiaTheme ? Theme.SEPIA : isDark ? Theme.DARK : Theme.LIGHT
             let prefs: PlatformPreferences = org.readium.r2.navigator.epub.EpubPreferences(
                 fontFamily: fontFamilyVal,
                 fontSize: s.fontSize,
@@ -371,7 +372,7 @@ struct ReaderView: View {
     #if SKIP
     func updateAndroidStatusBar() {
         guard settings.hideStatusBarInReader else { return }
-        if let activity = currentAndroidActivity {
+        if let activity = UIApplication.shared.androidActivity {
             let controller = activity.window.insetsController
             if showHUD {
                 controller?.show(android.view.WindowInsets.Type.statusBars())
@@ -762,10 +763,9 @@ struct ReaderView: View {
             }
 
             // Capture activity for status bar control
-            if currentAndroidActivity == nil {
-                currentAndroidActivity = fragmentActivity
+            if let currentAndroidActivity = UIApplication.shared.androidActivity {
                 if self.settings.hideStatusBarInReader {
-                    fragmentActivity.window.insetsController?.hide(android.view.WindowInsets.Type.statusBars())
+                    currentAndroidActivity.window.insetsController?.hide(android.view.WindowInsets.Type.statusBars())
                 }
             }
 
@@ -810,10 +810,6 @@ struct ReaderView: View {
 }
 
 #if SKIP
-
-/// Module-level reference to the current Activity, used for status bar control.
-/// Set from the ComposeView context where LocalContext is available.
-var currentAndroidActivity: android.app.Activity? = nil
 
 class ReaderTapListener: InputListener {
     let tapHandler: (Double, Double) -> Void

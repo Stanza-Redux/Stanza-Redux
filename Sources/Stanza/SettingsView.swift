@@ -18,6 +18,8 @@ struct SettingsView: View {
                         Text("Dark").tag("dark")
                     }
                     .accessibilityIdentifier("appearancePicker")
+                    Toggle("Sepia Theme", isOn: $settings.sepiaTheme)
+                        .accessibilityIdentifier("sepiaThemeToggle")
                     HStack {
                         Text("Font Size")
                         Spacer()

@@ -98,6 +98,11 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         didSet { defaults.set(leftTapAdvances, forKey: "leftTapAdvances"); settingsLogger.info("Left tap advances: \(self.leftTapAdvances)") }
     }
 
+    /// When enabled, the reader uses a sepia theme, overriding the light/dark appearance setting.
+    public var sepiaTheme: Bool {
+        didSet { defaults.set(sepiaTheme, forKey: "sepiaTheme"); settingsLogger.info("Sepia theme: \(self.sepiaTheme)") }
+    }
+
     // MARK: - Book Restoration
 
     /// The book ID that is currently open in the reader, or 0 if none.
@@ -113,8 +118,9 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
 
         // General
         self.appearance = defaults.string(forKey: "appearance") ?? ""
-        self.hideStatusBarInReader = defaults.bool(forKey: "hideStatusBarInReader")
+        self.hideStatusBarInReader = defaults.object(forKey: "hideStatusBarInReader") != nil ? defaults.bool(forKey: "hideStatusBarInReader") : true
         self.leftTapAdvances = defaults.bool(forKey: "leftTapAdvances")
+        self.sepiaTheme = defaults.bool(forKey: "sepiaTheme")
         self.animatePageTurns = defaults.object(forKey: "animatePageTurns") != nil ? defaults.bool(forKey: "animatePageTurns") : true
         self.fontSize = defaults.object(forKey: "readerFontSize") != nil ? defaults.double(forKey: "readerFontSize") : 1.0
         self.fontFamily = defaults.string(forKey: "epubFontFamily") ?? ""
