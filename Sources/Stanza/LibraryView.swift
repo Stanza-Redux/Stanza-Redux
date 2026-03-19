@@ -153,6 +153,9 @@ struct LibraryView: View {
                     }
                 }
                 .buttonStyle(.plain)
+                #if !SKIP // needed to make the entire area tappable on iOS
+                .contentShape(Rectangle())
+                #endif
                 .contextMenu {
                     Button {
                         selectedBook = book
@@ -193,7 +196,9 @@ struct LibraryView: View {
         .alert("Delete Book", isPresented: $showDeleteConfirmation) {
             Button("Delete", role: .destructive) {
                 if let book = bookToDelete {
-                    library.deleteBook(book)
+                    withAnimation {
+                        library.deleteBook(book)
+                    }
                 }
                 bookToDelete = nil
             }

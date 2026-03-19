@@ -86,6 +86,9 @@ struct BookLocationsBrowser: View {
                         .foregroundStyle(.primary)
                 }
                 .buttonStyle(.plain)
+                #if !SKIP // needed to make the entire area tappable on iOS
+                .contentShape(Rectangle())
+                #endif
                 .listRowBackground(isCurrentChapter(link) ? Color.accentColor.opacity(0.12) : nil)
                 if !link.children.isEmpty {
                     ForEach(Array(link.children.enumerated()), id: \.offset) { childIndex, child in
@@ -157,8 +160,9 @@ struct BookLocationsBrowser: View {
                         .padding(.vertical, 2)
                     }
                     .buttonStyle(.plain)
-                    // 'fun contextMenu(menuItems: () -> View): View' is deprecated. This API is not yet available in Skip. Consider placing it within a #if !SKIP block. You can file an issue against the owning library at https://github.com/skiptools, or see the library README for information on adding support.
-                    #if !SKIP
+                    #if !SKIP // needed to make the entire area tappable on iOS
+                    .contentShape(Rectangle())
+                    #endif
                     .contextMenu {
                         Button {
                             shareBookmark(bookmark)
@@ -180,7 +184,6 @@ struct BookLocationsBrowser: View {
                         }
                         .accessibilityIdentifier("deleteBookmarkButton")
                     }
-                    #endif
                 }
                 .onDelete { indices in
                     let sorted = Array(indices).sorted(by: >)
