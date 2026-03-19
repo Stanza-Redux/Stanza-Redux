@@ -3,9 +3,12 @@
 
 import SwiftUI
 import StanzaModel
+import SkipKit
 
 public struct ContentView: View {
     @State var tab = Tab.home
+    @State var browserURL: URL = URL(string: "https://example.com")!
+    @State var showBrowser: Bool = false
     @Environment(StanzaSettings.self) var settings: StanzaSettings
 
     public init() {
@@ -30,6 +33,15 @@ public struct ContentView: View {
         }
         .accessibilityIdentifier("mainTabView")
         .preferredColorScheme(settings.appearance == "dark" ? .dark : settings.appearance == "light" ? .light : nil)
+        .environment(\.openURL, OpenURLAction { url in
+            if settings.useInAppBrowser {
+                browserURL = url
+                showBrowser = true
+                return .handled
+            }
+            return .systemAction
+        })
+        .openWebBrowser(isPresented: $showBrowser, url: browserURL, mode: .embeddedBrowser(params: nil))
     }
 }
 

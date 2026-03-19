@@ -29,12 +29,14 @@ import org.readium.r2.shared.util.http.fetchWithDecoder
 let opdsLogger = Logger(subsystem: "Stanza", category: "OPDSService")
 
 /// Represents a navigation link in an OPDS feed (e.g., a subcategory).
-public final class OPDSNavLink {
+public final class OPDSNavLink: Identifiable {
+    public let id: String
     public let title: String
     public let href: String
     public let rel: String?
 
     public init(title: String, href: String, rel: String? = nil) {
+        self.id = href + ":" + title
         self.title = title
         self.href = href
         self.rel = rel
@@ -65,13 +67,15 @@ public final class OPDSPubEntry: Identifiable {
 }
 
 /// Represents a group of entries in an OPDS feed.
-public final class OPDSGroupEntry {
+public final class OPDSGroupEntry: Identifiable {
+    public let id: String
     public let title: String
     public let publications: [OPDSPubEntry]
     public let navigation: [OPDSNavLink]
     public let moreURL: String?
 
     public init(title: String, publications: [OPDSPubEntry] = [], navigation: [OPDSNavLink] = [], moreURL: String? = nil) {
+        self.id = "group:" + title
         self.title = title
         self.publications = publications
         self.navigation = navigation
@@ -80,11 +84,13 @@ public final class OPDSGroupEntry {
 }
 
 /// Represents a facet group in an OPDS feed.
-public final class OPDSFacetEntry {
+public final class OPDSFacetEntry: Identifiable {
+    public let id: String
     public let title: String
     public let links: [OPDSNavLink]
 
     public init(title: String, links: [OPDSNavLink] = []) {
+        self.id = "facet:" + title
         self.title = title
         self.links = links
     }
@@ -93,6 +99,9 @@ public final class OPDSFacetEntry {
 /// The parsed content of an OPDS feed.
 public final class OPDSFeedContent {
     public let title: String
+    public let subtitle: String?
+    public let iconURL: String?
+    public let infoLinks: [OPDSNavLink]
     public let navigation: [OPDSNavLink]
     public let publications: [OPDSPubEntry]
     public let groups: [OPDSGroupEntry]
@@ -101,8 +110,11 @@ public final class OPDSFeedContent {
     public let nextPageURL: String?
     public let totalResults: Int?
 
-    public init(title: String, navigation: [OPDSNavLink] = [], publications: [OPDSPubEntry] = [], groups: [OPDSGroupEntry] = [], facets: [OPDSFacetEntry] = [], searchURL: String? = nil, nextPageURL: String? = nil, totalResults: Int? = nil) {
+    public init(title: String, subtitle: String? = nil, iconURL: String? = nil, infoLinks: [OPDSNavLink] = [], navigation: [OPDSNavLink] = [], publications: [OPDSPubEntry] = [], groups: [OPDSGroupEntry] = [], facets: [OPDSFacetEntry] = [], searchURL: String? = nil, nextPageURL: String? = nil, totalResults: Int? = nil) {
         self.title = title
+        self.subtitle = subtitle
+        self.iconURL = iconURL
+        self.infoLinks = infoLinks
         self.navigation = navigation
         self.publications = publications
         self.groups = groups
@@ -289,8 +301,27 @@ public final class OPDSService {
         let searchURL = feed.links.firstWithRel(.search)?.href
         let nextPageURL = feed.links.firstWithRel(.next).map { resolveHref($0.href, base: baseURL) }
 
+        // Extract feed icon from links
+        let iconLink = feed.links.first(where: { $0.rels.contains(where: { $0.string.contains("opds-spec.org/image") }) })
+            ?? feed.links.first(where: { $0.mediaType?.string.hasPrefix("image/") == true })
+        let iconURL = iconLink.map { resolveHref($0.href, base: baseURL) }
+
+        // Extract informational links (alternate, about, related)
+        let infoRels: Set<String> = ["alternate", "about", "related", "http://opds-spec.org/shelf", "help", "terms-of-service", "privacy-policy"]
+        let infoLinks = feed.links.compactMap { link -> OPDSNavLink? in
+            guard let rel = link.rels.first?.string, infoRels.contains(rel) else { return nil }
+            let title = link.title ?? rel.replacingOccurrences(of: "-", with: " ").capitalized
+            return OPDSNavLink(title: title, href: resolveHref(link.href, base: baseURL), rel: rel)
+        }
+
+        // OpdsMetadata in Readium Kotlin does not have a description property
+        let subtitle: String? = nil // feed.metadata.description
+
         return OPDSFeedContent(
             title: feed.metadata.title,
+            subtitle: subtitle,
+            iconURL: iconURL,
+            infoLinks: infoLinks,
             navigation: navigation,
             publications: publications,
             groups: groups,
@@ -402,17 +433,45 @@ public final class OPDSService {
 
         var searchHref: String? = nil
         var nextHref: String? = nil
+        var iconHref: String? = nil
+        var infoLinks: [OPDSNavLink] = []
+        let infoRels: Set<String> = ["alternate", "about", "related", "http://opds-spec.org/shelf", "help", "terms-of-service", "privacy-policy"]
         for link in feed.links {
+            let linkHref = link.href.toString()
             if link.rels.contains("search") {
-                searchHref = link.href.toString()
+                searchHref = linkHref
             }
             if link.rels.contains("next") {
-                nextHref = resolveHrefKotlin(link.href.toString(), base: baseURL)
+                nextHref = resolveHrefKotlin(linkHref, base: baseURL)
+            }
+            // Extract icon from image links
+            if iconHref == nil {
+                for rel in link.rels {
+                    if rel.contains("opds-spec.org/image") {
+                        iconHref = resolveHrefKotlin(linkHref, base: baseURL)
+                    }
+                }
+                if iconHref == nil, let mediaType = link.mediaType?.toString(), mediaType.hasPrefix("image/") {
+                    iconHref = resolveHrefKotlin(linkHref, base: baseURL)
+                }
+            }
+            // Extract informational links
+            for rel in link.rels {
+                if infoRels.contains(rel) {
+                    let title = link.title ?? rel.replacingOccurrences(of: "-", with: " ").capitalized
+                    infoLinks.append(OPDSNavLink(title: title, href: resolveHrefKotlin(linkHref, base: baseURL), rel: rel))
+                }
             }
         }
 
+        // OpdsMetadata in Readium Kotlin does not have a description property
+        let subtitle: String? = nil
+
         return OPDSFeedContent(
             title: feed.metadata.title,
+            subtitle: subtitle,
+            iconURL: iconHref,
+            infoLinks: infoLinks,
             navigation: navLinks,
             publications: pubEntries,
             groups: groupEntries,

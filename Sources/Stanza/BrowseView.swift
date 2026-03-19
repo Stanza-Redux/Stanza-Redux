@@ -331,7 +331,7 @@ struct CatalogFeedView: View {
             // Navigation links
             if let content = displayedContent, !content.navigation.isEmpty {
                 Section("Categories") {
-                    ForEach(Array(content.navigation.enumerated()), id: \.offset) { index, nav in
+                    ForEach(content.navigation) { nav in
                         if !nav.title.isEmpty {
                             NavigationLink(value: FeedLink(href: nav.href, title: nav.title)) {
                                 Label {
@@ -340,7 +340,6 @@ struct CatalogFeedView: View {
                                     Image("folder", bundle: .module)
                                 }
                             }
-                            .accessibilityIdentifier("categoryLink_\(index)")
                         }
                     }
                 }
@@ -348,17 +347,16 @@ struct CatalogFeedView: View {
 
             // Groups
             if let content = displayedContent, !content.groups.isEmpty {
-                ForEach(Array(content.groups.enumerated()), id: \.offset) { index, group in
+                ForEach(content.groups) { group in
                     Section {
                         // Group publications
-                        ForEach(Array(group.publications.enumerated()), id: \.offset) { pubIndex, pub in
+                        ForEach(group.publications) { pub in
                             NavigationLink(value: PubLink(entry: pub)) {
                                 PublicationRow(entry: pub)
                             }
-                            .accessibilityIdentifier("groupPub_\(index)_\(pubIndex)")
                         }
                         // Group navigation
-                        ForEach(Array(group.navigation.enumerated()), id: \.offset) { navIndex, nav in
+                        ForEach(group.navigation) { nav in
                             if !nav.title.isEmpty {
                                 NavigationLink(value: FeedLink(href: nav.href, title: nav.title)) {
                                     Label {
@@ -367,7 +365,6 @@ struct CatalogFeedView: View {
                                         Image("folder", bundle: .module)
                                     }
                                 }
-                                .accessibilityIdentifier("groupNav_\(index)_\(navIndex)")
                             }
                         }
                         // "More" link for groups
@@ -376,7 +373,6 @@ struct CatalogFeedView: View {
                                 Text("See All")
                                     .foregroundStyle(Color.accentColor)
                             }
-                            .accessibilityIdentifier("groupSeeAll_\(index)")
                         }
                     } header: {
                         Text(group.title)
@@ -386,13 +382,12 @@ struct CatalogFeedView: View {
 
             // Facets
             if let content = displayedContent, !content.facets.isEmpty {
-                ForEach(Array(content.facets.enumerated()), id: \.offset) { index, facet in
+                ForEach(content.facets) { facet in
                     Section(facet.title) {
-                        ForEach(Array(facet.links.enumerated()), id: \.offset) { linkIndex, link in
+                        ForEach(facet.links) { link in
                             NavigationLink(value: FeedLink(href: link.href, title: link.title)) {
                                 Text(link.title)
                             }
-                            .accessibilityIdentifier("facetLink_\(index)_\(linkIndex)")
                         }
                     }
                 }
@@ -401,13 +396,12 @@ struct CatalogFeedView: View {
             // Publications
             if !allPublications.isEmpty {
                 Section(displayedContent?.groups.isEmpty == true ? "Books" : "All Books") {
-                    ForEach(Array(allPublications.enumerated()), id: \.offset) { index, pub in
+                    ForEach(allPublications) { pub in
                         NavigationLink(value: PubLink(entry: pub)) {
                             PublicationRow(entry: pub)
                         }
-                        .accessibilityIdentifier("publicationRow_\(index)")
                         .onAppear {
-                            if index == allPublications.count - 1 {
+                            if pub.id == allPublications.last?.id {
                                 Task { await loadNextPage() }
                             }
                         }
@@ -418,6 +412,63 @@ struct CatalogFeedView: View {
                             ProgressView()
                                 .accessibilityIdentifier("loadMoreSpinner")
                             Spacer()
+                        }
+                    }
+                }
+            }
+
+            // Catalog info section
+            if let content = displayedContent {
+                let hasInfo = content.subtitle != nil || content.iconURL != nil || !content.infoLinks.isEmpty || content.totalResults != nil
+                if hasInfo {
+                    Section("About This Catalog") {
+                        if let iconURLString = content.iconURL, let iconURL = URL(string: iconURLString) {
+                            HStack {
+                                Spacer()
+                                AsyncImage(url: iconURL) { phase in
+                                    switch phase {
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                    default:
+                                        EmptyView()
+                                    }
+                                }
+                                .frame(maxWidth: 120, maxHeight: 120)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .accessibilityIdentifier("catalogIcon")
+                                .accessibilityLabel("\(content.title) icon")
+                                Spacer()
+                            }
+                        }
+                        if let subtitle = content.subtitle, !subtitle.isEmpty {
+                            Text(subtitle)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .accessibilityIdentifier("catalogSubtitle")
+                        }
+                        if let total = content.totalResults {
+                            HStack {
+                                Text("Total Books")
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                                Text("\(total)")
+                                    .foregroundStyle(.secondary)
+                            }
+                            .accessibilityIdentifier("catalogTotalResults")
+                        }
+                        ForEach(content.infoLinks) { link in
+                            if let url = URL(string: link.href) {
+                                Link(destination: url) {
+                                    HStack {
+                                        Text(link.title)
+                                        Spacer()
+                                        Image("open_in_new", bundle: .module)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                            }
                         }
                     }
                 }

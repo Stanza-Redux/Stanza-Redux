@@ -49,6 +49,8 @@ struct SettingsView: View {
                         .accessibilityIdentifier("leftTapAdvancesToggle")
                     Toggle("Hide Status Bar in Reader", isOn: $settings.hideStatusBarInReader)
                         .accessibilityIdentifier("hideStatusBarToggle")
+                    Toggle("Open Web Pages in Embedded Browser", isOn: $settings.useInAppBrowser)
+                        .accessibilityIdentifier("useInAppBrowserToggle")
                 }
 
                 Section("Text Layout") {

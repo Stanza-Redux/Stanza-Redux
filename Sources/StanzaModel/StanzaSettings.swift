@@ -103,6 +103,11 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         didSet { defaults.set(sepiaTheme, forKey: "sepiaTheme"); settingsLogger.info("Sepia theme: \(self.sepiaTheme)") }
     }
 
+    /// When enabled, web links open in an embedded in-app browser instead of the system browser.
+    public var useInAppBrowser: Bool {
+        didSet { defaults.set(useInAppBrowser, forKey: "useInAppBrowser"); settingsLogger.info("Use in-app browser: \(self.useInAppBrowser)") }
+    }
+
     // MARK: - Book Restoration
 
     /// The book ID that is currently open in the reader, or 0 if none.
@@ -121,6 +126,7 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         self.hideStatusBarInReader = defaults.object(forKey: "hideStatusBarInReader") != nil ? defaults.bool(forKey: "hideStatusBarInReader") : true
         self.leftTapAdvances = defaults.bool(forKey: "leftTapAdvances")
         self.sepiaTheme = defaults.bool(forKey: "sepiaTheme")
+        self.useInAppBrowser = defaults.object(forKey: "useInAppBrowser") != nil ? defaults.bool(forKey: "useInAppBrowser") : true
         self.animatePageTurns = defaults.object(forKey: "animatePageTurns") != nil ? defaults.bool(forKey: "animatePageTurns") : true
         self.fontSize = defaults.object(forKey: "readerFontSize") != nil ? defaults.double(forKey: "readerFontSize") : 1.0
         self.fontFamily = defaults.string(forKey: "epubFontFamily") ?? ""

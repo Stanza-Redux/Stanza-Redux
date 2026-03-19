@@ -233,42 +233,36 @@ struct ReaderView: View {
 
     func goForward() {
         let animated = settings.animatePageTurns
-        #if !SKIP
         if let nav = navigator {
+            #if !SKIP
             Task { await nav.goForward(options: animated ? .animated : .none) }
-        }
-        #else
-        if let nav = navigator {
+            #else
             Task { nav.goForward(animated) }
+            #endif
         }
-        #endif
     }
 
     func goBackward() {
         let animated = settings.animatePageTurns
-        #if !SKIP
         if let nav = navigator {
+            #if !SKIP
             Task { await nav.goBackward(options: animated ? .animated : .none) }
-        }
-        #else
-        if let nav = navigator {
+            #else
             Task { nav.goBackward(animated) }
+            #endif
         }
-        #endif
     }
 
     func navigateToTOCEntry(_ link: Lnk) {
         logger.info("Navigating to TOC entry: '\(link.title ?? "unknown")' href=\(link.href)")
         let animated = settings.animatePageTurns
-        #if !SKIP
         if let nav = navigator {
+            #if !SKIP
             Task { await nav.go(to: link.platformValue, options: animated ? .animated : .none) }
-        }
-        #else
-        if let nav = navigator {
+            #else
             Task { nav.go(link.platformValue, animated) }
+            #endif
         }
-        #endif
         showTOC = false
         showHUD = false
     }

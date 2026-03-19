@@ -28,7 +28,7 @@ public struct DefaultCatalog: Identifiable {
     /// The built-in list of recommended OPDS catalogs.
     public static let all: [DefaultCatalog] = [
         DefaultCatalog(id: "standardebooks", name: "Standard Ebooks", url: "https://standardebooks.org/feeds/opds", description: "Free and liberated ebooks, carefully produced for the true book lover"),
-        DefaultCatalog(id: "gutenberg", name: "Project Gutenberg", url: "https://m.gutenberg.org/ebooks.opds/", description: "Over 70,000 free ebooks"),
+        DefaultCatalog(id: "gutenberg", name: "Project Gutenberg", url: "https://www.gutenberg.org/ebooks.opds/", description: "Over 70,000 free ebooks"),
         DefaultCatalog(id: "ebooksgratuits", name: "Ebooks Gratuits", url: "https://www.ebooksgratuits.com/opds/", description: "Free French-language ebooks"),
     ]
 }

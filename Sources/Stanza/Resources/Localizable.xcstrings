@@ -7,7 +7,13 @@
     "%@ cover image" : {
 
     },
+    "%@ icon" : {
+
+    },
     "%@ placeholder" : {
+
+    },
+    "%lld" : {
 
     },
     "%lld pages left in chapter" : {
@@ -30,6 +36,9 @@
 
     },
     "Abc" : {
+
+    },
+    "About This Catalog" : {
 
     },
     "Add an OPDS catalog to start browsing books." : {
@@ -508,6 +517,9 @@
     "Open Book" : {
 
     },
+    "Open Web Pages in Embedded Browser" : {
+
+    },
     "Page" : {
 
     },
@@ -728,6 +740,9 @@
 
     },
     "Title" : {
+
+    },
+    "Total Books" : {
 
     },
     "Two" : {
