@@ -10,6 +10,29 @@ import SkipSQLCore // needed for transpiled SkipSQL on Android
 
 let catalogLogger = Logger(subsystem: "Stanza", category: "CatalogDatabase")
 
+/// A recommended OPDS catalog source. This is the single source of truth used by both
+/// the database seeding (`CatalogDatabase.seedDefaults`) and the UI (`AddCatalogView`).
+public struct DefaultCatalog: Identifiable {
+    public let id: String
+    public let name: String
+    public let url: String
+    public let description: String
+
+    public init(id: String, name: String, url: String, description: String) {
+        self.id = id
+        self.name = name
+        self.url = url
+        self.description = description
+    }
+
+    /// The built-in list of recommended OPDS catalogs.
+    public static let all: [DefaultCatalog] = [
+        DefaultCatalog(id: "standardebooks", name: "Standard Ebooks", url: "https://standardebooks.org/feeds/opds", description: "Free and liberated ebooks, carefully produced for the true book lover"),
+        DefaultCatalog(id: "gutenberg", name: "Project Gutenberg", url: "https://m.gutenberg.org/ebooks.opds/", description: "Over 70,000 free ebooks"),
+        DefaultCatalog(id: "ebooksgratuits", name: "Ebooks Gratuits", url: "https://www.ebooksgratuits.com/opds/", description: "Free French-language ebooks"),
+    ]
+}
+
 /// Metadata for an OPDS catalog feed stored in the local database.
 public struct CatalogRecord: Identifiable, Hashable, SQLCodable {
     public var id: Int64
@@ -158,18 +181,12 @@ public class CatalogDatabase {
             return
         }
         catalogLogger.info("Seeding default catalogs")
-        let defaults: [(String, String, String?, String?)] = [
-            ("Standard Ebooks", "https://standardebooks.org/feeds/opds", nil, ""),
-            ("Project Gutenberg", "https://www.gutenberg.org/ebooks/search.opds/", nil, "Over 70,000 free ebooks"),
-            //("Internet Archive", "https://bookserver.archive.org/catalog/", nil, "Open library of digital books"),
-            ("Ebooks Gratuits", "https://www.ebooksgratuits.com/opds/", nil, "Free French-language ebooks"),
-        ]
-        for (index, entry) in defaults.enumerated() {
+        for (index, catalog) in DefaultCatalog.all.enumerated() {
             try addCatalog(CatalogRecord(
-                name: entry.0,
-                url: entry.1,
-                icon: entry.2,
-                desc: entry.3,
+                name: catalog.name,
+                url: catalog.url,
+                icon: nil,
+                desc: catalog.description,
                 sortOrder: Int64(index)
             ))
         }

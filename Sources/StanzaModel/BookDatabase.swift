@@ -23,7 +23,10 @@ public struct BookRecord: Identifiable, Hashable, SQLCodable {
     public var author: String
     static let author = SQLColumn(name: "AUTHOR", type: .text, index: SQLIndex(name: "IDX_AUTHOR"))
 
-    /// The file path where the book is stored on disk.
+    /// Relative path to the book file under the documents directory (e.g. "Books/Alice.epub").
+    /// Absolute paths must never be stored in the database — they break when the app is
+    /// relocated or restored to a different device. Use `BookDatabase.absolutePath(for:)`
+    /// to resolve to a full path at runtime.
     public var filePath: String
     static let filePath = SQLColumn(name: "FILE_PATH", type: .text)
 
@@ -55,7 +58,10 @@ public struct BookRecord: Identifiable, Hashable, SQLCodable {
     public var locatorJSON: String?
     static let locatorJSON = SQLColumn(name: "LOCATOR_JSON", type: .text)
 
-    /// Relative path to the extracted cover image file, or nil if no cover.
+    /// Relative path to the extracted cover image file (e.g. "Books/Alice.jpg"), or nil if no cover.
+    /// Absolute paths must never be stored in the database — they break when the app is
+    /// relocated or restored to a different device. Use `BookDatabase.absolutePath(for:)`
+    /// to resolve to a full path at runtime.
     public var coverImagePath: String?
     static let coverImagePath = SQLColumn(name: "COVER_IMAGE_PATH", type: .text)
 
@@ -192,7 +198,10 @@ public class BookDatabase {
     private let context: SQLContext
 
     /// Strips the documents directory prefix from an absolute path, returning a relative path
-    /// like `Books/Alice.epub`. If the path is not under the documents directory, returns it as-is.
+    /// like `Books/Alice.epub`.
+    ///
+    /// Only relative paths should be stored in the database — absolute paths break when the
+    /// app is relocated or restored to a different device.
     public static func relativePath(for absolutePath: String) -> String {
         let docsPath = URL.documentsDirectory.path
         if absolutePath.hasPrefix(docsPath + "/") {
@@ -201,6 +210,9 @@ public class BookDatabase {
         if absolutePath.hasPrefix(docsPath) {
             return String(absolutePath.dropFirst(docsPath.count))
         }
+        // Path is not under the documents directory — this should not normally happen.
+        // Return it as-is but log a warning so callers can investigate.
+        dbLogger.warning("relativePath: path is not under documents directory: \(absolutePath)")
         return absolutePath
     }
 
@@ -452,7 +464,12 @@ public class BookDatabase {
     }
 
     /// Updates the cover image path for a book.
+    /// The `coverPath` must be a relative path (e.g. "Books/Alice.jpg"). Absolute paths
+    /// must never be stored in the database — use `BookDatabase.relativePath(for:)` first.
     public func setCoverImagePath(bookID: Int64, coverPath: String) throws {
+        if coverPath.hasPrefix("/") {
+            dbLogger.warning("setCoverImagePath called with absolute path — this should be relative: \(coverPath)")
+        }
         guard var record = try context.fetch(BookRecord.self, primaryKeys: [SQLValue(bookID)]) else { return }
         record.coverImagePath = coverPath
         try context.update(record)

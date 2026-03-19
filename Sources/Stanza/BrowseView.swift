@@ -152,19 +152,7 @@ struct AddCatalogView: View {
     @State var customName: String = ""
     @State var errorMessage: String? = nil
 
-    struct RecommendedCatalog: Identifiable {
-        let id: String
-        let name: String
-        let url: String
-        let desc: String
-    }
-
-    let recommended: [RecommendedCatalog] = [
-        //RecommendedCatalog(id: "feedbooks", name: "Feedbooks", url: "https://catalog.feedbooks.com/catalog/index.atom", desc: "Public domain and original ebooks"),
-        RecommendedCatalog(id: "gutenberg", name: "Project Gutenberg", url: "https://m.gutenberg.org/ebooks.opds/", desc: "Over 70,000 free ebooks"),
-        RecommendedCatalog(id: "archive", name: "Internet Archive", url: "https://bookserver.archive.org/catalog/", desc: "Open library of digital books"),
-        RecommendedCatalog(id: "ebooksgratuits", name: "Ebooks Gratuits", url: "https://www.ebooksgratuits.com/opds/", desc: "Free French-language ebooks"),
-    ]
+    let recommended = DefaultCatalog.all
 
     var body: some View {
         NavigationStack {
@@ -172,13 +160,13 @@ struct AddCatalogView: View {
                 Section("Recommended Catalogs") {
                     ForEach(recommended) { catalog in
                         Button {
-                            addCatalog(name: catalog.name, url: catalog.url, desc: catalog.desc)
+                            addCatalog(name: catalog.name, url: catalog.url, desc: catalog.description)
                         } label: {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(catalog.name)
                                     .font(.headline)
                                     .foregroundStyle(.primary)
-                                Text(catalog.desc)
+                                Text(catalog.description)
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                                 Text(catalog.url)
