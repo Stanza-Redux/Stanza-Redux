@@ -208,9 +208,6 @@
     "Download" : {
 
     },
-    "Download Book" : {
-
-    },
     "Download cancelled" : {
 
     },
@@ -221,6 +218,9 @@
 
     },
     "Downloaded" : {
+
+    },
+    "Downloading %lld%%" : {
 
     },
     "Edit" : {
@@ -266,6 +266,9 @@
 
     },
     "Georgia" : {
+
+    },
+    "Get" : {
 
     },
     "Hello [%@](https://skip.tools)!" : {
@@ -481,9 +484,6 @@
     "No Catalogs" : {
 
     },
-    "No download available" : {
-
-    },
     "Notes" : {
 
     },
@@ -556,6 +556,9 @@
 
     },
     "Publisher Styles" : {
+
+    },
+    "Read" : {
 
     },
     "Reading" : {

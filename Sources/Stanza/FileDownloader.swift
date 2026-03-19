@@ -12,7 +12,7 @@ let downloadLogger = Logger(subsystem: "FileDownloader", category: "FileDownload
 // MARK: - FileDownloader
 
 /// The current state of a file download.
-public enum FileDownloadState {
+public enum FileDownloadState: Equatable {
     /// No download has started.
     case idle
     /// The download is in progress.
@@ -411,6 +411,61 @@ public struct FileDownloadView: View {
             let gb = Double(bytes) / (1024.0 * 1024.0 * 1024.0)
             return String(format: "%.2f GB", gb)
         }
+    }
+}
+
+// MARK: - CircularDownloadProgressView
+
+/// A compact circular progress indicator for file downloads.
+///
+/// Shows a filled arc in a circle that grows as the download progresses.
+/// Tapping during a download cancels it. Designed for use in toolbar buttons.
+public struct CircularDownloadProgressView: View {
+    @Bindable var downloader: FileDownloader
+
+    /// Diameter of the circle.
+    var size: CGFloat
+
+    /// Optional callback when the download completes.
+    var onCompleted: (() -> Void)?
+
+    public init(downloader: FileDownloader, size: CGFloat = 28, onCompleted: (() -> Void)? = nil) {
+        self.downloader = downloader
+        self.size = size
+        self.onCompleted = onCompleted
+    }
+
+    public var body: some View {
+        ZStack {
+            // Background circle (track)
+            Circle()
+                .stroke(Color.accentColor.opacity(0.25), lineWidth: 3)
+                .frame(width: size, height: size)
+
+            // Foreground arc (progress)
+            let progress = max(0.0, min(downloader.progress, 1.0))
+            Circle()
+                .trim(from: 0, to: progress)
+                .stroke(Color.accentColor, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+                .frame(width: size, height: size)
+
+            // Stop icon in the center
+            Rectangle()
+                .fill(Color.accentColor)
+                .frame(width: size * 0.3, height: size * 0.3)
+                .cornerRadius(2)
+        }
+        .onTapGesture {
+            downloader.cancel()
+        }
+        .onChange(of: downloader.state) {
+            if case .completed = downloader.state {
+                onCompleted?()
+            }
+        }
+        .accessibilityLabel("Downloading \(Int(downloader.progress * 100))%")
+        .accessibilityIdentifier("circularDownloadProgress")
     }
 }
 

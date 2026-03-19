@@ -653,53 +653,6 @@ struct OPDSBookDetailView: View {
                         .accessibilityIdentifier("bookDetailSummary")
                 }
 
-                Divider()
-                    .padding(.horizontal)
-
-                // Download / Open actions
-                VStack(spacing: 12) {
-                    if downloadedBookID != nil {
-                        Label(title: { Text("Downloaded") }, icon: { Image("checkmark.circle.fill", bundle: .module) })
-                            .foregroundStyle(.green)
-                            .font(.headline)
-                            .accessibilityIdentifier("bookDetailDownloadedLabel")
-
-                        Button {
-                            showReader = true
-                        } label: {
-                            Label(title: { Text("Open Book") }, icon: { Image("book", bundle: .module) })
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .padding(.horizontal)
-                        .accessibilityIdentifier("bookDetailOpenButton")
-                    } else if let dl = downloader {
-                        FileDownloadView(
-                            downloader: dl,
-                            downloadLabel: "Download Book",
-                            onCompleted: {
-                                importDownloadedBook()
-                            }
-                        )
-                        .padding(.horizontal)
-                        .accessibilityIdentifier("bookDetailDownloadView")
-                    } else if entry.acquisitionURL != nil {
-                        Button {
-                            startDownload()
-                        } label: {
-                            Label(title: { Text("Download Book") }, icon: { Image("arrow.down.circle", bundle: .module) })
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .padding(.horizontal)
-                        .accessibilityIdentifier("bookDetailDownloadButton")
-                    } else {
-                        Text("No download available")
-                            .foregroundStyle(.secondary)
-                            .accessibilityIdentifier("bookDetailNoDownload")
-                    }
-                }
-
                 if let error = importError {
                     Text(error)
                         .font(.caption)
@@ -731,10 +684,23 @@ struct OPDSBookDetailView: View {
         #if !SKIP
         .navigationBarTitleDisplayMode(.inline)
         #endif
+        .toolbar {
+            ToolbarItem(placement: .automatic) {
+                toolbarDownloadButton
+            }
+        }
         .fullScreenCover(isPresented: $showReader) {
             if let bookID = downloadedBookID, let db = library.database {
                 if let book = try? db.book(id: bookID) {
                     ReaderView(bookID: bookID, filePath: book.filePath, database: db)
+                }
+            }
+        }
+        .onAppear {
+            // Check if the book is already in the library
+            if downloadedBookID == nil {
+                if let existing = library.book(withIdentifier: entry.id) {
+                    downloadedBookID = existing.id
                 }
             }
         }
@@ -758,6 +724,36 @@ struct OPDSBookDetailView: View {
                         .lineLimit(3)
                 }
             }
+    }
+
+    @ViewBuilder var toolbarDownloadButton: some View {
+        if downloadedBookID != nil {
+            // Already in library — show Read button
+            Button {
+                showReader = true
+            } label: {
+                Text("Read")
+                    .fontWeight(.bold)
+            }
+            .buttonStyle(.borderedProminent)
+            .accessibilityIdentifier("bookDetailReadButton")
+        } else if let dl = downloader {
+            // Download in progress — show circular progress; tap cancels
+            CircularDownloadProgressView(downloader: dl, onCompleted: {
+                importDownloadedBook()
+            })
+        } else if entry.acquisitionURL != nil {
+            // Not yet downloaded — show Get button
+            Button {
+                startDownload()
+            } label: {
+                Text("Get")
+                    .fontWeight(.bold)
+            }
+            .buttonStyle(.borderedProminent)
+            //.buttonBorderShape(.capsule)
+            .accessibilityIdentifier("bookDetailGetButton")
+        }
     }
 
     func startDownload() {
@@ -798,7 +794,7 @@ struct OPDSBookDetailView: View {
                 from: destinationURL,
                 title: entry.title,
                 authors: entry.authors,
-                identifier: nil
+                identifier: entry.id
             ) {
                 self.downloadedBookID = record.id
             } else {

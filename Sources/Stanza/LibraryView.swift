@@ -51,6 +51,7 @@ struct LibraryView: View {
     @State var selectedBook: BookRecord? = nil
     @State var bookForDetail: BookRecord? = nil
     @State var bookToDelete: BookRecord? = nil
+    @State var showDeleteConfirmation: Bool = false
 
     var filteredBooks: [BookRecord] {
         if searchText.isEmpty {
@@ -165,6 +166,7 @@ struct LibraryView: View {
                     }
                     Button(role: .destructive) {
                         bookToDelete = book
+                        showDeleteConfirmation = true
                     } label: {
                         Label("Delete", systemImage: "trash")
                     }
@@ -174,6 +176,7 @@ struct LibraryView: View {
                 let booksToDelete = filteredBooks
                 if let index = indices.first {
                     bookToDelete = booksToDelete[index]
+                    showDeleteConfirmation = true
                 }
             }
         }
@@ -187,12 +190,12 @@ struct LibraryView: View {
                 BookDetailView(bookID: book.id, database: library.database, onUpdate: { library.refreshBooks() })
             }
         }
-        .alert("Delete Book", isPresented: Binding(get: { bookToDelete != nil }, set: { if !$0 { bookToDelete = nil } })) {
+        .alert("Delete Book", isPresented: $showDeleteConfirmation) {
             Button("Delete", role: .destructive) {
                 if let book = bookToDelete {
                     library.deleteBook(book)
-                    bookToDelete = nil
                 }
+                bookToDelete = nil
             }
             Button("Cancel", role: .cancel) {
                 bookToDelete = nil

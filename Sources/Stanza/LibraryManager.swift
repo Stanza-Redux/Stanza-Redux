@@ -61,6 +61,13 @@ import org.readium.r2.shared.publication.services.cover
         }
     }
 
+    // MARK: - Lookup
+
+    /// Returns the book record matching the given identifier, or nil if not in the library.
+    public func book(withIdentifier identifier: String) -> BookRecord? {
+        return books.first(where: { $0.identifier == identifier })
+    }
+
     // MARK: - Import
 
     /// Imports a book from a local file URL (e.g. document picker or bundle resource).
