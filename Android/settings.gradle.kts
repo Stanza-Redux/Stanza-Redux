@@ -20,6 +20,9 @@ pluginManagement {
     }
 }
 
+// for testing against a local source build of https://github.com/readium/kotlin-toolkit
+//includeBuild("../../kotlin-toolkit")
+
 plugins {
     id("skip-plugin") apply true
 }
