@@ -21,12 +21,12 @@ public struct ContentView: View {
                 .tag(Tab.home)
                 .accessibilityIdentifier("libraryTab")
 
-            #if DEBUG // BrowseView is in beta
-            BrowseView()
-                .tabItem { Label(title: { Text("Browse") }, icon: { Image("library_books", bundle: .module) }) }
-                .tag(Tab.browse)
-                .accessibilityIdentifier("browseTab")
-            #endif
+            if settings.enableCatalogs {
+                BrowseView()
+                    .tabItem { Label(title: { Text("Catalogs") }, icon: { Image("library_books", bundle: .module) }) }
+                    .tag(Tab.browse)
+                    .accessibilityIdentifier("browseTab")
+            }
 
             SettingsView()
                 .tabItem { Label(title: { Text("Settings") }, icon: { Image("settings", bundle: .module) }) }

@@ -155,6 +155,11 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    NavigationLink("Advanced Settings") {
+                        AdvancedSettingsView()
+                    }
+                    .accessibilityIdentifier("advancedSettingsLink")
+
                     Button("Reset All Reading Preferences") {
                         settings.resetReadingPreferences()
                     }
@@ -164,5 +169,22 @@ struct SettingsView: View {
             }
             .navigationTitle("Settings")
         }
+    }
+}
+
+struct AdvancedSettingsView: View {
+    @Environment(StanzaSettings.self) var settings: StanzaSettings
+
+    var body: some View {
+        @Bindable var settings = settings
+        Form {
+            Section {
+                Toggle("Enable Catalogs", isOn: $settings.enableCatalogs)
+                    .accessibilityIdentifier("enableCatalogsToggle")
+            } footer: {
+                Text("Show the Catalogs tab for browsing and downloading books from OPDS catalogs.")
+            }
+        }
+        .navigationTitle("Advanced Settings")
     }
 }

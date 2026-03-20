@@ -59,6 +59,9 @@
     "Add notes..." : {
 
     },
+    "Advanced Settings" : {
+
+    },
     "All Books" : {
 
     },
@@ -139,6 +142,9 @@
 
     },
     "Catalog Name" : {
+
+    },
+    "Catalogs" : {
 
     },
     "Categories" : {
@@ -245,6 +251,9 @@
 
     },
     "Edit Notes" : {
+
+    },
+    "Enable Catalogs" : {
 
     },
     "Error" : {
@@ -694,6 +703,9 @@
 
     },
     "Show Book Info" : {
+
+    },
+    "Show the Catalogs tab for browsing and downloading books from OPDS catalogs." : {
 
     },
     "Spacing" : {

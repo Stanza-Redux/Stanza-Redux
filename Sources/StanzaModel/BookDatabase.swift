@@ -351,6 +351,9 @@ public class BookDatabase {
         dbLogger.info("Updating book id=\(record.id): '\(record.title)'")
         var stored = record
         stored.filePath = BookDatabase.relativePath(for: record.filePath)
+        if let cover = stored.coverImagePath {
+            stored.coverImagePath = BookDatabase.relativePath(for: cover)
+        }
         try context.update(stored)
     }
 
@@ -378,6 +381,9 @@ public class BookDatabase {
         var results = try context.fetchAll(BookRecord.self, where: predicate, orderBy: BookRecord.dateAdded, order: .descending)
         for i in results.indices {
             results[i].filePath = BookDatabase.absolutePath(for: results[i].filePath)
+            if let cover = results[i].coverImagePath {
+                results[i].coverImagePath = BookDatabase.absolutePath(for: cover)
+            }
         }
         dbLogger.debug("Search returned \(results.count) results")
         return results

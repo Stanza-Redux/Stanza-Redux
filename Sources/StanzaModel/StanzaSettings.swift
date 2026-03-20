@@ -113,6 +113,11 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         didSet { defaults.set(useInAppBrowser, forKey: "useInAppBrowser"); settingsLogger.info("Use in-app browser: \(self.useInAppBrowser)") }
     }
 
+    /// When enabled, the Catalogs tab is shown for browsing OPDS catalogs.
+    public var enableCatalogs: Bool {
+        didSet { defaults.set(enableCatalogs, forKey: "enableCatalogs"); settingsLogger.info("Enable catalogs: \(self.enableCatalogs)") }
+    }
+
     // MARK: - Book Restoration
 
     /// The book ID that is currently open in the reader, or 0 if none.
@@ -132,6 +137,7 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         self.leftTapAdvances = defaults.bool(forKey: "leftTapAdvances")
         self.sepiaTheme = defaults.bool(forKey: "sepiaTheme")
         self.useInAppBrowser = defaults.object(forKey: "useInAppBrowser") != nil ? defaults.bool(forKey: "useInAppBrowser") : true
+        self.enableCatalogs = defaults.bool(forKey: "enableCatalogs")
         self.animatePageTurns = defaults.object(forKey: "animatePageTurns") != nil ? defaults.bool(forKey: "animatePageTurns") : true
         self.fontSize = defaults.object(forKey: "readerFontSize") != nil ? defaults.double(forKey: "readerFontSize") : 1.0
         self.fontFamily = defaults.string(forKey: "epubFontFamily") ?? ""
