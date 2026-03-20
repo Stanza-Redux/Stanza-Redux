@@ -137,6 +137,7 @@ struct ReaderView: View {
         .background(settings.sepiaTheme ? Color(red: 250.0/255.0, green: 244.0/255.0, blue: 232.0/255.0) : colorScheme == .dark ? Color.black : Color.white)
         #if !SKIP // unavailable in Skip
         .statusBarHidden(settings.hideStatusBarInReader && !showHUD)
+        .persistentSystemOverlays(settings.hideStatusBarInReader && !showHUD ? .hidden : .automatic)
         #endif
         .task {
             settings.lastOpenBookID = bookID
