@@ -97,6 +97,7 @@ struct ReaderView: View {
         .onChange(of: settings.textAlign) { applyPreferences() }
         .onChange(of: settings.textNormalization) { applyPreferences() }
         .onChange(of: settings.wordSpacing) { applyPreferences() }
+        .onChange(of: settings.letterSpacing) { applyPreferences() }
         .onChange(of: settings.appearance) { applyPreferences() }
         .onChange(of: settings.sepiaTheme) { applyPreferences() }
         .onChange(of: colorScheme) { applyPreferences() }
@@ -312,9 +313,15 @@ struct ReaderView: View {
         let lineHeightVal: Double? = s.lineHeight > 0.0 ? s.lineHeight : nil
         let pageMarginsVal: Double? = s.pageMargins > 0.0 ? s.pageMargins : nil
         let paragraphSpacingVal: Double? = s.paragraphSpacing > 0.0 ? s.paragraphSpacing : nil
-        let publisherStylesVal: Bool? = s.publisherStyles == "true" ? true : s.publisherStyles == "false" ? false : nil
         let textNormalizationVal: Bool? = s.textNormalization == "true" ? true : s.textNormalization == "false" ? false : nil
         let wordSpacingVal: Double? = s.wordSpacing > 0.0 ? s.wordSpacing : nil
+        let letterSpacingVal: Double? = s.letterSpacing > 0.0 ? s.letterSpacing : nil
+
+        // Readium's CSS requires publisherStyles=false (readium-advanced-on) for user
+        // spacing overrides (lineHeight, letterSpacing, wordSpacing) to take effect.
+        // When any spacing value is set, force publisherStyles off in the preferences.
+        let hasSpacingOverride = lineHeightVal != nil || letterSpacingVal != nil || wordSpacingVal != nil
+        let publisherStylesVal: Bool? = hasSpacingOverride ? false : (s.publisherStyles == "true" ? true : s.publisherStyles == "false" ? false : nil)
 
         #if !SKIP
         if let nav = navigator {
@@ -329,6 +336,7 @@ struct ReaderView: View {
                 fontFamily: fontFamilyVal,
                 fontSize: s.fontSize,
                 hyphens: hyphensVal,
+                letterSpacing: letterSpacingVal,
                 lineHeight: lineHeightVal,
                 pageMargins: pageMarginsVal,
                 paragraphSpacing: paragraphSpacingVal,
@@ -348,6 +356,7 @@ struct ReaderView: View {
                 fontFamily: fontFamilyVal,
                 fontSize: s.fontSize,
                 hyphens: hyphensVal,
+                letterSpacing: letterSpacingVal,
                 lineHeight: lineHeightVal,
                 pageMargins: pageMarginsVal,
                 paragraphSpacing: paragraphSpacingVal,
@@ -516,6 +525,108 @@ struct ReaderView: View {
 
     // MARK: - Font Picker
 
+    // MARK: - Spacing Presets
+
+    private static let lineHeightPresets: [Double] = [0.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.5]
+    private static let letterSpacingPresets: [Double] = [0.0, 0.05, 0.1, 0.2, 0.35, 0.5]
+    private static let wordSpacingPresets: [Double] = [0.0, 0.25, 0.5, 0.75, 1.0, 1.5]
+    private static let pageMarginsPresets: [Double] = [0.0, 0.5, 1.0, 1.5, 2.0, 3.0]
+
+    func cycleLineHeight() {
+        settings.lineHeight = nextPreset(current: settings.lineHeight, presets: Self.lineHeightPresets)
+        applyPreferences()
+    }
+
+    func cycleLetterSpacing() {
+        settings.letterSpacing = nextPreset(current: settings.letterSpacing, presets: Self.letterSpacingPresets)
+        applyPreferences()
+    }
+
+    func cycleWordSpacing() {
+        settings.wordSpacing = nextPreset(current: settings.wordSpacing, presets: Self.wordSpacingPresets)
+        applyPreferences()
+    }
+
+    func cyclePageMargins() {
+        settings.pageMargins = nextPreset(current: settings.pageMargins, presets: Self.pageMarginsPresets)
+        applyPreferences()
+    }
+
+    private func nextPreset(current: Double, presets: [Double]) -> Double {
+        // Find the next preset value after the current one; wrap to first (default)
+        for i in 0..<presets.count {
+            if current <= presets[i] + 0.001 {
+                if i + 1 < presets.count {
+                    return presets[i + 1]
+                } else {
+                    return presets[0]
+                }
+            }
+        }
+        return presets[0]
+    }
+
+    private func presetLabel(value: Double, suffix: String = "") -> String {
+        if value <= 0.001 { return "Default" }
+        return String(format: "%.1f", value) + suffix
+    }
+
+    @ViewBuilder func spacingControlsPanel() -> some View {
+        HStack(spacing: 0) {
+            Spacer()
+            Button { cycleLineHeight() } label: {
+                VStack(spacing: 4) {
+                    Image("format_line_spacing", bundle: .module)
+                        .foregroundStyle(settings.lineHeight > 0.0 ? Color.accentColor : Color.white)
+                    Text(presetLabel(value: settings.lineHeight))
+                        .font(.caption2)
+                        .foregroundStyle(settings.lineHeight > 0.0 ? Color.accentColor : Color.white.opacity(0.7))
+                }
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Line spacing: \(presetLabel(value: settings.lineHeight))")
+            Spacer()
+            Button { cycleLetterSpacing() } label: {
+                VStack(spacing: 4) {
+                    Image("format_letter_spacing", bundle: .module)
+                        .foregroundStyle(settings.letterSpacing > 0.0 ? Color.accentColor : Color.white)
+                    Text(presetLabel(value: settings.letterSpacing))
+                        .font(.caption2)
+                        .foregroundStyle(settings.letterSpacing > 0.0 ? Color.accentColor : Color.white.opacity(0.7))
+                }
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Character spacing: \(presetLabel(value: settings.letterSpacing))")
+            Spacer()
+            Button { cycleWordSpacing() } label: {
+                VStack(spacing: 4) {
+                    Image("space_bar", bundle: .module)
+                        .foregroundStyle(settings.wordSpacing > 0.0 ? Color.accentColor : Color.white)
+                    Text(presetLabel(value: settings.wordSpacing))
+                        .font(.caption2)
+                        .foregroundStyle(settings.wordSpacing > 0.0 ? Color.accentColor : Color.white.opacity(0.7))
+                }
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Word spacing: \(presetLabel(value: settings.wordSpacing))")
+            Spacer()
+            Button { cyclePageMargins() } label: {
+                VStack(spacing: 4) {
+                    Image("padding", bundle: .module)
+                        .foregroundStyle(settings.pageMargins > 0.0 ? Color.accentColor : Color.white)
+                    Text(presetLabel(value: settings.pageMargins))
+                        .font(.caption2)
+                        .foregroundStyle(settings.pageMargins > 0.0 ? Color.accentColor : Color.white.opacity(0.7))
+                }
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Margins: \(presetLabel(value: settings.pageMargins))")
+            Spacer()
+        }
+        .padding(.vertical, 10)
+        .background(Color.black.opacity(0.7))
+    }
+
     @ViewBuilder func fontPickerPanel() -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 16) {
@@ -591,8 +702,9 @@ struct ReaderView: View {
 
                 Spacer()
 
-                // Extended HUD: font picker
+                // Extended HUD: spacing controls + font picker
                 if showExtendedHUD {
+                    spacingControlsPanel()
                     fontPickerPanel()
                 }
 

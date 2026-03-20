@@ -153,6 +153,9 @@
     "Chapters" : {
 
     },
+    "Character spacing: %@" : {
+
+    },
     "Charter" : {
 
     },
@@ -434,10 +437,16 @@
     "Line Height" : {
 
     },
+    "Line spacing: %@" : {
+
+    },
     "Loading catalog..." : {
 
     },
     "Loading..." : {
+
+    },
+    "Margins: %@" : {
 
     },
     "Metadata" : {
@@ -784,6 +793,9 @@
 
     },
     "Word Spacing" : {
+
+    },
+    "Word spacing: %@" : {
 
     }
   },

@@ -88,6 +88,11 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         didSet { defaults.set(wordSpacing, forKey: "epubWordSpacing"); settingsLogger.info("Word spacing: \(self.wordSpacing)") }
     }
 
+    /// Space between characters/letters (0 means unset).
+    public var letterSpacing: Double {
+        didSet { defaults.set(letterSpacing, forKey: "epubLetterSpacing"); settingsLogger.info("Letter spacing: \(self.letterSpacing)") }
+    }
+
     /// Whether to hide the system status bar when the reader is active and HUD is not shown.
     public var hideStatusBarInReader: Bool {
         didSet { defaults.set(hideStatusBarInReader, forKey: "hideStatusBarInReader"); settingsLogger.info("Hide status bar in reader: \(self.hideStatusBarInReader)") }
@@ -143,6 +148,7 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         self.textAlign = defaults.string(forKey: "epubTextAlign") ?? ""
         self.textNormalization = defaults.string(forKey: "epubTextNormalization") ?? ""
         self.wordSpacing = defaults.double(forKey: "epubWordSpacing")
+        self.letterSpacing = defaults.double(forKey: "epubLetterSpacing")
 
         settingsLogger.info("Settings loaded: fontSize=\(self.fontSize), animatePageTurns=\(self.animatePageTurns)")
     }
@@ -162,5 +168,6 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         textAlign = ""
         textNormalization = ""
         wordSpacing = 0.0
+        letterSpacing = 0.0
     }
 }
