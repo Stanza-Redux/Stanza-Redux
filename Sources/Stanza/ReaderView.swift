@@ -262,7 +262,9 @@ struct ReaderView: View {
             #if !SKIP
             Task { await nav.go(to: link.platformValue, options: animated ? .animated : .none) }
             #else
-            Task { nav.go(link.platformValue, animated) }
+            // go(Link, boolean) is synchronous and must run on the main thread
+            // because it manipulates the ViewPager directly.
+            nav.go(link.platformValue, animated)
             #endif
         }
         showTOC = false
@@ -474,15 +476,15 @@ struct ReaderView: View {
         }
         logger.info("Navigating to bookmark id=\(bookmark.id): \(bookmark.progressLabel)")
         let animated = settings.animatePageTurns
-        #if !SKIP
         if let nav = navigator {
+            #if !SKIP
             Task { await nav.go(to: loc.platformValue, options: animated ? .animated : .none) }
+            #else
+            // go(Locator, boolean) is synchronous and must run on the main thread
+            // because it manipulates the ViewPager directly.
+            nav.go(loc.platformValue, animated)
+            #endif
         }
-        #else
-        if let nav = navigator {
-            Task { nav.go(loc.platformValue, animated) }
-        }
-        #endif
         showTOC = false
         showHUD = false
     }
