@@ -2,22 +2,70 @@
   "sourceLanguage" : "en",
   "strings" : {
     "%@ cover" : {
-      "comment" : "Accessibility label for a book cover image in the catalog publication list row. %@ is the book title."
+      "comment" : "Accessibility label for a book cover image in the catalog publication list row. %@ is the book title.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couverture de %@"
+          }
+        }
+      }
     },
     "%@ cover image" : {
-      "comment" : "Accessibility label for the large cover image on the catalog book detail screen. %@ is the book title."
+      "comment" : "Accessibility label for the large cover image on the catalog book detail screen. %@ is the book title.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image de couverture de %@"
+          }
+        }
+      }
     },
     "%@ icon" : {
-      "comment" : "Accessibility label for the catalog icon image in the About This Catalog section. %@ is the catalog title."
+      "comment" : "Accessibility label for the catalog icon image in the About This Catalog section. %@ is the catalog title.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icône de %@"
+          }
+        }
+      }
     },
     "%@ placeholder" : {
-      "comment" : "Accessibility label for a placeholder image when no book cover is available. %@ is the book title."
+      "comment" : "Accessibility label for a placeholder image when no book cover is available. %@ is the book title.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espace réservé pour %@"
+          }
+        }
+      }
     },
     "%lld" : {
-      "comment" : "A standalone number, used for displaying counts such as total books in a catalog."
+      "comment" : "A standalone number, used for displaying counts such as total books in a catalog.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
     },
     "%lld pages left in chapter" : {
-      "comment" : "Label in the reader HUD showing how many pages remain in the current chapter."
+      "comment" : "Label in the reader HUD showing how many pages remain in the current chapter.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld pages restantes dans le chapitre"
+          }
+        }
+      }
     },
     "%lld/%lld" : {
       "comment" : "Fraction display showing current chapter out of total chapters (e.g. 3/12) on the book detail screen.",
@@ -27,47 +75,157 @@
             "state" : "new",
             "value" : "%1$lld/%2$lld"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld"
+          }
         }
       }
     },
     "%lld%%" : {
-      "comment" : "Percentage display (e.g. 42%) shown for reading progress in the library list and reader HUD."
+      "comment" : "Percentage display (e.g. 42%) shown for reading progress in the library list and reader HUD.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        }
+      }
     },
     "Aa" : {
-      "comment" : "Button label in the reader HUD bottom bar that toggles the font and spacing options panel. Stylized as 'Aa' to represent typography."
+      "comment" : "Button label in the reader HUD bottom bar that toggles the font and spacing options panel. Stylized as 'Aa' to represent typography.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aa"
+          }
+        }
+      }
     },
     "Abc" : {
-      "comment" : "Sample text shown in each font preview button in the reader font picker panel."
+      "comment" : "Sample text shown in each font preview button in the reader font picker panel.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abc"
+          }
+        }
+      }
     },
     "About This Catalog" : {
-      "comment" : "Section header in the catalog feed view showing metadata about the OPDS catalog (icon, description, links)."
+      "comment" : "Section header in the catalog feed view showing metadata about the OPDS catalog (icon, description, links).",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À propos de ce catalogue"
+          }
+        }
+      }
     },
     "Add an OPDS catalog to start browsing books." : {
-      "comment" : "Instructional message shown on the Catalogs screen when no catalogs have been added."
+      "comment" : "Instructional message shown on the Catalogs screen when no catalogs have been added.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoutez un catalogue OPDS pour commencer à parcourir des livres."
+          }
+        }
+      }
     },
     "Add Book" : {
-      "comment" : "Toolbar button label in the Library screen for importing a book file."
+      "comment" : "Toolbar button label in the Library screen for importing a book file.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter un livre"
+          }
+        }
+      }
     },
     "Add bookmark" : {
-      "comment" : "Accessibility label on the bookmark button in the reader HUD when the current page is not yet bookmarked."
+      "comment" : "Accessibility label on the bookmark button in the reader HUD when the current page is not yet bookmarked.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter un signet"
+          }
+        }
+      }
     },
     "Add Catalog" : {
-      "comment" : "Button label and navigation title for adding a new OPDS catalog. Used in the Catalogs toolbar and empty state, and as the Add Catalog sheet title."
+      "comment" : "Button label and navigation title for adding a new OPDS catalog. Used in the Catalogs toolbar and empty state, and as the Add Catalog sheet title.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter un catalogue"
+          }
+        }
+      }
     },
     "Add Custom Catalog" : {
-      "comment" : "Button label to submit the custom catalog URL form in the Add Catalog sheet."
+      "comment" : "Button label to submit the custom catalog URL form in the Add Catalog sheet.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter un catalogue personnalisé"
+          }
+        }
+      }
     },
     "Add notes..." : {
-      "comment" : "Placeholder text in the notes text field on the Edit Bookmark sheet."
+      "comment" : "Placeholder text in the notes text field on the Edit Bookmark sheet.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter des notes..."
+          }
+        }
+      }
     },
     "Advanced Settings" : {
-      "comment" : "Navigation link label in Settings and navigation title for the Advanced Settings screen."
+      "comment" : "Navigation link label in Settings and navigation title for the Advanced Settings screen.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paramètres avancés"
+          }
+        }
+      }
     },
     "All Books" : {
-      "comment" : "Section header in the catalog feed view for the full publications list when grouped sections are also present."
+      "comment" : "Section header in the catalog feed view for the full publications list when grouped sections are also present.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tous les livres"
+          }
+        }
+      }
     },
     "Animate Page Turns" : {
-      "comment" : "Toggle label in Settings > Reading. When enabled, page turns in the reader are animated."
+      "comment" : "Toggle label in Settings > Reading. When enabled, page turns in the reader are animated.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animer les changements de page"
+          }
+        }
+      }
     },
     "Appearance" : {
       "comment" : "Picker label in Settings > Reading for choosing the app theme (System, Light, or Dark).",
@@ -99,85 +257,285 @@
       }
     },
     "Are you sure you want to delete \"%@\"? This cannot be undone." : {
-      "comment" : "Confirmation message in the delete book alert dialog. %@ is the book title."
+      "comment" : "Confirmation message in the delete book alert dialog. %@ is the book title.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Êtes-vous sûr de vouloir supprimer « %@ » ? Cette opération est irréversible."
+          }
+        }
+      }
     },
     "Athelas" : {
       "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "Author" : {
-      "comment" : "Label for the author field in the book detail info section and the book edit form."
+      "comment" : "Label for the author field in the book detail info section and the book edit form.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auteur"
+          }
+        }
+      }
     },
     "Auto" : {
-      "comment" : "Picker option in Settings > Text Layout for automatic column count or content fit mode."
+      "comment" : "Picker option in Settings > Text Layout for automatic column count or content fit mode.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto"
+          }
+        }
+      }
     },
     "Book info" : {
-      "comment" : "Accessibility label on the info button in the reader HUD bottom bar."
+      "comment" : "Accessibility label on the info button in the reader HUD bottom bar.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Infos sur le livre"
+          }
+        }
+      }
     },
     "Book Info" : {
-      "comment" : "Section header on the book detail screen showing title, author, and identifier."
+      "comment" : "Section header on the book detail screen showing title, author, and identifier.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informations sur le livre"
+          }
+        }
+      }
     },
     "Book not found" : {
-      "comment" : "Error message shown on the book detail screen when the book record cannot be found in the database."
+      "comment" : "Error message shown on the book detail screen when the book record cannot be found in the database.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Livre non trouvé"
+          }
+        }
+      }
     },
     "Book placeholder" : {
-      "comment" : "Accessibility label for the generic placeholder image shown when no book cover is available."
+      "comment" : "Accessibility label for the generic placeholder image shown when no book cover is available.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espace réservé pour le livre"
+          }
+        }
+      }
     },
     "Bookmark Info" : {
-      "comment" : "Section header in the Edit Bookmark sheet showing bookmark details (chapter, progress, excerpt)."
+      "comment" : "Section header in the Edit Bookmark sheet showing bookmark details (chapter, progress, excerpt).",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Infos sur le signet"
+          }
+        }
+      }
     },
     "Bookmarks" : {
-      "comment" : "Tab label in the Table of Contents/Bookmarks sheet and navigation title when the bookmarks tab is selected."
+      "comment" : "Tab label in the Table of Contents/Bookmarks sheet and navigation title when the bookmarks tab is selected.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signets"
+          }
+        }
+      }
     },
     "Books" : {
-      "comment" : "Section header in the catalog feed view for the publications list when no grouped sections exist."
+      "comment" : "Section header in the catalog feed view for the publications list when no grouped sections exist.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Livres"
+          }
+        }
+      }
     },
     "Browse" : {
-      "comment" : "Navigation title for the Catalogs browse screen."
+      "comment" : "Navigation title for the Catalogs browse screen.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parcourir"
+          }
+        }
+      }
     },
     "Cancel" : {
-      "comment" : "Button label used across multiple screens to dismiss a sheet or cancel an action (edit forms, alerts, catalog add)."
+      "comment" : "Button label used across multiple screens to dismiss a sheet or cancel an action (edit forms, alerts, catalog add).",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annuler"
+          }
+        }
+      }
     },
     "Cancel download" : {
-      "comment" : "Accessibility label on the cancel button during an active file download."
+      "comment" : "Accessibility label on the cancel button during an active file download.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annuler le téléchargement"
+          }
+        }
+      }
     },
     "Cancelled" : {
-      "comment" : "Status label shown in the download row view when a download has been cancelled."
+      "comment" : "Status label shown in the download row view when a download has been cancelled.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annulé"
+          }
+        }
+      }
     },
     "Catalog Name" : {
-      "comment" : "Placeholder text for the catalog name input field in the Add Catalog sheet."
+      "comment" : "Placeholder text for the catalog name input field in the Add Catalog sheet.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nom du catalogue"
+          }
+        }
+      }
     },
     "Catalogs" : {
-      "comment" : "Tab bar label for the Catalogs tab in the main tab view."
+      "comment" : "Tab bar label for the Catalogs tab in the main tab view.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catalogues"
+          }
+        }
+      }
     },
     "Categories" : {
-      "comment" : "Section header in the catalog feed view listing navigation links to subcategories."
+      "comment" : "Section header in the catalog feed view listing navigation links to subcategories.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catégories"
+          }
+        }
+      }
     },
     "Center" : {
-      "comment" : "Picker option for center text alignment in Settings > Text Layout > Text Alignment."
+      "comment" : "Picker option for center text alignment in Settings > Text Layout > Text Alignment.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centré"
+          }
+        }
+      }
     },
     "Chapter" : {
-      "comment" : "Fallback label for a TOC entry without a title, and label for the chapter field in the bookmark info section."
+      "comment" : "Fallback label for a TOC entry without a title, and label for the chapter field in the bookmark info section.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chapitre"
+          }
+        }
+      }
     },
     "Chapters" : {
-      "comment" : "Label on the book detail Progress section showing the current chapter count."
+      "comment" : "Label on the book detail Progress section showing the current chapter count.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chapitres"
+          }
+        }
+      }
     },
     "Character spacing: %@" : {
-      "comment" : "Accessibility label on the letter spacing button in the reader HUD spacing panel. %@ is the current spacing value or 'Default'."
+      "comment" : "Accessibility label on the letter spacing button in the reader HUD spacing panel. %@ is the current spacing value or 'Default'.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espacement des caractères : %@"
+          }
+        }
+      }
     },
     "Charter" : {
       "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "Close reader" : {
-      "comment" : "Accessibility label on the close/dismiss button in the reader HUD top bar."
+      "comment" : "Accessibility label on the close/dismiss button in the reader HUD top bar.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer le lecteur"
+          }
+        }
+      }
     },
     "Columns" : {
-      "comment" : "Picker label in Settings > Text Layout for choosing the number of text columns (Auto, One, Two)."
+      "comment" : "Picker label in Settings > Text Layout for choosing the number of text columns (Auto, One, Two).",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colonnes"
+          }
+        }
+      }
     },
     "Content Fit" : {
-      "comment" : "Picker label in Settings > Text Layout for choosing how content fits the screen (Auto, Page, Width)."
+      "comment" : "Picker label in Settings > Text Layout for choosing how content fits the screen (Auto, Page, Width).",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustement du contenu"
+          }
+        }
+      }
     },
     "Custom Catalog" : {
-      "comment" : "Section header in the Add Catalog sheet for the manual URL entry form."
+      "comment" : "Section header in the Add Catalog sheet for the manual URL entry form.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catalogue personnalisé"
+          }
+        }
+      }
     },
     "Dark" : {
       "comment" : "Picker option for dark mode in Settings > Reading > Appearance.",
@@ -209,127 +567,439 @@
       }
     },
     "Decrease font size" : {
-      "comment" : "Accessibility label on the minus button in the reader HUD bottom bar that decreases the font size."
+      "comment" : "Accessibility label on the minus button in the reader HUD bottom bar that decreases the font size.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diminuer la taille de la police"
+          }
+        }
+      }
     },
     "Default" : {
-      "comment" : "Picker option representing the default/unset value in Settings pickers (Hyphenation, Text Alignment, Text Normalization, Publisher Styles) and spacing controls."
+      "comment" : "Picker option representing the default/unset value in Settings pickers (Hyphenation, Text Alignment, Text Normalization, Publisher Styles) and spacing controls.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Par défaut"
+          }
+        }
+      }
     },
     "Delete" : {
-      "comment" : "Destructive button label in context menus for deleting a book or bookmark."
+      "comment" : "Destructive button label in context menus for deleting a book or bookmark.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer"
+          }
+        }
+      }
     },
     "Delete Book" : {
-      "comment" : "Title of the confirmation alert dialog when deleting a book from the library."
+      "comment" : "Title of the confirmation alert dialog when deleting a book from the library.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer le livre"
+          }
+        }
+      }
     },
     "Dismiss" : {
-      "comment" : "Button label to dismiss the reader when an error occurs while loading a book."
+      "comment" : "Button label to dismiss the reader when an error occurs while loading a book.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer"
+          }
+        }
+      }
     },
     "Done" : {
-      "comment" : "Toolbar button label to dismiss the Table of Contents/Bookmarks sheet."
+      "comment" : "Toolbar button label to dismiss the Table of Contents/Bookmarks sheet.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
     },
     "Download" : {
-      "comment" : "Button label to start downloading a book file, and accessibility label on the download button."
+      "comment" : "Button label to start downloading a book file, and accessibility label on the download button.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Télécharger"
+          }
+        }
+      }
     },
     "Download cancelled" : {
-      "comment" : "Status message shown in the download view when a download has been cancelled."
+      "comment" : "Status message shown in the download view when a download has been cancelled.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Téléchargement annulé"
+          }
+        }
+      }
     },
     "Download complete" : {
-      "comment" : "Accessibility label on the completed download icon."
+      "comment" : "Accessibility label on the completed download icon.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Téléchargement terminé"
+          }
+        }
+      }
     },
     "Download progress" : {
-      "comment" : "Accessibility label on the download progress bar during an active download."
+      "comment" : "Accessibility label on the download progress bar during an active download.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progression du téléchargement"
+          }
+        }
+      }
     },
     "Downloaded" : {
-      "comment" : "Status label shown in the download row view when a download has completed successfully."
+      "comment" : "Status label shown in the download row view when a download has completed successfully.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Téléchargé"
+          }
+        }
+      }
     },
     "Downloading %lld%%" : {
-      "comment" : "Accessibility label on the circular download progress indicator. %lld is the percentage complete."
+      "comment" : "Accessibility label on the circular download progress indicator. %lld is the percentage complete.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Téléchargement %lld%%"
+          }
+        }
+      }
     },
     "Edit" : {
-      "comment" : "Toolbar button label on the book detail screen to open the book edit sheet."
+      "comment" : "Toolbar button label on the book detail screen to open the book edit sheet.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifier"
+          }
+        }
+      }
     },
     "Edit Book" : {
-      "comment" : "Navigation title for the book edit form sheet."
+      "comment" : "Navigation title for the book edit form sheet.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifier le livre"
+          }
+        }
+      }
     },
     "Edit Bookmark" : {
-      "comment" : "Navigation title for the bookmark edit sheet."
+      "comment" : "Navigation title for the bookmark edit sheet.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifier le signet"
+          }
+        }
+      }
     },
     "Edit Notes" : {
-      "comment" : "Context menu button label in the bookmarks list to edit a bookmark's notes."
+      "comment" : "Context menu button label in the bookmarks list to edit a bookmark's notes.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifier les notes"
+          }
+        }
+      }
     },
     "Enable Catalogs" : {
-      "comment" : "Toggle label in Advanced Settings. When enabled, shows the Catalogs tab for browsing OPDS catalogs."
+      "comment" : "Toggle label in Advanced Settings. When enabled, shows the Catalogs tab for browsing OPDS catalogs.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activer les catalogues"
+          }
+        }
+      }
     },
     "Error" : {
-      "comment" : "Accessibility label on the warning icon shown when a catalog feed fails to load."
+      "comment" : "Accessibility label on the warning icon shown when a catalog feed fails to load.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erreur"
+          }
+        }
+      }
     },
     "Error: %@" : {
-      "comment" : "Error message shown in the reader when a book fails to load. %@ is the error description."
+      "comment" : "Error message shown in the reader when a book fails to load. %@ is the error description.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erreur : %@"
+          }
+        }
+      }
     },
     "Excerpt" : {
-      "comment" : "Label above the excerpt text in the bookmark info section of the Edit Bookmark sheet."
+      "comment" : "Label above the excerpt text in the bookmark info section of the Edit Bookmark sheet.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extrait"
+          }
+        }
+      }
     },
     "Failed to Load" : {
-      "comment" : "Title shown on the catalog feed screen when the OPDS feed cannot be loaded."
+      "comment" : "Title shown on the catalog feed screen when the OPDS feed cannot be loaded.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Échec du chargement"
+          }
+        }
+      }
     },
     "File" : {
-      "comment" : "Section header on the book detail screen showing the book's file path."
+      "comment" : "Section header on the book detail screen showing the book's file path.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fichier"
+          }
+        }
+      }
     },
     "Font" : {
-      "comment" : "Picker label in Settings > Reading for selecting the reading font family."
+      "comment" : "Picker label in Settings > Reading for selecting the reading font family.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Police"
+          }
+        }
+      }
     },
     "Font options" : {
-      "comment" : "Accessibility label on the 'Aa' button in the reader HUD that opens the font and spacing options panel."
+      "comment" : "Accessibility label on the 'Aa' button in the reader HUD that opens the font and spacing options panel.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Options de police"
+          }
+        }
+      }
     },
     "Font Size" : {
-      "comment" : "Label and accessibility label for the font size slider in Settings > Reading."
+      "comment" : "Label and accessibility label for the font size slider in Settings > Reading.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille de la police"
+          }
+        }
+      }
     },
     "Font: %@" : {
-      "comment" : "Accessibility label on each font button in the reader font picker panel. %@ is the font name."
+      "comment" : "Accessibility label on each font button in the reader font picker panel. %@ is the font name.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Police : %@"
+          }
+        }
+      }
     },
     "Format" : {
-      "comment" : "Label on the catalog book detail screen showing the file format (EPUB, PDF, etc.)."
+      "comment" : "Label on the catalog book detail screen showing the file format (EPUB, PDF, etc.).",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Format"
+          }
+        }
+      }
     },
     "Georgia" : {
       "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "Get" : {
-      "comment" : "Button label in the catalog book detail toolbar to download a book that is not yet in the library."
+      "comment" : "Button label in the catalog book detail toolbar to download a book that is not yet in the library.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtenir"
+          }
+        }
+      }
     },
     "Hide Status Bar in Reader" : {
-      "comment" : "Toggle label in Settings > Reading. When enabled, hides the system status bar while reading."
+      "comment" : "Toggle label in Settings > Reading. When enabled, hides the system status bar while reading.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer la barre d'état dans le lecteur"
+          }
+        }
+      }
     },
     "Hyphenation" : {
-      "comment" : "Picker label in Settings > Text Layout for enabling or disabling word hyphenation."
+      "comment" : "Picker label in Settings > Text Layout for enabling or disabling word hyphenation.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coupure des mots"
+          }
+        }
+      }
     },
     "Identifier" : {
-      "comment" : "Label for the book identifier field on the book detail screen and the book edit form."
+      "comment" : "Label for the book identifier field on the book detail screen and the book edit form.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Identifiant"
+          }
+        }
+      }
     },
     "Import a book to get started." : {
-      "comment" : "Instructional message shown on the Library screen when no books exist."
+      "comment" : "Instructional message shown on the Library screen when no books exist.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importez un livre pour commencer."
+          }
+        }
+      }
     },
     "Import Sample Book" : {
-      "comment" : "Button label on the Library empty state screen to import a bundled sample book."
+      "comment" : "Button label on the Library empty state screen to import a bundled sample book.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importer un livre d'exemple"
+          }
+        }
+      }
     },
     "Increase font size" : {
-      "comment" : "Accessibility label on the plus button in the reader HUD bottom bar that increases the font size."
+      "comment" : "Accessibility label on the plus button in the reader HUD bottom bar that increases the font size.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Augmenter la taille de la police"
+          }
+        }
+      }
     },
     "Iowan Old Style" : {
       "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "Justify" : {
-      "comment" : "Picker option for justified text alignment in Settings > Text Layout > Text Alignment."
+      "comment" : "Picker option for justified text alignment in Settings > Text Layout > Text Alignment.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Justifier"
+          }
+        }
+      }
     },
     "Last Opened" : {
-      "comment" : "Label on the book detail Progress section showing when the book was last opened."
+      "comment" : "Label on the book detail Progress section showing when the book was last opened.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dernière ouverture"
+          }
+        }
+      }
     },
     "Left" : {
-      "comment" : "Picker option for left text alignment in Settings > Text Layout > Text Alignment."
+      "comment" : "Picker option for left text alignment in Settings > Text Layout > Text Alignment.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À gauche"
+          }
+        }
+      }
     },
     "Left Tap Advances" : {
-      "comment" : "Toggle label in Settings > Reading. When enabled, tapping the left side of the reader advances forward instead of going back."
+      "comment" : "Toggle label in Settings > Reading. When enabled, tapping the left side of the reader advances forward instead of going back.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appui à gauche avance"
+          }
+        }
+      }
     },
     "Library" : {
-      "comment" : "Tab bar label for the Library tab and navigation title of the Library screen."
+      "comment" : "Tab bar label for the Library tab and navigation title of the Library screen.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bibliothèque"
+          }
+        }
+      }
     },
     "Light" : {
       "comment" : "Picker option for light mode in Settings > Reading > Appearance.",
@@ -361,22 +1031,70 @@
       }
     },
     "Line Height" : {
-      "comment" : "Label and accessibility label for the line height slider in Settings > Spacing."
+      "comment" : "Label and accessibility label for the line height slider in Settings > Spacing.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interligne"
+          }
+        }
+      }
     },
     "Line spacing: %@" : {
-      "comment" : "Accessibility label on the line spacing button in the reader HUD spacing panel. %@ is the current value or 'Default'."
+      "comment" : "Accessibility label on the line spacing button in the reader HUD spacing panel. %@ is the current value or 'Default'.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espacement des lignes : %@"
+          }
+        }
+      }
     },
     "Loading catalog..." : {
-      "comment" : "Progress message shown while an OPDS catalog feed is being fetched."
+      "comment" : "Progress message shown while an OPDS catalog feed is being fetched.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chargement du catalogue..."
+          }
+        }
+      }
     },
     "Loading..." : {
-      "comment" : "Progress indicator label shown while the catalog database or a book is loading."
+      "comment" : "Progress indicator label shown while the catalog database or a book is loading.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chargement..."
+          }
+        }
+      }
     },
     "Margins: %@" : {
-      "comment" : "Accessibility label on the page margins button in the reader HUD spacing panel. %@ is the current value or 'Default'."
+      "comment" : "Accessibility label on the page margins button in the reader HUD spacing panel. %@ is the current value or 'Default'.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marges : %@"
+          }
+        }
+      }
     },
     "Metadata" : {
-      "comment" : "Section header in the book edit form containing title, author, and identifier fields."
+      "comment" : "Section header in the book edit form containing title, author, and identifier fields.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Métadonnées"
+          }
+        }
+      }
     },
     "Montserrat" : {
       "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
@@ -385,22 +1103,70 @@
       "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "No bookmarks" : {
-      "comment" : "Accessibility label on the bookmark icon shown in the empty bookmarks state."
+      "comment" : "Accessibility label on the bookmark icon shown in the empty bookmarks state.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun signet"
+          }
+        }
+      }
     },
     "No Bookmarks" : {
-      "comment" : "Title text shown on the Bookmarks tab when no bookmarks have been added."
+      "comment" : "Title text shown on the Bookmarks tab when no bookmarks have been added.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun signet"
+          }
+        }
+      }
     },
     "No Books" : {
-      "comment" : "Title text shown on the Library screen when no books are in the library."
+      "comment" : "Title text shown on the Library screen when no books are in the library.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun livre"
+          }
+        }
+      }
     },
     "No catalogs" : {
-      "comment" : "Accessibility label on the explore icon shown in the empty catalogs state."
+      "comment" : "Accessibility label on the explore icon shown in the empty catalogs state.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun catalogue"
+          }
+        }
+      }
     },
     "No Catalogs" : {
-      "comment" : "Title text shown on the Catalogs screen when no catalogs have been added."
+      "comment" : "Title text shown on the Catalogs screen when no catalogs have been added.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun catalogue"
+          }
+        }
+      }
     },
     "Notes" : {
-      "comment" : "Section header for the notes text field in the Edit Bookmark sheet."
+      "comment" : "Section header for the notes text field in the Edit Bookmark sheet.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notes"
+          }
+        }
+      }
     },
     "Noto Sans" : {
       "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
@@ -409,94 +1175,318 @@
       "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "Off" : {
-      "comment" : "Picker option to disable a feature in Settings > Text Layout (used for Hyphenation, Text Normalization, Publisher Styles)."
+      "comment" : "Picker option to disable a feature in Settings > Text Layout (used for Hyphenation, Text Normalization, Publisher Styles).",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivé"
+          }
+        }
+      }
     },
     "On" : {
-      "comment" : "Picker option to enable a feature in Settings > Text Layout (used for Hyphenation, Text Normalization, Publisher Styles)."
+      "comment" : "Picker option to enable a feature in Settings > Text Layout (used for Hyphenation, Text Normalization, Publisher Styles).",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activé"
+          }
+        }
+      }
     },
     "One" : {
-      "comment" : "Picker option for single column layout in Settings > Text Layout > Columns."
+      "comment" : "Picker option for single column layout in Settings > Text Layout > Columns.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une"
+          }
+        }
+      }
     },
     "OPDS Feed URL" : {
-      "comment" : "Placeholder text for the URL input field in the Add Catalog sheet."
+      "comment" : "Placeholder text for the URL input field in the Add Catalog sheet.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL du flux OPDS"
+          }
+        }
+      }
     },
     "Open Book" : {
-      "comment" : "Context menu button label in the Library book list to open a book in the reader."
+      "comment" : "Context menu button label in the Library book list to open a book in the reader.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir le livre"
+          }
+        }
+      }
     },
     "Open Web Pages in Embedded Browser" : {
-      "comment" : "Toggle label in Settings > Reading. When enabled, web links open in an in-app browser instead of the system browser."
+      "comment" : "Toggle label in Settings > Reading. When enabled, web links open in an in-app browser instead of the system browser.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir les pages web dans le navigateur intégré"
+          }
+        }
+      }
     },
     "Page" : {
-      "comment" : "Picker option for page-fit content mode in Settings > Text Layout > Content Fit."
+      "comment" : "Picker option for page-fit content mode in Settings > Text Layout > Content Fit.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page"
+          }
+        }
+      }
     },
     "Page Margins" : {
-      "comment" : "Label and accessibility label for the page margins slider in Settings > Spacing."
+      "comment" : "Label and accessibility label for the page margins slider in Settings > Spacing.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marges de page"
+          }
+        }
+      }
     },
     "Palatino" : {
       "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "Paragraph Spacing" : {
-      "comment" : "Label and accessibility label for the paragraph spacing slider in Settings > Spacing."
+      "comment" : "Label and accessibility label for the paragraph spacing slider in Settings > Spacing.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espacement des paragraphes"
+          }
+        }
+      }
     },
     "Progress" : {
-      "comment" : "Section header and label on the book detail screen showing reading progress, and label in the bookmark info section."
+      "comment" : "Section header and label on the book detail screen showing reading progress, and label in the bookmark info section.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progression"
+          }
+        }
+      }
     },
     "Publisher Default" : {
-      "comment" : "Picker option in Settings > Reading > Font, representing the publisher's original font choice."
+      "comment" : "Picker option in Settings > Reading > Font, representing the publisher's original font choice.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Par défaut de l'éditeur"
+          }
+        }
+      }
     },
     "Publisher Styles" : {
-      "comment" : "Picker label in Settings > Text Layout for choosing whether to use the publisher's original CSS styles."
+      "comment" : "Picker label in Settings > Text Layout for choosing whether to use the publisher's original CSS styles.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Styles de l'éditeur"
+          }
+        }
+      }
     },
     "Read" : {
-      "comment" : "Button label in the catalog book detail toolbar to open a downloaded book in the reader."
+      "comment" : "Button label in the catalog book detail toolbar to open a downloaded book in the reader.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lire"
+          }
+        }
+      }
     },
     "Reading" : {
-      "comment" : "Section header in the Settings screen for reading-related preferences."
+      "comment" : "Section header in the Settings screen for reading-related preferences.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecture"
+          }
+        }
+      }
     },
     "Reading progress" : {
-      "comment" : "Accessibility label on the reading progress bar in the reader HUD."
+      "comment" : "Accessibility label on the reading progress bar in the reader HUD.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progression de lecture"
+          }
+        }
+      }
     },
     "Ready to download" : {
-      "comment" : "Status label shown in the download row view before a download has started."
+      "comment" : "Status label shown in the download row view before a download has started.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prêt à télécharger"
+          }
+        }
+      }
     },
     "Recommended Catalogs" : {
-      "comment" : "Section header in the Add Catalog sheet listing pre-configured OPDS catalog options."
+      "comment" : "Section header in the Add Catalog sheet listing pre-configured OPDS catalog options.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catalogues recommandés"
+          }
+        }
+      }
     },
     "Remove bookmark" : {
-      "comment" : "Accessibility label on the bookmark button in the reader HUD when the current page is already bookmarked."
+      "comment" : "Accessibility label on the bookmark button in the reader HUD when the current page is already bookmarked.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer le signet"
+          }
+        }
+      }
     },
     "Reset All Reading Preferences" : {
-      "comment" : "Destructive button label in Settings to reset all EPUB reading preferences to their default values."
+      "comment" : "Destructive button label in Settings to reset all EPUB reading preferences to their default values.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réinitialiser toutes les préférences de lecture"
+          }
+        }
+      }
     },
     "Reset Font Size" : {
-      "comment" : "Button label in Settings > Reading to reset the font size back to 100%. Only shown when font size is not default."
+      "comment" : "Button label in Settings > Reading to reset the font size back to 100%. Only shown when font size is not default.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réinitialiser la taille de la police"
+          }
+        }
+      }
     },
     "Retry" : {
-      "comment" : "Button label to retry a failed operation (loading a catalog feed or retrying a failed/cancelled download)."
+      "comment" : "Button label to retry a failed operation (loading a catalog feed or retrying a failed/cancelled download).",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réessayer"
+          }
+        }
+      }
     },
     "Retry download" : {
-      "comment" : "Accessibility label on the retry button for a failed or cancelled download."
+      "comment" : "Accessibility label on the retry button for a failed or cancelled download.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réessayer le téléchargement"
+          }
+        }
+      }
     },
     "Right" : {
-      "comment" : "Picker option for right text alignment in Settings > Text Layout > Text Alignment."
+      "comment" : "Picker option for right text alignment in Settings > Text Layout > Text Alignment.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À droite"
+          }
+        }
+      }
     },
     "San Francisco" : {
       "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "Save" : {
-      "comment" : "Toolbar button label to save changes in the book edit form and the bookmark edit sheet."
+      "comment" : "Toolbar button label to save changes in the book edit form and the bookmark edit sheet.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer"
+          }
+        }
+      }
     },
     "Search catalog" : {
-      "comment" : "Placeholder text in the search bar on the catalog feed screen."
+      "comment" : "Placeholder text in the search bar on the catalog feed screen.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechercher dans le catalogue"
+          }
+        }
+      }
     },
     "Search library" : {
-      "comment" : "Placeholder text in the search bar on the Library screen."
+      "comment" : "Placeholder text in the search bar on the Library screen.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechercher dans la bibliothèque"
+          }
+        }
+      }
     },
     "See All" : {
-      "comment" : "Navigation link label in catalog feed group sections to view all items in that group."
+      "comment" : "Navigation link label in catalog feed group sections to view all items in that group.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout voir"
+          }
+        }
+      }
     },
     "Sepia Theme" : {
-      "comment" : "Toggle label in Settings > Reading. When enabled, uses a warm sepia color theme for the reader."
+      "comment" : "Toggle label in Settings > Reading. When enabled, uses a warm sepia color theme for the reader.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thème sépia"
+          }
+        }
+      }
     },
     "Seravek" : {
       "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
@@ -531,19 +1521,59 @@
       }
     },
     "Share" : {
-      "comment" : "Context menu button label in the bookmarks list to share a bookmark."
+      "comment" : "Context menu button label in the bookmarks list to share a bookmark.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partager"
+          }
+        }
+      }
     },
     "Show Book Info" : {
-      "comment" : "Context menu button label in the Library book list to view book details."
+      "comment" : "Context menu button label in the Library book list to view book details.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher les infos du livre"
+          }
+        }
+      }
     },
     "Show the Catalogs tab for browsing and downloading books from OPDS catalogs." : {
-      "comment" : "Explanatory footer text below the Enable Catalogs toggle in Advanced Settings."
+      "comment" : "Explanatory footer text below the Enable Catalogs toggle in Advanced Settings.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher l'onglet Catalogues pour parcourir et télécharger des livres à partir de catalogues OPDS."
+          }
+        }
+      }
     },
     "Spacing" : {
-      "comment" : "Section header in the Settings screen for spacing-related preferences (line height, margins, etc.)."
+      "comment" : "Section header in the Settings screen for spacing-related preferences (line height, margins, etc.).",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espacement"
+          }
+        }
+      }
     },
     "Start" : {
-      "comment" : "Picker option for start-aligned text in Settings > Text Layout > Text Alignment."
+      "comment" : "Picker option for start-aligned text in Settings > Text Layout > Text Alignment.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Début"
+          }
+        }
+      }
     },
     "System" : {
       "comment" : "Picker option in Settings > Reading > Appearance to follow the system light/dark mode.",
@@ -575,43 +1605,147 @@
       }
     },
     "Table of contents" : {
-      "comment" : "Accessibility label on the table of contents button in the reader HUD bottom bar."
+      "comment" : "Accessibility label on the table of contents button in the reader HUD bottom bar.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Table des matières"
+          }
+        }
+      }
     },
     "Table of Contents" : {
-      "comment" : "Navigation title of the Table of Contents sheet when the contents tab is selected."
+      "comment" : "Navigation title of the Table of Contents sheet when the contents tab is selected.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Table des matières"
+          }
+        }
+      }
     },
     "Tap the bookmark icon while reading to add one." : {
-      "comment" : "Instructional message shown on the Bookmarks tab when no bookmarks exist."
+      "comment" : "Instructional message shown on the Bookmarks tab when no bookmarks exist.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appuyez sur l'icône de signet pendant la lecture pour en ajouter un."
+          }
+        }
+      }
     },
     "Text Alignment" : {
-      "comment" : "Picker label in Settings > Text Layout for choosing text alignment (Default, Start, Left, Center, Right, Justify)."
+      "comment" : "Picker label in Settings > Text Layout for choosing text alignment (Default, Start, Left, Center, Right, Justify).",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alignement du texte"
+          }
+        }
+      }
     },
     "Text Layout" : {
-      "comment" : "Section header in Settings for text layout preferences (columns, content fit, hyphenation, etc.)."
+      "comment" : "Section header in Settings for text layout preferences (columns, content fit, hyphenation, etc.).",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mise en page du texte"
+          }
+        }
+      }
     },
     "Text Normalization" : {
-      "comment" : "Picker label in Settings > Text Layout for enabling or disabling text normalization."
+      "comment" : "Picker label in Settings > Text Layout for enabling or disabling text normalization.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normalisation du texte"
+          }
+        }
+      }
     },
     "Title" : {
-      "comment" : "Label for the book title field on the book detail screen and the book edit form."
+      "comment" : "Label for the book title field on the book detail screen and the book edit form.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Titre"
+          }
+        }
+      }
     },
     "Total Books" : {
-      "comment" : "Label in the About This Catalog section showing the total number of books in the catalog."
+      "comment" : "Label in the About This Catalog section showing the total number of books in the catalog.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total des livres"
+          }
+        }
+      }
     },
     "Two" : {
-      "comment" : "Picker option for two-column layout in Settings > Text Layout > Columns."
+      "comment" : "Picker option for two-column layout in Settings > Text Layout > Columns.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deux"
+          }
+        }
+      }
     },
     "View" : {
-      "comment" : "Picker label for the segmented control in the TOC/Bookmarks sheet that switches between Contents and Bookmarks tabs."
+      "comment" : "Picker label for the segmented control in the TOC/Bookmarks sheet that switches between Contents and Bookmarks tabs.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vue"
+          }
+        }
+      }
     },
     "Width" : {
-      "comment" : "Picker option for width-fit content mode in Settings > Text Layout > Content Fit."
+      "comment" : "Picker option for width-fit content mode in Settings > Text Layout > Content Fit.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Largeur"
+          }
+        }
+      }
     },
     "Word Spacing" : {
-      "comment" : "Label and accessibility label for the word spacing slider in Settings > Spacing."
+      "comment" : "Label and accessibility label for the word spacing slider in Settings > Spacing.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espacement des mots"
+          }
+        }
+      }
     },
     "Word spacing: %@" : {
-      "comment" : "Accessibility label on the word spacing button in the reader HUD spacing panel. %@ is the current value or 'Default'."
+      "comment" : "Accessibility label on the word spacing button in the reader HUD spacing panel. %@ is the current value or 'Default'.",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espacement des mots : %@"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
