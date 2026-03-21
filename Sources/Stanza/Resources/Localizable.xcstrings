@@ -22,6 +22,12 @@
             "value" : "%@のカバー"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 표지"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -49,6 +55,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@のカバー画像"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 표지 이미지"
           }
         },
         "zh-Hans" : {
@@ -80,6 +92,12 @@
             "value" : "%@のアイコン"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 아이콘"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -109,6 +127,12 @@
             "value" : "%@のプレースホルダ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 자리 표시자"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -133,6 +157,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld"
@@ -165,6 +195,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "チャプターの残りページ数: %lld"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "챕터에 %lld페이지 남음"
           }
         },
         "zh-Hans" : {
@@ -202,6 +238,12 @@
             "value" : "%1$lld/%2$lld"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -226,6 +268,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld%%"
@@ -260,6 +308,12 @@
             "value" : "Aa"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aa"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -284,6 +338,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abc"
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abc"
@@ -318,6 +378,12 @@
             "value" : "このカタログについて"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 카탈로그 정보"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -345,6 +411,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "本を探すには、OPDSカタログを追加してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "책을 둘러보려면 OPDS 카탈로그를 추가하세요."
           }
         },
         "zh-Hans" : {
@@ -376,6 +448,12 @@
             "value" : "本を追加"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "책 추가"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -403,6 +481,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ブックマークを追加"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "북마크 추가"
           }
         },
         "zh-Hans" : {
@@ -434,6 +518,12 @@
             "value" : "カタログを追加"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 추가"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -461,6 +551,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カスタムカタログを追加"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용자 정의 카탈로그 추가"
           }
         },
         "zh-Hans" : {
@@ -492,6 +588,12 @@
             "value" : "メモを追加..."
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메모 추가..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -519,6 +621,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "詳細設定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "고급 설정"
           }
         },
         "zh-Hans" : {
@@ -550,6 +658,12 @@
             "value" : "すべての本"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모든 책"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -577,6 +691,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ページめくりをアニメーション化"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "책장 넘기기 애니메이션"
           }
         },
         "zh-Hans" : {
@@ -608,6 +728,12 @@
             "value" : "外観"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면 테마"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -635,6 +761,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "「%@」を削除してもよろしいですか？この操作は取り消せません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%@\"을(를) 삭제하시겠습니까? 이 작업은 취소할 수 없습니다."
           }
         },
         "zh-Hans" : {
@@ -669,6 +801,12 @@
             "value" : "著者"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저자"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -696,6 +834,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "自動"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자동"
           }
         },
         "zh-Hans" : {
@@ -727,6 +871,12 @@
             "value" : "本の情報"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "책 정보"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -754,6 +904,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "本の情報"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "책 정보"
           }
         },
         "zh-Hans" : {
@@ -785,6 +941,12 @@
             "value" : "本が見つかりません"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "책을 찾을 수 없습니다"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -812,6 +974,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "本のプレースホルダ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "책 자리 표시자"
           }
         },
         "zh-Hans" : {
@@ -843,6 +1011,12 @@
             "value" : "ブックマーク情報"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "북마크 정보"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -870,6 +1044,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ブックマーク"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "북마크"
           }
         },
         "zh-Hans" : {
@@ -901,6 +1081,12 @@
             "value" : "本"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "책"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -928,6 +1114,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "閲覧"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "찾아보기"
           }
         },
         "zh-Hans" : {
@@ -959,6 +1151,12 @@
             "value" : "キャンセル"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "취소"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -986,6 +1184,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ダウンロードをキャンセル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다운로드 취소"
           }
         },
         "zh-Hans" : {
@@ -1017,6 +1221,12 @@
             "value" : "キャンセル済み"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "취소됨"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1044,6 +1254,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カタログ名"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 이름"
           }
         },
         "zh-Hans" : {
@@ -1075,6 +1291,12 @@
             "value" : "カタログ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1102,6 +1324,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カテゴリ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카테고리"
           }
         },
         "zh-Hans" : {
@@ -1133,6 +1361,12 @@
             "value" : "中央揃え"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가운데 맞춤"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1160,6 +1394,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "チャプター"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "챕터"
           }
         },
         "zh-Hans" : {
@@ -1191,6 +1431,12 @@
             "value" : "チャプター"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "챕터"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1218,6 +1464,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "文字間隔: %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자간: %@"
           }
         },
         "zh-Hans" : {
@@ -1252,6 +1504,12 @@
             "value" : "リーダーを閉じる"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "독서 모드 닫기"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1279,6 +1537,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "列"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "열"
           }
         },
         "zh-Hans" : {
@@ -1310,6 +1574,12 @@
             "value" : "コンテンツのフィット"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "콘텐츠 맞춤"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1337,6 +1607,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カスタムカタログ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용자 정의 카탈로그"
           }
         },
         "zh-Hans" : {
@@ -1368,6 +1644,12 @@
             "value" : "ダーク"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다크 모드"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1395,6 +1677,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フォントサイズを小さくする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "글자 크기 축소"
           }
         },
         "zh-Hans" : {
@@ -1426,6 +1714,12 @@
             "value" : "デフォルト"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기본값"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1453,6 +1747,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제"
           }
         },
         "zh-Hans" : {
@@ -1484,6 +1784,12 @@
             "value" : "本を削除"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "책 삭제"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1511,6 +1817,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "閉じる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "닫기"
           }
         },
         "zh-Hans" : {
@@ -1542,6 +1854,12 @@
             "value" : "完了"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1569,6 +1887,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ダウンロード"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다운로드"
           }
         },
         "zh-Hans" : {
@@ -1600,6 +1924,12 @@
             "value" : "ダウンロードがキャンセルされました"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다운로드 취소됨"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1627,6 +1957,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ダウンロード完了"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다운로드 완료"
           }
         },
         "zh-Hans" : {
@@ -1658,6 +1994,12 @@
             "value" : "ダウンロード状況"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다운로드 진행 상황"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1685,6 +2027,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ダウンロード済み"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다운로드됨"
           }
         },
         "zh-Hans" : {
@@ -1716,6 +2064,12 @@
             "value" : "ダウンロード中 %lld%%"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다운로드 중 %lld%%"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1743,6 +2097,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "編集"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "편집"
           }
         },
         "zh-Hans" : {
@@ -1774,6 +2134,12 @@
             "value" : "本を編集"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "책 편집"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1801,6 +2167,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ブックマークを編集"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "북마크 편집"
           }
         },
         "zh-Hans" : {
@@ -1832,6 +2204,12 @@
             "value" : "メモを編集"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메모 편집"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1859,6 +2237,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カタログを有効にする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 활성화"
           }
         },
         "zh-Hans" : {
@@ -1890,6 +2274,12 @@
             "value" : "エラー"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오류"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1917,6 +2307,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "エラー: %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오류: %@"
           }
         },
         "zh-Hans" : {
@@ -1948,6 +2344,12 @@
             "value" : "抜粋"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "발췌"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1975,6 +2377,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "読み込みに失敗しました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로드 실패"
           }
         },
         "zh-Hans" : {
@@ -2006,6 +2414,12 @@
             "value" : "ファイル"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파일"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2033,6 +2447,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フォント"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "글꼴"
           }
         },
         "zh-Hans" : {
@@ -2064,6 +2484,12 @@
             "value" : "フォントオプション"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "글꼴 옵션"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2091,6 +2517,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フォントサイズ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "글자 크기"
           }
         },
         "zh-Hans" : {
@@ -2122,6 +2554,12 @@
             "value" : "フォント: %@"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "글꼴: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2149,6 +2587,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フォーマット"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "형식"
           }
         },
         "zh-Hans" : {
@@ -2183,6 +2627,12 @@
             "value" : "入手"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "받기"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2209,7 +2659,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "リーダーでステータスバーを非表示にする"
+            "value" : "リーダーでステータ스バーを非表示にする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "독서 중 상태 막대 숨기기"
           }
         },
         "zh-Hans" : {
@@ -2241,6 +2697,12 @@
             "value" : "ハイフネーション"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "하이픈 연결"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2268,6 +2730,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "識別子"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "식별자"
           }
         },
         "zh-Hans" : {
@@ -2299,6 +2767,12 @@
             "value" : "始めるには本をインポートしてください。"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시작하려면 책을 가져오세요."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2328,6 +2802,12 @@
             "value" : "サンプル本をインポート"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "샘플 책 가져오기"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2355,6 +2835,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フォントサイズを大きくする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "글자 크기 확대"
           }
         },
         "zh-Hans" : {
@@ -2389,6 +2875,12 @@
             "value" : "両端揃え"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "양쪽 맞춤"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2416,6 +2908,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最後に開いた日"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마지막으로 연 시간"
           }
         },
         "zh-Hans" : {
@@ -2447,6 +2945,12 @@
             "value" : "左揃え"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "왼쪽 맞춤"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2474,6 +2978,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "左タップで進む"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "왼쪽 탭하여 앞으로 이동"
           }
         },
         "zh-Hans" : {
@@ -2505,6 +3015,12 @@
             "value" : "ライブラリ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "라이브러리"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2532,6 +3048,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ライト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "라이트 모드"
           }
         },
         "zh-Hans" : {
@@ -2563,6 +3085,12 @@
             "value" : "行の高さ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "줄 간격"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2590,6 +3118,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "行間隔: %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "줄 간격: %@"
           }
         },
         "zh-Hans" : {
@@ -2621,6 +3155,12 @@
             "value" : "カタログを読み込み中..."
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 로드 중..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2648,6 +3188,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "読み込み中..."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로드 중..."
           }
         },
         "zh-Hans" : {
@@ -2679,6 +3225,12 @@
             "value" : "余白: %@"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "여백: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2706,6 +3258,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "メタデータ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메타데이터"
           }
         },
         "zh-Hans" : {
@@ -2743,6 +3301,12 @@
             "value" : "ブックマークなし"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "북마크 없음"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2770,6 +3334,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ブックマークなし"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "북마크 없음"
           }
         },
         "zh-Hans" : {
@@ -2801,6 +3371,12 @@
             "value" : "本がありません"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "책 없음"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2828,6 +3404,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カタログなし"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 없음"
           }
         },
         "zh-Hans" : {
@@ -2859,6 +3441,12 @@
             "value" : "カタログなし"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 없음"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2886,6 +3474,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "メモ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메모"
           }
         },
         "zh-Hans" : {
@@ -2923,6 +3517,12 @@
             "value" : "オフ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "끔"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2950,6 +3550,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "オン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "켬"
           }
         },
         "zh-Hans" : {
@@ -2981,6 +3587,12 @@
             "value" : "1列"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1단"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3008,6 +3620,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OPDSフィードURL"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OPDS 피드 URL"
           }
         },
         "zh-Hans" : {
@@ -3039,6 +3657,12 @@
             "value" : "本を開く"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "책 열기"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3066,6 +3690,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "内蔵ブラウザでウェブページを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내장 브라우저에서 웹 페이지 열기"
           }
         },
         "zh-Hans" : {
@@ -3097,6 +3727,12 @@
             "value" : "ページ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "페이지"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3124,6 +3760,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ページの余白"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "페이지 여백"
           }
         },
         "zh-Hans" : {
@@ -3158,6 +3800,12 @@
             "value" : "段落の間隔"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "단락 간격"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3185,6 +3833,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "進捗"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "진행 상황"
           }
         },
         "zh-Hans" : {
@@ -3216,6 +3870,12 @@
             "value" : "出版社のデフォルト"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "출판사 기본값"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3243,6 +3903,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "出版社のスタイル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "출판사 스타일"
           }
         },
         "zh-Hans" : {
@@ -3274,6 +3940,12 @@
             "value" : "読む"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "읽기"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3301,6 +3973,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "読書"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "독서"
           }
         },
         "zh-Hans" : {
@@ -3332,6 +4010,12 @@
             "value" : "読書の進捗"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "독서 진행 상황"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3359,6 +4043,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ダウンロードの準備完了"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다운로드 준비 완료"
           }
         },
         "zh-Hans" : {
@@ -3390,6 +4080,12 @@
             "value" : "おすすめのカタログ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추천 카탈로그"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3417,6 +4113,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ブックマークを削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "북마크 제거"
           }
         },
         "zh-Hans" : {
@@ -3448,6 +4150,12 @@
             "value" : "すべての読書設定をリセット"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모든 독서 설정 초기화"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3475,6 +4183,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フォントサイズをリセット"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "글자 크기 초기화"
           }
         },
         "zh-Hans" : {
@@ -3506,6 +4220,12 @@
             "value" : "再試行"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재시도"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3535,6 +4255,12 @@
             "value" : "ダウンロードを再試行"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다운로드 재시도"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3562,6 +4288,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "右揃え"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오른쪽 맞춤"
           }
         },
         "zh-Hans" : {
@@ -3596,6 +4328,12 @@
             "value" : "保存"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3623,6 +4361,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カタログを検索"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 검색"
           }
         },
         "zh-Hans" : {
@@ -3654,6 +4398,12 @@
             "value" : "ライブラリを検索"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "라이브러리 검색"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3683,6 +4433,12 @@
             "value" : "すべて表示"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모두 보기"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3710,6 +4466,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "セピアテーマ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세피아 테마"
           }
         },
         "zh-Hans" : {
@@ -3744,6 +4506,12 @@
             "value" : "設定"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3771,6 +4539,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "共有"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "공유"
           }
         },
         "zh-Hans" : {
@@ -3802,6 +4576,12 @@
             "value" : "本の情報を表示"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "책 정보 표시"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3829,6 +4609,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OPDSカタログから本を閲覧・ダウンロードするための「カタログ」タブを表示します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OPDS 카탈로그에서 책을 찾아보고 다운로드할 수 있는 카탈로그 탭을 표시합니다."
           }
         },
         "zh-Hans" : {
@@ -3860,6 +4646,12 @@
             "value" : "間隔"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "간격"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3887,6 +4679,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開始"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시작"
           }
         },
         "zh-Hans" : {
@@ -3918,6 +4716,12 @@
             "value" : "システム"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시스템 설정"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3945,6 +4749,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "目次"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목차"
           }
         },
         "zh-Hans" : {
@@ -3976,6 +4786,12 @@
             "value" : "目次"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목차"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4003,6 +4819,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "読書中にブックマークアイコンをタップして追加してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "읽는 동안 북마크 아이콘을 탭하여 추가하세요."
           }
         },
         "zh-Hans" : {
@@ -4034,6 +4856,12 @@
             "value" : "テキストの配置"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "텍스트 정렬"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4061,6 +4889,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "テキストレイアウト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "텍스트 레이아웃"
           }
         },
         "zh-Hans" : {
@@ -4092,6 +4926,12 @@
             "value" : "テキストの正規化"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "텍스트 정규화"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4119,6 +4959,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "タイトル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제목"
           }
         },
         "zh-Hans" : {
@@ -4150,6 +4996,12 @@
             "value" : "合計本数"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "총 도서 수"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4177,6 +5029,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "2列"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2단"
           }
         },
         "zh-Hans" : {
@@ -4208,6 +5066,12 @@
             "value" : "表示"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보기"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4235,6 +5099,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "幅"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "너비"
           }
         },
         "zh-Hans" : {
@@ -4266,6 +5136,12 @@
             "value" : "単語の間隔"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "단어 간격"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4293,6 +5169,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "単語の間隔: %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "단어 간격: %@"
           }
         },
         "zh-Hans" : {
