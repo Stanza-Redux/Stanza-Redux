@@ -21,6 +21,12 @@
             "state" : "translated",
             "value" : "%@のカバー"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 封面"
+          }
         }
       }
     },
@@ -43,6 +49,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@のカバー画像"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 封面图片"
           }
         }
       }
@@ -67,6 +79,12 @@
             "state" : "translated",
             "value" : "%@のアイコン"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 图标"
+          }
         }
       }
     },
@@ -90,6 +108,12 @@
             "state" : "translated",
             "value" : "%@のプレースホルダ"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 占位图"
+          }
         }
       }
     },
@@ -109,6 +133,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        },
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld"
@@ -135,6 +165,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "チャプターの残りページ数: %lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本章还剩 %lld 页"
           }
         }
       }
@@ -165,6 +201,12 @@
             "state" : "translated",
             "value" : "%1$lld/%2$lld"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld"
+          }
         }
       }
     },
@@ -184,6 +226,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld%%"
@@ -211,6 +259,12 @@
             "state" : "translated",
             "value" : "Aa"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aa"
+          }
         }
       }
     },
@@ -230,6 +284,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abc"
+          }
+        },
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abc"
@@ -257,6 +317,12 @@
             "state" : "translated",
             "value" : "このカタログについて"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关于此目录"
+          }
         }
       }
     },
@@ -279,6 +345,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "本を探すには、OPDSカタログを追加してください。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加 OPDS 目录以开始浏览书籍。"
           }
         }
       }
@@ -303,6 +375,12 @@
             "state" : "translated",
             "value" : "本を追加"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加书籍"
+          }
         }
       }
     },
@@ -325,6 +403,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ブックマークを追加"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加书签"
           }
         }
       }
@@ -349,6 +433,12 @@
             "state" : "translated",
             "value" : "カタログを追加"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加目录"
+          }
         }
       }
     },
@@ -371,6 +461,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カスタムカタログを追加"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加自定义目录"
           }
         }
       }
@@ -395,6 +491,12 @@
             "state" : "translated",
             "value" : "メモを追加..."
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加备注..."
+          }
         }
       }
     },
@@ -417,6 +519,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "詳細設定"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高级设置"
           }
         }
       }
@@ -441,6 +549,12 @@
             "state" : "translated",
             "value" : "すべての本"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有书籍"
+          }
         }
       }
     },
@@ -463,6 +577,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ページめくりをアニメーション化"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻页动画"
           }
         }
       }
@@ -516,6 +636,12 @@
             "state" : "translated",
             "value" : "「%@」を削除してもよろしいですか？この操作は取り消せません。"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您确定要删除“%@”吗？此操作无法撤销。"
+          }
         }
       }
     },
@@ -542,6 +668,12 @@
             "state" : "translated",
             "value" : "著者"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作者"
+          }
         }
       }
     },
@@ -564,6 +696,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "自動"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动"
           }
         }
       }
@@ -588,6 +726,12 @@
             "state" : "translated",
             "value" : "本の情報"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "书籍信息"
+          }
         }
       }
     },
@@ -610,6 +754,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "本の情報"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "书籍详情"
           }
         }
       }
@@ -634,6 +784,12 @@
             "state" : "translated",
             "value" : "本が見つかりません"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未找到该书"
+          }
         }
       }
     },
@@ -656,6 +812,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "本のプレースホルダ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "书籍占位图"
           }
         }
       }
@@ -680,6 +842,12 @@
             "state" : "translated",
             "value" : "ブックマーク情報"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "书签信息"
+          }
         }
       }
     },
@@ -702,6 +870,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ブックマーク"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "书签"
           }
         }
       }
@@ -726,6 +900,12 @@
             "state" : "translated",
             "value" : "本"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "书籍"
+          }
         }
       }
     },
@@ -748,6 +928,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "閲覧"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "浏览"
           }
         }
       }
@@ -772,6 +958,12 @@
             "state" : "translated",
             "value" : "キャンセル"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
         }
       }
     },
@@ -794,6 +986,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ダウンロードをキャンセル"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消下载"
           }
         }
       }
@@ -818,6 +1016,12 @@
             "state" : "translated",
             "value" : "キャンセル済み"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已取消"
+          }
         }
       }
     },
@@ -840,6 +1044,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カタログ名"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目录名称"
           }
         }
       }
@@ -864,6 +1074,12 @@
             "state" : "translated",
             "value" : "カタログ"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目录"
+          }
         }
       }
     },
@@ -886,6 +1102,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カテゴリ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分类"
           }
         }
       }
@@ -910,6 +1132,12 @@
             "state" : "translated",
             "value" : "中央揃え"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "居中"
+          }
         }
       }
     },
@@ -932,6 +1160,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "チャプター"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "章节"
           }
         }
       }
@@ -956,6 +1190,12 @@
             "state" : "translated",
             "value" : "チャプター"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "章节"
+          }
         }
       }
     },
@@ -978,6 +1218,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "文字間隔: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字符间距: %@"
           }
         }
       }
@@ -1005,6 +1251,12 @@
             "state" : "translated",
             "value" : "リーダーを閉じる"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭阅读器"
+          }
         }
       }
     },
@@ -1027,6 +1279,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "列"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分栏"
           }
         }
       }
@@ -1051,6 +1309,12 @@
             "state" : "translated",
             "value" : "コンテンツのフィット"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内容自适应"
+          }
         }
       }
     },
@@ -1073,6 +1337,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カスタムカタログ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义目录"
           }
         }
       }
@@ -1101,7 +1371,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "暗"
+            "value" : "深色"
           }
         }
       }
@@ -1126,6 +1396,12 @@
             "state" : "translated",
             "value" : "フォントサイズを小さくする"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "减小字号"
+          }
         }
       }
     },
@@ -1148,6 +1424,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "デフォルト"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "默认"
           }
         }
       }
@@ -1172,6 +1454,12 @@
             "state" : "translated",
             "value" : "削除"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除"
+          }
         }
       }
     },
@@ -1194,6 +1482,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "本を削除"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除书籍"
           }
         }
       }
@@ -1218,6 +1512,12 @@
             "state" : "translated",
             "value" : "閉じる"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭"
+          }
         }
       }
     },
@@ -1240,6 +1540,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "完了"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成"
           }
         }
       }
@@ -1264,6 +1570,12 @@
             "state" : "translated",
             "value" : "ダウンロード"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下载"
+          }
         }
       }
     },
@@ -1286,6 +1598,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ダウンロードがキャンセルされました"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下载已取消"
           }
         }
       }
@@ -1310,6 +1628,12 @@
             "state" : "translated",
             "value" : "ダウンロード完了"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下载完成"
+          }
         }
       }
     },
@@ -1332,6 +1656,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ダウンロード状況"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下载进度"
           }
         }
       }
@@ -1356,6 +1686,12 @@
             "state" : "translated",
             "value" : "ダウンロード済み"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已下载"
+          }
         }
       }
     },
@@ -1378,6 +1714,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ダウンロード中 %lld%%"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在下载 %lld%%"
           }
         }
       }
@@ -1402,6 +1744,12 @@
             "state" : "translated",
             "value" : "編集"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编辑"
+          }
         }
       }
     },
@@ -1424,6 +1772,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "本を編集"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编辑书籍"
           }
         }
       }
@@ -1448,6 +1802,12 @@
             "state" : "translated",
             "value" : "ブックマークを編集"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编辑书签"
+          }
         }
       }
     },
@@ -1470,6 +1830,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "メモを編集"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编辑备注"
           }
         }
       }
@@ -1494,6 +1860,12 @@
             "state" : "translated",
             "value" : "カタログを有効にする"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用目录"
+          }
         }
       }
     },
@@ -1516,6 +1888,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "エラー"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "错误"
           }
         }
       }
@@ -1540,6 +1918,12 @@
             "state" : "translated",
             "value" : "エラー: %@"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "错误: %@"
+          }
         }
       }
     },
@@ -1562,6 +1946,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "抜粋"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "摘录"
           }
         }
       }
@@ -1586,6 +1976,12 @@
             "state" : "translated",
             "value" : "読み込みに失敗しました"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加载失败"
+          }
         }
       }
     },
@@ -1608,6 +2004,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ファイル"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件"
           }
         }
       }
@@ -1632,6 +2034,12 @@
             "state" : "translated",
             "value" : "フォント"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字体"
+          }
         }
       }
     },
@@ -1654,6 +2062,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フォントオプション"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字体选项"
           }
         }
       }
@@ -1678,6 +2092,12 @@
             "state" : "translated",
             "value" : "フォントサイズ"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字号"
+          }
         }
       }
     },
@@ -1701,6 +2121,12 @@
             "state" : "translated",
             "value" : "フォント: %@"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字体: %@"
+          }
         }
       }
     },
@@ -1723,6 +2149,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フォーマット"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "格式"
           }
         }
       }
@@ -1750,6 +2182,12 @@
             "state" : "translated",
             "value" : "入手"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "获取"
+          }
         }
       }
     },
@@ -1772,6 +2210,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "リーダーでステータスバーを非表示にする"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "阅读时隐藏状态栏"
           }
         }
       }
@@ -1796,6 +2240,12 @@
             "state" : "translated",
             "value" : "ハイフネーション"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "连字符"
+          }
         }
       }
     },
@@ -1818,6 +2268,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "識別子"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "标识符"
           }
         }
       }
@@ -1842,6 +2298,12 @@
             "state" : "translated",
             "value" : "始めるには本をインポートしてください。"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导入书籍以开始。"
+          }
         }
       }
     },
@@ -1865,6 +2327,12 @@
             "state" : "translated",
             "value" : "サンプル本をインポート"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导入示例书籍"
+          }
         }
       }
     },
@@ -1887,6 +2355,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フォントサイズを大きくする"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "增大字号"
           }
         }
       }
@@ -1914,6 +2388,12 @@
             "state" : "translated",
             "value" : "両端揃え"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "两端对齐"
+          }
         }
       }
     },
@@ -1936,6 +2416,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最後に開いた日"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上次打开"
           }
         }
       }
@@ -1960,6 +2446,12 @@
             "state" : "translated",
             "value" : "左揃え"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "左对齐"
+          }
         }
       }
     },
@@ -1983,6 +2475,12 @@
             "state" : "translated",
             "value" : "左タップで進む"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击左侧前进"
+          }
         }
       }
     },
@@ -2005,6 +2503,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ライブラリ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图书馆"
           }
         }
       }
@@ -2033,7 +2537,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "光"
+            "value" : "浅色"
           }
         }
       }
@@ -2058,6 +2562,12 @@
             "state" : "translated",
             "value" : "行の高さ"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行高"
+          }
         }
       }
     },
@@ -2080,6 +2590,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "行間隔: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行间距: %@"
           }
         }
       }
@@ -2104,6 +2620,12 @@
             "state" : "translated",
             "value" : "カタログを読み込み中..."
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在加载目录..."
+          }
         }
       }
     },
@@ -2126,6 +2648,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "読み込み中..."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在加载..."
           }
         }
       }
@@ -2150,6 +2678,12 @@
             "state" : "translated",
             "value" : "余白: %@"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "页边距: %@"
+          }
         }
       }
     },
@@ -2172,6 +2706,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "メタデータ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "元数据"
           }
         }
       }
@@ -2202,6 +2742,12 @@
             "state" : "translated",
             "value" : "ブックマークなし"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无书签"
+          }
         }
       }
     },
@@ -2224,6 +2770,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ブックマークなし"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无书签"
           }
         }
       }
@@ -2248,6 +2800,12 @@
             "state" : "translated",
             "value" : "本がありません"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无书籍"
+          }
         }
       }
     },
@@ -2270,6 +2828,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カタログなし"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无目录"
           }
         }
       }
@@ -2294,6 +2858,12 @@
             "state" : "translated",
             "value" : "カタログなし"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无目录"
+          }
         }
       }
     },
@@ -2316,6 +2886,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "メモ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "备注"
           }
         }
       }
@@ -2346,6 +2922,12 @@
             "state" : "translated",
             "value" : "オフ"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭"
+          }
         }
       }
     },
@@ -2368,6 +2950,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "オン"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启"
           }
         }
       }
@@ -2392,6 +2980,12 @@
             "state" : "translated",
             "value" : "1列"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一栏"
+          }
         }
       }
     },
@@ -2414,6 +3008,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OPDSフィードURL"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OPDS 订阅源 URL"
           }
         }
       }
@@ -2438,6 +3038,12 @@
             "state" : "translated",
             "value" : "本を開く"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开书籍"
+          }
         }
       }
     },
@@ -2460,6 +3066,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "内蔵ブラウザでウェブページを開く"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在内置浏览器中打开网页"
           }
         }
       }
@@ -2484,6 +3096,12 @@
             "state" : "translated",
             "value" : "ページ"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "页面"
+          }
         }
       }
     },
@@ -2506,6 +3124,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ページの余白"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "页边距"
           }
         }
       }
@@ -2533,6 +3157,12 @@
             "state" : "translated",
             "value" : "段落の間隔"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "段落间距"
+          }
         }
       }
     },
@@ -2555,6 +3185,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "進捗"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "阅读进度"
           }
         }
       }
@@ -2579,6 +3215,12 @@
             "state" : "translated",
             "value" : "出版社のデフォルト"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出版商默认"
+          }
         }
       }
     },
@@ -2601,6 +3243,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "出版社のスタイル"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出版商样式"
           }
         }
       }
@@ -2625,6 +3273,12 @@
             "state" : "translated",
             "value" : "読む"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "阅读"
+          }
         }
       }
     },
@@ -2647,6 +3301,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "読書"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "阅读"
           }
         }
       }
@@ -2671,6 +3331,12 @@
             "state" : "translated",
             "value" : "読書の進捗"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "阅读进度"
+          }
         }
       }
     },
@@ -2693,6 +3359,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ダウンロードの準備完了"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "准备下载"
           }
         }
       }
@@ -2717,6 +3389,12 @@
             "state" : "translated",
             "value" : "おすすめのカタログ"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推荐目录"
+          }
         }
       }
     },
@@ -2739,6 +3417,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ブックマークを削除"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除书签"
           }
         }
       }
@@ -2763,6 +3447,12 @@
             "state" : "translated",
             "value" : "すべての読書設定をリセット"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置所有阅读偏好"
+          }
         }
       }
     },
@@ -2785,6 +3475,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フォントサイズをリセット"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置字号"
           }
         }
       }
@@ -2809,6 +3505,12 @@
             "state" : "translated",
             "value" : "再試行"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重试"
+          }
         }
       }
     },
@@ -2832,6 +3534,12 @@
             "state" : "translated",
             "value" : "ダウンロードを再試行"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重试下载"
+          }
         }
       }
     },
@@ -2854,6 +3562,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "右揃え"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右对齐"
           }
         }
       }
@@ -2881,6 +3595,12 @@
             "state" : "translated",
             "value" : "保存"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存"
+          }
         }
       }
     },
@@ -2903,6 +3623,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カタログを検索"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索目录"
           }
         }
       }
@@ -2927,6 +3653,12 @@
             "state" : "translated",
             "value" : "ライブラリを検索"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索图书馆"
+          }
         }
       }
     },
@@ -2950,6 +3682,12 @@
             "state" : "translated",
             "value" : "すべて表示"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看全部"
+          }
         }
       }
     },
@@ -2972,6 +3710,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "セピアテーマ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "护眼主题"
           }
         }
       }
@@ -3028,6 +3772,12 @@
             "state" : "translated",
             "value" : "共有"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分享"
+          }
         }
       }
     },
@@ -3050,6 +3800,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "本の情報を表示"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示书籍信息"
           }
         }
       }
@@ -3074,6 +3830,12 @@
             "state" : "translated",
             "value" : "OPDSカタログから本を閲覧・ダウンロードするための「カタログ」タブを表示します。"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示“目录”选项卡，以便从 OPDS 目录浏览和下载书籍。"
+          }
         }
       }
     },
@@ -3097,6 +3859,12 @@
             "state" : "translated",
             "value" : "間隔"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "间距"
+          }
         }
       }
     },
@@ -3119,6 +3887,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開始"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始"
           }
         }
       }
@@ -3172,6 +3946,12 @@
             "state" : "translated",
             "value" : "目次"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目录"
+          }
         }
       }
     },
@@ -3194,6 +3974,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "目次"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目录"
           }
         }
       }
@@ -3218,6 +4004,12 @@
             "state" : "translated",
             "value" : "読書中にブックマークアイコンをタップして追加してください。"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "阅读时点击书签图标即可添加。"
+          }
         }
       }
     },
@@ -3240,6 +4032,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "テキストの配置"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文本对齐"
           }
         }
       }
@@ -3264,6 +4062,12 @@
             "state" : "translated",
             "value" : "テキストレイアウト"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文本布局"
+          }
         }
       }
     },
@@ -3286,6 +4090,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "テキストの正規化"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文本规范化"
           }
         }
       }
@@ -3310,6 +4120,12 @@
             "state" : "translated",
             "value" : "タイトル"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "标题"
+          }
         }
       }
     },
@@ -3332,6 +4148,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "合計本数"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "书籍总数"
           }
         }
       }
@@ -3356,6 +4178,12 @@
             "state" : "translated",
             "value" : "2列"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "两栏"
+          }
         }
       }
     },
@@ -3378,6 +4206,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "表示"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "视图"
           }
         }
       }
@@ -3402,6 +4236,12 @@
             "state" : "translated",
             "value" : "幅"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "宽度"
+          }
         }
       }
     },
@@ -3425,6 +4265,12 @@
             "state" : "translated",
             "value" : "単語の間隔"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "词间距"
+          }
         }
       }
     },
@@ -3447,6 +4293,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "単語の間隔: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "词间距: %@"
           }
         }
       }
