@@ -2,24 +2,25 @@
   "sourceLanguage" : "en",
   "strings" : {
     "%@ cover" : {
-
+      "comment" : "Accessibility label for a book cover image in the catalog publication list row. %@ is the book title."
     },
     "%@ cover image" : {
-
+      "comment" : "Accessibility label for the large cover image on the catalog book detail screen. %@ is the book title."
     },
     "%@ icon" : {
-
+      "comment" : "Accessibility label for the catalog icon image in the About This Catalog section. %@ is the catalog title."
     },
     "%@ placeholder" : {
-
+      "comment" : "Accessibility label for a placeholder image when no book cover is available. %@ is the book title."
     },
     "%lld" : {
-
+      "comment" : "A standalone number, used for displaying counts such as total books in a catalog."
     },
     "%lld pages left in chapter" : {
-
+      "comment" : "Label in the reader HUD showing how many pages remain in the current chapter."
     },
     "%lld/%lld" : {
+      "comment" : "Fraction display showing current chapter out of total chapters (e.g. 3/12) on the book detail screen.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -30,45 +31,46 @@
       }
     },
     "%lld%%" : {
-
+      "comment" : "Percentage display (e.g. 42%) shown for reading progress in the library list and reader HUD."
     },
     "Aa" : {
-
+      "comment" : "Button label in the reader HUD bottom bar that toggles the font and spacing options panel. Stylized as 'Aa' to represent typography."
     },
     "Abc" : {
-
+      "comment" : "Sample text shown in each font preview button in the reader font picker panel."
     },
     "About This Catalog" : {
-
+      "comment" : "Section header in the catalog feed view showing metadata about the OPDS catalog (icon, description, links)."
     },
     "Add an OPDS catalog to start browsing books." : {
-
+      "comment" : "Instructional message shown on the Catalogs screen when no catalogs have been added."
     },
     "Add Book" : {
-
+      "comment" : "Toolbar button label in the Library screen for importing a book file."
     },
     "Add bookmark" : {
-
+      "comment" : "Accessibility label on the bookmark button in the reader HUD when the current page is not yet bookmarked."
     },
     "Add Catalog" : {
-
+      "comment" : "Button label and navigation title for adding a new OPDS catalog. Used in the Catalogs toolbar and empty state, and as the Add Catalog sheet title."
     },
     "Add Custom Catalog" : {
-
+      "comment" : "Button label to submit the custom catalog URL form in the Add Catalog sheet."
     },
     "Add notes..." : {
-
+      "comment" : "Placeholder text in the notes text field on the Edit Bookmark sheet."
     },
     "Advanced Settings" : {
-
+      "comment" : "Navigation link label in Settings and navigation title for the Advanced Settings screen."
     },
     "All Books" : {
-
+      "comment" : "Section header in the catalog feed view for the full publications list when grouped sections are also present."
     },
     "Animate Page Turns" : {
-
+      "comment" : "Toggle label in Settings > Reading. When enabled, page turns in the reader are animated."
     },
     "Appearance" : {
+      "comment" : "Picker label in Settings > Reading for choosing the app theme (System, Light, or Dark).",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -97,87 +99,88 @@
       }
     },
     "Are you sure you want to delete \"%@\"? This cannot be undone." : {
-
+      "comment" : "Confirmation message in the delete book alert dialog. %@ is the book title."
     },
     "Athelas" : {
-
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "Author" : {
-
+      "comment" : "Label for the author field in the book detail info section and the book edit form."
     },
     "Auto" : {
-
+      "comment" : "Picker option in Settings > Text Layout for automatic column count or content fit mode."
     },
     "Book info" : {
-
+      "comment" : "Accessibility label on the info button in the reader HUD bottom bar."
     },
     "Book Info" : {
-
+      "comment" : "Section header on the book detail screen showing title, author, and identifier."
     },
     "Book not found" : {
-
+      "comment" : "Error message shown on the book detail screen when the book record cannot be found in the database."
     },
     "Book placeholder" : {
-
+      "comment" : "Accessibility label for the generic placeholder image shown when no book cover is available."
     },
     "Bookmark Info" : {
-
+      "comment" : "Section header in the Edit Bookmark sheet showing bookmark details (chapter, progress, excerpt)."
     },
     "Bookmarks" : {
-
+      "comment" : "Tab label in the Table of Contents/Bookmarks sheet and navigation title when the bookmarks tab is selected."
     },
     "Books" : {
-
+      "comment" : "Section header in the catalog feed view for the publications list when no grouped sections exist."
     },
     "Browse" : {
-
+      "comment" : "Navigation title for the Catalogs browse screen."
     },
     "Cancel" : {
-
+      "comment" : "Button label used across multiple screens to dismiss a sheet or cancel an action (edit forms, alerts, catalog add)."
     },
     "Cancel download" : {
-
+      "comment" : "Accessibility label on the cancel button during an active file download."
     },
     "Cancelled" : {
-
+      "comment" : "Status label shown in the download row view when a download has been cancelled."
     },
     "Catalog Name" : {
-
+      "comment" : "Placeholder text for the catalog name input field in the Add Catalog sheet."
     },
     "Catalogs" : {
-
+      "comment" : "Tab bar label for the Catalogs tab in the main tab view."
     },
     "Categories" : {
-
+      "comment" : "Section header in the catalog feed view listing navigation links to subcategories."
     },
     "Center" : {
-
+      "comment" : "Picker option for center text alignment in Settings > Text Layout > Text Alignment."
     },
     "Chapter" : {
-
+      "comment" : "Fallback label for a TOC entry without a title, and label for the chapter field in the bookmark info section."
     },
     "Chapters" : {
-
+      "comment" : "Label on the book detail Progress section showing the current chapter count."
     },
     "Character spacing: %@" : {
-
+      "comment" : "Accessibility label on the letter spacing button in the reader HUD spacing panel. %@ is the current spacing value or 'Default'."
     },
     "Charter" : {
-
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "Close reader" : {
-
+      "comment" : "Accessibility label on the close/dismiss button in the reader HUD top bar."
     },
     "Columns" : {
-
+      "comment" : "Picker label in Settings > Text Layout for choosing the number of text columns (Auto, One, Two)."
     },
     "Content Fit" : {
-
+      "comment" : "Picker label in Settings > Text Layout for choosing how content fits the screen (Auto, Page, Width)."
     },
     "Custom Catalog" : {
-
+      "comment" : "Section header in the Add Catalog sheet for the manual URL entry form."
     },
     "Dark" : {
+      "comment" : "Picker option for dark mode in Settings > Reading > Appearance.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -206,216 +209,130 @@
       }
     },
     "Decrease font size" : {
-
+      "comment" : "Accessibility label on the minus button in the reader HUD bottom bar that decreases the font size."
     },
     "Default" : {
-
+      "comment" : "Picker option representing the default/unset value in Settings pickers (Hyphenation, Text Alignment, Text Normalization, Publisher Styles) and spacing controls."
     },
     "Delete" : {
-
+      "comment" : "Destructive button label in context menus for deleting a book or bookmark."
     },
     "Delete Book" : {
-
+      "comment" : "Title of the confirmation alert dialog when deleting a book from the library."
     },
     "Dismiss" : {
-
+      "comment" : "Button label to dismiss the reader when an error occurs while loading a book."
     },
     "Done" : {
-
+      "comment" : "Toolbar button label to dismiss the Table of Contents/Bookmarks sheet."
     },
     "Download" : {
-
+      "comment" : "Button label to start downloading a book file, and accessibility label on the download button."
     },
     "Download cancelled" : {
-
+      "comment" : "Status message shown in the download view when a download has been cancelled."
     },
     "Download complete" : {
-
+      "comment" : "Accessibility label on the completed download icon."
     },
     "Download progress" : {
-
+      "comment" : "Accessibility label on the download progress bar during an active download."
     },
     "Downloaded" : {
-
+      "comment" : "Status label shown in the download row view when a download has completed successfully."
     },
     "Downloading %lld%%" : {
-
+      "comment" : "Accessibility label on the circular download progress indicator. %lld is the percentage complete."
     },
     "Edit" : {
-
+      "comment" : "Toolbar button label on the book detail screen to open the book edit sheet."
     },
     "Edit Book" : {
-
+      "comment" : "Navigation title for the book edit form sheet."
     },
     "Edit Bookmark" : {
-
+      "comment" : "Navigation title for the bookmark edit sheet."
     },
     "Edit Notes" : {
-
+      "comment" : "Context menu button label in the bookmarks list to edit a bookmark's notes."
     },
     "Enable Catalogs" : {
-
+      "comment" : "Toggle label in Advanced Settings. When enabled, shows the Catalogs tab for browsing OPDS catalogs."
     },
     "Error" : {
-
+      "comment" : "Accessibility label on the warning icon shown when a catalog feed fails to load."
     },
     "Error: %@" : {
-
+      "comment" : "Error message shown in the reader when a book fails to load. %@ is the error description."
     },
     "Excerpt" : {
-
+      "comment" : "Label above the excerpt text in the bookmark info section of the Edit Bookmark sheet."
     },
     "Failed to Load" : {
-
+      "comment" : "Title shown on the catalog feed screen when the OPDS feed cannot be loaded."
     },
     "File" : {
-
+      "comment" : "Section header on the book detail screen showing the book's file path."
     },
     "Font" : {
-
+      "comment" : "Picker label in Settings > Reading for selecting the reading font family."
     },
     "Font options" : {
-
+      "comment" : "Accessibility label on the 'Aa' button in the reader HUD that opens the font and spacing options panel."
     },
     "Font Size" : {
-
+      "comment" : "Label and accessibility label for the font size slider in Settings > Reading."
     },
     "Font: %@" : {
-
+      "comment" : "Accessibility label on each font button in the reader font picker panel. %@ is the font name."
     },
     "Format" : {
-
+      "comment" : "Label on the catalog book detail screen showing the file format (EPUB, PDF, etc.)."
     },
     "Georgia" : {
-
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "Get" : {
-
-    },
-    "Hello [%@](https://skip.tools)!" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¡Hola [%@](https://skip.tools)!"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bonjour [%@](https://skip.tools)!"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "こんにちは、[%@](https://skip.tools)!"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你好，[%@](https://skip.tools)!"
-          }
-        }
-      }
+      "comment" : "Button label in the catalog book detail toolbar to download a book that is not yet in the library."
     },
     "Hide Status Bar in Reader" : {
-
-    },
-    "Home" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inicio"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accueil"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ホーム"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "主页"
-          }
-        }
-      }
+      "comment" : "Toggle label in Settings > Reading. When enabled, hides the system status bar while reading."
     },
     "Hyphenation" : {
-
+      "comment" : "Picker label in Settings > Text Layout for enabling or disabling word hyphenation."
     },
     "Identifier" : {
-
+      "comment" : "Label for the book identifier field on the book detail screen and the book edit form."
     },
     "Import a book to get started." : {
-
+      "comment" : "Instructional message shown on the Library screen when no books exist."
     },
     "Import Sample Book" : {
-
+      "comment" : "Button label on the Library empty state screen to import a bundled sample book."
     },
     "Increase font size" : {
-
+      "comment" : "Accessibility label on the plus button in the reader HUD bottom bar that increases the font size."
     },
     "Iowan Old Style" : {
-
-    },
-    "Item %lld" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Elemento %lld"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Élément %lld"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アイテム %lld"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "项目 %lld"
-          }
-        }
-      }
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "Justify" : {
-
+      "comment" : "Picker option for justified text alignment in Settings > Text Layout > Text Alignment."
     },
     "Last Opened" : {
-
+      "comment" : "Label on the book detail Progress section showing when the book was last opened."
     },
     "Left" : {
-
+      "comment" : "Picker option for left text alignment in Settings > Text Layout > Text Alignment."
     },
     "Left Tap Advances" : {
-
+      "comment" : "Toggle label in Settings > Reading. When enabled, tapping the left side of the reader advances forward instead of going back."
     },
     "Library" : {
-
+      "comment" : "Tab bar label for the Library tab and navigation title of the Library screen."
     },
     "Light" : {
+      "comment" : "Picker option for light mode in Settings > Reading > Appearance.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -444,234 +361,148 @@
       }
     },
     "Line Height" : {
-
+      "comment" : "Label and accessibility label for the line height slider in Settings > Spacing."
     },
     "Line spacing: %@" : {
-
+      "comment" : "Accessibility label on the line spacing button in the reader HUD spacing panel. %@ is the current value or 'Default'."
     },
     "Loading catalog..." : {
-
+      "comment" : "Progress message shown while an OPDS catalog feed is being fetched."
     },
     "Loading..." : {
-
+      "comment" : "Progress indicator label shown while the catalog database or a book is loading."
     },
     "Margins: %@" : {
-
+      "comment" : "Accessibility label on the page margins button in the reader HUD spacing panel. %@ is the current value or 'Default'."
     },
     "Metadata" : {
-
+      "comment" : "Section header in the book edit form containing title, author, and identifier fields."
     },
     "Montserrat" : {
-
-    },
-    "Name" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nombre"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nom"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "名前"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "姓名"
-          }
-        }
-      }
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "New York" : {
-
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "No bookmarks" : {
-
+      "comment" : "Accessibility label on the bookmark icon shown in the empty bookmarks state."
     },
     "No Bookmarks" : {
-
+      "comment" : "Title text shown on the Bookmarks tab when no bookmarks have been added."
     },
     "No Books" : {
-
+      "comment" : "Title text shown on the Library screen when no books are in the library."
     },
     "No catalogs" : {
-
+      "comment" : "Accessibility label on the explore icon shown in the empty catalogs state."
     },
     "No Catalogs" : {
-
+      "comment" : "Title text shown on the Catalogs screen when no catalogs have been added."
     },
     "Notes" : {
-
+      "comment" : "Section header for the notes text field in the Edit Bookmark sheet."
     },
     "Noto Sans" : {
-
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "Noto Serif" : {
-
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "Off" : {
-
+      "comment" : "Picker option to disable a feature in Settings > Text Layout (used for Hyphenation, Text Normalization, Publisher Styles)."
     },
     "On" : {
-
+      "comment" : "Picker option to enable a feature in Settings > Text Layout (used for Hyphenation, Text Normalization, Publisher Styles)."
     },
     "One" : {
-
+      "comment" : "Picker option for single column layout in Settings > Text Layout > Columns."
     },
     "OPDS Feed URL" : {
-
+      "comment" : "Placeholder text for the URL input field in the Add Catalog sheet."
     },
     "Open Book" : {
-
+      "comment" : "Context menu button label in the Library book list to open a book in the reader."
     },
     "Open Web Pages in Embedded Browser" : {
-
+      "comment" : "Toggle label in Settings > Reading. When enabled, web links open in an in-app browser instead of the system browser."
     },
     "Page" : {
-
+      "comment" : "Picker option for page-fit content mode in Settings > Text Layout > Content Fit."
     },
     "Page Margins" : {
-
+      "comment" : "Label and accessibility label for the page margins slider in Settings > Spacing."
     },
     "Palatino" : {
-
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "Paragraph Spacing" : {
-
-    },
-    "Powered by %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Potenciado por %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Propulsé par %@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@動力"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "由%@提供动力"
-          }
-        }
-      }
+      "comment" : "Label and accessibility label for the paragraph spacing slider in Settings > Spacing."
     },
     "Progress" : {
-
+      "comment" : "Section header and label on the book detail screen showing reading progress, and label in the bookmark info section."
     },
     "Publisher Default" : {
-
+      "comment" : "Picker option in Settings > Reading > Font, representing the publisher's original font choice."
     },
     "Publisher Styles" : {
-
+      "comment" : "Picker label in Settings > Text Layout for choosing whether to use the publisher's original CSS styles."
     },
     "Read" : {
-
+      "comment" : "Button label in the catalog book detail toolbar to open a downloaded book in the reader."
     },
     "Reading" : {
-
+      "comment" : "Section header in the Settings screen for reading-related preferences."
     },
     "Reading progress" : {
-
+      "comment" : "Accessibility label on the reading progress bar in the reader HUD."
     },
     "Ready to download" : {
-
+      "comment" : "Status label shown in the download row view before a download has started."
     },
     "Recommended Catalogs" : {
-
+      "comment" : "Section header in the Add Catalog sheet listing pre-configured OPDS catalog options."
     },
     "Remove bookmark" : {
-
+      "comment" : "Accessibility label on the bookmark button in the reader HUD when the current page is already bookmarked."
     },
     "Reset All Reading Preferences" : {
-
+      "comment" : "Destructive button label in Settings to reset all EPUB reading preferences to their default values."
     },
     "Reset Font Size" : {
-
+      "comment" : "Button label in Settings > Reading to reset the font size back to 100%. Only shown when font size is not default."
     },
     "Retry" : {
-
+      "comment" : "Button label to retry a failed operation (loading a catalog feed or retrying a failed/cancelled download)."
     },
     "Retry download" : {
-
+      "comment" : "Accessibility label on the retry button for a failed or cancelled download."
     },
     "Right" : {
-
+      "comment" : "Picker option for right text alignment in Settings > Text Layout > Text Alignment."
     },
     "San Francisco" : {
-
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "Save" : {
-
-    },
-    "Screen %lld" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pantalla %lld"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Écran %lld"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "画面 %lld"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "屏幕 %lld"
-          }
-        }
-      }
+      "comment" : "Toolbar button label to save changes in the book edit form and the bookmark edit sheet."
     },
     "Search catalog" : {
-
+      "comment" : "Placeholder text in the search bar on the catalog feed screen."
     },
     "Search library" : {
-
+      "comment" : "Placeholder text in the search bar on the Library screen."
     },
     "See All" : {
-
+      "comment" : "Navigation link label in catalog feed group sections to view all items in that group."
     },
     "Sepia Theme" : {
-
+      "comment" : "Toggle label in Settings > Reading. When enabled, uses a warm sepia color theme for the reader."
     },
     "Seravek" : {
-
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
     },
     "Settings" : {
+      "comment" : "Tab bar label for the Settings tab and navigation title of the Settings screen.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -700,21 +531,22 @@
       }
     },
     "Share" : {
-
+      "comment" : "Context menu button label in the bookmarks list to share a bookmark."
     },
     "Show Book Info" : {
-
+      "comment" : "Context menu button label in the Library book list to view book details."
     },
     "Show the Catalogs tab for browsing and downloading books from OPDS catalogs." : {
-
+      "comment" : "Explanatory footer text below the Enable Catalogs toggle in Advanced Settings."
     },
     "Spacing" : {
-
+      "comment" : "Section header in the Settings screen for spacing-related preferences (line height, margins, etc.)."
     },
     "Start" : {
-
+      "comment" : "Picker option for start-aligned text in Settings > Text Layout > Text Alignment."
     },
     "System" : {
+      "comment" : "Picker option in Settings > Reading > Appearance to follow the system light/dark mode.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -743,72 +575,43 @@
       }
     },
     "Table of contents" : {
-
+      "comment" : "Accessibility label on the table of contents button in the reader HUD bottom bar."
     },
     "Table of Contents" : {
-
+      "comment" : "Navigation title of the Table of Contents sheet when the contents tab is selected."
     },
     "Tap the bookmark icon while reading to add one." : {
-
+      "comment" : "Instructional message shown on the Bookmarks tab when no bookmarks exist."
     },
     "Text Alignment" : {
-
+      "comment" : "Picker label in Settings > Text Layout for choosing text alignment (Default, Start, Left, Center, Right, Justify)."
     },
     "Text Layout" : {
-
+      "comment" : "Section header in Settings for text layout preferences (columns, content fit, hyphenation, etc.)."
     },
     "Text Normalization" : {
-
+      "comment" : "Picker label in Settings > Text Layout for enabling or disabling text normalization."
     },
     "Title" : {
-
+      "comment" : "Label for the book title field on the book detail screen and the book edit form."
     },
     "Total Books" : {
-
+      "comment" : "Label in the About This Catalog section showing the total number of books in the catalog."
     },
     "Two" : {
-
+      "comment" : "Picker option for two-column layout in Settings > Text Layout > Columns."
     },
     "View" : {
-
-    },
-    "Welcome" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bienvenido"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bienvenue"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ようこそ"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "欢迎"
-          }
-        }
-      }
+      "comment" : "Picker label for the segmented control in the TOC/Bookmarks sheet that switches between Contents and Bookmarks tabs."
     },
     "Width" : {
-
+      "comment" : "Picker option for width-fit content mode in Settings > Text Layout > Content Fit."
     },
     "Word Spacing" : {
-
+      "comment" : "Label and accessibility label for the word spacing slider in Settings > Spacing."
     },
     "Word spacing: %@" : {
-
+      "comment" : "Accessibility label on the word spacing button in the reader HUD spacing panel. %@ is the current value or 'Default'."
     }
   },
   "version" : "1.0"
