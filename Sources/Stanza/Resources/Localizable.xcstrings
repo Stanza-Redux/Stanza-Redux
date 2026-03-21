@@ -40,6 +40,12 @@
             "value" : "%@ 표지"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capa de %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -85,6 +91,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ 표지 이미지"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imagem da capa de %@"
           }
         },
         "zh-Hans" : {
@@ -134,6 +146,12 @@
             "value" : "%@ 아이콘"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ícone de %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -181,6 +199,12 @@
             "value" : "%@ 자리 표시자"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espaço reservado para %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -223,6 +247,12 @@
           }
         },
         "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        },
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld"
@@ -273,6 +303,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "챕터에 %lld페이지 남음"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld páginas restantes no capítulo"
           }
         },
         "zh-Hans" : {
@@ -328,6 +364,12 @@
             "value" : "%1$lld/%2$lld"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -370,6 +412,12 @@
           }
         },
         "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld%%"
@@ -422,6 +470,12 @@
             "value" : "Aa"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aa"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -464,6 +518,12 @@
           }
         },
         "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abc"
+          }
+        },
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abc"
@@ -516,6 +576,12 @@
             "value" : "이 카탈로그 정보"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sobre este catálogo"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -561,6 +627,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "책을 둘러보려면 OPDS 카탈로그를 추가하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicione um catálogo OPDS para começar a navegar pelos livros."
           }
         },
         "zh-Hans" : {
@@ -610,6 +682,12 @@
             "value" : "책 추가"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar livro"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -655,6 +733,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "북마크 추가"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar marcador"
           }
         },
         "zh-Hans" : {
@@ -704,6 +788,12 @@
             "value" : "카탈로그 추가"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar catálogo"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -730,7 +820,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajouter un catalogue personnalisé"
+            "value" : "Ajouter un catalogue personalizado"
           }
         },
         "it" : {
@@ -749,6 +839,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "사용자 정의 카탈로그 추가"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar catálogo personalizado"
           }
         },
         "zh-Hans" : {
@@ -798,6 +894,12 @@
             "value" : "메모 추가..."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar notas..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -843,6 +945,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "고급 설정"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurações avançadas"
           }
         },
         "zh-Hans" : {
@@ -892,6 +1000,12 @@
             "value" : "모든 책"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os livros"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -937,6 +1051,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "책장 넘기기 애니메이션"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animar virada de página"
           }
         },
         "zh-Hans" : {
@@ -986,6 +1106,12 @@
             "value" : "화면 테마"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aparência"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1012,7 +1138,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Êtes-vous sûr de vouloir supprimer « %@ » ? Cette opération est irréversible."
+            "value" : "Êtes-vous sûr de vouloir supprimer « %@ » ? Cette operação est irréversible."
           }
         },
         "it" : {
@@ -1031,6 +1157,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "\"%@\"을(를) 삭제하시겠습니까? 이 작업은 취소할 수 없습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza de que deseja excluir \"%@\"? Isso não pode ser desfeito."
           }
         },
         "zh-Hans" : {
@@ -1083,6 +1215,12 @@
             "value" : "저자"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autor"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1128,6 +1266,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "자동"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automático"
           }
         },
         "zh-Hans" : {
@@ -1177,6 +1321,12 @@
             "value" : "책 정보"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informações do livro"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1222,6 +1372,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "책 정보"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informações do livro"
           }
         },
         "zh-Hans" : {
@@ -1271,6 +1427,12 @@
             "value" : "책을 찾을 수 없습니다"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Livro não encontrado"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1316,6 +1478,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "책 자리 표시자"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espaço reservado para o livro"
           }
         },
         "zh-Hans" : {
@@ -1365,6 +1533,12 @@
             "value" : "북마크 정보"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informações do marcador"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1410,6 +1584,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "북마크"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcadores"
           }
         },
         "zh-Hans" : {
@@ -1459,6 +1639,12 @@
             "value" : "책"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Livros"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1504,6 +1690,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "찾아보기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navegar"
           }
         },
         "zh-Hans" : {
@@ -1553,6 +1745,12 @@
             "value" : "취소"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1598,6 +1796,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "다운로드 취소"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar download"
           }
         },
         "zh-Hans" : {
@@ -1647,6 +1851,12 @@
             "value" : "취소됨"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelado"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1692,6 +1902,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "카탈로그 이름"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome do catálogo"
           }
         },
         "zh-Hans" : {
@@ -1741,6 +1957,12 @@
             "value" : "카탈로그"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catálogos"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1786,6 +2008,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "카테고리"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categorias"
           }
         },
         "zh-Hans" : {
@@ -1835,6 +2063,12 @@
             "value" : "가운데 맞춤"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centralizado"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1880,6 +2114,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "챕터"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capítulo"
           }
         },
         "zh-Hans" : {
@@ -1929,6 +2169,12 @@
             "value" : "챕터"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capítulos"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1974,6 +2220,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "자간: %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espaçamento de caracteres: %@"
           }
         },
         "zh-Hans" : {
@@ -2026,6 +2278,12 @@
             "value" : "독서 모드 닫기"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fechar leitor"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2071,6 +2329,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "열"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colunas"
           }
         },
         "zh-Hans" : {
@@ -2120,6 +2384,12 @@
             "value" : "콘텐츠 맞춤"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajuste de conteúdo"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2165,6 +2435,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "사용자 정의 카탈로그"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catálogo personalizado"
           }
         },
         "zh-Hans" : {
@@ -2214,6 +2490,12 @@
             "value" : "다크 모드"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escuro"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2259,6 +2541,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "글자 크기 축소"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diminuir tamanho da fonte"
           }
         },
         "zh-Hans" : {
@@ -2308,6 +2596,12 @@
             "value" : "기본값"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Padrão"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2353,6 +2647,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "삭제"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir"
           }
         },
         "zh-Hans" : {
@@ -2402,6 +2702,12 @@
             "value" : "책 삭제"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir livro"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2447,6 +2753,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "닫기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fechar"
           }
         },
         "zh-Hans" : {
@@ -2496,6 +2808,12 @@
             "value" : "완료"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluído"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2541,6 +2859,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "다운로드"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download"
           }
         },
         "zh-Hans" : {
@@ -2590,6 +2914,12 @@
             "value" : "다운로드 취소됨"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download cancelado"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2635,6 +2965,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "다운로드 완료"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download concluído"
           }
         },
         "zh-Hans" : {
@@ -2684,6 +3020,12 @@
             "value" : "다운로드 진행 상황"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progresso do download"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2729,6 +3071,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "다운로드됨"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baixado"
           }
         },
         "zh-Hans" : {
@@ -2778,6 +3126,12 @@
             "value" : "다운로드 중 %lld%%"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baixando %lld%%"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2823,6 +3177,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "편집"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar"
           }
         },
         "zh-Hans" : {
@@ -2872,6 +3232,12 @@
             "value" : "책 편집"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar livro"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2917,6 +3283,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "북마크 편집"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar marcador"
           }
         },
         "zh-Hans" : {
@@ -2966,6 +3338,12 @@
             "value" : "메모 편집"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar notas"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3011,6 +3389,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "카탈로그 활성화"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habilitar catálogos"
           }
         },
         "zh-Hans" : {
@@ -3060,6 +3444,12 @@
             "value" : "오류"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erro"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3105,6 +3495,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "오류: %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erro: %@"
           }
         },
         "zh-Hans" : {
@@ -3154,6 +3550,12 @@
             "value" : "발췌"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trecho"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3199,6 +3601,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "로드 실패"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha ao carregar"
           }
         },
         "zh-Hans" : {
@@ -3248,6 +3656,12 @@
             "value" : "파일"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arquivo"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3293,6 +3707,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "글꼴"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte"
           }
         },
         "zh-Hans" : {
@@ -3342,6 +3762,12 @@
             "value" : "글꼴 옵션"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opções de fonte"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3387,6 +3813,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "글자 크기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamanho da fonte"
           }
         },
         "zh-Hans" : {
@@ -3436,6 +3868,12 @@
             "value" : "글꼴: %@"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3481,6 +3919,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "형식"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato"
           }
         },
         "zh-Hans" : {
@@ -3533,6 +3977,12 @@
             "value" : "받기"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obter"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3578,6 +4028,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "독서 중 상태 막대 숨기기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar barra de status no leitor"
           }
         },
         "zh-Hans" : {
@@ -3627,6 +4083,12 @@
             "value" : "하이픈 연결"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hifenização"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3672,6 +4134,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "식별자"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Identificador"
           }
         },
         "zh-Hans" : {
@@ -3721,6 +4189,12 @@
             "value" : "시작하려면 책을 가져오세요."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importe um livro para começar."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3768,6 +4242,12 @@
             "value" : "샘플 책 가져오기"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importar livro de exemplo"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3813,6 +4293,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "글자 크기 확대"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aumentar tamanho da fonte"
           }
         },
         "zh-Hans" : {
@@ -3865,6 +4351,12 @@
             "value" : "양쪽 맞춤"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Justificado"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3910,6 +4402,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "마지막으로 연 시간"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última abertura"
           }
         },
         "zh-Hans" : {
@@ -3959,6 +4457,12 @@
             "value" : "왼쪽 맞춤"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esquerda"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4004,6 +4508,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "왼쪽 탭하여 앞으로 이동"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque à esquerda avança"
           }
         },
         "zh-Hans" : {
@@ -4053,6 +4563,12 @@
             "value" : "라이브러리"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biblioteca"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4098,6 +4614,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "라이트 모드"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claro"
           }
         },
         "zh-Hans" : {
@@ -4147,6 +4669,12 @@
             "value" : "줄 간격"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altura da linha"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4192,6 +4720,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "줄 간격: %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espaçamento de linha: %@"
           }
         },
         "zh-Hans" : {
@@ -4241,6 +4775,12 @@
             "value" : "카탈로그 로드 중..."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregando catálogo..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4286,6 +4826,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "로드 중..."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregando..."
           }
         },
         "zh-Hans" : {
@@ -4335,6 +4881,12 @@
             "value" : "여백: %@"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Margens: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4380,6 +4932,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "메타데이터"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metadados"
           }
         },
         "zh-Hans" : {
@@ -4435,6 +4993,12 @@
             "value" : "북마크 없음"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem marcadores"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4480,6 +5044,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "북마크 없음"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem marcadores"
           }
         },
         "zh-Hans" : {
@@ -4529,6 +5099,12 @@
             "value" : "책 없음"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem livros"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4574,6 +5150,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "카탈로그 없음"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem catálogos"
           }
         },
         "zh-Hans" : {
@@ -4623,6 +5205,12 @@
             "value" : "카탈로그 없음"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem catálogos"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4668,6 +5256,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "메모"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas"
           }
         },
         "zh-Hans" : {
@@ -4723,6 +5317,12 @@
             "value" : "끔"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desligado"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4768,6 +5368,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "켬"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ligado"
           }
         },
         "zh-Hans" : {
@@ -4817,6 +5423,12 @@
             "value" : "1단"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4837,7 +5449,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "URL del flujo OPDS"
+            "value" : "URL del fluxo OPDS"
           }
         },
         "fr" : {
@@ -4862,6 +5474,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OPDS 피드 URL"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL do feed OPDS"
           }
         },
         "zh-Hans" : {
@@ -4911,6 +5529,12 @@
             "value" : "책 열기"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir livro"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4956,6 +5580,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "내장 브라우저에서 웹 페이지 열기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir páginas web no navegador integrado"
           }
         },
         "zh-Hans" : {
@@ -5005,6 +5635,12 @@
             "value" : "페이지"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Página"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5050,6 +5686,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "페이지 여백"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Margens da página"
           }
         },
         "zh-Hans" : {
@@ -5102,6 +5744,12 @@
             "value" : "단락 간격"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espaçamento entre parágrafos"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5147,6 +5795,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "진행 상황"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progresso"
           }
         },
         "zh-Hans" : {
@@ -5196,6 +5850,12 @@
             "value" : "출판사 기본값"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Padrão da editora"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5241,6 +5901,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "출판사 스타일"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estilos da editora"
           }
         },
         "zh-Hans" : {
@@ -5290,6 +5956,12 @@
             "value" : "읽기"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ler"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5337,6 +6009,12 @@
             "value" : "독서"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leitura"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5357,7 +6035,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Progreso de lectura"
+            "value" : "Progreso de leitura"
           }
         },
         "fr" : {
@@ -5369,7 +6047,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Progresso lettura"
+            "value" : "Progresso leitura"
           }
         },
         "ja" : {
@@ -5382,6 +6060,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "독서 진행 상황"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progresso de leitura"
           }
         },
         "zh-Hans" : {
@@ -5431,6 +6115,12 @@
             "value" : "다운로드 준비 완료"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto para baixar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5476,6 +6166,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "추천 카탈로그"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catálogos recomendados"
           }
         },
         "zh-Hans" : {
@@ -5525,6 +6221,12 @@
             "value" : "북마크 제거"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover marcador"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5570,6 +6272,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "모든 독서 설정 초기화"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redefinir todas as preferências de leitura"
           }
         },
         "zh-Hans" : {
@@ -5619,6 +6327,12 @@
             "value" : "글자 크기 초기화"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redefinir tamanho da fonte"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5664,6 +6378,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "재시도"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentar novamente"
           }
         },
         "zh-Hans" : {
@@ -5713,6 +6433,12 @@
             "value" : "다운로드 재시도"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentar download novamente"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5758,6 +6484,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "오른쪽 맞춤"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direita"
           }
         },
         "zh-Hans" : {
@@ -5810,6 +6542,12 @@
             "value" : "저장"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5855,6 +6593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "카탈로그 검색"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesquisar catálogo"
           }
         },
         "zh-Hans" : {
@@ -5904,6 +6648,12 @@
             "value" : "라이브러리 검색"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesquisar biblioteca"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5951,6 +6701,12 @@
             "value" : "모두 보기"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver tudo"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5996,6 +6752,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "세피아 테마"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tema sépia"
           }
         },
         "zh-Hans" : {
@@ -6048,6 +6810,12 @@
             "value" : "설정"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurações"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6093,6 +6861,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "공유"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhar"
           }
         },
         "zh-Hans" : {
@@ -6142,6 +6916,12 @@
             "value" : "책 정보 표시"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar informações do livro"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6187,6 +6967,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OPDS 카탈로그에서 책을 찾아보고 다운로드할 수 있는 카탈로그 탭을 표시합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra a aba Catálogos para navegar e baixar livros de catálogos OPDS."
           }
         },
         "zh-Hans" : {
@@ -6236,6 +7022,12 @@
             "value" : "간격"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espaçamento"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6281,6 +7073,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "시작"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Início"
           }
         },
         "zh-Hans" : {
@@ -6330,6 +7128,12 @@
             "value" : "시스템 설정"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistema"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6375,6 +7179,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "목차"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sumário"
           }
         },
         "zh-Hans" : {
@@ -6424,6 +7234,12 @@
             "value" : "목차"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sumário"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6444,7 +7260,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toca el icono de marcador mientras lees para añadir uno."
+            "value" : "Toca el icono de marcador enquanto lees para añadir uno."
           }
         },
         "fr" : {
@@ -6469,6 +7285,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "읽는 동안 북마크 아이콘을 탭하여 추가하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque no ícone de marcador enquanto lê para adicionar um."
           }
         },
         "zh-Hans" : {
@@ -6518,6 +7340,12 @@
             "value" : "텍스트 정렬"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alinhamento de texto"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6563,6 +7391,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "텍스트 레이아웃"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Layout do texto"
           }
         },
         "zh-Hans" : {
@@ -6612,6 +7446,12 @@
             "value" : "텍스트 정규화"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normalização de texto"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6657,6 +7497,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "제목"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Título"
           }
         },
         "zh-Hans" : {
@@ -6706,6 +7552,12 @@
             "value" : "총 도서 수"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total de livros"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6751,6 +7603,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "2단"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duas"
           }
         },
         "zh-Hans" : {
@@ -6800,6 +7658,12 @@
             "value" : "보기"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visualização"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6845,6 +7709,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "너비"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Largura"
           }
         },
         "zh-Hans" : {
@@ -6894,6 +7764,12 @@
             "value" : "단어 간격"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espaçamento de palavras"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6939,6 +7815,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "단어 간격: %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espaçamento de palavras: %@"
           }
         },
         "zh-Hans" : {
