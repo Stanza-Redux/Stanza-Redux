@@ -46,6 +46,12 @@
             "value" : "Capa de %@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обложка %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -97,6 +103,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Imagem da capa de %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изображение обложки %@"
           }
         },
         "zh-Hans" : {
@@ -152,6 +164,12 @@
             "value" : "Ícone de %@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Иконка %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -205,6 +223,12 @@
             "value" : "Espaço reservado para %@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заглушка для %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -253,6 +277,12 @@
           }
         },
         "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        },
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld"
@@ -309,6 +339,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld páginas restantes no capítulo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Осталось %lld страниц в главе"
           }
         },
         "zh-Hans" : {
@@ -370,6 +406,12 @@
             "value" : "%1$lld/%2$lld"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -418,6 +460,12 @@
           }
         },
         "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld%%"
@@ -476,6 +524,12 @@
             "value" : "Aa"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aa"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -527,6 +581,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abc"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Абв"
           }
         },
         "zh-Hans" : {
@@ -582,6 +642,12 @@
             "value" : "Sobre este catálogo"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Об этом каталоге"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -633,6 +699,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicione um catálogo OPDS para começar a navegar pelos livros."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавьте каталог OPDS, чтобы начать поиск книг."
           }
         },
         "zh-Hans" : {
@@ -688,6 +760,12 @@
             "value" : "Adicionar livro"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить книгу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -739,6 +817,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicionar marcador"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить закладку"
           }
         },
         "zh-Hans" : {
@@ -794,6 +878,12 @@
             "value" : "Adicionar catálogo"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить каталог"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -820,7 +910,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajouter un catalogue personalizado"
+            "value" : "Ajouter un catalogue personnalisé"
           }
         },
         "it" : {
@@ -845,6 +935,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicionar catálogo personalizado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить свой каталог"
           }
         },
         "zh-Hans" : {
@@ -900,6 +996,12 @@
             "value" : "Adicionar notas..."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить заметки..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -951,6 +1053,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Configurações avançadas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дополнительные настройки"
           }
         },
         "zh-Hans" : {
@@ -1006,6 +1114,12 @@
             "value" : "Todos os livros"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Все книги"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1057,6 +1171,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Animar virada de página"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Анимация перелистывания страниц"
           }
         },
         "zh-Hans" : {
@@ -1112,6 +1232,12 @@
             "value" : "Aparência"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оформление"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1163,6 +1289,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tem certeza de que deseja excluir \"%@\"? Isso não pode ser desfeito."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вы уверены, что хотите удалить «%@»? Это действие нельзя отменить."
           }
         },
         "zh-Hans" : {
@@ -1221,6 +1353,12 @@
             "value" : "Autor"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автор"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1272,6 +1410,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Automático"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Авто"
           }
         },
         "zh-Hans" : {
@@ -1327,6 +1471,12 @@
             "value" : "Informações do livro"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Информация о книге"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1378,6 +1528,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Informações do livro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "О книге"
           }
         },
         "zh-Hans" : {
@@ -1433,6 +1589,12 @@
             "value" : "Livro não encontrado"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Книга не найдена"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1484,6 +1646,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Espaço reservado para o livro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заглушка для книги"
           }
         },
         "zh-Hans" : {
@@ -1539,6 +1707,12 @@
             "value" : "Informações do marcador"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Информация о закладке"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1590,6 +1764,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Marcadores"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закладки"
           }
         },
         "zh-Hans" : {
@@ -1645,6 +1825,12 @@
             "value" : "Livros"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Книги"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1696,6 +1882,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Navegar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обзор"
           }
         },
         "zh-Hans" : {
@@ -1751,6 +1943,12 @@
             "value" : "Cancelar"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отмена"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1802,6 +2000,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cancelar download"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отменить загрузку"
           }
         },
         "zh-Hans" : {
@@ -1857,6 +2061,12 @@
             "value" : "Cancelado"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отменено"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1908,6 +2118,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nome do catálogo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Название каталога"
           }
         },
         "zh-Hans" : {
@@ -1963,6 +2179,12 @@
             "value" : "Catálogos"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Каталоги"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2014,6 +2236,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Categorias"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Категории"
           }
         },
         "zh-Hans" : {
@@ -2069,6 +2297,12 @@
             "value" : "Centralizado"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "По центру"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2120,6 +2354,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Capítulo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Глава"
           }
         },
         "zh-Hans" : {
@@ -2175,6 +2415,12 @@
             "value" : "Capítulos"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Главы"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2226,6 +2472,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Espaçamento de caracteres: %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Межсимвольный интервал: %@"
           }
         },
         "zh-Hans" : {
@@ -2284,6 +2536,12 @@
             "value" : "Fechar leitor"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрыть читалку"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2335,6 +2593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Colunas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Колонки"
           }
         },
         "zh-Hans" : {
@@ -2390,6 +2654,12 @@
             "value" : "Ajuste de conteúdo"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Размер контента"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2441,6 +2711,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Catálogo personalizado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Свой каталог"
           }
         },
         "zh-Hans" : {
@@ -2496,6 +2772,12 @@
             "value" : "Escuro"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Темная"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2547,6 +2829,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Diminuir tamanho da fonte"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уменьшить размер шрифта"
           }
         },
         "zh-Hans" : {
@@ -2602,6 +2890,12 @@
             "value" : "Padrão"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "По умолчанию"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2653,6 +2947,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Excluir"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить"
           }
         },
         "zh-Hans" : {
@@ -2708,6 +3008,12 @@
             "value" : "Excluir livro"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить книгу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2759,6 +3065,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fechar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрыть"
           }
         },
         "zh-Hans" : {
@@ -2814,6 +3126,12 @@
             "value" : "Concluído"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Готово"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2865,6 +3183,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Download"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скачать"
           }
         },
         "zh-Hans" : {
@@ -2920,6 +3244,12 @@
             "value" : "Download cancelado"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загрузка отменена"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2971,6 +3301,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Download concluído"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загрузка завершена"
           }
         },
         "zh-Hans" : {
@@ -3026,6 +3362,12 @@
             "value" : "Progresso do download"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прогресс загрузки"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3077,6 +3419,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Baixado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загружено"
           }
         },
         "zh-Hans" : {
@@ -3132,6 +3480,12 @@
             "value" : "Baixando %lld%%"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загрузка %lld%%"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3183,6 +3537,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Editar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изменить"
           }
         },
         "zh-Hans" : {
@@ -3238,6 +3598,12 @@
             "value" : "Editar livro"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изменить книгу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3289,6 +3655,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Editar marcador"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изменить закладку"
           }
         },
         "zh-Hans" : {
@@ -3344,6 +3716,12 @@
             "value" : "Editar notas"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изменить заметки"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3395,6 +3773,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Habilitar catálogos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включить каталоги"
           }
         },
         "zh-Hans" : {
@@ -3450,6 +3834,12 @@
             "value" : "Erro"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ошибка"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3501,6 +3891,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Erro: %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ошибка: %@"
           }
         },
         "zh-Hans" : {
@@ -3556,6 +3952,12 @@
             "value" : "Trecho"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Цитата"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3607,6 +4009,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Falha ao carregar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ошибка загрузки"
           }
         },
         "zh-Hans" : {
@@ -3662,6 +4070,12 @@
             "value" : "Arquivo"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Файл"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3713,6 +4127,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fonte"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шрифт"
           }
         },
         "zh-Hans" : {
@@ -3768,6 +4188,12 @@
             "value" : "Opções de fonte"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Параметры шрифта"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3819,6 +4245,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tamanho da fonte"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Размер шрифта"
           }
         },
         "zh-Hans" : {
@@ -3874,6 +4306,12 @@
             "value" : "Fonte: %@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шрифт: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3925,6 +4363,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Formato"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Формат"
           }
         },
         "zh-Hans" : {
@@ -3983,6 +4427,12 @@
             "value" : "Obter"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Получить"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4034,6 +4484,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ocultar barra de status no leitor"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скрывать статус-бар в читалке"
           }
         },
         "zh-Hans" : {
@@ -4089,6 +4545,12 @@
             "value" : "Hifenização"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переносы"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4140,6 +4602,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Identificador"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Идентификатор"
           }
         },
         "zh-Hans" : {
@@ -4195,6 +4663,12 @@
             "value" : "Importe um livro para começar."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Импортируйте книгу, чтобы начать."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4248,6 +4722,12 @@
             "value" : "Importar livro de exemplo"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Импортировать пример"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4299,6 +4779,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aumentar tamanho da fonte"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Увеличить размер шрифта"
           }
         },
         "zh-Hans" : {
@@ -4357,6 +4843,12 @@
             "value" : "Justificado"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "По ширине"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4408,6 +4900,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Última abertura"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последний раз открывалась"
           }
         },
         "zh-Hans" : {
@@ -4463,6 +4961,12 @@
             "value" : "Esquerda"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слева"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4514,6 +5018,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toque à esquerda avança"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажатие слева листает вперед"
           }
         },
         "zh-Hans" : {
@@ -4569,6 +5079,12 @@
             "value" : "Biblioteca"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Библиотека"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4620,6 +5136,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Claro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Светлая"
           }
         },
         "zh-Hans" : {
@@ -4675,6 +5197,12 @@
             "value" : "Altura da linha"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Высота строки"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4726,6 +5254,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Espaçamento de linha: %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Межстрочный интервал: %@"
           }
         },
         "zh-Hans" : {
@@ -4781,6 +5315,12 @@
             "value" : "Carregando catálogo..."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загрузка каталога..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4832,6 +5372,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Carregando..."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загрузка..."
           }
         },
         "zh-Hans" : {
@@ -4887,6 +5433,12 @@
             "value" : "Margens: %@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поля: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4938,6 +5490,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Metadados"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Метаданные"
           }
         },
         "zh-Hans" : {
@@ -4999,6 +5557,12 @@
             "value" : "Sem marcadores"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет закладок"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5050,6 +5614,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem marcadores"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет закладок"
           }
         },
         "zh-Hans" : {
@@ -5105,6 +5675,12 @@
             "value" : "Sem livros"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет книг"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5156,6 +5732,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem catálogos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет каталогов"
           }
         },
         "zh-Hans" : {
@@ -5211,6 +5793,12 @@
             "value" : "Sem catálogos"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет каталогов"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5262,6 +5850,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Notas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заметки"
           }
         },
         "zh-Hans" : {
@@ -5323,6 +5917,12 @@
             "value" : "Desligado"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выкл"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5374,6 +5974,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ligado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вкл"
           }
         },
         "zh-Hans" : {
@@ -5429,6 +6035,12 @@
             "value" : "Uma"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Одна"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5480,6 +6092,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL do feed OPDS"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL фида OPDS"
           }
         },
         "zh-Hans" : {
@@ -5535,6 +6153,12 @@
             "value" : "Abrir livro"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть книгу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5586,6 +6210,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abrir páginas web no navegador integrado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открывать веб-страницы во встроенном браузере"
           }
         },
         "zh-Hans" : {
@@ -5641,6 +6271,12 @@
             "value" : "Página"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Страница"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5692,6 +6328,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Margens da página"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поля страницы"
           }
         },
         "zh-Hans" : {
@@ -5750,6 +6392,12 @@
             "value" : "Espaçamento entre parágrafos"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Интервал между абзацами"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5801,6 +6449,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Progresso"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прогресс"
           }
         },
         "zh-Hans" : {
@@ -5856,6 +6510,12 @@
             "value" : "Padrão da editora"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки издателя"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5907,6 +6567,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Estilos da editora"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Стили издателя"
           }
         },
         "zh-Hans" : {
@@ -5962,6 +6628,12 @@
             "value" : "Ler"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Читать"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6015,6 +6687,12 @@
             "value" : "Leitura"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтение"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6047,7 +6725,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Progresso leitura"
+            "value" : "Progresso lettura"
           }
         },
         "ja" : {
@@ -6066,6 +6744,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Progresso de leitura"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прогресс чтения"
           }
         },
         "zh-Hans" : {
@@ -6121,6 +6805,12 @@
             "value" : "Pronto para baixar"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Готово к загрузке"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6172,6 +6862,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Catálogos recomendados"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рекомендуемые каталоги"
           }
         },
         "zh-Hans" : {
@@ -6227,6 +6923,12 @@
             "value" : "Remover marcador"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить закладку"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6278,6 +6980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Redefinir todas as preferências de leitura"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сбросить все настройки чтения"
           }
         },
         "zh-Hans" : {
@@ -6333,6 +7041,12 @@
             "value" : "Redefinir tamanho da fonte"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сбросить размер шрифта"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6384,6 +7098,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tentar novamente"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повторить"
           }
         },
         "zh-Hans" : {
@@ -6439,6 +7159,12 @@
             "value" : "Tentar download novamente"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повторить загрузку"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6490,6 +7216,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Direita"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Справа"
           }
         },
         "zh-Hans" : {
@@ -6548,6 +7280,12 @@
             "value" : "Salvar"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохранить"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6599,6 +7337,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pesquisar catálogo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поиск по каталогу"
           }
         },
         "zh-Hans" : {
@@ -6654,6 +7398,12 @@
             "value" : "Pesquisar biblioteca"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поиск по библиотеке"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6707,6 +7457,12 @@
             "value" : "Ver tudo"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать все"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6758,6 +7514,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tema sépia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сепия"
           }
         },
         "zh-Hans" : {
@@ -6816,6 +7578,12 @@
             "value" : "Configurações"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6867,6 +7635,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compartilhar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поделиться"
           }
         },
         "zh-Hans" : {
@@ -6922,6 +7696,12 @@
             "value" : "Mostrar informações do livro"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать информацию"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6973,6 +7753,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostra a aba Catálogos para navegar e baixar livros de catálogos OPDS."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показывать вкладку «Каталоги» для поиска и загрузки книг из OPDS."
           }
         },
         "zh-Hans" : {
@@ -7028,6 +7814,12 @@
             "value" : "Espaçamento"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Интервалы"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7079,6 +7871,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Início"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В начале"
           }
         },
         "zh-Hans" : {
@@ -7134,6 +7932,12 @@
             "value" : "Sistema"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Системная"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7185,6 +7989,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sumário"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оглавление"
           }
         },
         "zh-Hans" : {
@@ -7240,6 +8050,12 @@
             "value" : "Sumário"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оглавление"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7291,6 +8107,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toque no ícone de marcador enquanto lê para adicionar um."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажмите на иконку закладки во время чтения, чтобы добавить её."
           }
         },
         "zh-Hans" : {
@@ -7346,6 +8168,12 @@
             "value" : "Alinhamento de texto"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выравнивание текста"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7397,6 +8225,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Layout do texto"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Макет текста"
           }
         },
         "zh-Hans" : {
@@ -7452,6 +8286,12 @@
             "value" : "Normalização de texto"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нормализация текста"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7503,6 +8343,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Título"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Название"
           }
         },
         "zh-Hans" : {
@@ -7558,6 +8404,12 @@
             "value" : "Total de livros"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Всего книг"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7609,6 +8461,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Duas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Две"
           }
         },
         "zh-Hans" : {
@@ -7664,6 +8522,12 @@
             "value" : "Visualização"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вид"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7715,6 +8579,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Largura"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "По ширине"
           }
         },
         "zh-Hans" : {
@@ -7770,6 +8640,12 @@
             "value" : "Espaçamento de palavras"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Межсловный интервал"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7821,6 +8697,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Espaçamento de palavras: %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Межсловный интервал: %@"
           }
         },
         "zh-Hans" : {
