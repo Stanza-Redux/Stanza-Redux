@@ -4,6 +4,12 @@
     "%@ cover" : {
       "comment" : "Accessibility label for a book cover image in the catalog publication list row. %@ is the book title.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Portada de %@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15,6 +21,12 @@
     "%@ cover image" : {
       "comment" : "Accessibility label for the large cover image on the catalog book detail screen. %@ is the book title.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imagen de portada de %@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -26,6 +38,12 @@
     "%@ icon" : {
       "comment" : "Accessibility label for the catalog icon image in the About This Catalog section. %@ is the catalog title.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icono de %@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -37,6 +55,12 @@
     "%@ placeholder" : {
       "comment" : "Accessibility label for a placeholder image when no book cover is available. %@ is the book title.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcador de posición para %@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -48,6 +72,12 @@
     "%lld" : {
       "comment" : "A standalone number, used for displaying counts such as total books in a catalog.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -59,6 +89,12 @@
     "%lld pages left in chapter" : {
       "comment" : "Label in the reader HUD showing how many pages remain in the current chapter.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld páginas restantes en el capítulo"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -76,6 +112,12 @@
             "value" : "%1$lld/%2$lld"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -87,6 +129,12 @@
     "%lld%%" : {
       "comment" : "Percentage display (e.g. 42%) shown for reading progress in the library list and reader HUD.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -98,6 +146,12 @@
     "Aa" : {
       "comment" : "Button label in the reader HUD bottom bar that toggles the font and spacing options panel. Stylized as 'Aa' to represent typography.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aa"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -109,6 +163,12 @@
     "Abc" : {
       "comment" : "Sample text shown in each font preview button in the reader font picker panel.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abc"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -120,6 +180,12 @@
     "About This Catalog" : {
       "comment" : "Section header in the catalog feed view showing metadata about the OPDS catalog (icon, description, links).",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acerca de este catálogo"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -131,6 +197,12 @@
     "Add an OPDS catalog to start browsing books." : {
       "comment" : "Instructional message shown on the Catalogs screen when no catalogs have been added.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade un catálogo OPDS para empezar a buscar libros."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -142,6 +214,12 @@
     "Add Book" : {
       "comment" : "Toolbar button label in the Library screen for importing a book file.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir libro"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -153,6 +231,12 @@
     "Add bookmark" : {
       "comment" : "Accessibility label on the bookmark button in the reader HUD when the current page is not yet bookmarked.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir marcador"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -164,6 +248,12 @@
     "Add Catalog" : {
       "comment" : "Button label and navigation title for adding a new OPDS catalog. Used in the Catalogs toolbar and empty state, and as the Add Catalog sheet title.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir catálogo"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -175,6 +265,12 @@
     "Add Custom Catalog" : {
       "comment" : "Button label to submit the custom catalog URL form in the Add Catalog sheet.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir catálogo personalizado"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -186,6 +282,12 @@
     "Add notes..." : {
       "comment" : "Placeholder text in the notes text field on the Edit Bookmark sheet.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir notas..."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -197,6 +299,12 @@
     "Advanced Settings" : {
       "comment" : "Navigation link label in Settings and navigation title for the Advanced Settings screen.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustes avanzados"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -208,6 +316,12 @@
     "All Books" : {
       "comment" : "Section header in the catalog feed view for the full publications list when grouped sections are also present.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos los libros"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -219,6 +333,12 @@
     "Animate Page Turns" : {
       "comment" : "Toggle label in Settings > Reading. When enabled, page turns in the reader are animated.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animar el paso de página"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -259,6 +379,12 @@
     "Are you sure you want to delete \"%@\"? This cannot be undone." : {
       "comment" : "Confirmation message in the delete book alert dialog. %@ is the book title.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Estás seguro de que quieres eliminar «%@»? Esta acción no se puede deshacer."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -273,6 +399,12 @@
     "Author" : {
       "comment" : "Label for the author field in the book detail info section and the book edit form.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autor"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -284,6 +416,12 @@
     "Auto" : {
       "comment" : "Picker option in Settings > Text Layout for automatic column count or content fit mode.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automático"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -295,6 +433,12 @@
     "Book info" : {
       "comment" : "Accessibility label on the info button in the reader HUD bottom bar.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Información del libro"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -306,6 +450,12 @@
     "Book Info" : {
       "comment" : "Section header on the book detail screen showing title, author, and identifier.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Información del libro"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -317,6 +467,12 @@
     "Book not found" : {
       "comment" : "Error message shown on the book detail screen when the book record cannot be found in the database.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libro no encontrado"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -328,6 +484,12 @@
     "Book placeholder" : {
       "comment" : "Accessibility label for the generic placeholder image shown when no book cover is available.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcador de posición del libro"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -339,6 +501,12 @@
     "Bookmark Info" : {
       "comment" : "Section header in the Edit Bookmark sheet showing bookmark details (chapter, progress, excerpt).",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Información del marcador"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -350,6 +518,12 @@
     "Bookmarks" : {
       "comment" : "Tab label in the Table of Contents/Bookmarks sheet and navigation title when the bookmarks tab is selected.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcadores"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -361,6 +535,12 @@
     "Books" : {
       "comment" : "Section header in the catalog feed view for the publications list when no grouped sections exist.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libros"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -372,6 +552,12 @@
     "Browse" : {
       "comment" : "Navigation title for the Catalogs browse screen.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explorar"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -383,6 +569,12 @@
     "Cancel" : {
       "comment" : "Button label used across multiple screens to dismiss a sheet or cancel an action (edit forms, alerts, catalog add).",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -394,6 +586,12 @@
     "Cancel download" : {
       "comment" : "Accessibility label on the cancel button during an active file download.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar descarga"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -405,6 +603,12 @@
     "Cancelled" : {
       "comment" : "Status label shown in the download row view when a download has been cancelled.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelado"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -416,6 +620,12 @@
     "Catalog Name" : {
       "comment" : "Placeholder text for the catalog name input field in the Add Catalog sheet.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre del catálogo"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -427,6 +637,12 @@
     "Catalogs" : {
       "comment" : "Tab bar label for the Catalogs tab in the main tab view.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catálogos"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -438,6 +654,12 @@
     "Categories" : {
       "comment" : "Section header in the catalog feed view listing navigation links to subcategories.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categorías"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -449,6 +671,12 @@
     "Center" : {
       "comment" : "Picker option for center text alignment in Settings > Text Layout > Text Alignment.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centrado"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -460,6 +688,12 @@
     "Chapter" : {
       "comment" : "Fallback label for a TOC entry without a title, and label for the chapter field in the bookmark info section.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capítulo"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -471,6 +705,12 @@
     "Chapters" : {
       "comment" : "Label on the book detail Progress section showing the current chapter count.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capítulos"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -482,6 +722,12 @@
     "Character spacing: %@" : {
       "comment" : "Accessibility label on the letter spacing button in the reader HUD spacing panel. %@ is the current spacing value or 'Default'.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espaciado de caracteres: %@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -496,6 +742,12 @@
     "Close reader" : {
       "comment" : "Accessibility label on the close/dismiss button in the reader HUD top bar.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar lector"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -507,6 +759,12 @@
     "Columns" : {
       "comment" : "Picker label in Settings > Text Layout for choosing the number of text columns (Auto, One, Two).",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Columnas"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -518,6 +776,12 @@
     "Content Fit" : {
       "comment" : "Picker label in Settings > Text Layout for choosing how content fits the screen (Auto, Page, Width).",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajuste de contenido"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -529,6 +793,12 @@
     "Custom Catalog" : {
       "comment" : "Section header in the Add Catalog sheet for the manual URL entry form.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catálogo personalizado"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -569,6 +839,12 @@
     "Decrease font size" : {
       "comment" : "Accessibility label on the minus button in the reader HUD bottom bar that decreases the font size.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reducir tamaño de fuente"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -580,6 +856,12 @@
     "Default" : {
       "comment" : "Picker option representing the default/unset value in Settings pickers (Hyphenation, Text Alignment, Text Normalization, Publisher Styles) and spacing controls.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por defecto"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -591,6 +873,12 @@
     "Delete" : {
       "comment" : "Destructive button label in context menus for deleting a book or bookmark.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -602,6 +890,12 @@
     "Delete Book" : {
       "comment" : "Title of the confirmation alert dialog when deleting a book from the library.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar libro"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -613,6 +907,12 @@
     "Dismiss" : {
       "comment" : "Button label to dismiss the reader when an error occurs while loading a book.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -624,6 +924,12 @@
     "Done" : {
       "comment" : "Toolbar button label to dismiss the Table of Contents/Bookmarks sheet.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hecho"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -635,6 +941,12 @@
     "Download" : {
       "comment" : "Button label to start downloading a book file, and accessibility label on the download button.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descargar"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -646,6 +958,12 @@
     "Download cancelled" : {
       "comment" : "Status message shown in the download view when a download has been cancelled.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descarga cancelada"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -657,6 +975,12 @@
     "Download complete" : {
       "comment" : "Accessibility label on the completed download icon.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descarga completada"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -668,6 +992,12 @@
     "Download progress" : {
       "comment" : "Accessibility label on the download progress bar during an active download.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progreso de la descarga"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -679,6 +1009,12 @@
     "Downloaded" : {
       "comment" : "Status label shown in the download row view when a download has completed successfully.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descargado"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -690,6 +1026,12 @@
     "Downloading %lld%%" : {
       "comment" : "Accessibility label on the circular download progress indicator. %lld is the percentage complete.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descargando %lld%%"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -701,6 +1043,12 @@
     "Edit" : {
       "comment" : "Toolbar button label on the book detail screen to open the book edit sheet.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -712,6 +1060,12 @@
     "Edit Book" : {
       "comment" : "Navigation title for the book edit form sheet.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar libro"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -723,6 +1077,12 @@
     "Edit Bookmark" : {
       "comment" : "Navigation title for the bookmark edit sheet.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar marcador"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -734,6 +1094,12 @@
     "Edit Notes" : {
       "comment" : "Context menu button label in the bookmarks list to edit a bookmark's notes.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar notas"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -745,6 +1111,12 @@
     "Enable Catalogs" : {
       "comment" : "Toggle label in Advanced Settings. When enabled, shows the Catalogs tab for browsing OPDS catalogs.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activar catálogos"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -756,6 +1128,12 @@
     "Error" : {
       "comment" : "Accessibility label on the warning icon shown when a catalog feed fails to load.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -767,6 +1145,12 @@
     "Error: %@" : {
       "comment" : "Error message shown in the reader when a book fails to load. %@ is the error description.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error: %@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -778,6 +1162,12 @@
     "Excerpt" : {
       "comment" : "Label above the excerpt text in the bookmark info section of the Edit Bookmark sheet.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extracto"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -789,6 +1179,12 @@
     "Failed to Load" : {
       "comment" : "Title shown on the catalog feed screen when the OPDS feed cannot be loaded.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error al cargar"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -800,6 +1196,12 @@
     "File" : {
       "comment" : "Section header on the book detail screen showing the book's file path.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archivo"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -811,6 +1213,12 @@
     "Font" : {
       "comment" : "Picker label in Settings > Reading for selecting the reading font family.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuente"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -822,6 +1230,12 @@
     "Font options" : {
       "comment" : "Accessibility label on the 'Aa' button in the reader HUD that opens the font and spacing options panel.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opciones de fuente"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -833,6 +1247,12 @@
     "Font Size" : {
       "comment" : "Label and accessibility label for the font size slider in Settings > Reading.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño de fuente"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -844,6 +1264,12 @@
     "Font: %@" : {
       "comment" : "Accessibility label on each font button in the reader font picker panel. %@ is the font name.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuente: %@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -855,6 +1281,12 @@
     "Format" : {
       "comment" : "Label on the catalog book detail screen showing the file format (EPUB, PDF, etc.).",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -869,6 +1301,12 @@
     "Get" : {
       "comment" : "Button label in the catalog book detail toolbar to download a book that is not yet in the library.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtener"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -880,6 +1318,12 @@
     "Hide Status Bar in Reader" : {
       "comment" : "Toggle label in Settings > Reading. When enabled, hides the system status bar while reading.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar barra de estado en el lector"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -891,6 +1335,12 @@
     "Hyphenation" : {
       "comment" : "Picker label in Settings > Text Layout for enabling or disabling word hyphenation.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guiones"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -902,6 +1352,12 @@
     "Identifier" : {
       "comment" : "Label for the book identifier field on the book detail screen and the book edit form.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Identificador"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -913,6 +1369,12 @@
     "Import a book to get started." : {
       "comment" : "Instructional message shown on the Library screen when no books exist.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importa un libro para empezar."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -924,6 +1386,12 @@
     "Import Sample Book" : {
       "comment" : "Button label on the Library empty state screen to import a bundled sample book.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importar libro de muestra"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -935,6 +1403,12 @@
     "Increase font size" : {
       "comment" : "Accessibility label on the plus button in the reader HUD bottom bar that increases the font size.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aumentar tamaño de fuente"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -949,6 +1423,12 @@
     "Justify" : {
       "comment" : "Picker option for justified text alignment in Settings > Text Layout > Text Alignment.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Justificado"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -960,6 +1440,12 @@
     "Last Opened" : {
       "comment" : "Label on the book detail Progress section showing when the book was last opened.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abierto por última vez"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -971,6 +1457,12 @@
     "Left" : {
       "comment" : "Picker option for left text alignment in Settings > Text Layout > Text Alignment.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A la izquierda"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -982,6 +1474,12 @@
     "Left Tap Advances" : {
       "comment" : "Toggle label in Settings > Reading. When enabled, tapping the left side of the reader advances forward instead of going back.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque a la izquierda avanza"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -993,6 +1491,12 @@
     "Library" : {
       "comment" : "Tab bar label for the Library tab and navigation title of the Library screen.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biblioteca"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1033,6 +1537,12 @@
     "Line Height" : {
       "comment" : "Label and accessibility label for the line height slider in Settings > Spacing.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altura de línea"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1044,6 +1554,12 @@
     "Line spacing: %@" : {
       "comment" : "Accessibility label on the line spacing button in the reader HUD spacing panel. %@ is the current value or 'Default'.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espaciado de líneas: %@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1055,6 +1571,12 @@
     "Loading catalog..." : {
       "comment" : "Progress message shown while an OPDS catalog feed is being fetched.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargando catálogo..."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1066,6 +1588,12 @@
     "Loading..." : {
       "comment" : "Progress indicator label shown while the catalog database or a book is loading.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargando..."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1077,6 +1605,12 @@
     "Margins: %@" : {
       "comment" : "Accessibility label on the page margins button in the reader HUD spacing panel. %@ is the current value or 'Default'.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Márgenes: %@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1088,6 +1622,12 @@
     "Metadata" : {
       "comment" : "Section header in the book edit form containing title, author, and identifier fields.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metadatos"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1105,6 +1645,12 @@
     "No bookmarks" : {
       "comment" : "Accessibility label on the bookmark icon shown in the empty bookmarks state.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin marcadores"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1116,6 +1662,12 @@
     "No Bookmarks" : {
       "comment" : "Title text shown on the Bookmarks tab when no bookmarks have been added.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin marcadores"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1127,6 +1679,12 @@
     "No Books" : {
       "comment" : "Title text shown on the Library screen when no books are in the library.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin libros"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1138,6 +1696,12 @@
     "No catalogs" : {
       "comment" : "Accessibility label on the explore icon shown in the empty catalogs state.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin catálogos"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1149,6 +1713,12 @@
     "No Catalogs" : {
       "comment" : "Title text shown on the Catalogs screen when no catalogs have been added.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin catálogos"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1160,6 +1730,12 @@
     "Notes" : {
       "comment" : "Section header for the notes text field in the Edit Bookmark sheet.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1177,6 +1753,12 @@
     "Off" : {
       "comment" : "Picker option to disable a feature in Settings > Text Layout (used for Hyphenation, Text Normalization, Publisher Styles).",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactivado"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1188,6 +1770,12 @@
     "On" : {
       "comment" : "Picker option to enable a feature in Settings > Text Layout (used for Hyphenation, Text Normalization, Publisher Styles).",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activado"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1199,6 +1787,12 @@
     "One" : {
       "comment" : "Picker option for single column layout in Settings > Text Layout > Columns.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1210,6 +1804,12 @@
     "OPDS Feed URL" : {
       "comment" : "Placeholder text for the URL input field in the Add Catalog sheet.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL del flujo OPDS"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1221,6 +1821,12 @@
     "Open Book" : {
       "comment" : "Context menu button label in the Library book list to open a book in the reader.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir libro"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1232,6 +1838,12 @@
     "Open Web Pages in Embedded Browser" : {
       "comment" : "Toggle label in Settings > Reading. When enabled, web links open in an in-app browser instead of the system browser.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir páginas web en el navegador integrado"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1243,6 +1855,12 @@
     "Page" : {
       "comment" : "Picker option for page-fit content mode in Settings > Text Layout > Content Fit.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Página"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1254,6 +1872,12 @@
     "Page Margins" : {
       "comment" : "Label and accessibility label for the page margins slider in Settings > Spacing.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Márgenes de página"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1268,6 +1892,12 @@
     "Paragraph Spacing" : {
       "comment" : "Label and accessibility label for the paragraph spacing slider in Settings > Spacing.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espaciado de párrafos"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1279,6 +1909,12 @@
     "Progress" : {
       "comment" : "Section header and label on the book detail screen showing reading progress, and label in the bookmark info section.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progreso"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1290,6 +1926,12 @@
     "Publisher Default" : {
       "comment" : "Picker option in Settings > Reading > Font, representing the publisher's original font choice.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preterminado del editor"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1301,6 +1943,12 @@
     "Publisher Styles" : {
       "comment" : "Picker label in Settings > Text Layout for choosing whether to use the publisher's original CSS styles.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estilos del editor"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1312,6 +1960,12 @@
     "Read" : {
       "comment" : "Button label in the catalog book detail toolbar to open a downloaded book in the reader.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leer"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1323,6 +1977,12 @@
     "Reading" : {
       "comment" : "Section header in the Settings screen for reading-related preferences.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lectura"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1334,6 +1994,12 @@
     "Reading progress" : {
       "comment" : "Accessibility label on the reading progress bar in the reader HUD.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progreso de lectura"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1345,6 +2011,12 @@
     "Ready to download" : {
       "comment" : "Status label shown in the download row view before a download has started.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listo para descargar"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1356,6 +2028,12 @@
     "Recommended Catalogs" : {
       "comment" : "Section header in the Add Catalog sheet listing pre-configured OPDS catalog options.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catálogos recomendados"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1367,6 +2045,12 @@
     "Remove bookmark" : {
       "comment" : "Accessibility label on the bookmark button in the reader HUD when the current page is already bookmarked.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar marcador"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1378,6 +2062,12 @@
     "Reset All Reading Preferences" : {
       "comment" : "Destructive button label in Settings to reset all EPUB reading preferences to their default values.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restablecer todas las preferencias de lectura"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1389,6 +2079,12 @@
     "Reset Font Size" : {
       "comment" : "Button label in Settings > Reading to reset the font size back to 100%. Only shown when font size is not default.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restablecer tamaño de fuente"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1400,6 +2096,12 @@
     "Retry" : {
       "comment" : "Button label to retry a failed operation (loading a catalog feed or retrying a failed/cancelled download).",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reintentar"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1411,6 +2113,12 @@
     "Retry download" : {
       "comment" : "Accessibility label on the retry button for a failed or cancelled download.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reintentar descarga"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1422,6 +2130,12 @@
     "Right" : {
       "comment" : "Picker option for right text alignment in Settings > Text Layout > Text Alignment.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A la derecha"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1436,6 +2150,12 @@
     "Save" : {
       "comment" : "Toolbar button label to save changes in the book edit form and the bookmark edit sheet.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1447,6 +2167,12 @@
     "Search catalog" : {
       "comment" : "Placeholder text in the search bar on the catalog feed screen.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar en el catálogo"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1458,6 +2184,12 @@
     "Search library" : {
       "comment" : "Placeholder text in the search bar on the Library screen.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar en la biblioteca"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1469,6 +2201,12 @@
     "See All" : {
       "comment" : "Navigation link label in catalog feed group sections to view all items in that group.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver todo"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1480,6 +2218,12 @@
     "Sepia Theme" : {
       "comment" : "Toggle label in Settings > Reading. When enabled, uses a warm sepia color theme for the reader.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tema sepia"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1523,6 +2267,12 @@
     "Share" : {
       "comment" : "Context menu button label in the bookmarks list to share a bookmark.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartir"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1534,6 +2284,12 @@
     "Show Book Info" : {
       "comment" : "Context menu button label in the Library book list to view book details.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver información del libro"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1545,6 +2301,12 @@
     "Show the Catalogs tab for browsing and downloading books from OPDS catalogs." : {
       "comment" : "Explanatory footer text below the Enable Catalogs toggle in Advanced Settings.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra la pestaña Catálogos para explorar y descargar libros de catálogos OPDS."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1556,6 +2318,12 @@
     "Spacing" : {
       "comment" : "Section header in the Settings screen for spacing-related preferences (line height, margins, etc.).",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espaciado"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1567,6 +2335,12 @@
     "Start" : {
       "comment" : "Picker option for start-aligned text in Settings > Text Layout > Text Alignment.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicio"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1607,6 +2381,12 @@
     "Table of contents" : {
       "comment" : "Accessibility label on the table of contents button in the reader HUD bottom bar.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Índice"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1618,6 +2398,12 @@
     "Table of Contents" : {
       "comment" : "Navigation title of the Table of Contents sheet when the contents tab is selected.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Índice"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1629,6 +2415,12 @@
     "Tap the bookmark icon while reading to add one." : {
       "comment" : "Instructional message shown on the Bookmarks tab when no bookmarks exist.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca el icono de marcador mientras lees para añadir uno."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1640,6 +2432,12 @@
     "Text Alignment" : {
       "comment" : "Picker label in Settings > Text Layout for choosing text alignment (Default, Start, Left, Center, Right, Justify).",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alineación del texto"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1651,6 +2449,12 @@
     "Text Layout" : {
       "comment" : "Section header in Settings for text layout preferences (columns, content fit, hyphenation, etc.).",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diseño del texto"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1662,6 +2466,12 @@
     "Text Normalization" : {
       "comment" : "Picker label in Settings > Text Layout for enabling or disabling text normalization.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normalización del texto"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1673,6 +2483,12 @@
     "Title" : {
       "comment" : "Label for the book title field on the book detail screen and the book edit form.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Título"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1684,6 +2500,12 @@
     "Total Books" : {
       "comment" : "Label in the About This Catalog section showing the total number of books in the catalog.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total de libros"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1695,6 +2517,12 @@
     "Two" : {
       "comment" : "Picker option for two-column layout in Settings > Text Layout > Columns.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dos"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1706,6 +2534,12 @@
     "View" : {
       "comment" : "Picker label for the segmented control in the TOC/Bookmarks sheet that switches between Contents and Bookmarks tabs.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vista"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1717,6 +2551,12 @@
     "Width" : {
       "comment" : "Picker option for width-fit content mode in Settings > Text Layout > Content Fit.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ancho"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1728,6 +2568,12 @@
     "Word Spacing" : {
       "comment" : "Label and accessibility label for the word spacing slider in Settings > Spacing.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espaciado de palabras"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1739,6 +2585,12 @@
     "Word spacing: %@" : {
       "comment" : "Accessibility label on the word spacing button in the reader HUD spacing panel. %@ is the current value or 'Default'.",
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espaciado de palabras: %@"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
