@@ -21,6 +21,7 @@ let package = Package(
         .package(url: "https://source.skip.tools/skip-ui.git", from: "1.50.1"),
         .package(url: "https://source.skip.tools/skip-sql.git", "0.15.1"..<"2.0.0"),
         .package(url: "https://source.skip.tools/skip-kit.git", "0.6.1"..<"2.0.0"),
+        .package(url: "https://source.skip.tools/skip-xml.git", "0.0.0"..<"2.0.0"),
         .package(url: "https://github.com/readium/swift-toolkit.git", from: "3.8.0"),
     ],
     targets: [
@@ -39,6 +40,7 @@ let package = Package(
         .target(name: "StanzaModel", dependencies: [
             .product(name: "SkipModel", package: "skip-model"),
             .product(name: "SkipSQL", package: "skip-sql"),
+            .product(name: "SkipXML", package: "skip-xml"),
             .product(name: "ReadiumShared", package: "swift-toolkit"),
             .product(name: "ReadiumOPDS", package: "swift-toolkit"),
             //.product(name: "ReadiumLCP", package: "swift-toolkit"),

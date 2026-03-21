@@ -1,7 +1,8 @@
-// Copyright 2025 The App Fair Project
+// Copyright 2026 The App Fair Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import SwiftUI
+import SkipKit
 import StanzaModel
 
 // MARK: - BrowseView
@@ -618,7 +619,7 @@ struct PublicationRow: View {
                         .accessibilityIdentifier("pubRowAuthor")
                 }
                 if let summary = entry.summary {
-                    Text(summary)
+                    textFromOPDSSummary(summary)
                         .font(.caption)
                         .foregroundStyle(.secondary).opacity(0.7)
                         .lineLimit(2)
@@ -697,7 +698,7 @@ struct OPDSBookDetailView: View {
 
                 // Summary
                 if let summary = entry.summary, !summary.isEmpty {
-                    Text(summary)
+                    textFromOPDSSummary(summary)
                         .font(.body)
                         .foregroundStyle(.secondary)
                         .padding(.horizontal)
@@ -859,5 +860,16 @@ struct OPDSBookDetailView: View {
         if mimeType.contains("pdf") { return "PDF" }
         if mimeType.contains("mobi") { return "MOBI" }
         return mimeType
+    }
+}
+
+// if this turns out to be a bottleneck, we could add some caching
+private let textFromOPDSSummaryCache = SkipKit.Cache<String, AttributedString>()
+
+public extension View {
+
+    /// Try to parse the light HTML permitted in OPDS summaries and return a Text with the contents.
+    func textFromOPDSSummary(_ summary: String) -> Text {
+        Text(HTMLMarkdown(summary, options: [.noLinks]).attributedStringFromHTMLString())
     }
 }
