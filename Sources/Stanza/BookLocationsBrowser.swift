@@ -76,33 +76,34 @@ struct BookLocationsBrowser: View {
         return current == linkTitle
     }
 
+    /// Flattens the TOC hierarchy into a single list with depth for indentation.
+    var flatTOCEntries: [(id: String, link: Lnk, depth: Int)] {
+        var entries: [(id: String, link: Lnk, depth: Int)] = []
+        for (index, link) in publication.manifest.tableOfContents.enumerated() {
+            entries.append((id: "toc_\(index)", link: link, depth: 0))
+            for (childIndex, child) in link.children.enumerated() {
+                entries.append((id: "toc_\(index)_\(childIndex)", link: child, depth: 1))
+            }
+        }
+        return entries
+    }
+
     @ViewBuilder var tocList: some View {
         List {
-            ForEach(Array(publication.manifest.tableOfContents.enumerated()), id: \.offset) { index, link in
+            ForEach(flatTOCEntries, id: \.id) { entry in
                 Button {
-                    onNavigateToTOC(link)
+                    onNavigateToTOC(entry.link)
                 } label: {
-                    Text(link.title ?? "Chapter \(index + 1)")
+                    Text(entry.link.title ?? "Chapter")
                         .foregroundStyle(.primary)
+                        .padding(.leading, CGFloat(entry.depth * 20))
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .buttonStyle(.plain)
                 #if !SKIP // needed to make the entire area tappable on iOS
                 .contentShape(Rectangle())
                 #endif
-                .listRowBackground(isCurrentChapter(link) ? Color.accentColor.opacity(0.12) : nil)
-                if !link.children.isEmpty {
-                    ForEach(Array(link.children.enumerated()), id: \.offset) { childIndex, child in
-                        Button {
-                            onNavigateToTOC(child)
-                        } label: {
-                            Text(child.title ?? "Section \(childIndex + 1)")
-                                .foregroundStyle(.primary)
-                                .padding(.leading, 20)
-                        }
-                        .buttonStyle(.plain)
-                        .listRowBackground(isCurrentChapter(child) ? Color.accentColor.opacity(0.12) : nil)
-                    }
-                }
+                .listRowBackground(isCurrentChapter(entry.link) ? Color.accentColor.opacity(0.12) : nil)
             }
         }
     }
