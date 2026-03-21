@@ -16,6 +16,12 @@
             "value" : "Couverture de %@"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copertina di %@"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -49,6 +55,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Image de couverture de %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Immagine di copertina di %@"
           }
         },
         "ja" : {
@@ -86,6 +98,12 @@
             "value" : "Icône de %@"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icona di %@"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -121,6 +139,12 @@
             "value" : "Espace réservé pour %@"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segnaposto per %@"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -151,6 +175,12 @@
           }
         },
         "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        },
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld"
@@ -189,6 +219,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld pages restantes dans le chapitre"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld pagine rimaste nel capitolo"
           }
         },
         "ja" : {
@@ -232,6 +268,12 @@
             "value" : "%1$lld/%2$lld"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -262,6 +304,12 @@
           }
         },
         "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld%%"
@@ -302,6 +350,12 @@
             "value" : "Aa"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aa"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -332,6 +386,12 @@
           }
         },
         "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abc"
+          }
+        },
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abc"
@@ -372,6 +432,12 @@
             "value" : "À propos de ce catalogue"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informazioni su questo catalogo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -405,6 +471,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajoutez un catalogue OPDS pour commencer à parcourir des livres."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi un catalogo OPDS per iniziare a sfogliare i libri."
           }
         },
         "ja" : {
@@ -442,6 +514,12 @@
             "value" : "Ajouter un livre"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi libro"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -475,6 +553,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajouter un signet"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi segnalibro"
           }
         },
         "ja" : {
@@ -512,6 +596,12 @@
             "value" : "Ajouter un catalogue"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi catalogo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -545,6 +635,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajouter un catalogue personnalisé"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi catalogo personalizzato"
           }
         },
         "ja" : {
@@ -582,6 +678,12 @@
             "value" : "Ajouter des notes..."
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi note..."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -615,6 +717,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Paramètres avancés"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostazioni avanzate"
           }
         },
         "ja" : {
@@ -652,6 +760,12 @@
             "value" : "Tous les livres"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutti i libri"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -685,6 +799,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Animer les changements de page"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anima cambio pagina"
           }
         },
         "ja" : {
@@ -722,6 +842,12 @@
             "value" : "Apparence"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aspetto"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -755,6 +881,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Êtes-vous sûr de vouloir supprimer « %@ » ? Cette opération est irréversible."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sei sicuro di voler eliminare \"%@\"? L'azione è irreversibile."
           }
         },
         "ja" : {
@@ -795,6 +927,12 @@
             "value" : "Auteur"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autore"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -825,6 +963,12 @@
           }
         },
         "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto"
+          }
+        },
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auto"
@@ -865,6 +1009,12 @@
             "value" : "Infos sur le livre"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Info libro"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -898,6 +1048,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Informations sur le livre"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informazioni libro"
           }
         },
         "ja" : {
@@ -935,6 +1091,12 @@
             "value" : "Livre non trouvé"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libro non trovato"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -968,6 +1130,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Espace réservé pour le livre"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segnaposto libro"
           }
         },
         "ja" : {
@@ -1005,6 +1173,12 @@
             "value" : "Infos sur le signet"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Info segnalibro"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1038,6 +1212,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Signets"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segnalibri"
           }
         },
         "ja" : {
@@ -1075,6 +1255,12 @@
             "value" : "Livres"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libri"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1108,6 +1294,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Parcourir"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sfoglia"
           }
         },
         "ja" : {
@@ -1145,6 +1337,12 @@
             "value" : "Annuler"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annulla"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1178,6 +1376,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Annuler le téléchargement"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annulla download"
           }
         },
         "ja" : {
@@ -1215,6 +1419,12 @@
             "value" : "Annulé"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annullato"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1248,6 +1458,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nom du catalogue"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome catalogo"
           }
         },
         "ja" : {
@@ -1285,6 +1501,12 @@
             "value" : "Catalogues"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cataloghi"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1318,6 +1540,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Catégories"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categorie"
           }
         },
         "ja" : {
@@ -1355,6 +1583,12 @@
             "value" : "Centré"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al centro"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1388,6 +1622,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Chapitre"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capitolo"
           }
         },
         "ja" : {
@@ -1425,6 +1665,12 @@
             "value" : "Chapitres"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capitoli"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1458,6 +1704,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Espacement des caractères : %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spaziatura caratteri: %@"
           }
         },
         "ja" : {
@@ -1498,6 +1750,12 @@
             "value" : "Fermer le lecteur"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiudi lettore"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1531,6 +1789,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Colonnes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colonne"
           }
         },
         "ja" : {
@@ -1568,6 +1832,12 @@
             "value" : "Ajustement du contenu"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adattamento contenuto"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1601,6 +1871,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Catalogue personnalisé"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catalogo personalizzato"
           }
         },
         "ja" : {
@@ -1638,6 +1914,12 @@
             "value" : "Sombre"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scuro"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1671,6 +1953,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Diminuer la taille de la police"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diminuisci dimensione carattere"
           }
         },
         "ja" : {
@@ -1708,6 +1996,12 @@
             "value" : "Par défaut"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Predefinito"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1741,6 +2035,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Supprimer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina"
           }
         },
         "ja" : {
@@ -1778,6 +2078,12 @@
             "value" : "Supprimer le livre"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina libro"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1811,6 +2117,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fermer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiudi"
           }
         },
         "ja" : {
@@ -1848,6 +2160,12 @@
             "value" : "OK"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fine"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1881,6 +2199,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Télécharger"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scarica"
           }
         },
         "ja" : {
@@ -1918,6 +2242,12 @@
             "value" : "Téléchargement annulé"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download annullato"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1951,6 +2281,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Téléchargement terminé"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download completato"
           }
         },
         "ja" : {
@@ -1988,6 +2324,12 @@
             "value" : "Progression du téléchargement"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progresso download"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2021,6 +2363,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Téléchargé"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scaricato"
           }
         },
         "ja" : {
@@ -2058,6 +2406,12 @@
             "value" : "Téléchargement %lld%%"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download in corso %lld%%"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2091,6 +2445,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modifier"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifica"
           }
         },
         "ja" : {
@@ -2128,6 +2488,12 @@
             "value" : "Modifier le livre"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifica libro"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2161,6 +2527,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modifier le signet"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifica segnalibro"
           }
         },
         "ja" : {
@@ -2198,6 +2570,12 @@
             "value" : "Modifier les notes"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifica note"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2231,6 +2609,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Activer les catalogues"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abilita cataloghi"
           }
         },
         "ja" : {
@@ -2268,6 +2652,12 @@
             "value" : "Erreur"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2301,6 +2691,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Erreur : %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore: %@"
           }
         },
         "ja" : {
@@ -2338,6 +2734,12 @@
             "value" : "Extrait"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estratto"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2371,6 +2773,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Échec du chargement"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caricamento fallito"
           }
         },
         "ja" : {
@@ -2408,6 +2816,12 @@
             "value" : "Fichier"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2441,6 +2855,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Police"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carattere"
           }
         },
         "ja" : {
@@ -2478,6 +2898,12 @@
             "value" : "Options de police"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opzioni carattere"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2511,6 +2937,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Taille de la police"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dimensione carattere"
           }
         },
         "ja" : {
@@ -2548,6 +2980,12 @@
             "value" : "Police : %@"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carattere: %@"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2581,6 +3019,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Format"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato"
           }
         },
         "ja" : {
@@ -2621,6 +3065,12 @@
             "value" : "Obtenir"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ottieni"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2656,10 +3106,16 @@
             "value" : "Masquer la barre d'état dans le lecteur"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nascondi barra di stato nel lettore"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "リーダーでステータ스バーを非表示にする"
+            "value" : "リーダーでステータスバーを非表示にする"
           }
         },
         "ko" : {
@@ -2689,6 +3145,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Coupure des mots"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sillabazione"
           }
         },
         "ja" : {
@@ -2726,6 +3188,12 @@
             "value" : "Identifiant"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Identificatore"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2759,6 +3227,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Importez un livre pour commencer."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importa un libro per iniziare."
           }
         },
         "ja" : {
@@ -2796,6 +3270,12 @@
             "value" : "Importer un livre d'exemple"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importa libro di esempio"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2829,6 +3309,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Augmenter la taille de la police"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aumenta dimensione carattere"
           }
         },
         "ja" : {
@@ -2869,6 +3355,12 @@
             "value" : "Justifier"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giustificato"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2902,6 +3394,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dernière ouverture"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultima apertura"
           }
         },
         "ja" : {
@@ -2939,6 +3437,12 @@
             "value" : "À gauche"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A sinistra"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2972,6 +3476,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Appui à gauche avance"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tocco a sinistra avanza"
           }
         },
         "ja" : {
@@ -3009,6 +3519,12 @@
             "value" : "Bibliothèque"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libreria"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3042,6 +3558,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clair"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiaro"
           }
         },
         "ja" : {
@@ -3079,6 +3601,12 @@
             "value" : "Interligne"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altezza riga"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3112,6 +3640,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Espacement des lignes : %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interlinea: %@"
           }
         },
         "ja" : {
@@ -3149,6 +3683,12 @@
             "value" : "Chargement du catalogue..."
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caricamento catalogo..."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3182,6 +3722,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Chargement..."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caricamento..."
           }
         },
         "ja" : {
@@ -3219,6 +3765,12 @@
             "value" : "Marges : %@"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Margini: %@"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3252,6 +3804,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Métadonnées"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metadati"
           }
         },
         "ja" : {
@@ -3295,6 +3853,12 @@
             "value" : "Aucun signet"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun segnalibro"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3328,6 +3892,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aucun signet"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun segnalibro"
           }
         },
         "ja" : {
@@ -3365,6 +3935,12 @@
             "value" : "Aucun livre"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun libro"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3398,6 +3974,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aucun catalogue"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun catalogo"
           }
         },
         "ja" : {
@@ -3435,6 +4017,12 @@
             "value" : "Aucun catalogue"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun catalogo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3468,6 +4056,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Notes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note"
           }
         },
         "ja" : {
@@ -3511,6 +4105,12 @@
             "value" : "Désactivé"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3544,6 +4144,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Activé"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sì"
           }
         },
         "ja" : {
@@ -3581,6 +4187,12 @@
             "value" : "Une"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3614,6 +4226,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL du flux OPDS"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL feed OPDS"
           }
         },
         "ja" : {
@@ -3651,6 +4269,12 @@
             "value" : "Ouvrir le livre"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri libro"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3684,6 +4308,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ouvrir les pages web dans le navigateur intégré"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri pagine web nel browser integrato"
           }
         },
         "ja" : {
@@ -3721,6 +4351,12 @@
             "value" : "Page"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pagina"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3754,6 +4390,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Marges de page"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Margini pagina"
           }
         },
         "ja" : {
@@ -3794,6 +4436,12 @@
             "value" : "Espacement des paragraphes"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spaziatura paragrafi"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3827,6 +4475,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Progression"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progresso"
           }
         },
         "ja" : {
@@ -3864,6 +4518,12 @@
             "value" : "Par défaut de l'éditeur"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Predefinito editore"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3897,6 +4557,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Styles de l'éditeur"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stili editore"
           }
         },
         "ja" : {
@@ -3934,6 +4600,12 @@
             "value" : "Lire"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leggi"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3967,6 +4639,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lecture"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lettura"
           }
         },
         "ja" : {
@@ -4004,6 +4682,12 @@
             "value" : "Progression de lecture"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progresso lettura"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4037,6 +4721,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prêt à télécharger"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto per il download"
           }
         },
         "ja" : {
@@ -4074,6 +4764,12 @@
             "value" : "Catalogues recommandés"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cataloghi consigliati"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4107,6 +4803,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Supprimer le signet"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rimuovi segnalibro"
           }
         },
         "ja" : {
@@ -4144,6 +4846,12 @@
             "value" : "Réinitialiser toutes les préférences de lecture"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ripristina tutte le preferenze di lettura"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4177,6 +4885,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Réinitialiser la taille de la police"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ripristina dimensione carattere"
           }
         },
         "ja" : {
@@ -4214,6 +4928,12 @@
             "value" : "Réessayer"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riprova"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4249,6 +4969,12 @@
             "value" : "Réessayer le téléchargement"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riprova download"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4282,6 +5008,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "À droite"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A destra"
           }
         },
         "ja" : {
@@ -4322,6 +5054,12 @@
             "value" : "Enregistrer"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salva"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4355,6 +5093,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rechercher dans le catalogue"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerca nel catalogo"
           }
         },
         "ja" : {
@@ -4392,6 +5136,12 @@
             "value" : "Rechercher dans la bibliothèque"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerca nella libreria"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4427,6 +5177,12 @@
             "value" : "Tout voir"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vedi tutto"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4460,6 +5216,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Thème sépia"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tema seppia"
           }
         },
         "ja" : {
@@ -4500,6 +5262,12 @@
             "value" : "Paramètres"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostazioni"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4533,6 +5301,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Partager"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Condividi"
           }
         },
         "ja" : {
@@ -4570,6 +5344,12 @@
             "value" : "Afficher les infos du livre"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra info libro"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4603,6 +5383,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Afficher l'onglet Catalogues pour parcourir et télécharger des livres à partir de catalogues OPDS."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra la scheda Cataloghi per sfogliare e scaricare libri dai cataloghi OPDS."
           }
         },
         "ja" : {
@@ -4640,6 +5426,12 @@
             "value" : "Espacement"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spaziatura"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4673,6 +5465,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Début"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inizio"
           }
         },
         "ja" : {
@@ -4710,6 +5508,12 @@
             "value" : "Système"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistema"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4743,6 +5547,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Table des matières"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indice"
           }
         },
         "ja" : {
@@ -4780,6 +5590,12 @@
             "value" : "Table des matières"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indice"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4813,6 +5629,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Appuyez sur l'icône de signet pendant la lecture pour en ajouter un."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tocca l'icona del segnalibro mentre leggi per aggiungerne uno."
           }
         },
         "ja" : {
@@ -4850,6 +5672,12 @@
             "value" : "Alignement du texte"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allineamento testo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4883,6 +5711,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mise en page du texte"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Layout testo"
           }
         },
         "ja" : {
@@ -4920,6 +5754,12 @@
             "value" : "Normalisation du texte"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normalizzazione testo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4953,6 +5793,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Titre"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Titolo"
           }
         },
         "ja" : {
@@ -4990,6 +5836,12 @@
             "value" : "Total des livres"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libri totali"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5023,6 +5875,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deux"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Due"
           }
         },
         "ja" : {
@@ -5060,6 +5918,12 @@
             "value" : "Vue"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vista"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5093,6 +5957,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Largeur"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Larghezza"
           }
         },
         "ja" : {
@@ -5130,6 +6000,12 @@
             "value" : "Espacement des mots"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spaziatura parole"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5163,6 +6039,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Espacement des mots : %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spaziatura parole: %@"
           }
         },
         "ja" : {
