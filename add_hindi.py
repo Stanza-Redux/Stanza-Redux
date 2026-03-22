@@ -1,0 +1,196 @@
+import json
+import re
+from collections import OrderedDict
+
+# Define the translations
+translations = {
+    "%@ cover": "%@ कवर",
+    "%@ cover image": "%@ कवर इमेज",
+    "%@ icon": "%@ आइकन",
+    "%@ placeholder": "%@ प्लेसहोल्डर",
+    "%lld": "%lld",
+    "%lld pages left in chapter": "अध्याय में %lld पृष्ठ शेष",
+    "%lld/%lld": "%1$lld/%2$lld",
+    "%lld%%": "%lld%%",
+    "Aa": "Aa",
+    "Abc": "अआइ",
+    "About This Catalog": "इस कैटलॉग के बारे में",
+    "Add an OPDS catalog to start browsing books.": "किताबें खोजना शुरू करने के लिए एक OPDS कैटलॉग जोड़ें।",
+    "Add Book": "किताब जोड़ें",
+    "Add bookmark": "बुकमार्क जोड़ें",
+    "Add Catalog": "कैटलॉग जोड़ें",
+    "Add Custom Catalog": "कस्टम कैटलॉग जोड़ें",
+    "Add notes...": "नोट्स जोड़ें...",
+    "Advanced Settings": "उन्नत सेटिंग्स",
+    "All Books": "सभी किताबें",
+    "Animate Page Turns": "पृष्ठ पलटने को एनिमेट करें",
+    "Appearance": "दिखावट",
+    "Are you sure you want to delete \"%@\"? This cannot be undone.": "क्या आप वाकई \"%@\" को हटाना चाहते हैं? इसे वापस नहीं लिया जा सकता।",
+    "Athelas": "Athelas",
+    "Author": "लेखक",
+    "Auto": "स्वचालित",
+    "Book info": "किताब की जानकारी",
+    "Book Info": "किताब की जानकारी",
+    "Book not found": "किताब नहीं मिली",
+    "Book placeholder": "किताब प्लेसहोल्डर",
+    "Bookmark Info": "बुकमार्क की जानकारी",
+    "Bookmarks": "बुकमार्क",
+    "Books": "किताबें",
+    "Browse": "ब्राउज़ करें",
+    "Cancel": "रद्द करें",
+    "Cancel download": "डाउनलोड रद्द करें",
+    "Cancelled": "रद्द कर दिया गया",
+    "Catalog Name": "कैटलॉग का नाम",
+    "Catalogs": "कैटलॉग",
+    "Categories": "श्रेणियाँ",
+    "Center": "केंद्र",
+    "Chapter": "अध्याय",
+    "Chapters": "अध्याय",
+    "Character spacing: %@": "अक्षर अंतराल: %@",
+    "Charter": "Charter",
+    "Close reader": "रीडर बंद करें",
+    "Columns": "कॉलम",
+    "Content Fit": "कंटेंट फिट",
+    "Custom Catalog": "कस्टम कैटलॉग",
+    "Dark": "डार्क",
+    "Decrease font size": "फ़ॉन्ट का आकार घटाएं",
+    "Default": "डिफ़ॉल्ट",
+    "Delete": "हटाएं",
+    "Delete Book": "किताब हटाएं",
+    "Dismiss": "खारिज करें",
+    "Done": "हो गया",
+    "Download": "डाउनलोड करें",
+    "Download cancelled": "डाउनलोड रद्द कर दिया गया",
+    "Download complete": "डाउनलोड पूरा हुआ",
+    "Download progress": "डाउनलोड की प्रगति",
+    "Downloaded": "डाउनलोड किया गया",
+    "Downloading %lld%%": "डाउनलोड हो रहा है %lld%%",
+    "Edit": "संपादन",
+    "Edit Book": "किताब का संपादन करें",
+    "Edit Bookmark": "बुकमार्क का संपादन करें",
+    "Edit Notes": "नोट्स का संपादन करें",
+    "Enable Catalogs": "कैटलॉग सक्षम करें",
+    "Error": "त्रुटि",
+    "Error: %@": "त्रुटि: %@",
+    "Excerpt": "अंश",
+    "Failed to Load": "लोड करने में विफल",
+    "File": "फ़ाइल",
+    "Font": "फ़ॉन्ट",
+    "Font options": "फ़ॉन्ट विकल्प",
+    "Font Size": "फ़ॉन्ट का आकार",
+    "Font: %@": "फ़ॉन्ट: %@",
+    "Format": "प्रारूप",
+    "Georgia": "Georgia",
+    "Get": "प्राप्त करें",
+    "Hide Status Bar in Reader": "रीडर में स्टेटस बार छुपाएं",
+    "Hyphenation": "हाइफ़नेशन",
+    "Identifier": "पहचानकर्ता",
+    "Import a book to get started.": "शुरू करने के लिए एक किताब आयात करें।",
+    "Import Sample Book": "नमूना किताब आयात करें",
+    "Increase font size": "फ़ॉन्ट का आकार बढ़ाएं",
+    "Iowan Old Style": "Iowan Old Style",
+    "Justify": "जस्टिफाई",
+    "Last Opened": "पिछली बार खोला गया",
+    "Left": "बाएं",
+    "Left Tap Advances": "बायां टैप आगे बढ़ाता है",
+    "Library": "लाइब्रेरी",
+    "Light": "लाइट",
+    "Line Height": "पंक्ति की ऊँचाई",
+    "Line spacing: %@": "पंक्ति अंतराल: %@",
+    "Loading catalog...": "कैटलॉग लोड हो रहा है...",
+    "Loading...": "लोड हो रहा है...",
+    "Margins: %@": "हाशिया: %@",
+    "Metadata": "मेटाडेटा",
+    "Montserrat": "Montserrat",
+    "New York": "New York",
+    "No bookmarks": "कोई बुकमार्क नहीं",
+    "No Bookmarks": "कोई बुकमार्क नहीं",
+    "No Books": "कोई किताब नहीं",
+    "No catalogs": "कोई कैटलॉग नहीं",
+    "No Catalogs": "कोई कैटलॉग नहीं",
+    "Notes": "नोट्स",
+    "Noto Sans": "Noto Sans",
+    "Noto Serif": "Noto Serif",
+    "Off": "बंद",
+    "On": "चालू",
+    "One": "एक",
+    "OPDS Feed URL": "OPDS फीड URL",
+    "Open Book": "किताब खोलें",
+    "Open Web Pages in Embedded Browser": "एम्बेडेड ब्राउज़र में वेब पेज खोलें",
+    "Page": "पृष्ठ",
+    "Page Margins": "पृष्ठ का हाशिया",
+    "Palatino": "Palatino",
+    "Paragraph Spacing": "पैराग्राफ अंतराल",
+    "Progress": "प्रगति",
+    "Publisher Default": "प्रकाशक डिफ़ॉल्ट",
+    "Publisher Styles": "प्रकाशक शैलियाँ",
+    "Read": "पढ़ें",
+    "Reading": "पढ़ना",
+    "Reading progress": "पढ़ने की प्रगति",
+    "Ready to download": "डाउनलोड के लिए तैयार",
+    "Recommended Catalogs": "अनुशंसित कैटलॉग",
+    "Remove bookmark": "बुकमार्क हटाएं",
+    "Reset All Reading Preferences": "सभी पढ़ने की प्राथमिकताएं रीसेट करें",
+    "Reset Font Size": "फ़ॉन्ट आकार रीसेट करें",
+    "Retry": "पुन: प्रयास करें",
+    "Retry download": "डाउनलोड का पुन: प्रयास करें",
+    "Right": "दाएं",
+    "San Francisco": "San Francisco",
+    "Save": "सहेजें",
+    "Search catalog": "कैटलॉग खोजें",
+    "Search library": "लाइब्रेरी खोजें",
+    "See All": "सभी देखें",
+    "Sepia Theme": "सेपिया थीम",
+    "Seravek": "Seravek",
+    "Settings": "सेटिंग्स",
+    "Share": "साझा करें",
+    "Show Book Info": "किताब की जानकारी दिखाएं",
+    "Show the Catalogs tab for browsing and downloading books from OPDS catalogs.": "OPDS कैटलॉग से किताबें खोजने और डाउनलोड करने के लिए कैटलॉग टैब दिखाएं।",
+    "Spacing": "अंतराल",
+    "Start": "प्रारंभ",
+    "System": "सिस्टम",
+    "Table of contents": "विषय-सूची",
+    "Table of Contents": "विषय-सूची",
+    "Tap the bookmark icon while reading to add one.": "पढ़ते समय बुकमार्क जोड़ने के लिए बुकमार्क आइकन पर टैप करें।",
+    "Text Alignment": "टेक्स्ट संरेखण",
+    "Text Layout": "टेक्स्ट लेआउट",
+    "Text Normalization": "टेक्स्ट सामान्यीकरण",
+    "Title": "शीर्षक",
+    "Total Books": "कुल किताबें",
+    "Two": "दो",
+    "View": "देखें",
+    "Width": "चौड़ाई",
+    "Word Spacing": "शब्द अंतराल",
+    "Word spacing: %@": "शब्द अंतराल: %@"
+}
+
+file_path = '/opt/src/github/appfair/Stanza-Redux/Sources/Stanza/Resources/Localizable.xcstrings'
+
+with open(file_path, 'r') as f:
+    # Use object_pairs_hook=OrderedDict to preserve order
+    data = json.load(f, object_pairs_hook=OrderedDict)
+
+for key, value in data['strings'].items():
+    if key in translations:
+        hi_val = translations[key]
+        if 'localizations' not in value:
+            value['localizations'] = OrderedDict()
+        
+        # Add hi translation if not already there, or update it
+        value['localizations']['hi'] = OrderedDict([
+            ('stringUnit', OrderedDict([
+                ('state', 'translated'),
+                ('value', hi_val)
+            ]))
+        ])
+
+# Serialize with indent 2
+output = json.dumps(data, indent=2, ensure_ascii=False)
+
+# Add space before colons: replace ": " with " : "
+# We should only do this for colons following a key, which are usually after a quote.
+output = re.sub(r'": ', r'" : ', output)
+
+with open(file_path, 'w') as f:
+    f.write(output)
+    f.write('\n') # Add trailing newline if needed

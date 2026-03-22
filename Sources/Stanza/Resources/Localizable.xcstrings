@@ -69,6 +69,12 @@
             "state" : "translated",
             "value" : "Sampul %@"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ कवर"
+          }
         }
       }
     },
@@ -139,6 +145,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gambar sampul %@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ कवर इमेज"
           }
         }
       }
@@ -211,6 +223,12 @@
             "state" : "translated",
             "value" : "Ikon %@"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ आइकन"
+          }
         }
       }
     },
@@ -282,6 +300,12 @@
             "state" : "translated",
             "value" : "Placeholder %@"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ प्लेसहोल्डर"
+          }
         }
       }
     },
@@ -349,6 +373,12 @@
           }
         },
         "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        },
+        "hi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld"
@@ -423,6 +453,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld halaman tersisa di bab"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अध्याय में %lld पृष्ठ शेष"
           }
         }
       }
@@ -501,6 +537,12 @@
             "state" : "translated",
             "value" : "%1$lld/%2$lld"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld"
+          }
         }
       }
     },
@@ -568,6 +610,12 @@
           }
         },
         "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "hi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld%%"
@@ -643,6 +691,12 @@
             "state" : "translated",
             "value" : "Aa"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aa"
+          }
         }
       }
     },
@@ -713,6 +767,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abc"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अआइ"
           }
         }
       }
@@ -785,6 +845,12 @@
             "state" : "translated",
             "value" : "Tentang Katalog Ini"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस कैटलॉग के बारे में"
+          }
         }
       }
     },
@@ -855,6 +921,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tambah katalog OPDS untuk mulai mencari buku."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किताबें खोजना शुरू करने के लिए एक OPDS कैटलॉग जोड़ें।"
           }
         }
       }
@@ -927,6 +999,12 @@
             "state" : "translated",
             "value" : "Tambah Buku"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किताब जोड़ें"
+          }
         }
       }
     },
@@ -997,6 +1075,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tambah penanda"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बुकमार्क जोड़ें"
           }
         }
       }
@@ -1069,6 +1153,12 @@
             "state" : "translated",
             "value" : "Tambah Katalog"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कैटलॉग जोड़ें"
+          }
         }
       }
     },
@@ -1139,6 +1229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tambah Katalog Kustom"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कस्टम कैटलॉग जोड़ें"
           }
         }
       }
@@ -1211,6 +1307,12 @@
             "state" : "translated",
             "value" : "Tambah catatan..."
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "नोट्स जोड़ें..."
+          }
         }
       }
     },
@@ -1281,6 +1383,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pengaturan Lanjutan"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "उन्नत सेटिंग्स"
           }
         }
       }
@@ -1353,6 +1461,12 @@
             "state" : "translated",
             "value" : "Semua Buku"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सभी किताबें"
+          }
         }
       }
     },
@@ -1423,6 +1537,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Animasi Pembalikan Halaman"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पृष्ठ पलटने को एनिमेट करें"
           }
         }
       }
@@ -1495,6 +1615,12 @@
             "state" : "translated",
             "value" : "Tampilan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "दिखावट"
+          }
         }
       }
     },
@@ -1566,6 +1692,12 @@
             "state" : "translated",
             "value" : "Apakah Anda yakin ingin menghapus \"%@\"? Ini tidak bisa dibatalkan."
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "क्या आप वाकई \"%@\" को हटाना चाहते हैं? इसे वापस नहीं लिया जा सकता।"
+          }
         }
       }
     },
@@ -1579,6 +1711,12 @@
           }
         },
         "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Athelas"
+          }
+        },
+        "hi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Athelas"
@@ -1654,6 +1792,12 @@
             "state" : "translated",
             "value" : "Penulis"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "लेखक"
+          }
         }
       }
     },
@@ -1724,6 +1868,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Otomatis"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "स्वचालित"
           }
         }
       }
@@ -1796,6 +1946,12 @@
             "state" : "translated",
             "value" : "Informasi buku"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किताब की जानकारी"
+          }
         }
       }
     },
@@ -1866,6 +2022,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Informasi Buku"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किताब की जानकारी"
           }
         }
       }
@@ -1938,6 +2100,12 @@
             "state" : "translated",
             "value" : "Buku tidak ditemukan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किताब नहीं मिली"
+          }
         }
       }
     },
@@ -2008,6 +2176,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Placeholder buku"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किताब प्लेसहोल्डर"
           }
         }
       }
@@ -2080,6 +2254,12 @@
             "state" : "translated",
             "value" : "Informasi Penanda"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बुकमार्क की जानकारी"
+          }
         }
       }
     },
@@ -2150,6 +2330,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Penanda"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बुकमार्क"
           }
         }
       }
@@ -2222,6 +2408,12 @@
             "state" : "translated",
             "value" : "Buku"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किताबें"
+          }
         }
       }
     },
@@ -2292,6 +2484,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jelajah"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ब्राउज़ करें"
           }
         }
       }
@@ -2364,6 +2562,12 @@
             "state" : "translated",
             "value" : "Batal"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "रद्द करें"
+          }
         }
       }
     },
@@ -2434,6 +2638,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Batal unduh"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "डाउनलोड रद्द करें"
           }
         }
       }
@@ -2506,6 +2716,12 @@
             "state" : "translated",
             "value" : "Dibatalkan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "रद्द कर दिया गया"
+          }
         }
       }
     },
@@ -2576,6 +2792,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nama Katalog"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कैटलॉग का नाम"
           }
         }
       }
@@ -2648,6 +2870,12 @@
             "state" : "translated",
             "value" : "Katalog"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कैटलॉग"
+          }
         }
       }
     },
@@ -2718,6 +2946,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kategori"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "श्रेणियाँ"
           }
         }
       }
@@ -2790,6 +3024,12 @@
             "state" : "translated",
             "value" : "Tengah"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "केंद्र"
+          }
         }
       }
     },
@@ -2860,6 +3100,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bab"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अध्याय"
           }
         }
       }
@@ -2932,6 +3178,12 @@
             "state" : "translated",
             "value" : "Bab"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अध्याय"
+          }
         }
       }
     },
@@ -3003,6 +3255,12 @@
             "state" : "translated",
             "value" : "Jarak karakter: %@"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अक्षर अंतराल: %@"
+          }
         }
       }
     },
@@ -3016,6 +3274,12 @@
           }
         },
         "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charter"
+          }
+        },
+        "hi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Charter"
@@ -3091,6 +3355,12 @@
             "state" : "translated",
             "value" : "Tutup pembaca"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "रीडर बंद करें"
+          }
         }
       }
     },
@@ -3161,6 +3431,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kolom"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कॉलम"
           }
         }
       }
@@ -3233,6 +3509,12 @@
             "state" : "translated",
             "value" : "Kesesuaian Konten"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कंटेंट फिट"
+          }
         }
       }
     },
@@ -3303,6 +3585,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Katalog Kustom"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कस्टम कैटलॉग"
           }
         }
       }
@@ -3375,6 +3663,12 @@
             "state" : "translated",
             "value" : "Gelap"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "डार्क"
+          }
         }
       }
     },
@@ -3445,6 +3739,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kurangi ukuran font"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "फ़ॉन्ट का आकार घटाएं"
           }
         }
       }
@@ -3517,6 +3817,12 @@
             "state" : "translated",
             "value" : "Default"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "डिफ़ॉल्ट"
+          }
         }
       }
     },
@@ -3587,6 +3893,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hapus"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हटाएं"
           }
         }
       }
@@ -3659,6 +3971,12 @@
             "state" : "translated",
             "value" : "Hapus Buku"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किताब हटाएं"
+          }
         }
       }
     },
@@ -3729,6 +4047,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tutup"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "खारिज करें"
           }
         }
       }
@@ -3801,6 +4125,12 @@
             "state" : "translated",
             "value" : "Selesai"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हो गया"
+          }
         }
       }
     },
@@ -3871,6 +4201,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unduh"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "डाउनलोड करें"
           }
         }
       }
@@ -3943,6 +4279,12 @@
             "state" : "translated",
             "value" : "Unduhan dibatalkan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "डाउनलोड रद्द कर दिया गया"
+          }
         }
       }
     },
@@ -4013,6 +4355,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unduhan selesai"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "डाउनलोड पूरा हुआ"
           }
         }
       }
@@ -4085,6 +4433,12 @@
             "state" : "translated",
             "value" : "Kemajuan unduhan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "डाउनलोड की प्रगति"
+          }
         }
       }
     },
@@ -4155,6 +4509,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Diunduh"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "डाउनलोड किया गया"
           }
         }
       }
@@ -4227,6 +4587,12 @@
             "state" : "translated",
             "value" : "Mengunduh %lld%%"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "डाउनलोड हो रहा है %lld%%"
+          }
         }
       }
     },
@@ -4297,6 +4663,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Edit"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "संपादन"
           }
         }
       }
@@ -4369,6 +4741,12 @@
             "state" : "translated",
             "value" : "Edit Buku"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किताब का संपादन करें"
+          }
         }
       }
     },
@@ -4439,6 +4817,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Edit Penanda"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बुकमार्क का संपादन करें"
           }
         }
       }
@@ -4511,6 +4895,12 @@
             "state" : "translated",
             "value" : "Edit Catatan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "नोट्स का संपादन करें"
+          }
         }
       }
     },
@@ -4581,6 +4971,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktifkan Katalog"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कैटलॉग सक्षम करें"
           }
         }
       }
@@ -4653,6 +5049,12 @@
             "state" : "translated",
             "value" : "Kesalahan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "त्रुटि"
+          }
         }
       }
     },
@@ -4723,6 +5125,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kesalahan: %@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "त्रुटि: %@"
           }
         }
       }
@@ -4795,6 +5203,12 @@
             "state" : "translated",
             "value" : "Kutipan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अंश"
+          }
         }
       }
     },
@@ -4865,6 +5279,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gagal Memuat"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "लोड करने में विफल"
           }
         }
       }
@@ -4937,6 +5357,12 @@
             "state" : "translated",
             "value" : "File"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "फ़ाइल"
+          }
         }
       }
     },
@@ -5007,6 +5433,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Font"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "फ़ॉन्ट"
           }
         }
       }
@@ -5079,6 +5511,12 @@
             "state" : "translated",
             "value" : "Opsi font"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "फ़ॉन्ट विकल्प"
+          }
         }
       }
     },
@@ -5149,6 +5587,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ukuran Font"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "फ़ॉन्ट का आकार"
           }
         }
       }
@@ -5221,6 +5665,12 @@
             "state" : "translated",
             "value" : "Font: %@"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "फ़ॉन्ट: %@"
+          }
         }
       }
     },
@@ -5292,6 +5742,12 @@
             "state" : "translated",
             "value" : "Format"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "प्रारूप"
+          }
         }
       }
     },
@@ -5305,6 +5761,12 @@
           }
         },
         "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Georgia"
+          }
+        },
+        "hi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Georgia"
@@ -5380,6 +5842,12 @@
             "state" : "translated",
             "value" : "Dapatkan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "प्राप्त करें"
+          }
         }
       }
     },
@@ -5450,6 +5918,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sembunyikan Bilah Status di Pembaca"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "रीडर में स्टेटस बार छुपाएं"
           }
         }
       }
@@ -5522,6 +5996,12 @@
             "state" : "translated",
             "value" : "Pemenggalan Kata"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हाइफ़नेशन"
+          }
         }
       }
     },
@@ -5592,6 +6072,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pengidentifikasi"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पहचानकर्ता"
           }
         }
       }
@@ -5664,6 +6150,12 @@
             "state" : "translated",
             "value" : "Impor buku untuk memulai."
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "शुरू करने के लिए एक किताब आयात करें।"
+          }
         }
       }
     },
@@ -5734,6 +6226,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impor Buku Sampel"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "नमूना किताब आयात करें"
           }
         }
       }
@@ -5806,6 +6304,12 @@
             "state" : "translated",
             "value" : "Tambah ukuran font"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "फ़ॉन्ट का आकार बढ़ाएं"
+          }
         }
       }
     },
@@ -5819,6 +6323,12 @@
           }
         },
         "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iowan Old Style"
+          }
+        },
+        "hi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Iowan Old Style"
@@ -5894,6 +6404,12 @@
             "state" : "translated",
             "value" : "Rata Kiri Kanan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "जस्टिफाई"
+          }
         }
       }
     },
@@ -5964,6 +6480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Terakhir Dibuka"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पिछली बार खोला गया"
           }
         }
       }
@@ -6036,6 +6558,12 @@
             "state" : "translated",
             "value" : "Kiri"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बाएं"
+          }
         }
       }
     },
@@ -6106,6 +6634,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ketuk Kiri untuk Maju"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बायां टैप आगे बढ़ाता है"
           }
         }
       }
@@ -6178,6 +6712,12 @@
             "state" : "translated",
             "value" : "Perpustakaan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "लाइब्रेरी"
+          }
         }
       }
     },
@@ -6248,6 +6788,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Terang"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "लाइट"
           }
         }
       }
@@ -6320,6 +6866,12 @@
             "state" : "translated",
             "value" : "Tinggi Baris"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पंक्ति की ऊँचाई"
+          }
         }
       }
     },
@@ -6390,6 +6942,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spasi baris: %@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पंक्ति अंतराल: %@"
           }
         }
       }
@@ -6462,6 +7020,12 @@
             "state" : "translated",
             "value" : "Memuat katalog..."
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कैटलॉग लोड हो रहा है..."
+          }
         }
       }
     },
@@ -6532,6 +7096,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Memuat..."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "लोड हो रहा है..."
           }
         }
       }
@@ -6604,6 +7174,12 @@
             "state" : "translated",
             "value" : "Margin: %@"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हाशिया: %@"
+          }
         }
       }
     },
@@ -6675,6 +7251,12 @@
             "state" : "translated",
             "value" : "Metadata"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "मेटाडेटा"
+          }
         }
       }
     },
@@ -6692,6 +7274,12 @@
             "state" : "translated",
             "value" : "Montserrat"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montserrat"
+          }
         }
       }
     },
@@ -6705,6 +7293,12 @@
           }
         },
         "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New York"
+          }
+        },
+        "hi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "New York"
@@ -6780,6 +7374,12 @@
             "state" : "translated",
             "value" : "Tidak ada penanda"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कोई बुकमार्क नहीं"
+          }
         }
       }
     },
@@ -6850,6 +7450,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tidak Ada Penanda"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कोई बुकमार्क नहीं"
           }
         }
       }
@@ -6922,6 +7528,12 @@
             "state" : "translated",
             "value" : "Tidak Ada Buku"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कोई किताब नहीं"
+          }
         }
       }
     },
@@ -6992,6 +7604,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tidak ada katalog"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कोई कैटलॉग नहीं"
           }
         }
       }
@@ -7064,6 +7682,12 @@
             "state" : "translated",
             "value" : "Tidak Ada Katalog"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कोई कैटलॉग नहीं"
+          }
         }
       }
     },
@@ -7135,6 +7759,12 @@
             "state" : "translated",
             "value" : "Catatan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "नोट्स"
+          }
         }
       }
     },
@@ -7152,6 +7782,12 @@
             "state" : "translated",
             "value" : "Noto Sans"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noto Sans"
+          }
         }
       }
     },
@@ -7165,6 +7801,12 @@
           }
         },
         "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noto Serif"
+          }
+        },
+        "hi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Noto Serif"
@@ -7240,6 +7882,12 @@
             "state" : "translated",
             "value" : "Mati"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बंद"
+          }
         }
       }
     },
@@ -7310,6 +7958,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nyala"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चालू"
           }
         }
       }
@@ -7382,6 +8036,12 @@
             "state" : "translated",
             "value" : "Satu"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "एक"
+          }
         }
       }
     },
@@ -7452,6 +8112,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL Feed OPDS"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OPDS फीड URL"
           }
         }
       }
@@ -7524,6 +8190,12 @@
             "state" : "translated",
             "value" : "Buka Buku"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किताब खोलें"
+          }
         }
       }
     },
@@ -7594,6 +8266,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buka Halaman Web di Browser Tersemat"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "एम्बेडेड ब्राउज़र में वेब पेज खोलें"
           }
         }
       }
@@ -7666,6 +8344,12 @@
             "state" : "translated",
             "value" : "Halaman"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पृष्ठ"
+          }
         }
       }
     },
@@ -7737,6 +8421,12 @@
             "state" : "translated",
             "value" : "Margin Halaman"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पृष्ठ का हाशिया"
+          }
         }
       }
     },
@@ -7750,6 +8440,12 @@
           }
         },
         "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palatino"
+          }
+        },
+        "hi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Palatino"
@@ -7825,6 +8521,12 @@
             "state" : "translated",
             "value" : "Spasi Paragraf"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पैराग्राफ अंतराल"
+          }
         }
       }
     },
@@ -7895,6 +8597,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kemajuan"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "प्रगति"
           }
         }
       }
@@ -7967,6 +8675,12 @@
             "state" : "translated",
             "value" : "Default Penerbit"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "प्रकाशक डिफ़ॉल्ट"
+          }
         }
       }
     },
@@ -8037,6 +8751,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gaya Penerbit"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "प्रकाशक शैलियाँ"
           }
         }
       }
@@ -8109,6 +8829,12 @@
             "state" : "translated",
             "value" : "Baca"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पढ़ें"
+          }
         }
       }
     },
@@ -8179,6 +8905,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Membaca"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पढ़ना"
           }
         }
       }
@@ -8251,6 +8983,12 @@
             "state" : "translated",
             "value" : "Kemajuan membaca"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पढ़ने की प्रगति"
+          }
         }
       }
     },
@@ -8321,6 +9059,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Siap diunduh"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "डाउनलोड के लिए तैयार"
           }
         }
       }
@@ -8393,6 +9137,12 @@
             "state" : "translated",
             "value" : "Katalog yang Direkomendasikan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अनुशंसित कैटलॉग"
+          }
         }
       }
     },
@@ -8463,6 +9213,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hapus penanda"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बुकमार्क हटाएं"
           }
         }
       }
@@ -8535,6 +9291,12 @@
             "state" : "translated",
             "value" : "Atur Ulang Semua Preferensi Membaca"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सभी पढ़ने की प्राथमिकताएं रीसेट करें"
+          }
         }
       }
     },
@@ -8605,6 +9367,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Atur Ulang Ukuran Font"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "फ़ॉन्ट आकार रीसेट करें"
           }
         }
       }
@@ -8677,6 +9445,12 @@
             "state" : "translated",
             "value" : "Coba Lagi"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पुन: प्रयास करें"
+          }
         }
       }
     },
@@ -8747,6 +9521,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Coba lagi unduhan"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "डाउनलोड का पुन: प्रयास करें"
           }
         }
       }
@@ -8819,6 +9599,12 @@
             "state" : "translated",
             "value" : "Kanan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "दाएं"
+          }
         }
       }
     },
@@ -8832,6 +9618,12 @@
           }
         },
         "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "San Francisco"
+          }
+        },
+        "hi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "San Francisco"
@@ -8907,6 +9699,12 @@
             "state" : "translated",
             "value" : "Simpan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सहेजें"
+          }
         }
       }
     },
@@ -8977,6 +9775,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cari katalog"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कैटलॉग खोजें"
           }
         }
       }
@@ -9049,6 +9853,12 @@
             "state" : "translated",
             "value" : "Cari perpustakaan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "लाइब्रेरी खोजें"
+          }
         }
       }
     },
@@ -9119,6 +9929,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lihat Semua"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सभी देखें"
           }
         }
       }
@@ -9191,6 +10007,12 @@
             "state" : "translated",
             "value" : "Tema Sepia"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सेपिया थीम"
+          }
         }
       }
     },
@@ -9204,6 +10026,12 @@
           }
         },
         "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seravek"
+          }
+        },
+        "hi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seravek"
@@ -9279,6 +10107,12 @@
             "state" : "translated",
             "value" : "Pengaturan"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सेटिंग्स"
+          }
         }
       }
     },
@@ -9349,6 +10183,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bagikan"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "साझा करें"
           }
         }
       }
@@ -9421,6 +10261,12 @@
             "state" : "translated",
             "value" : "Tampilkan Info Buku"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किताब की जानकारी दिखाएं"
+          }
         }
       }
     },
@@ -9491,6 +10337,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tampilkan tab Katalog untuk menjelajahi dan mengunduh buku dari katalog OPDS."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OPDS कैटलॉग से किताबें खोजने और डाउनलोड करने के लिए कैटलॉग टैब दिखाएं।"
           }
         }
       }
@@ -9563,6 +10415,12 @@
             "state" : "translated",
             "value" : "Spasi"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अंतराल"
+          }
         }
       }
     },
@@ -9633,6 +10491,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mulai"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "प्रारंभ"
           }
         }
       }
@@ -9705,6 +10569,12 @@
             "state" : "translated",
             "value" : "Sistem"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सिस्टम"
+          }
         }
       }
     },
@@ -9775,6 +10645,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Daftar isi"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "विषय-सूची"
           }
         }
       }
@@ -9847,6 +10723,12 @@
             "state" : "translated",
             "value" : "Daftar Isi"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "विषय-सूची"
+          }
         }
       }
     },
@@ -9917,6 +10799,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ketuk ikon penanda saat membaca untuk menambahkan satu."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पढ़ते समय बुकमार्क जोड़ने के लिए बुकमार्क आइकन पर टैप करें।"
           }
         }
       }
@@ -9989,6 +10877,12 @@
             "state" : "translated",
             "value" : "Perataan Teks"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "टेक्स्ट संरेखण"
+          }
         }
       }
     },
@@ -10059,6 +10953,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tata Letak Teks"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "टेक्स्ट लेआउट"
           }
         }
       }
@@ -10131,6 +11031,12 @@
             "state" : "translated",
             "value" : "Normalisasi Teks"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "टेक्स्ट सामान्यीकरण"
+          }
         }
       }
     },
@@ -10201,6 +11107,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Judul"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "शीर्षक"
           }
         }
       }
@@ -10273,6 +11185,12 @@
             "state" : "translated",
             "value" : "Total Buku"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कुल किताबें"
+          }
         }
       }
     },
@@ -10343,6 +11261,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dua"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "दो"
           }
         }
       }
@@ -10415,6 +11339,12 @@
             "state" : "translated",
             "value" : "Lihat"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "देखें"
+          }
         }
       }
     },
@@ -10485,6 +11415,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lebar"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चौड़ाई"
           }
         }
       }
@@ -10557,6 +11493,12 @@
             "state" : "translated",
             "value" : "Spasi Kata"
           }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "शब्द अंतराल"
+          }
         }
       }
     },
@@ -10627,6 +11569,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spasi kata: %@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "शब्द अंतराल: %@"
           }
         }
       }
