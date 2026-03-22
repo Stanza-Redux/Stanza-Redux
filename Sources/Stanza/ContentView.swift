@@ -10,6 +10,7 @@ public struct ContentView: View {
     @State var browserURL: URL = URL(string: "https://example.com")!
     @State var showBrowser: Bool = false
     @Environment(StanzaSettings.self) var settings: StanzaSettings
+    @Environment(ErrorManager.self) var errorManager: ErrorManager
 
     public init() {
     }
@@ -44,6 +45,7 @@ public struct ContentView: View {
             return .systemAction
         })
         .openWebBrowser(isPresented: $showBrowser, url: browserURL, mode: .embeddedBrowser(params: nil))
+        .withErrorManager(errorManager)
     }
 }
 

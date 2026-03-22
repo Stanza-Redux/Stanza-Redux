@@ -174,6 +174,7 @@ struct SettingsView: View {
 
 struct AdvancedSettingsView: View {
     @Environment(StanzaSettings.self) var settings: StanzaSettings
+    @Environment(ErrorManager.self) var errorManager: ErrorManager
 
     var body: some View {
         @Bindable var settings = settings
@@ -183,6 +184,54 @@ struct AdvancedSettingsView: View {
                     .accessibilityIdentifier("enableCatalogsToggle")
             } footer: {
                 Text("Show the Catalogs tab for browsing and downloading books from OPDS catalogs.")
+            }
+
+            Section("Error Alert Testing") {
+                Button("Simple Error") {
+                    errorManager.errorOccurred(info: AppErrorInfo(
+                        message: "This is a simple test error."
+                    ))
+                }
+                Button("Error with Title") {
+                    errorManager.errorOccurred(info: AppErrorInfo(
+                        title: "Network Failure",
+                        message: "Could not connect to the server. Please check your internet connection and try again."
+                    ))
+                }
+                Button("Error with Code") {
+                    errorManager.errorOccurred(info: AppErrorInfo(
+                        title: "Database Error",
+                        message: "Failed to write book record.",
+                        code: 1032
+                    ))
+                }
+                Button("Error with Help URL") {
+                    errorManager.errorOccurred(info: AppErrorInfo(
+                        title: "Import Failed",
+                        message: "The EPUB file appears to be corrupted or in an unsupported format.",
+                        helpURL: URL(string: "https://github.com/nicklama/Stanza-Redux/issues")
+                    ))
+                }
+                Button("Error from NSError") {
+                    let nsError = NSError(domain: "org.appfair.stanza", code: 404, userInfo: [
+                        NSLocalizedDescriptionKey: "The requested resource was not found."
+                    ])
+                    errorManager.errorOccurred(info: AppErrorInfo(
+                        title: "Not Found",
+                        error: nsError,
+                        code: 404
+                    ))
+                }
+                Button("Error from Background Thread") {
+                    Task.detached {
+                        // Simulate work on background thread
+                        try? await Task.sleep(nanoseconds: 50_000_000)
+                        errorManager.errorOccurred(info: AppErrorInfo(
+                            title: "Background Task Failed",
+                            message: "An operation running in the background encountered an error."
+                        ))
+                    }
+                }
             }
         }
         .navigationTitle("Advanced Settings")

@@ -16,6 +16,9 @@ private let appSettings = StanzaSettings()
 /// The shared library manager instance.
 private let appLibraryManager = LibraryManager()
 
+/// The shared error manager instance.
+private let appErrorManager = ErrorManager()
+
 /// The shared top-level view for the app, loaded from the platform-specific App delegates below.
 ///
 /// The default implementation merely loads the `ContentView` for the app and logs a message.
@@ -27,9 +30,9 @@ public struct StanzaRootView : View {
         ContentView()
             .environment(appSettings)
             .environment(appLibraryManager)
+            .environment(appErrorManager)
             .task {
-                logger.info("Welcome to Skip on \(androidSDK != nil ? "Android" : "Darwin")!")
-                logger.info("Skip app logs are viewable in the Xcode console for iOS; Android logs can be viewed in Studio or using adb logcat")
+                logger.info("Welcome to Stanza on \(androidSDK != nil ? "Android" : "Darwin")!")
             }
     }
 }

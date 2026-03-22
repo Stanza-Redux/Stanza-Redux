@@ -18,11 +18,11 @@ import org.readium.r2.shared.publication.services.cover
     /// All books in the library, kept in sync with the database.
     public var books: [BookRecord] = []
 
-    /// User-facing error message from the last failed operation, or nil.
-    public var errorMessage: String? = nil
-
     /// The underlying book database, available after `initialize()`.
     public private(set) var database: BookDatabase? = nil
+
+    /// The error manager used for centralized error reporting.
+    public var errorManager: ErrorManager? = nil
 
     private let libraryLogger = Logger(subsystem: "Stanza", category: "LibraryManager")
 
@@ -45,7 +45,7 @@ import org.readium.r2.shared.publication.services.cover
             libraryLogger.info("Library initialized with \(self.books.count) books")
         } catch {
             libraryLogger.error("Failed to open database: \(error)")
-            errorMessage = "Failed to open library: \(error.localizedDescription)"
+            errorManager?.errorOccurred(info: AppErrorInfo(title: "Library Error", message: "Failed to open library.", error: error))
         }
     }
 
@@ -76,7 +76,7 @@ import org.readium.r2.shared.publication.services.cover
     public func importBook(from url: URL) async -> BookRecord? {
         libraryLogger.info("importBook: \(url.absoluteString)")
         guard let db = database else {
-            errorMessage = "Library not available"
+            errorManager?.errorOccurred(info: AppErrorInfo(title: "Import Failed", message: "Library not available."))
             return nil
         }
         do {
@@ -86,7 +86,7 @@ import org.readium.r2.shared.publication.services.cover
             return record
         } catch {
             libraryLogger.error("Failed to import book: \(error)")
-            errorMessage = "Failed to import book: \(error.localizedDescription)"
+            errorManager?.errorOccurred(info: AppErrorInfo(title: "Import Failed", message: "The book could not be imported.", error: error))
             #if SKIP
             android.util.Log.e("Stanza", "Error importing book", error as? Throwable)
             #endif
@@ -100,7 +100,7 @@ import org.readium.r2.shared.publication.services.cover
     public func importDownloadedBook(from fileURL: URL, title: String, authors: [String], identifier: String?) async -> BookRecord? {
         libraryLogger.info("importDownloadedBook: '\(title)' from \(fileURL.path)")
         guard let db = database else {
-            errorMessage = "Library not available"
+            errorManager?.errorOccurred(info: AppErrorInfo(title: "Import Failed", message: "Library not available."))
             return nil
         }
         do {
@@ -125,7 +125,7 @@ import org.readium.r2.shared.publication.services.cover
             return savedRecord
         } catch {
             libraryLogger.error("Failed to import downloaded book: \(error)")
-            errorMessage = "Import failed: \(error.localizedDescription)"
+            errorManager?.errorOccurred(info: AppErrorInfo(title: "Import Failed", message: "The downloaded book could not be imported.", error: error))
             #if SKIP
             android.util.Log.e("Stanza", "Error importing downloaded book", error as? Throwable)
             #endif

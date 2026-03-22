@@ -42,6 +42,7 @@ struct BookCoverView: View {
 
 struct LibraryView: View {
     @Environment(LibraryManager.self) var library: LibraryManager
+    @Environment(ErrorManager.self) var errorManager: ErrorManager
     @Environment(StanzaSettings.self) var settings: StanzaSettings
     @State var searchText: String = ""
     @State var showDocumentPicker = false
@@ -126,6 +127,7 @@ struct LibraryView: View {
                 }
             }
             .task {
+                library.errorManager = errorManager
                 library.initialize()
                 restoreLastOpenBook()
             }

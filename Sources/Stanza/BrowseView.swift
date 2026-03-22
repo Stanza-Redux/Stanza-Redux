@@ -9,10 +9,10 @@ import StanzaModel
 
 struct BrowseView: View {
     @Environment(LibraryManager.self) var library: LibraryManager
+    @Environment(ErrorManager.self) var errorManager: ErrorManager
     @State var catalogs: [CatalogRecord] = []
     @State var catalogDB: CatalogDatabase? = nil
     @State var showAddCatalog = false
-    @State var errorMessage: String? = nil
 
     var body: some View {
         NavigationStack {
@@ -115,7 +115,7 @@ struct BrowseView: View {
             logger.info("Browse databases initialized with \(catalogs.count) catalogs")
         } catch {
             logger.error("Failed to open catalog database: \(error)")
-            errorMessage = "Failed to open catalogs: \(error.localizedDescription)"
+            errorManager.errorOccurred(info: AppErrorInfo(title: "Catalog Error", message: "Failed to open catalogs.", error: error))
         }
     }
 
@@ -149,6 +149,7 @@ struct AddCatalogView: View {
     let catalogDB: CatalogDatabase?
     let onAdd: () -> Void
     @Environment(\.dismiss) var dismiss
+    @Environment(ErrorManager.self) var errorManager: ErrorManager
     @State var customURL: String = ""
     @State var customName: String = ""
     @State var errorMessage: String? = nil
@@ -233,7 +234,7 @@ struct AddCatalogView: View {
             dismiss()
         } catch {
             logger.error("Failed to add catalog: \(error)")
-            errorMessage = "Failed to add catalog: \(error.localizedDescription)"
+            errorManager.errorOccurred(info: AppErrorInfo(title: "Catalog Error", message: "Failed to add catalog.", error: error))
         }
     }
 }
@@ -244,6 +245,7 @@ struct CatalogFeedView: View {
     let feedURL: String
     let feedTitle: String
     @Environment(LibraryManager.self) var library: LibraryManager
+    @Environment(ErrorManager.self) var errorManager: ErrorManager
     @State var feedContent: OPDSFeedContent? = nil
     @State var isLoading = true
     @State var errorMessage: String? = nil
@@ -516,6 +518,7 @@ struct CatalogFeedView: View {
         } catch {
             errorMessage = error.localizedDescription
             logger.error("Failed to load feed: \(error)")
+            errorManager.errorOccurred(info: AppErrorInfo(title: "Feed Error", message: "Failed to load catalog feed.", error: error))
         }
         isLoading = false
     }
@@ -646,6 +649,7 @@ struct PublicationRow: View {
 struct OPDSBookDetailView: View {
     let entry: OPDSPubEntry
     @Environment(LibraryManager.self) var library: LibraryManager
+    @Environment(ErrorManager.self) var errorManager: ErrorManager
     @State var downloader: FileDownloader? = nil
     @State var downloadedBookID: Int64? = nil
     @State var importError: String? = nil
@@ -812,6 +816,7 @@ struct OPDSBookDetailView: View {
         guard let urlString = entry.acquisitionURL, let url = URL(string: urlString) else {
             logger.error("No download URL for book: '\(entry.title)'")
             importError = "No download URL available"
+            errorManager.errorOccurred(info: AppErrorInfo(title: "Download Failed", message: "No download URL available for this book."))
             return
         }
 
@@ -850,7 +855,7 @@ struct OPDSBookDetailView: View {
             ) {
                 self.downloadedBookID = record.id
             } else {
-                importError = library.errorMessage ?? "Import failed"
+                importError = "Import failed"
             }
         }
     }
