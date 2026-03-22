@@ -57,6 +57,18 @@
             "state" : "translated",
             "value" : "%@ 封面"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غلاف %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sampul %@"
+          }
         }
       }
     },
@@ -115,6 +127,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ 封面图片"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صورة غلاف %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gambar sampul %@"
           }
         }
       }
@@ -175,6 +199,18 @@
             "state" : "translated",
             "value" : "%@ 图标"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أيقونة %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikon %@"
+          }
         }
       }
     },
@@ -234,6 +270,18 @@
             "state" : "translated",
             "value" : "%@ 占位图"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عنصر نائب %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Placeholder %@"
+          }
         }
       }
     },
@@ -289,6 +337,18 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        },
+        "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld"
@@ -351,6 +411,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "本章还剩 %lld 页"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بقي %lld صفحة في الفصل"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld halaman tersisa di bab"
           }
         }
       }
@@ -417,6 +489,18 @@
             "state" : "translated",
             "value" : "%1$lld/%2$lld"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld"
+          }
         }
       }
     },
@@ -472,6 +556,18 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld%%"
@@ -535,6 +631,18 @@
             "state" : "translated",
             "value" : "Aa"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aa"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aa"
+          }
         }
       }
     },
@@ -590,6 +698,18 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abc"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أبج"
+          }
+        },
+        "id" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abc"
@@ -653,6 +773,18 @@
             "state" : "translated",
             "value" : "关于此目录"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حول هذا الكتالوج"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentang Katalog Ini"
+          }
         }
       }
     },
@@ -711,6 +843,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "添加 OPDS 目录以开始浏览书籍。"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أضف كتالوج OPDS لبدء تصفح الكتب."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambah katalog OPDS untuk mulai mencari buku."
           }
         }
       }
@@ -771,6 +915,18 @@
             "state" : "translated",
             "value" : "添加书籍"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إضافة كتاب"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambah Buku"
+          }
         }
       }
     },
@@ -829,6 +985,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "添加书签"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إضافة إشارة مرجعية"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambah penanda"
           }
         }
       }
@@ -889,6 +1057,18 @@
             "state" : "translated",
             "value" : "添加目录"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إضافة كتالوج"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambah Katalog"
+          }
         }
       }
     },
@@ -947,6 +1127,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "添加自定义目录"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إضافة كتالوج مخصص"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambah Katalog Kustom"
           }
         }
       }
@@ -1007,6 +1199,18 @@
             "state" : "translated",
             "value" : "添加备注..."
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إضافة ملاحظات..."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambah catatan..."
+          }
         }
       }
     },
@@ -1065,6 +1269,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "高级设置"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعدادات متقدمة"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pengaturan Lanjutan"
           }
         }
       }
@@ -1125,6 +1341,18 @@
             "state" : "translated",
             "value" : "所有书籍"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كل الكتب"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semua Buku"
+          }
         }
       }
     },
@@ -1183,6 +1411,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "翻页动画"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحريك تقليب الصفحات"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animasi Pembalikan Halaman"
           }
         }
       }
@@ -1243,6 +1483,18 @@
             "state" : "translated",
             "value" : "外观"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المظهر"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilan"
+          }
         }
       }
     },
@@ -1302,11 +1554,37 @@
             "state" : "translated",
             "value" : "您确定要删除“%@”吗？此操作无法撤销。"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هل أنت متأكد أنك تريد حذف \"%@\"؟ لا يمكن التراجع عن هذا الإجراء."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apakah Anda yakin ingin menghapus \"%@\"? Ini tidak bisa dibatalkan."
+          }
         }
       }
     },
     "Athelas" : {
-      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Athelas"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Athelas"
+          }
+        }
+      }
     },
     "Author" : {
       "comment" : "Label for the author field in the book detail info section and the book edit form.",
@@ -1363,6 +1641,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "作者"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المؤلف"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Penulis"
           }
         }
       }
@@ -1423,6 +1713,18 @@
             "state" : "translated",
             "value" : "自动"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تلقائي"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otomatis"
+          }
         }
       }
     },
@@ -1481,6 +1783,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "书籍信息"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "معلومات الكتاب"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informasi buku"
           }
         }
       }
@@ -1541,6 +1855,18 @@
             "state" : "translated",
             "value" : "书籍详情"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "معلومات الكتاب"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informasi Buku"
+          }
         }
       }
     },
@@ -1599,6 +1925,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未找到该书"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الكتاب غير موجود"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buku tidak ditemukan"
           }
         }
       }
@@ -1659,6 +1997,18 @@
             "state" : "translated",
             "value" : "书籍占位图"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عنصر نائب للكتاب"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Placeholder buku"
+          }
         }
       }
     },
@@ -1717,6 +2067,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "书签信息"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "معلومات الإشارة المرجعية"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informasi Penanda"
           }
         }
       }
@@ -1777,6 +2139,18 @@
             "state" : "translated",
             "value" : "书签"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إشارات مرجعية"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Penanda"
+          }
         }
       }
     },
@@ -1835,6 +2209,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "书籍"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كتب"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buku"
           }
         }
       }
@@ -1895,6 +2281,18 @@
             "state" : "translated",
             "value" : "浏览"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تصفح"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jelajah"
+          }
         }
       }
     },
@@ -1953,6 +2351,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إلغاء"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batal"
           }
         }
       }
@@ -2013,6 +2423,18 @@
             "state" : "translated",
             "value" : "取消下载"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إلغاء التنزيل"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batal unduh"
+          }
         }
       }
     },
@@ -2071,6 +2493,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已取消"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ملغى"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dibatalkan"
           }
         }
       }
@@ -2131,6 +2565,18 @@
             "state" : "translated",
             "value" : "目录名称"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسم الكتالوج"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nama Katalog"
+          }
         }
       }
     },
@@ -2189,6 +2635,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "目录"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كتالوجات"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Katalog"
           }
         }
       }
@@ -2249,6 +2707,18 @@
             "state" : "translated",
             "value" : "分类"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فئات"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kategori"
+          }
         }
       }
     },
@@ -2307,6 +2777,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "居中"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "توسيط"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tengah"
           }
         }
       }
@@ -2367,6 +2849,18 @@
             "state" : "translated",
             "value" : "章节"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فصل"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bab"
+          }
         }
       }
     },
@@ -2425,6 +2919,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "章节"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فصول"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bab"
           }
         }
       }
@@ -2485,11 +2991,37 @@
             "state" : "translated",
             "value" : "字符间距: %@"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تباعد الأحرف: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jarak karakter: %@"
+          }
         }
       }
     },
     "Charter" : {
-      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charter"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charter"
+          }
+        }
+      }
     },
     "Close reader" : {
       "comment" : "Accessibility label on the close/dismiss button in the reader HUD top bar.",
@@ -2546,6 +3078,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关闭阅读器"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إغلاق القارئ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutup pembaca"
           }
         }
       }
@@ -2606,6 +3150,18 @@
             "state" : "translated",
             "value" : "分栏"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أعمدة"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kolom"
+          }
         }
       }
     },
@@ -2664,6 +3220,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "内容自适应"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ملاءمة المحتوى"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kesesuaian Konten"
           }
         }
       }
@@ -2724,6 +3292,18 @@
             "state" : "translated",
             "value" : "自定义目录"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كتالوج مخصص"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Katalog Kustom"
+          }
         }
       }
     },
@@ -2782,6 +3362,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "深色"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "داكن"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelap"
           }
         }
       }
@@ -2842,6 +3434,18 @@
             "state" : "translated",
             "value" : "减小字号"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تصغير حجم الخط"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurangi ukuran font"
+          }
         }
       }
     },
@@ -2900,6 +3504,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "默认"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تلقائي"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default"
           }
         }
       }
@@ -2960,6 +3576,18 @@
             "state" : "translated",
             "value" : "删除"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حذف"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hapus"
+          }
         }
       }
     },
@@ -3018,6 +3646,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "删除书籍"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حذف الكتاب"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hapus Buku"
           }
         }
       }
@@ -3078,6 +3718,18 @@
             "state" : "translated",
             "value" : "关闭"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تجاهل"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutup"
+          }
         }
       }
     },
@@ -3136,6 +3788,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "完成"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selesai"
           }
         }
       }
@@ -3196,6 +3860,18 @@
             "state" : "translated",
             "value" : "下载"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تنزيل"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unduh"
+          }
         }
       }
     },
@@ -3254,6 +3930,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "下载已取消"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم إلغاء التنزيل"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unduhan dibatalkan"
           }
         }
       }
@@ -3314,6 +4002,18 @@
             "state" : "translated",
             "value" : "下载完成"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكتمل التنزيل"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unduhan selesai"
+          }
         }
       }
     },
@@ -3372,6 +4072,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "下载进度"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تقدم التنزيل"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kemajuan unduhan"
           }
         }
       }
@@ -3432,6 +4144,18 @@
             "state" : "translated",
             "value" : "已下载"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم التنزيل"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diunduh"
+          }
         }
       }
     },
@@ -3490,6 +4214,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在下载 %lld%%"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ التنزيل %lld%%"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mengunduh %lld%%"
           }
         }
       }
@@ -3550,6 +4286,18 @@
             "state" : "translated",
             "value" : "编辑"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعديل"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
+          }
         }
       }
     },
@@ -3608,6 +4356,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "编辑书籍"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعديل الكتاب"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Buku"
           }
         }
       }
@@ -3668,6 +4428,18 @@
             "state" : "translated",
             "value" : "编辑书签"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعديل الإشارة المرجعية"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Penanda"
+          }
         }
       }
     },
@@ -3726,6 +4498,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "编辑备注"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعديل الملاحظات"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Catatan"
           }
         }
       }
@@ -3786,6 +4570,18 @@
             "state" : "translated",
             "value" : "启用目录"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تفعيل الكتالوجات"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktifkan Katalog"
+          }
         }
       }
     },
@@ -3844,6 +4640,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "错误"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خطأ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kesalahan"
           }
         }
       }
@@ -3904,6 +4712,18 @@
             "state" : "translated",
             "value" : "错误: %@"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خطأ: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kesalahan: %@"
+          }
         }
       }
     },
@@ -3962,6 +4782,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "摘录"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مقتطف"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kutipan"
           }
         }
       }
@@ -4022,6 +4854,18 @@
             "state" : "translated",
             "value" : "加载失败"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فشل التحميل"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gagal Memuat"
+          }
         }
       }
     },
@@ -4080,6 +4924,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "文件"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ملف"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File"
           }
         }
       }
@@ -4140,6 +4996,18 @@
             "state" : "translated",
             "value" : "字体"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الخط"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font"
+          }
         }
       }
     },
@@ -4198,6 +5066,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "字体选项"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خيارات الخط"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opsi font"
           }
         }
       }
@@ -4258,6 +5138,18 @@
             "state" : "translated",
             "value" : "字号"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حجم الخط"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukuran Font"
+          }
         }
       }
     },
@@ -4316,6 +5208,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "字体: %@"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الخط: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font: %@"
           }
         }
       }
@@ -4376,11 +5280,37 @@
             "state" : "translated",
             "value" : "格式"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تنسيق"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Format"
+          }
         }
       }
     },
     "Georgia" : {
-      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Georgia"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Georgia"
+          }
+        }
+      }
     },
     "Get" : {
       "comment" : "Button label in the catalog book detail toolbar to download a book that is not yet in the library.",
@@ -4437,6 +5367,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "获取"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الحصول على"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dapatkan"
           }
         }
       }
@@ -4497,6 +5439,18 @@
             "state" : "translated",
             "value" : "阅读时隐藏状态栏"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إخفاء شريط الحالة في القارئ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sembunyikan Bilah Status di Pembaca"
+          }
         }
       }
     },
@@ -4555,6 +5509,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "连字符"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "وصل الكلمات"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pemenggalan Kata"
           }
         }
       }
@@ -4615,6 +5581,18 @@
             "state" : "translated",
             "value" : "标识符"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المعرف"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pengidentifikasi"
+          }
         }
       }
     },
@@ -4673,6 +5651,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "导入书籍以开始。"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "استورد كتاباً للبدء."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impor buku untuk memulai."
           }
         }
       }
@@ -4733,6 +5723,18 @@
             "state" : "translated",
             "value" : "导入示例书籍"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "استيراد كتاب عينة"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impor Buku Sampel"
+          }
         }
       }
     },
@@ -4792,11 +5794,37 @@
             "state" : "translated",
             "value" : "增大字号"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تكبير حجم الخط"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambah ukuran font"
+          }
         }
       }
     },
     "Iowan Old Style" : {
-      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iowan Old Style"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iowan Old Style"
+          }
+        }
+      }
     },
     "Justify" : {
       "comment" : "Picker option for justified text alignment in Settings > Text Layout > Text Alignment.",
@@ -4853,6 +5881,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "两端对齐"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ضبط"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rata Kiri Kanan"
           }
         }
       }
@@ -4913,6 +5953,18 @@
             "state" : "translated",
             "value" : "上次打开"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "آخر ما تم فتحه"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terakhir Dibuka"
+          }
         }
       }
     },
@@ -4971,6 +6023,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "左对齐"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يسار"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kiri"
           }
         }
       }
@@ -5031,6 +6095,18 @@
             "state" : "translated",
             "value" : "点击左侧前进"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "النقر على اليسار للتقدم"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk Kiri untuk Maju"
+          }
         }
       }
     },
@@ -5089,6 +6165,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "图书馆"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المكتبة"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perpustakaan"
           }
         }
       }
@@ -5149,6 +6237,18 @@
             "state" : "translated",
             "value" : "浅色"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فاتح"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terang"
+          }
         }
       }
     },
@@ -5207,6 +6307,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "行高"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ارتفاع السطر"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tinggi Baris"
           }
         }
       }
@@ -5267,6 +6379,18 @@
             "state" : "translated",
             "value" : "行间距: %@"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تباعد الأسطر: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spasi baris: %@"
+          }
         }
       }
     },
@@ -5325,6 +6449,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在加载目录..."
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ تحميل الكتالوج..."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memuat katalog..."
           }
         }
       }
@@ -5385,6 +6521,18 @@
             "state" : "translated",
             "value" : "正在加载..."
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ التحميل..."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memuat..."
+          }
         }
       }
     },
@@ -5443,6 +6591,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "页边距: %@"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الهوامش: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Margin: %@"
           }
         }
       }
@@ -5503,14 +6663,54 @@
             "state" : "translated",
             "value" : "元数据"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "البيانات الوصفية"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metadata"
+          }
         }
       }
     },
     "Montserrat" : {
-      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montserrat"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montserrat"
+          }
+        }
+      }
     },
     "New York" : {
-      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New York"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New York"
+          }
+        }
+      }
     },
     "No bookmarks" : {
       "comment" : "Accessibility label on the bookmark icon shown in the empty bookmarks state.",
@@ -5567,6 +6767,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无书签"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا توجد إشارات مرجعية"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada penanda"
           }
         }
       }
@@ -5627,6 +6839,18 @@
             "state" : "translated",
             "value" : "无书签"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا توجد إشارات مرجعية"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak Ada Penanda"
+          }
         }
       }
     },
@@ -5685,6 +6909,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无书籍"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا توجد كتب"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak Ada Buku"
           }
         }
       }
@@ -5745,6 +6981,18 @@
             "state" : "translated",
             "value" : "无目录"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا توجد كتالوجات"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada katalog"
+          }
         }
       }
     },
@@ -5803,6 +7051,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无目录"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا توجد كتالوجات"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak Ada Katalog"
           }
         }
       }
@@ -5863,14 +7123,54 @@
             "state" : "translated",
             "value" : "备注"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ملاحظات"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catatan"
+          }
         }
       }
     },
     "Noto Sans" : {
-      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noto Sans"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noto Sans"
+          }
+        }
+      }
     },
     "Noto Serif" : {
-      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noto Serif"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noto Serif"
+          }
+        }
+      }
     },
     "Off" : {
       "comment" : "Picker option to disable a feature in Settings > Text Layout (used for Hyphenation, Text Normalization, Publisher Styles).",
@@ -5927,6 +7227,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关闭"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إيقاف"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mati"
           }
         }
       }
@@ -5987,6 +7299,18 @@
             "state" : "translated",
             "value" : "开启"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تشغيل"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nyala"
+          }
         }
       }
     },
@@ -6045,6 +7369,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "一栏"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "واحد"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satu"
           }
         }
       }
@@ -6105,6 +7441,18 @@
             "state" : "translated",
             "value" : "OPDS 订阅源 URL"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رابط موجز OPDS"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL Feed OPDS"
+          }
         }
       }
     },
@@ -6163,6 +7511,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打开书籍"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فتح الكتاب"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka Buku"
           }
         }
       }
@@ -6223,6 +7583,18 @@
             "state" : "translated",
             "value" : "在内置浏览器中打开网页"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فتح صفحات الويب في متصفح مدمج"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka Halaman Web di Browser Tersemat"
+          }
         }
       }
     },
@@ -6281,6 +7653,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "页面"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صفحة"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halaman"
           }
         }
       }
@@ -6341,11 +7725,37 @@
             "state" : "translated",
             "value" : "页边距"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هوامش الصفحة"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Margin Halaman"
+          }
         }
       }
     },
     "Palatino" : {
-      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palatino"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palatino"
+          }
+        }
+      }
     },
     "Paragraph Spacing" : {
       "comment" : "Label and accessibility label for the paragraph spacing slider in Settings > Spacing.",
@@ -6402,6 +7812,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "段落间距"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تباعد الفقرات"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spasi Paragraf"
           }
         }
       }
@@ -6462,6 +7884,18 @@
             "state" : "translated",
             "value" : "阅读进度"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التقدم"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kemajuan"
+          }
         }
       }
     },
@@ -6520,6 +7954,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "出版商默认"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "افتراضي الناشر"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default Penerbit"
           }
         }
       }
@@ -6580,6 +8026,18 @@
             "state" : "translated",
             "value" : "出版商样式"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أنماط الناشر"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gaya Penerbit"
+          }
         }
       }
     },
@@ -6638,6 +8096,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "阅读"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قراءة"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baca"
           }
         }
       }
@@ -6698,6 +8168,18 @@
             "state" : "translated",
             "value" : "阅读"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ القراءة"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membaca"
+          }
         }
       }
     },
@@ -6756,6 +8238,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "阅读进度"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تقدم القراءة"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kemajuan membaca"
           }
         }
       }
@@ -6816,6 +8310,18 @@
             "state" : "translated",
             "value" : "准备下载"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جاهز للتنزيل"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siap diunduh"
+          }
         }
       }
     },
@@ -6874,6 +8380,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "推荐目录"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كتالوجات موصى بها"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Katalog yang Direkomendasikan"
           }
         }
       }
@@ -6934,6 +8452,18 @@
             "state" : "translated",
             "value" : "移除书签"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إزالة الإشارة المرجعية"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hapus penanda"
+          }
         }
       }
     },
@@ -6992,6 +8522,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重置所有阅读偏好"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعادة ضبط جميع تفضيلات القراءة"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atur Ulang Semua Preferensi Membaca"
           }
         }
       }
@@ -7052,6 +8594,18 @@
             "state" : "translated",
             "value" : "重置字号"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعادة ضبط حجم الخط"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atur Ulang Ukuran Font"
+          }
         }
       }
     },
@@ -7110,6 +8664,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重试"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعادة المحاولة"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coba Lagi"
           }
         }
       }
@@ -7170,6 +8736,18 @@
             "state" : "translated",
             "value" : "重试下载"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إعادة محاولة التنزيل"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coba lagi unduhan"
+          }
         }
       }
     },
@@ -7229,11 +8807,37 @@
             "state" : "translated",
             "value" : "右对齐"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يمين"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kanan"
+          }
         }
       }
     },
     "San Francisco" : {
-      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "San Francisco"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "San Francisco"
+          }
+        }
+      }
     },
     "Save" : {
       "comment" : "Toolbar button label to save changes in the book edit form and the bookmark edit sheet.",
@@ -7290,6 +8894,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "保存"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حفظ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Simpan"
           }
         }
       }
@@ -7350,6 +8966,18 @@
             "state" : "translated",
             "value" : "搜索目录"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بحث في الكتالوج"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cari katalog"
+          }
         }
       }
     },
@@ -7408,6 +9036,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "搜索图书馆"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بحث في المكتبة"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cari perpustakaan"
           }
         }
       }
@@ -7468,6 +9108,18 @@
             "state" : "translated",
             "value" : "查看全部"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مشاهدة الكل"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat Semua"
+          }
         }
       }
     },
@@ -7527,11 +9179,37 @@
             "state" : "translated",
             "value" : "护眼主题"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سمة سيبيا"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tema Sepia"
+          }
         }
       }
     },
     "Seravek" : {
-      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation."
+      "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seravek"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seravek"
+          }
+        }
+      }
     },
     "Settings" : {
       "comment" : "Tab bar label for the Settings tab and navigation title of the Settings screen.",
@@ -7588,6 +9266,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "设置"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإعدادات"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pengaturan"
           }
         }
       }
@@ -7648,6 +9338,18 @@
             "state" : "translated",
             "value" : "分享"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مشاركة"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bagikan"
+          }
         }
       }
     },
@@ -7706,6 +9408,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示书籍信息"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار معلومات الكتاب"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilkan Info Buku"
           }
         }
       }
@@ -7766,6 +9480,18 @@
             "state" : "translated",
             "value" : "显示“目录”选项卡，以便从 OPDS 目录浏览和下载书籍。"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إظهار علامة تبويب الكتالوجات لتصفح وتنزيل الكتب من كتالوجات OPDS."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilkan tab Katalog untuk menjelajahi dan mengunduh buku dari katalog OPDS."
+          }
         }
       }
     },
@@ -7824,6 +9550,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "间距"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تباعد"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spasi"
           }
         }
       }
@@ -7884,6 +9622,18 @@
             "state" : "translated",
             "value" : "开始"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بدء"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai"
+          }
         }
       }
     },
@@ -7942,6 +9692,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "系统"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "النظام"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistem"
           }
         }
       }
@@ -8002,6 +9764,18 @@
             "state" : "translated",
             "value" : "目录"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جدول المحتويات"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daftar isi"
+          }
         }
       }
     },
@@ -8060,6 +9834,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "目录"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جدول المحتويات"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daftar Isi"
           }
         }
       }
@@ -8120,6 +9906,18 @@
             "state" : "translated",
             "value" : "阅读时点击书签图标即可添加。"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انقر على أيقونة الإشارة المرجعية أثناء القراءة لإضافة واحدة."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk ikon penanda saat membaca untuk menambahkan satu."
+          }
         }
       }
     },
@@ -8178,6 +9976,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "文本对齐"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "محاذاة النص"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perataan Teks"
           }
         }
       }
@@ -8238,6 +10048,18 @@
             "state" : "translated",
             "value" : "文本布局"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تخطيط النص"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tata Letak Teks"
+          }
         }
       }
     },
@@ -8296,6 +10118,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "文本规范化"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تسوية النص"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normalisasi Teks"
           }
         }
       }
@@ -8356,6 +10190,18 @@
             "state" : "translated",
             "value" : "标题"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العنوان"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Judul"
+          }
         }
       }
     },
@@ -8414,6 +10260,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "书籍总数"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إجمالي الكتب"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total Buku"
           }
         }
       }
@@ -8474,6 +10332,18 @@
             "state" : "translated",
             "value" : "两栏"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اثنان"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dua"
+          }
         }
       }
     },
@@ -8532,6 +10402,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "视图"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عرض"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat"
           }
         }
       }
@@ -8592,6 +10474,18 @@
             "state" : "translated",
             "value" : "宽度"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "العرض"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lebar"
+          }
         }
       }
     },
@@ -8651,6 +10545,18 @@
             "state" : "translated",
             "value" : "词间距"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تباعد الكلمات"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spasi Kata"
+          }
         }
       }
     },
@@ -8709,6 +10615,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "词间距: %@"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تباعد الكلمات: %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spasi kata: %@"
           }
         }
       }
