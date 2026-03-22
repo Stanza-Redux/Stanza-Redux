@@ -325,10 +325,10 @@ struct ReaderView: View {
         let letterSpacingVal: Double? = s.letterSpacing > 0.0 ? s.letterSpacing : nil
 
         // Readium's CSS requires publisherStyles=false (readium-advanced-on) for user
-        // spacing overrides (lineHeight, letterSpacing, wordSpacing) to take effect.
-        // When any spacing value is set, force publisherStyles off in the preferences.
-        let hasSpacingOverride = lineHeightVal != nil || letterSpacingVal != nil || wordSpacingVal != nil
-        let publisherStylesVal: Bool? = hasSpacingOverride ? false : (s.publisherStyles == "true" ? true : s.publisherStyles == "false" ? false : nil)
+        // overrides of spacing and text alignment to take effect.
+        // When any such value is set, force publisherStyles off in the preferences.
+        let hasUserOverride = lineHeightVal != nil || letterSpacingVal != nil || wordSpacingVal != nil || !s.textAlign.isEmpty
+        let publisherStylesVal: Bool? = hasUserOverride ? false : (s.publisherStyles == "true" ? true : s.publisherStyles == "false" ? false : nil)
 
         #if !SKIP
         if let nav = navigator {
@@ -358,6 +358,7 @@ struct ReaderView: View {
         #else
         if let nav = navigator {
             let fontFamilyVal: org.readium.r2.navigator.preferences.FontFamily? = s.fontFamily.isEmpty ? nil : org.readium.r2.navigator.preferences.FontFamily(s.fontFamily)
+            let textAlignVal: org.readium.r2.navigator.preferences.TextAlign? = s.textAlign == "justify" ? org.readium.r2.navigator.preferences.TextAlign.JUSTIFY : s.textAlign == "center" ? org.readium.r2.navigator.preferences.TextAlign.CENTER : s.textAlign == "left" ? org.readium.r2.navigator.preferences.TextAlign.LEFT : s.textAlign == "right" ? org.readium.r2.navigator.preferences.TextAlign.RIGHT : s.textAlign == "start" ? org.readium.r2.navigator.preferences.TextAlign.START : s.textAlign == "end" ? org.readium.r2.navigator.preferences.TextAlign.END : nil
             let themeVal: org.readium.r2.navigator.preferences.Theme = s.sepiaTheme ? Theme.SEPIA : isDark ? Theme.DARK : Theme.LIGHT
             let prefs: PlatformPreferences = org.readium.r2.navigator.epub.EpubPreferences(
                 fontFamily: fontFamilyVal,
@@ -368,6 +369,7 @@ struct ReaderView: View {
                 pageMargins: pageMarginsVal,
                 paragraphSpacing: paragraphSpacingVal,
                 publisherStyles: publisherStylesVal,
+                textAlign: textAlignVal,
                 textNormalization: textNormalizationVal,
                 theme: themeVal,
                 wordSpacing: wordSpacingVal
