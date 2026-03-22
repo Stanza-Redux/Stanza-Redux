@@ -105,13 +105,23 @@ struct LibraryView: View {
             )
             .onChange(of: pickedDocumentURL) { oldURL, newURL in
                 if var url = newURL {
+                    logger.info("Importing book: \(url.absoluteString)")
                     if !url.absoluteString.hasPrefix("file:/") {
                         // FIXME: bug in withDocumentPicker URL: the url is sometimes just a path without a scheme, like /data/user/0/org.appfair.app.Stanza_Redux/cache/marcus-aurelius_meditations_george-long.epub
                         url = URL(fileURLWithPath: url.absoluteString)
                     }
                     pickedDocumentURL = nil
                     Task {
+                        // Re-acquire security-scoped access for the picked file.
+                        // The DocumentPicker releases access immediately after setting the
+                        // URL binding, but we need it to persist through the async import:
+                        // Failed to import book: Error Domain=NSCocoaErrorDomain Code=257 "The file “Demolished Man, The - Alfred Bester.epub” couldn’t be opened because you don’t have permission to view it." UserInfo={NSFilePath=/private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Stanza Redux….epub, NSUnderlyingError=0x1168249f0 {Error Domain=NSPOSIXErrorDomain Code=1 "Operation not permitted"}}
+                        #if !SKIP
+                        let accessing = url.startAccessingSecurityScopedResource()
+                        defer { if accessing { url.stopAccessingSecurityScopedResource() } }
+                        #endif
                         await library.importBook(from: url)
+                        logger.info("Done importing book: \(url.absoluteString)")
                     }
                 }
             }
