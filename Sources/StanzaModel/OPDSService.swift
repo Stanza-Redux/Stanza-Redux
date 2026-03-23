@@ -129,6 +129,157 @@ public final class OPDSFeedContent {
 /// Cross-platform OPDS feed fetching and parsing service.
 public final class OPDSService {
 
+    /// Post-processes an `OPDSFeedContent` by scanning the raw feed XML for entries
+    /// that Readium placed into `navigation` but that are actually book entries.
+    ///
+    /// An entry is promoted to a publication when it contains a `<link>` with
+    /// `rel="enclosure"` and an href ending in `.epub` (with any query string).
+    /// This handles Atom feeds (like Standard Ebooks) that use `rel="enclosure"`
+    /// for downloads rather than the OPDS `rel="http://opds-spec.org/acquisition"`.
+    private static func promoteEnclosureEntries(_ content: OPDSFeedContent, data: Data, baseURL: URL) -> OPDSFeedContent {
+        guard !content.navigation.isEmpty else { return content }
+
+        // Parse the raw XML with SkipXML
+        let doc: SkipXML.XMLNode
+        do {
+            doc = try SkipXML.XMLNode.parse(data: data)
+        } catch {
+            opdsLogger.debug("Could not re-parse feed XML for entry promotion: \(error)")
+            return content
+        }
+
+        let root = doc.elementChildren.first ?? doc
+
+        // Find all <entry> elements
+        let entries = root.descendants(named: "entry")
+        guard !entries.isEmpty else { return content }
+
+        // Build a lookup of navigation hrefs so we can match promoted entries
+        var navHrefSet: Set<String> = []
+        for nav in content.navigation {
+            navHrefSet.insert(nav.href)
+        }
+
+        var promotedPubs: [OPDSPubEntry] = []
+        var promotedNavHrefs: Set<String> = []
+
+        for entry in entries {
+            // Find all <link> elements in this entry
+            let links = entry.elementChildren.filter { $0.elementName == "link" || $0.elementName.hasSuffix(":link") }
+
+            // Check for an enclosure link with an epub href
+            var epubHref: String? = nil
+            var epubType: String? = nil
+            for link in links {
+                let rel = link.attributes["rel"] ?? ""
+                let href = link.attributes["href"] ?? ""
+                let type = link.attributes["type"] ?? ""
+                if rel == "enclosure" && (href.contains(".epub") || type.contains("epub")) {
+                    epubHref = href
+                    epubType = type
+                    break // Use the first matching epub enclosure
+                }
+            }
+
+            guard let acquisitionURL = epubHref else { continue }
+
+            // This entry has an epub download — extract metadata and promote it
+            let title = entry.childContentTrimmed(forElementName: "title") ?? "Untitled"
+            let id = entry.childContentTrimmed(forElementName: "id") ?? acquisitionURL
+
+            // Extract author name(s): <author><name>...</name></author>
+            var authors: [String] = []
+            for authorNode in entry.elementChildren.filter({ $0.elementName == "author" || $0.elementName.hasSuffix(":author") }) {
+                if let name = authorNode.childContentTrimmed(forElementName: "name") {
+                    authors.append(name)
+                }
+            }
+
+            // Extract summary
+            let summary = entry.childContentTrimmed(forElementName: "summary")
+                ?? entry.childContentTrimmed(forElementName: "content")
+
+            // Extract thumbnail from <media:thumbnail> or image links
+            var thumbnailURL: String? = nil
+            for child in entry.elementChildren {
+                if child.elementName.contains("thumbnail") {
+                    thumbnailURL = child.attributes["url"]
+                    break
+                }
+            }
+            // Also check for image links
+            if thumbnailURL == nil {
+                for link in links {
+                    let rel = link.attributes["rel"] ?? ""
+                    let type = link.attributes["type"] ?? ""
+                    if rel.contains("image") || type.hasPrefix("image/") {
+                        thumbnailURL = link.attributes["href"]
+                        break
+                    }
+                }
+            }
+
+            // Find which navigation href this entry corresponds to (via alternate link)
+            for link in links {
+                let rel = link.attributes["rel"] ?? ""
+                let href = link.attributes["href"] ?? ""
+                if rel == "alternate" || rel == "subsection" {
+                    let resolved = resolveHref(href, base: baseURL)
+                    if navHrefSet.contains(resolved) || navHrefSet.contains(href) {
+                        promotedNavHrefs.insert(resolved)
+                        promotedNavHrefs.insert(href)
+                    }
+                }
+            }
+            // Also match by title as fallback
+            for nav in content.navigation {
+                if nav.title == title {
+                    promotedNavHrefs.insert(nav.href)
+                }
+            }
+
+            let pub = OPDSPubEntry(
+                id: id,
+                title: title,
+                authors: authors,
+                summary: summary,
+                thumbnailURL: thumbnailURL,
+                acquisitionURL: acquisitionURL,
+                acquisitionType: epubType
+            )
+            promotedPubs.append(pub)
+        }
+
+        guard !promotedPubs.isEmpty else { return content }
+
+        // Remove promoted entries from navigation
+        let remainingNav = content.navigation.filter { !promotedNavHrefs.contains($0.href) }
+
+        opdsLogger.info("Promoted \(promotedPubs.count) enclosure entries from navigation to publications")
+
+        return OPDSFeedContent(
+            title: content.title,
+            subtitle: content.subtitle,
+            iconURL: content.iconURL,
+            infoLinks: content.infoLinks,
+            navigation: remainingNav,
+            publications: content.publications + promotedPubs,
+            groups: content.groups,
+            facets: content.facets,
+            searchURL: content.searchURL,
+            nextPageURL: content.nextPageURL,
+            totalResults: content.totalResults
+        )
+    }
+
+    /// Resolves a potentially relative href against a base URL.
+    private static func resolveHref(_ href: String, base: URL) -> String {
+        if href.hasPrefix("http://") || href.hasPrefix("https://") || href.hasPrefix("data:") {
+            return href
+        }
+        return URL(string: href, relativeTo: base)?.absoluteString ?? href
+    }
+
     /// Fetches and parses an OPDS feed from the given URL.
     public static func fetchFeed(url: URL) async throws -> OPDSFeedContent {
         opdsLogger.info("Fetching OPDS feed: \(url.absoluteString)")
@@ -149,7 +300,8 @@ public final class OPDSService {
             opdsLogger.error("No feed content from \(url.absoluteString)")
             throw OPDSServiceError.noFeedContent
         }
-        let content = convertFeed(feed, baseURL: url)
+        var content = convertFeed(feed, baseURL: url)
+        content = promoteEnclosureEntries(content, data: data, baseURL: url)
         opdsLogger.info("Parsed feed '\(content.title)': \(content.publications.count) publications, \(content.navigation.count) nav links, \(content.groups.count) groups")
         return content
         #else
@@ -192,7 +344,8 @@ public final class OPDSService {
             opdsLogger.error("No feed content from \(url.absoluteString)")
             throw OPDSServiceError.noFeedContent
         }
-        let content = convertFeedKotlin(parsedFeed, baseURL: url)
+        var content = convertFeedKotlin(parsedFeed, baseURL: url)
+        content = promoteEnclosureEntries(content, data: Data(platformValue: data), baseURL: url)
         opdsLogger.info("Parsed feed '\(content.title)': \(content.publications.count) publications, \(content.navigation.count) nav links, \(content.groups.count) groups")
         return content
         #endif
@@ -408,13 +561,6 @@ public final class OPDSService {
             acquisitionURL: acquisitionLink.map { resolveHref($0.href, base: baseURL) },
             acquisitionType: acquisitionLink?.mediaType?.string
         )
-    }
-
-    private static func resolveHref(_ href: String, base: URL) -> String {
-        if href.hasPrefix("http://") || href.hasPrefix("https://") {
-            return href
-        }
-        return URL(string: href, relativeTo: base)?.absoluteString ?? href
     }
     #endif
 
