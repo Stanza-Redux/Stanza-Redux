@@ -53,8 +53,9 @@ Shared state is managed through the SwiftUI environment:
 
 The Library tab is the main screen of the app. It displays all imported books with cover art, titles, authors, and reading progress.
 
-<img height="500" alt="Stanza_Library_Android" src="https://github.com/user-attachments/assets/a957654c-9c8c-403b-9de2-25be40c60dcc" />
-<img height="500" alt="Stanza_Library_iOS" src="https://github.com/user-attachments/assets/9765e846-f7f6-4067-9bb7-44918600e508" />
+<img height="500" alt="Screenshot 2026-03-23 at 17 52 36" src="https://github.com/user-attachments/assets/06ff9e5a-2b14-4cfb-b4e0-c28aa2b7f88d" />
+<img height="500" alt="Screenshot 2026-03-23 at 17 53 26" src="https://github.com/user-attachments/assets/d891307f-4e1c-475e-9427-c6c8d982c489" />
+
 
 ### Features
 
