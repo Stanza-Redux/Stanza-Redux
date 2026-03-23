@@ -44,6 +44,29 @@ public final class OPDSNavLink: Identifiable {
     }
 }
 
+/// A single downloadable link for a publication (e.g. epub, kepub, azw3).
+public final class AcquisitionLink: Identifiable {
+    public let id: String
+    public let href: String
+    public let title: String?
+    public let type: String?
+    public let length: Int64?
+
+    public init(href: String, title: String? = nil, type: String? = nil, length: Int64? = nil) {
+        self.id = href
+        self.href = href
+        self.title = title
+        self.type = type
+        self.length = length
+    }
+
+    /// Whether this link points to an EPUB file.
+    public var isEpub: Bool {
+        if let type = type, type.contains("epub") { return true }
+        return href.contains(".epub")
+    }
+}
+
 /// Represents a publication entry in an OPDS feed.
 public final class OPDSPubEntry: Identifiable {
     public let id: String
@@ -54,8 +77,10 @@ public final class OPDSPubEntry: Identifiable {
     public let thumbnailURL: String?
     public let acquisitionURL: String?
     public let acquisitionType: String?
+    /// All available acquisition links for this publication (e.g. multiple epub formats).
+    public let acquisitionLinks: [AcquisitionLink]
 
-    public init(id: String, title: String, authors: [String] = [], summary: String? = nil, imageURL: String? = nil, thumbnailURL: String? = nil, acquisitionURL: String? = nil, acquisitionType: String? = nil) {
+    public init(id: String, title: String, authors: [String] = [], summary: String? = nil, imageURL: String? = nil, thumbnailURL: String? = nil, acquisitionURL: String? = nil, acquisitionType: String? = nil, acquisitionLinks: [AcquisitionLink] = []) {
         self.id = id
         self.title = title
         self.authors = authors
@@ -64,6 +89,12 @@ public final class OPDSPubEntry: Identifiable {
         self.thumbnailURL = thumbnailURL
         self.acquisitionURL = acquisitionURL
         self.acquisitionType = acquisitionType
+        self.acquisitionLinks = acquisitionLinks
+    }
+
+    /// The epub acquisition links available for download. Filters `acquisitionLinks` to epub types only.
+    public var epubLinks: [AcquisitionLink] {
+        return acquisitionLinks.filter { $0.isEpub }
     }
 }
 
@@ -167,17 +198,25 @@ public final class OPDSService {
             // Find all <link> elements in this entry
             let links = entry.elementChildren.filter { $0.elementName == "link" || $0.elementName.hasSuffix(":link") }
 
-            // Check for an enclosure link with an epub href
+            // Collect all acquisition/enclosure links and check for epub downloads
+            var allAcqLinks: [AcquisitionLink] = []
             var epubHref: String? = nil
             var epubType: String? = nil
             for link in links {
                 let rel = link.attributes["rel"] ?? ""
                 let href = link.attributes["href"] ?? ""
                 let type = link.attributes["type"] ?? ""
-                if rel == "enclosure" && (href.contains(".epub") || type.contains("epub")) {
-                    epubHref = href
-                    epubType = type
-                    break // Use the first matching epub enclosure
+                let linkTitle = link.attributes["title"]
+                let lengthStr = link.attributes["length"]
+                let length = lengthStr != nil ? Int64(lengthStr!) : nil
+
+                let isAcquisition = rel.contains("acquisition") || rel == "enclosure"
+                if isAcquisition {
+                    allAcqLinks.append(AcquisitionLink(href: href, title: linkTitle, type: type, length: length))
+                    if epubHref == nil && (href.contains(".epub") || type.contains("epub")) {
+                        epubHref = href
+                        epubType = type
+                    }
                 }
             }
 
@@ -245,7 +284,8 @@ public final class OPDSService {
                 summary: summary,
                 thumbnailURL: thumbnailURL,
                 acquisitionURL: acquisitionURL,
-                acquisitionType: epubType
+                acquisitionType: epubType,
+                acquisitionLinks: allAcqLinks
             )
             promotedPubs.append(pub)
         }
@@ -544,10 +584,21 @@ public final class OPDSService {
         let thumbnailLink = images.first(where: { $0.rels.contains(.opdsImageThumbnail) }) ?? images.first
         let imageLink = images.first(where: { $0.rels.contains(.opdsImage) }) ?? thumbnailLink
 
-        // Prefer EPUB acquisition link, fall back to any acquisition link
+        // Collect all acquisition links
         let allAcquisitionLinks = pub.manifest.links.filter { link in
             link.rels.contains(where: { $0.string.contains("http://opds-spec.org/acquisition") })
+                || link.rels.contains(where: { $0.string == "enclosure" })
         }
+        let acqLinks = allAcquisitionLinks.map { link in
+            AcquisitionLink(
+                href: resolveHref(link.href, base: baseURL),
+                title: link.title,
+                type: link.mediaType?.string,
+                length: nil
+            )
+        }
+
+        // Prefer EPUB acquisition link, fall back to any
         let acquisitionLink = allAcquisitionLinks.first(where: { $0.mediaType?.string.contains("epub") == true })
             ?? allAcquisitionLinks.first
 
@@ -559,7 +610,8 @@ public final class OPDSService {
             imageURL: imageLink.map { resolveHref($0.href, base: baseURL) },
             thumbnailURL: thumbnailLink.map { resolveHref($0.href, base: baseURL) },
             acquisitionURL: acquisitionLink.map { resolveHref($0.href, base: baseURL) },
-            acquisitionType: acquisitionLink?.mediaType?.string
+            acquisitionType: acquisitionLink?.mediaType?.string,
+            acquisitionLinks: acqLinks
         )
     }
     #endif
@@ -721,19 +773,23 @@ public final class OPDSService {
             }
         }
 
-        // Find acquisition link — prefer EPUB, fall back to any format
+        // Collect all acquisition links
+        var acqLinks: [AcquisitionLink] = []
         var acqHref: String? = nil
         var acqType: String? = nil
         var fallbackHref: String? = nil
         var fallbackType: String? = nil
         for link in pub.manifest.links {
             for rel in link.rels {
-                if rel.contains("http://opds-spec.org/acquisition") {
+                if rel.contains("http://opds-spec.org/acquisition") || rel == "enclosure" {
                     let href = resolveHrefKotlin(link.href.toString(), base: baseURL)
                     let mediaType = link.mediaType?.toString()
+                    acqLinks.append(AcquisitionLink(href: href, title: link.title, type: mediaType))
                     if mediaType != nil && mediaType!.contains("epub") {
-                        acqHref = href
-                        acqType = mediaType
+                        if acqHref == nil {
+                            acqHref = href
+                            acqType = mediaType
+                        }
                     } else if fallbackHref == nil {
                         fallbackHref = href
                         fallbackType = mediaType
@@ -754,7 +810,8 @@ public final class OPDSService {
             imageURL: imageHref,
             thumbnailURL: thumbnailHref,
             acquisitionURL: acqHref,
-            acquisitionType: acqType
+            acquisitionType: acqType,
+            acquisitionLinks: acqLinks
         )
     }
 

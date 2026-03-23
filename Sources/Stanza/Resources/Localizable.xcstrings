@@ -1878,6 +1878,9 @@
         }
       }
     },
+    "Available Formats" : {
+
+    },
     "Book info" : {
       "comment" : "Accessibility label on the info button in the reader HUD bottom bar.",
       "localizations" : {

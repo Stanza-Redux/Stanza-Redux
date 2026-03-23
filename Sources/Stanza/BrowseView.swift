@@ -717,9 +717,37 @@ struct OPDSBookDetailView: View {
                         .accessibilityIdentifier("bookDetailImportError")
                 }
 
-                // Metadata
-                VStack(alignment: .leading, spacing: 8) {
-                    if let acqType = entry.acquisitionType {
+                // Available formats
+                if !entry.acquisitionLinks.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Available Formats")
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.secondary)
+                        ForEach(entry.acquisitionLinks) { link in
+                            HStack {
+                                Text(link.title ?? formatDisplayName(link.type ?? ""))
+                                    .font(.subheadline)
+                                Spacer()
+                                if let length = link.length, length > 0 {
+                                    Text(formatFileSize(length))
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Text(formatDisplayName(link.type ?? ""))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(Color.secondary.opacity(0.12))
+                                    .cornerRadius(4)
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    .accessibilityIdentifier("bookDetailFormats")
+                } else if let acqType = entry.acquisitionType {
+                    VStack(alignment: .leading, spacing: 8) {
                         HStack {
                             Text("Format")
                                 .foregroundStyle(.secondary)
@@ -729,8 +757,8 @@ struct OPDSBookDetailView: View {
                         }
                         .accessibilityIdentifier("bookDetailFormat")
                     }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
 
                 Spacer(minLength: 40)
             }
@@ -799,21 +827,36 @@ struct OPDSBookDetailView: View {
                 importDownloadedBook()
             })
         } else if entry.acquisitionURL != nil {
-            // Not yet downloaded — show Get button
-            Button {
-                startDownload()
-            } label: {
-                Text("Get")
-                    .fontWeight(.bold)
+            // Not yet downloaded — show Get button or menu for multiple formats
+            if entry.epubLinks.count > 1 {
+                // Multiple epub formats available — show a menu
+                Menu {
+                    ForEach(entry.epubLinks) { link in
+                        Button(link.title ?? "Download") {
+                            startDownload(from: link.href)
+                        }
+                    }
+                } label: {
+                    Text("Get")
+                        .fontWeight(.bold)
+                }
+                .buttonStyle(.borderedProminent)
+                .accessibilityIdentifier("bookDetailGetMenu")
+            } else {
+                Button {
+                    startDownload()
+                } label: {
+                    Text("Get")
+                        .fontWeight(.bold)
+                }
+                .buttonStyle(.borderedProminent)
+                .accessibilityIdentifier("bookDetailGetButton")
             }
-            .buttonStyle(.borderedProminent)
-            //.buttonBorderShape(.capsule)
-            .accessibilityIdentifier("bookDetailGetButton")
         }
     }
 
-    func startDownload() {
-        guard let urlString = entry.acquisitionURL, let url = URL(string: urlString) else {
+    func startDownload(from overrideURL: String? = nil) {
+        guard let urlString = overrideURL ?? entry.acquisitionURL, let url = URL(string: urlString) else {
             logger.error("No download URL for book: '\(entry.title)'")
             importError = "No download URL available"
             errorManager.errorOccurred(info: AppErrorInfo(title: "Download Failed", message: "No download URL available for this book."))
@@ -862,9 +905,22 @@ struct OPDSBookDetailView: View {
 
     func formatDisplayName(_ mimeType: String) -> String {
         if mimeType.contains("epub") { return "EPUB" }
+        if mimeType.contains("kepub") { return "KEPUB" }
         if mimeType.contains("pdf") { return "PDF" }
-        if mimeType.contains("mobi") { return "MOBI" }
+        if mimeType.contains("mobi") || mimeType.contains("mobipocket") { return "MOBI" }
+        if mimeType.contains("azw") { return "AZW3" }
+        if mimeType.contains("xhtml") { return "XHTML" }
         return mimeType
+    }
+
+    func formatFileSize(_ bytes: Int64) -> String {
+        if bytes >= 1_048_576 {
+            return String(format: "%.1f MB", Double(bytes) / 1_048_576.0)
+        } else if bytes >= 1024 {
+            return "\(bytes / 1024) KB"
+        } else {
+            return "\(bytes) B"
+        }
     }
 }
 

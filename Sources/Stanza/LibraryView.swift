@@ -163,11 +163,11 @@ struct LibraryView: View {
                                 .foregroundStyle(.secondary)
                         }
                     }
+                    #if !SKIP // needed to make the entire area tappable on iOS
+                    .contentShape(Rectangle())
+                    #endif
                 }
                 .buttonStyle(.plain)
-                #if !SKIP // needed to make the entire area tappable on iOS
-                .contentShape(Rectangle())
-                #endif
                 .contextMenu {
                     Button {
                         selectedBook = book
