@@ -26,9 +26,14 @@ struct BookLocationsBrowser: View {
     @State var editingBookmark: BookmarkRecord? = nil
     @State var showEditSheet: Bool = false
 
-    /// The title of the chapter the reader is currently in.
-    var currentChapterTitle: String? {
-        currentLocator?.title
+    /// The href of the current reading position's resource, normalized for comparison.
+    var currentLocatorHref: String? {
+        guard let locator = currentLocator else { return nil }
+        #if !SKIP
+        return locator.platformValue.href.string
+        #else
+        return locator.platformValue.href.toString()
+        #endif
     }
 
     var body: some View {
@@ -71,20 +76,39 @@ struct BookLocationsBrowser: View {
     }
 
     /// Whether the given TOC link matches the current reading position.
+    /// Matches by href (resource URL) rather than title to avoid false positives
+    /// when multiple chapters share the same title (e.g. "Chapter V" in different books).
     func isCurrentChapter(_ link: Lnk) -> Bool {
-        guard let current = currentChapterTitle, let linkTitle = link.title else { return false }
-        return current == linkTitle
+        guard let currentHref = currentLocatorHref else { return false }
+        let linkHref = link.href
+        // Exact match or suffix/prefix match (hrefs may be relative or absolute)
+        return currentHref == linkHref
+            || currentHref.hasSuffix(linkHref)
+            || linkHref.hasSuffix(currentHref)
+            // Also match ignoring fragment identifiers (e.g. chapter.xhtml#section1)
+            //|| hrefWithoutFragment(currentHref) == hrefWithoutFragment(linkHref)
     }
 
-    /// Flattens the TOC hierarchy into a single list with depth for indentation.
+    private func hrefWithoutFragment(_ href: String) -> String {
+        if let hashIndex = href.firstIndex(of: "#") {
+            return String(href[href.startIndex..<hashIndex])
+        }
+        return href
+    }
+
+    /// Flattens the TOC hierarchy recursively into a single list with depth for indentation.
     var flatTOCEntries: [(id: String, link: Lnk, depth: Int)] {
         var entries: [(id: String, link: Lnk, depth: Int)] = []
-        for (index, link) in publication.manifest.tableOfContents.enumerated() {
-            entries.append((id: "toc_\(index)", link: link, depth: 0))
-            for (childIndex, child) in link.children.enumerated() {
-                entries.append((id: "toc_\(index)_\(childIndex)", link: child, depth: 1))
+        func flatten(_ links: [Lnk], prefix: String, depth: Int) {
+            for (index, link) in links.enumerated() {
+                let id = prefix.isEmpty ? "toc_\(index)" : "\(prefix)_\(index)"
+                entries.append((id: id, link: link, depth: depth))
+                if !link.children.isEmpty {
+                    flatten(link.children, prefix: id, depth: depth + 1)
+                }
             }
         }
+        flatten(publication.manifest.tableOfContents, prefix: "", depth: 0)
         return entries
     }
 
@@ -98,11 +122,11 @@ struct BookLocationsBrowser: View {
                         .foregroundStyle(.primary)
                         .padding(.leading, CGFloat(entry.depth * 20))
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        #if !SKIP // needed to make the entire area tappable on iOS
+                        .contentShape(Rectangle())
+                        #endif
                 }
                 .buttonStyle(.plain)
-                #if !SKIP // needed to make the entire area tappable on iOS
-                .contentShape(Rectangle())
-                #endif
                 .listRowBackground(isCurrentChapter(entry.link) ? Color.accentColor.opacity(0.12) : nil)
             }
         }
@@ -158,12 +182,12 @@ struct BookLocationsBrowser: View {
                                     .lineLimit(1)
                             }
                         }
+                        #if !SKIP // needed to make the entire area tappable on iOS
+                        .contentShape(Rectangle())
+                        #endif
                         .padding(.vertical, 2)
                     }
                     .buttonStyle(.plain)
-                    #if !SKIP // needed to make the entire area tappable on iOS
-                    .contentShape(Rectangle())
-                    #endif
                     .contextMenu {
                         Button {
                             shareBookmark(bookmark)

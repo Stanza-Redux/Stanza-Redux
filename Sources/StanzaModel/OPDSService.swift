@@ -3,6 +3,7 @@
 
 import Foundation
 import OSLog
+import SkipXML
 #if !SKIP
 import ReadiumOPDS
 import ReadiumShared
@@ -211,6 +212,11 @@ public final class OPDSService {
     }
 
     /// Fetches the OpenSearch template for a feed that has a search link.
+    /// Fetches and parses an OpenSearch description document to extract the search URL template.
+    ///
+    /// The OpenSearch XML format contains `<Url>` elements with a `template` attribute.
+    /// We look for the first `<Url>` whose `type` attribute indicates an OPDS/Atom feed,
+    /// falling back to any `<Url>` element with a `template` attribute.
     public static func fetchSearchTemplate(searchLinkHref: String) async throws -> String {
         opdsLogger.info("Fetching OpenSearch template from: \(searchLinkHref)")
         guard let url = URL(string: searchLinkHref) else {
@@ -218,37 +224,80 @@ public final class OPDSService {
             throw OPDSServiceError.invalidURL
         }
 
+        let data: Data
         #if !SKIP
         var request = URLRequest(url: url)
         request.setValue(stanzaUserAgent, forHTTPHeaderField: "User-Agent")
-        let (data, _) = try await URLSession.shared.data(for: request)
-        guard let xmlString = String(data: data, encoding: .utf8) else {
-            throw OPDSServiceError.parseFailed
-        }
-        // Extract the URL template from the OpenSearch XML
-        if let range = xmlString.range(of: "template=\"") {
-            let start = range.upperBound
-            if let end = xmlString[start...].range(of: "\"") {
-                return String(xmlString[start..<end.lowerBound])
-            }
-        }
-        throw OPDSServiceError.parseFailed
+        let (responseData, _) = try await URLSession.shared.data(for: request)
+        data = responseData
         #else
         let javaUrl = java.net.URL(url.absoluteString)
-        let searchConn = javaUrl.openConnection() as! java.net.HttpURLConnection
-        searchConn.setRequestProperty("User-Agent", stanzaUserAgent)
-        let bodyString: String = String(data: Data(platformValue: searchConn.inputStream.readBytes()), encoding: .utf8) ?? ""
-        searchConn.disconnect()
-        let marker = "template=\""
-        guard let markerIndex = bodyString.range(of: marker) else {
-            throw OPDSServiceError.parseFailed
-        }
-        let rest = String(bodyString.suffix(from: markerIndex.upperBound))
-        guard let quoteIndex = rest.range(of: "\"") else {
-            throw OPDSServiceError.parseFailed
-        }
-        return String(rest.prefix(upTo: quoteIndex.lowerBound))
+        let connection = javaUrl.openConnection() as! java.net.HttpURLConnection
+        connection.setRequestProperty("User-Agent", stanzaUserAgent)
+        let inputStream = connection.inputStream
+        let bytes = inputStream.readBytes()
+        inputStream.close()
+        connection.disconnect()
+        data = Data(platformValue: bytes)
         #endif
+
+        return try parseSearchTemplate(from: data)
+    }
+
+    /// Parses an OpenSearch description document and extracts the URL template.
+    private static func parseSearchTemplate(from data: Data) throws -> String {
+        let doc: SkipXML.XMLNode
+        do {
+            doc = try XMLNode.parse(data: data)
+        } catch {
+            opdsLogger.error("Failed to parse OpenSearch XML: \(error)")
+            throw OPDSServiceError.parseFailed
+        }
+
+        // The document root is typically <OpenSearchDescription>.
+        // Look for <Url> elements which have a "template" attribute.
+        let root = doc.elementChildren.first ?? doc
+        let urlElements = root.descendants(named: "Url")
+
+        // Prefer a <Url> element whose type matches OPDS/Atom
+        let opdsTypes = ["application/atom+xml", "application/opds+json", "application/xml", "text/xml"]
+        for urlElement in urlElements {
+            if let template = urlElement.attributes["template"],
+               let type = urlElement.attributes["type"],
+               opdsTypes.contains(where: { type.contains($0) }) {
+                opdsLogger.debug("Found OPDS search template: \(template)")
+                return template
+            }
+        }
+
+        // Fall back to any <Url> with a template attribute
+        for urlElement in urlElements {
+            if let template = urlElement.attributes["template"] {
+                opdsLogger.debug("Found search template (fallback): \(template)")
+                return template
+            }
+        }
+
+        // Last resort: check for a template attribute on any descendant
+        func findTemplate(in node: SkipXML.XMLNode) -> String? {
+            if let template = node.attributes["template"] {
+                return template
+            }
+            for child in node.elementChildren {
+                if let found = findTemplate(in: child) {
+                    return found
+                }
+            }
+            return nil
+        }
+
+        if let template = findTemplate(in: root) {
+            opdsLogger.debug("Found search template (deep search): \(template)")
+            return template
+        }
+
+        opdsLogger.error("No search template found in OpenSearch document")
+        throw OPDSServiceError.parseFailed
     }
 
     // MARK: - iOS Feed Conversion

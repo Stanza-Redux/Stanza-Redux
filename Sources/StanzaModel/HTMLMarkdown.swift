@@ -42,7 +42,7 @@ public struct HTMLMarkdown {
         do {
             let astr = try AttributedString(markdown: convertHTMLToMarkdown())
             let end = Date.now
-            logger.debug("parsed HTML into markdown in \(string.count) bytes in \(end.timeIntervalSince(start)) seconds")
+            //logger.debug("parsed HTML into markdown in \(string.count) bytes in \(end.timeIntervalSince(start)) seconds")
             return astr
         } catch {
             logger.error("Failed to parse HTML into markdown: \(error)")

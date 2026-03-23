@@ -5851,6 +5851,9 @@
         }
       }
     },
+    "Help" : {
+
+    },
     "Hide Status Bar in Reader" : {
       "comment" : "Toggle label in Settings > Reading. When enabled, hides the system status bar while reading.",
       "localizations" : {
@@ -7890,6 +7893,9 @@
           }
         }
       }
+    },
+    "OK" : {
+
     },
     "On" : {
       "comment" : "Picker option to enable a feature in Settings > Text Layout (used for Hyphenation, Text Normalization, Publisher Styles).",
