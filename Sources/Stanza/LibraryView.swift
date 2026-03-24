@@ -134,6 +134,25 @@ struct LibraryView: View {
             .onAppear {
                 library.refreshBooks()
             }
+            .onReceive(NotificationCenter.default.publisher(for: openEpubNotification)) { notification in
+                guard let url = notification.userInfo?["url"] as? URL else { return }
+                logger.info("Received openEpubFile notification: \(url.absoluteString)")
+                Task {
+                    #if !SKIP
+                    let accessing = url.startAccessingSecurityScopedResource()
+                    defer { if accessing { url.stopAccessingSecurityScopedResource() } }
+                    #endif
+                    if let record = await library.importBook(from: url) {
+                        Task { @MainActor in
+                            // This raises an error on both Android and iOS, perhaps because it is happening too quickly after the import…
+                            // error ReadiumShared.AssetRetrieveURLError.reading(ReadiumShared.ReadError.access(ReadiumShared.AccessError.fileSystem(ReadiumShared.FileSystemError.fileNotFound(nil))))
+
+                            // open the book immediately
+                            // selectedBook = record
+                        }
+                    }
+                }
+            }
         }
     }
 

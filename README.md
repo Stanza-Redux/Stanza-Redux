@@ -1,6 +1,6 @@
 # Stanza Redux
 
-Stanza Redux is a cross-platform ebook reader for iOS and Android, built with [Skip](https://skip.dev) and powered by the [Readium SDK](https://readium.org/development/readium-sdk-overview/). A single Swift/SwiftUI codebase runs natively on iOS and is transpiled to Kotlin/Jetpack Compose for Android, while each platform uses its own native Readium toolkit for EPUB parsing, rendering, and navigation.
+Stanza Redux is a cross-platform ebook reader for iOS and Android, built with [Skip](https://skip.dev) and powered by the [Readium SDK](https://readium.org/development/readium-sdk-overview/). A single Swift codebase powers a platform-native app that utilizes SwiftUI on iOS and Jetpack Compose on Android, while each platform uses its own native Readium toolkit for EPUB parsing, rendering, and navigation.
 
 ## Architecture
 

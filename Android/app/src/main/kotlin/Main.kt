@@ -69,6 +69,9 @@ open class MainActivity: AppCompatActivity {
 
         AppDelegate.shared.onLaunch()
 
+        // Handle epub file opened from external source
+        handleEpubIntent(intent)
+
         // Example of requesting permissions on startup.
         // These must match the permissions in the AndroidManifest.xml file.
         //let permissions = listOf(
@@ -109,6 +112,44 @@ open class MainActivity: AppCompatActivity {
     override fun onLowMemory() {
         super.onLowMemory()
         AppDelegate.shared.onLowMemory()
+    }
+
+    override fun onNewIntent(intent: android.content.Intent) {
+        super.onNewIntent(intent)
+        handleEpubIntent(intent)
+    }
+
+    private fun handleEpubIntent(intent: android.content.Intent?) {
+        if (intent == null) return
+        val action = intent.action ?: return
+        if (action != android.content.Intent.ACTION_VIEW) return
+        val uri = intent.data ?: return
+        logger.info("handleEpubIntent: ${uri}")
+
+        // Copy the content URI to a local file so it persists
+        try {
+            val resolver = contentResolver
+            val cacheDir = cacheDir
+            // Derive a filename from the URI
+            var filename = uri.lastPathSegment ?: "imported.epub"
+            if (!filename.endsWith(".epub")) {
+                filename = filename + ".epub"
+            }
+            val tempFile = java.io.File(cacheDir, filename)
+            val inputStream = resolver.openInputStream(uri)
+            if (inputStream != null) {
+                val outputStream = java.io.FileOutputStream(tempFile)
+                inputStream.copyTo(outputStream)
+                outputStream.close()
+                inputStream.close()
+                val fileURL = URL(string = "file://" + tempFile.absolutePath)
+                if (fileURL != null) {
+                    AppDelegate.shared.openEpubFile(url = fileURL)
+                }
+            }
+        } catch (e: Exception) {
+            logger.error("Failed to handle epub intent: ${e}")
+        }
     }
 
     override fun onRestart() {

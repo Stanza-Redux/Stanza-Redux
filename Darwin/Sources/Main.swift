@@ -14,6 +14,11 @@ private typealias AppDelegate = StanzaAppDelegate
     var body: some Scene {
         WindowGroup {
             StanzaRootView()
+                .onOpenURL { url in
+                    if url.pathExtension.lowercased() == "epub" {
+                        AppDelegate.shared.openEpubFile(url: url)
+                    }
+                }
         }
         .onChange(of: scenePhase) { oldPhase, newPhase in
             switch newPhase {
@@ -60,6 +65,15 @@ typealias AppType = NSApplication
 
     func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
         AppDelegate.shared.onLowMemory()
+    }
+
+    // Handle opening .epub files from other apps or the Files app
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        if url.pathExtension.lowercased() == "epub" {
+            AppDelegate.shared.openEpubFile(url: url)
+            return true
+        }
+        return false
     }
 
     // support for SkipNotify.fetchNotificationToken()

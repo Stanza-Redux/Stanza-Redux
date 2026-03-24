@@ -37,6 +37,10 @@ public struct StanzaRootView : View {
     }
 }
 
+/// Notification posted when an epub file is opened from an external source.
+/// The `userInfo` dictionary contains `"url"` with the file `URL`.
+public let openEpubNotification = Notification.Name("openEpubFile")
+
 /// Global application delegate functions.
 ///
 /// These functions can update a shared observable object to communicate app state changes to interested views.
@@ -44,6 +48,12 @@ public final class StanzaAppDelegate : Sendable {
     public static let shared = StanzaAppDelegate()
 
     private init() {
+    }
+
+    /// Called when the app is asked to open an epub file from an external source.
+    public func openEpubFile(url: URL) {
+        logger.info("openEpubFile: \(url.absoluteString)")
+        NotificationCenter.default.post(name: openEpubNotification, object: nil, userInfo: ["url": url])
     }
 
     public func onInit() {

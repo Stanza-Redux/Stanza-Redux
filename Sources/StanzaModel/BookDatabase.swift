@@ -440,12 +440,8 @@ public class BookDatabase {
         dbLogger.info("Importing book from: \(sourceURL.absoluteString)")
         let booksDir = URL.documentsDirectory.appendingPathComponent("Books")
         try FileManager.default.createDirectory(at: booksDir, withIntermediateDirectories: true)
-        let destinationURL = booksDir.appendingPathComponent(sourceURL.lastPathComponent)
+        let destinationURL = uniqueDestination(for: sourceURL.lastPathComponent, in: booksDir)
 
-        if FileManager.default.fileExists(atPath: destinationURL.path) {
-            dbLogger.debug("Removing existing file at: \(destinationURL.path)")
-            try FileManager.default.removeItem(at: destinationURL)
-        }
         dbLogger.debug("Copying book to: \(destinationURL.path)")
         try FileManager.default.copyItem(at: sourceURL, to: destinationURL)
 
@@ -453,7 +449,7 @@ public class BookDatabase {
         let pub = try await Pub.loadPublication(from: destinationURL)
         let metadata = pub.metadata
         let bookTitle = metadata.title ?? sourceURL.deletingPathExtension().lastPathComponent
-        let bookAuthor = metadata.identifier ?? ""
+        let bookAuthor = pub.metadata.authors.map({ $0.name }).joined(separator: ", ")
         let totalItems = Int64(pub.manifest.readingOrder.count)
         dbLogger.info("Imported book: '\(bookTitle)' with \(totalItems) reading order items")
 
@@ -467,6 +463,28 @@ public class BookDatabase {
             totalItems: totalItems
         )
         return try addBook(record)
+    }
+
+    /// Returns a unique file URL in the given directory for the specified filename.
+    /// If "Book.epub" already exists, tries "Book-1.epub", "Book-2.epub", etc.
+    private func uniqueDestination(for filename: String, in directory: URL) -> URL {
+        let candidate = directory.appendingPathComponent(filename)
+        if !FileManager.default.fileExists(atPath: candidate.path) {
+            return candidate
+        }
+
+        let name = candidate.deletingPathExtension().lastPathComponent
+        let ext = candidate.pathExtension
+        var counter = 1
+        while true {
+            let numberedName = ext.isEmpty ? "\(name)-\(counter)" : "\(name)-\(counter).\(ext)"
+            let numberedURL = directory.appendingPathComponent(numberedName)
+            if !FileManager.default.fileExists(atPath: numberedURL.path) {
+                dbLogger.debug("File '\(filename)' already exists, using '\(numberedName)' instead")
+                return numberedURL
+            }
+            counter += 1
+        }
     }
 
     /// Updates the cover image path for a book.

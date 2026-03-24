@@ -281,6 +281,10 @@ public struct Meta {
         Array(platformValue.subjects).map({ Sub(platformValue: $0)} )
     }
 
+    public var authors: [Contrib] {
+        Array(platformValue.authors).map({ Contrib(platformValue: $0)} )
+    }
+
     public var published: Date? {
         #if !SKIP
         return platformValue.published
@@ -470,3 +474,53 @@ extension Sub: KotlinConverting<PlatformSubject> {
     }
 }
 #endif
+
+
+#if !SKIP
+public typealias PlatformContributor = ReadiumShared.Contributor
+#else
+public typealias PlatformContributor = org.readium.r2.shared.publication.Contributor
+#endif
+
+/// A wrapper for an underlying `Contributor` type.
+public struct Contrib {
+    public var platformValue: PlatformContributor
+
+    public init(platformValue: PlatformContributor) {
+        self.platformValue = platformValue
+    }
+
+    public var identifier: String? {
+        platformValue.identifier
+    }
+
+    public var name: String {
+        platformValue.localizedName.string
+    }
+
+    public var sortAs: String? {
+        platformValue.sortAs
+    }
+
+    public var roles: Set<String> {
+        Set(platformValue.roles)
+    }
+
+    public var position: Double? {
+        platformValue.position
+    }
+
+    public var links: [Lnk] {
+        Array(platformValue.links).map({ Lnk(platformValue: $0)} )
+    }
+
+}
+
+#if SKIP
+extension Contrib: KotlinConverting<PlatformContributor> {
+    public override func kotlin(nocopy: Bool = false) -> PlatformContributor {
+        return platformValue
+    }
+}
+#endif
+
