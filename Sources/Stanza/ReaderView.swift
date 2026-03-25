@@ -318,6 +318,11 @@ struct ReaderView: View {
             }
             let synth = PublicationSpeechSynthesizer(publication: publication.platformValue)
             let delegate = TTSSynthesizerDelegate()
+            delegate.navigator = navigator
+            delegate.settings = settings
+            delegate.onStopped = { [self] in
+                self.isSpeaking = false
+            }
             synth?.delegate = delegate
             self.ttsDelegate = delegate
             self.speechSynthesizer = synth
@@ -827,14 +832,17 @@ struct ReaderView: View {
                                 startSpeaking()
                             }
                         } label: {
-                            Label(isSpeaking ? "Stop Speaking" : "Start Speaking", systemImage: isSpeaking ? "stop.fill" : "speaker.wave.2.fill")
+                            Label(
+                                title: { Text(isSpeaking ? "Stop Speaking" : "Start Speaking") },
+                                icon: { Image(isSpeaking ? "stop_circle" : "volume_up", bundle: .module) }
+                            )
                         }
                         Button {
                             toggleBookmark()
                         } label: {
                             Label(
                                 isCurrentPageBookmarked ? "Remove Bookmark" : "Add Bookmark",
-                                image: isCurrentPageBookmarked ? "bookmark_filled" : "bookmark"
+                                image: isCurrentPageBookmarked ? "bookmark_fille.d" : "bookmark"
                             )
                         }
                     } label: {
@@ -1214,23 +1222,85 @@ class ReaderViewController: UIViewController {
     }
 }
 
-/// Delegate that receives TTS state change callbacks.
+/// Delegate that receives TTS state change callbacks and drives auto-page-turning.
 class TTSSynthesizerDelegate: PublicationSpeechSynthesizerDelegate {
+    /// The EPUB navigator used for auto-page-turning.
+    var navigator: EPUBNavigatorViewController?
+
+    /// The settings object for checking whether auto-page-turning is enabled.
+    var settings: StanzaSettings?
+
+    /// Called when the TTS playback finishes naturally.
+    var onStopped: (() -> Void)?
+
+    /// Tracks the last locator we navigated to, to avoid redundant go() calls.
+    private var lastNavigatedLocator: Locator?
+
     init() {
     }
 
     func publicationSpeechSynthesizer(_ synthesizer: PublicationSpeechSynthesizer, stateDidChange synthesizerState: PublicationSpeechSynthesizer.State) {
         switch synthesizerState {
         case .stopped:
+            lastNavigatedLocator = nil
+            // Clear utterance highlight
+            clearHighlight()
             Task { @MainActor in
-                // TTS finished naturally
+                onStopped?()
             }
+
         case .paused:
+            // Keep the highlight visible while paused
             break
-        case .playing:
-            break
+
+        case let .playing(utterance, range: range):
+            // Highlight the current utterance
+            if settings?.ttsHighlightUtterance == true {
+                applyHighlight(for: utterance.locator)
+            }
+
+            // Auto-turn pages to follow the spoken text
+            guard settings?.ttsAutoTurnPages == true else { break }
+            guard let nav = navigator else { break }
+
+            // Prefer the word-level range locator for smoother tracking;
+            // fall back to the utterance-level locator for page turns.
+            let targetLocator = range ?? utterance.locator
+
+            // Avoid navigating to the same locator repeatedly
+            if targetLocator.href == lastNavigatedLocator?.href
+                && targetLocator.locations.progression == lastNavigatedLocator?.locations.progression {
+                break
+            }
+            lastNavigatedLocator = targetLocator
+
+            Task { @MainActor in
+                await nav.go(to: targetLocator, options: .init(animated: settings?.animatePageTurns ?? false))
+            }
+
         @unknown default:
             break
+        }
+    }
+
+    /// Applies a highlight decoration on the given locator.
+    private func applyHighlight(for locator: Locator) {
+        guard let nav = navigator else { return }
+        let decoration = Decoration(
+            id: "tts-utterance",
+            locator: locator,
+            style: .highlight(tint: .red, isActive: false)
+        )
+        Task { @MainActor in
+            nav.apply(decorations: [decoration], in: "tts")
+        }
+    }
+
+    /// Clears the TTS utterance highlight.
+    private func clearHighlight() {
+        guard let nav = navigator else { return }
+        Task { @MainActor in
+            nav.apply(decorations: [], in: "tts")
         }
     }
 
