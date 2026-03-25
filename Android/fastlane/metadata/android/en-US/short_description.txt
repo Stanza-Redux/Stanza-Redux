@@ -1,1 +1,1 @@
-A great new app built with Skip!
+A free, open-source EPUB ebook reader with catalog browsing.

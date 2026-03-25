@@ -1,1 +1,19 @@
-A great new app built with Skip!
+Stanza Redux is a free, open-source ebook reader that brings your EPUB library to life. Import books from your device, browse and download from public domain catalogs, and enjoy a beautifully customizable reading experience.
+
+POWERFUL READER
+Read EPUB books with smooth animated page turns, adjustable fonts, and multiple reading themes including Light, Dark, and Sepia. Customize line spacing, character spacing, word spacing, margins, and text alignment to create your perfect reading environment.
+
+YOUR LIBRARY, ORGANIZED
+Import EPUB files from your device or download books directly from online catalogs. Your library displays cover art, author names, and reading progress at a glance. Search, sort, and manage your collection with ease.
+
+BROWSE PUBLIC DOMAIN CATALOGS
+Discover thousands of free books from curated sources like Standard Ebooks, Project Gutenberg, and Ebooks Gratuits. Browse by category, search by title or author, and download books directly into your library. Add your own OPDS catalog feeds for even more choices.
+
+PICK UP WHERE YOU LEFT OFF
+Stanza Redux remembers your reading position in every book. Bookmark important passages, add notes, and navigate with a full table of contents. Your progress is always saved automatically.
+
+READING YOUR WAY
+Choose from a selection of fonts including serif, sans-serif, and custom typefaces. Adjust font size from 50% to 300%. Fine-tune line height, word spacing, character spacing, and page margins with quick-access controls right in the reader.
+
+OPEN AND FREE
+Stanza Redux is open-source software licensed under the GPL. No ads, no tracking, no subscriptions. Your books are yours.
