@@ -1010,6 +1010,7 @@
     },
     "Add bookmark" : {
       "comment" : "Accessibility label on the bookmark button in the reader HUD when the current page is not yet bookmarked.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1084,6 +1085,9 @@
           }
         }
       }
+    },
+    "Add Bookmark" : {
+
     },
     "Add Catalog" : {
       "comment" : "Button label and navigation title for adding a new OPDS catalog. Used in the Catalogs toolbar and empty state, and as the Add Catalog sheet title.",
@@ -7289,6 +7293,9 @@
         }
       }
     },
+    "More options" : {
+
+    },
     "New York" : {
       "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation.",
       "localizations" : {
@@ -9157,6 +9164,7 @@
     },
     "Remove bookmark" : {
       "comment" : "Accessibility label on the bookmark button in the reader HUD when the current page is already bookmarked.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -9231,6 +9239,9 @@
           }
         }
       }
+    },
+    "Remove Bookmark" : {
+
     },
     "Reset All Reading Preferences" : {
       "comment" : "Destructive button label in Settings to reset all EPUB reading preferences to their default values.",

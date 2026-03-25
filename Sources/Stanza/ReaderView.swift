@@ -674,7 +674,7 @@ struct ReaderView: View {
     // MARK: - HUD Overlay
 
     @ViewBuilder func hudOverlay(publication: Pub) -> some View {
-        let overlayButtonSize: CGFloat = 28
+        let overlayButtonSize: CGFloat = 35
         let hudButtonSize: CGFloat = 28
 
         if showHUD {
@@ -688,6 +688,10 @@ struct ReaderView: View {
                     } label: {
                         Image("cancel", bundle: .module)
                             .font(.system(size: overlayButtonSize))
+                            .background(Circle().fill(Color(.systemBackground).opacity(0.5)))
+                            #if !os(Android)
+                            .contentShape(Circle())
+                            #endif
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("readerCloseButton")
@@ -695,16 +699,27 @@ struct ReaderView: View {
 
                     Spacer()
 
-                    // Bookmark Button
-                    Button {
-                        toggleBookmark()
+                    // More menu
+                    Menu {
+                        Button {
+                            toggleBookmark()
+                        } label: {
+                            Label(
+                                isCurrentPageBookmarked ? "Remove Bookmark" : "Add Bookmark",
+                                image: isCurrentPageBookmarked ? "bookmark_filled" : "bookmark"
+                            )
+                        }
                     } label: {
-                        Image(isCurrentPageBookmarked ? "bookmark_filled" : "bookmark", bundle: .module)
+                        Image("more_horiz", bundle: .module)
                             .font(.system(size: overlayButtonSize))
+                            .background(Rectangle().fill(Color(.systemBackground).opacity(0.5)))
+                            #if !os(Android)
+                            .contentShape(Circle())
+                            #endif
                     }
                     .buttonStyle(.plain)
-                    .accessibilityIdentifier("toggleBookmarkButton")
-                    .accessibilityLabel(isCurrentPageBookmarked ? "Remove bookmark" : "Add bookmark")
+                    .accessibilityIdentifier("readerMoreMenu")
+                    .accessibilityLabel("More options")
                 }
                 .padding(.top, 16)
                 .padding(.horizontal, 16)

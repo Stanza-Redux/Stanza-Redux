@@ -149,6 +149,7 @@ struct LibraryView: View {
 
                             // open the book immediately
                             // selectedBook = record
+                            logger.info("Imported book: \(record.title)")
                         }
                     }
                 }
