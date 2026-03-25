@@ -598,6 +598,35 @@ struct ReaderView: View {
         refreshBookmarks()
     }
 
+    // MARK: - Share
+
+    func shareBook() {
+        let bookURL = URL(fileURLWithPath: filePath)
+        #if !SKIP
+        let activityVC = UIActivityViewController(activityItems: [bookURL], applicationActivities: nil)
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let rootVC = windowScene.windows.first?.rootViewController {
+            var topVC = rootVC
+            while let presented = topVC.presentedViewController {
+                topVC = presented
+            }
+            topVC.present(activityVC, animated: true)
+        }
+        #else
+        guard let context = ProcessInfo.processInfo.androidContext else { return }
+        let file = java.io.File(filePath)
+        let authority = context.getPackageName() + ".fileprovider"
+        let uri = androidx.core.content.FileProvider.getUriForFile(context, authority, file)
+        let intent = android.content.Intent(android.content.Intent.ACTION_SEND)
+        intent.setType("application/epub+zip")
+        intent.putExtra(android.content.Intent.EXTRA_STREAM, uri)
+        intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        let chooser = android.content.Intent.createChooser(intent, nil)
+        chooser.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(chooser)
+        #endif
+    }
+
     func navigateToBookmark(_ bookmark: BookmarkRecord) {
         guard let loc = Loc.fromJSON(bookmark.locatorJSON) else {
             logger.error("Invalid bookmark locator JSON")
@@ -841,9 +870,14 @@ struct ReaderView: View {
                             toggleBookmark()
                         } label: {
                             Label(
-                                isCurrentPageBookmarked ? "Remove Bookmark" : "Add Bookmark",
-                                image: isCurrentPageBookmarked ? "bookmark_fille.d" : "bookmark"
+                                title: { Text(isCurrentPageBookmarked ? "Remove Bookmark" : "Add Bookmark") },
+                                icon: { Image(isCurrentPageBookmarked ? "bookmark_fille.d" : "bookmark", bundle: .module) }
                             )
+                        }
+                        Button {
+                            shareBook()
+                        } label: {
+                            Label("Share", systemImage: "square.and.arrow.up")
                         }
                     } label: {
                         Image("more_horiz", bundle: .module)
