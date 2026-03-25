@@ -1,1 +1,1 @@
-https://example.org/support/
+https://github.com/Stanza-Redux/Stanza-Redux/issues

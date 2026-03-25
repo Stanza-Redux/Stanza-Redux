@@ -1,1 +1,1 @@
-https://example.org/app/
+https://github.com/Stanza-Redux/Stanza-Redux

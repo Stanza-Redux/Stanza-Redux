@@ -20,6 +20,7 @@ end
 
 lane :release do |options|
   desc "Build and release app"
+  get_provisioning_profile(api_key_path: "fastlane/apikey.json")
 
   assemble
 

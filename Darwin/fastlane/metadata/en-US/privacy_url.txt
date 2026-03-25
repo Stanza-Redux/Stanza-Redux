@@ -1,1 +1,1 @@
-https://example.org/privacy/
+https://github.com/Stanza-Redux/Stanza-Redux
