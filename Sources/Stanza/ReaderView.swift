@@ -871,7 +871,7 @@ struct ReaderView: View {
                         } label: {
                             Label(
                                 title: { Text(isCurrentPageBookmarked ? "Remove Bookmark" : "Add Bookmark") },
-                                icon: { Image(isCurrentPageBookmarked ? "bookmark_fille.d" : "bookmark", bundle: .module) }
+                                icon: { Image(isCurrentPageBookmarked ? "bookmark_filled" : "bookmark", bundle: .module) }
                             )
                         }
                         Button {
