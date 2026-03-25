@@ -1882,6 +1882,9 @@
         }
       }
     },
+    "Auto-Turn Pages" : {
+
+    },
     "Available Formats" : {
 
     },
@@ -5937,6 +5940,9 @@
           }
         }
       }
+    },
+    "Highlight Spoken Text" : {
+
     },
     "Hyphenation" : {
       "comment" : "Picker label in Settings > Text Layout for enabling or disabling word hyphenation.",
@@ -10521,6 +10527,12 @@
         }
       }
     },
+    "Start Speaking" : {
+
+    },
+    "Stop Speaking" : {
+
+    },
     "System" : {
       "comment" : "Picker option in Settings > Reading > Appearance to follow the system light/dark mode.",
       "localizations" : {
@@ -11059,6 +11071,9 @@
           }
         }
       }
+    },
+    "Text-to-Speech" : {
+
     },
     "Title" : {
       "comment" : "Label for the book title field on the book detail screen and the book edit form.",

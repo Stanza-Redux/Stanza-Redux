@@ -29,6 +29,8 @@ import org.readium.r2.navigator.input.DragEvent
 import org.readium.r2.navigator.input.KeyEvent
 import org.readium.r2.shared.publication.services.cover
 import org.readium.r2.navigator.preferences.Theme
+import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 #endif
 
 #if !SKIP
@@ -83,7 +85,26 @@ struct ReaderView: View {
     @State var inputListenerAdded: Bool = false
     #endif
 
+    // MARK: - Text-to-Speech State
+    @State var isSpeaking: Bool = false
+    @State var wasSpeakingBeforeHUD: Bool = false
+    #if !SKIP
+    @State var speechSynthesizer: PublicationSpeechSynthesizer? = nil
+    @State var ttsDelegate: TTSSynthesizerDelegate? = nil
+    #else
+    @State var androidTts: TextToSpeech? = nil
+    #endif
+
     var body: some View {
+        readerBodyWithPreferenceHandlers
+        .onChange(of: settings.appearance) { applyPreferences() }
+        .onChange(of: settings.sepiaTheme) { applyPreferences() }
+        .onChange(of: colorScheme) { applyPreferences() }
+        .onChange(of: showHUD) { handleHUDChange() }
+    }
+
+    /// Splits the onChange chain to help the compiler type-check.
+    private var readerBodyWithPreferenceHandlers: some View {
         readerBody
         .onChange(of: settings.fontSize) { applyPreferences() }
         .onChange(of: settings.fontFamily) { applyPreferences() }
@@ -98,11 +119,19 @@ struct ReaderView: View {
         .onChange(of: settings.textNormalization) { applyPreferences() }
         .onChange(of: settings.wordSpacing) { applyPreferences() }
         .onChange(of: settings.letterSpacing) { applyPreferences() }
-        .onChange(of: settings.appearance) { applyPreferences() }
-        .onChange(of: settings.sepiaTheme) { applyPreferences() }
-        .onChange(of: colorScheme) { applyPreferences() }
+    }
+
+    private func handleHUDChange() {
+        // Pause TTS when HUD is shown, resume when hidden
+        if showHUD && isSpeaking {
+            wasSpeakingBeforeHUD = true
+            pauseSpeaking()
+        } else if !showHUD && wasSpeakingBeforeHUD {
+            wasSpeakingBeforeHUD = false
+            resumeSpeaking()
+        }
         #if SKIP
-        .onChange(of: showHUD) { updateAndroidStatusBar() }
+        updateAndroidStatusBar()
         #endif
     }
 
@@ -148,6 +177,7 @@ struct ReaderView: View {
             await loadBook()
         }
         .onDisappear {
+            if isSpeaking { stopSpeaking() }
             saveCurrentLocator()
             settings.lastOpenBookID = 0
         }
@@ -273,6 +303,94 @@ struct ReaderView: View {
         }
         showTOC = false
         showHUD = false
+    }
+
+    // MARK: - Text-to-Speech
+
+    func startSpeaking() {
+        logger.info("Starting TTS")
+        #if !SKIP
+        guard let publication = viewModel?.publication else { return }
+        if speechSynthesizer == nil {
+            guard PublicationSpeechSynthesizer.canSpeak(publication: publication.platformValue) else {
+                logger.warning("TTS not available for this publication")
+                return
+            }
+            let synth = PublicationSpeechSynthesizer(publication: publication.platformValue)
+            let delegate = TTSSynthesizerDelegate()
+            synth?.delegate = delegate
+            self.ttsDelegate = delegate
+            self.speechSynthesizer = synth
+        }
+        if let loc = locator {
+            speechSynthesizer?.start(from: loc.platformValue)
+        } else {
+            speechSynthesizer?.start()
+        }
+        isSpeaking = true
+        #else
+        guard let context = ProcessInfo.processInfo.androidContext else { return }
+        if androidTts == nil {
+            let tts = TextToSpeech(context) { status in
+                if status == TextToSpeech.SUCCESS {
+                    logger.info("Android TTS initialized successfully")
+                } else {
+                    logger.error("Android TTS initialization failed: \(status)")
+                }
+            }
+            self.androidTts = tts
+        }
+        // Use JavaScript to extract visible text from the current page, then speak it
+        if let nav = navigator {
+            Task { @MainActor in
+                let result = nav.evaluateJavascript("document.body?.innerText ?? ''")
+                if let text = result, !text.isEmpty {
+                    let cleanText = text.replacingOccurrences(of: "\"", with: "")
+                    androidTts?.speak(cleanText, TextToSpeech.QUEUE_FLUSH, nil, "stanza_tts")
+                }
+            }
+        }
+        isSpeaking = true
+        #endif
+    }
+
+    func stopSpeaking() {
+        logger.info("Stopping TTS")
+        #if !SKIP
+        speechSynthesizer?.stop()
+        speechSynthesizer = nil
+        ttsDelegate = nil
+        #else
+        androidTts?.stop()
+        androidTts?.shutdown()
+        androidTts = nil
+        #endif
+        isSpeaking = false
+    }
+
+    func pauseSpeaking() {
+        #if !SKIP
+        speechSynthesizer?.pause()
+        #else
+        androidTts?.stop()
+        #endif
+    }
+
+    func resumeSpeaking() {
+        #if !SKIP
+        speechSynthesizer?.resume()
+        #else
+        // Re-extract and speak text on resume
+        if let nav = navigator {
+            Task { @MainActor in
+                let result = nav.evaluateJavascript("document.body?.innerText ?? ''")
+                if let text = result, !text.isEmpty {
+                    let cleanText = text.replacingOccurrences(of: "\"", with: "")
+                    androidTts?.speak(cleanText, TextToSpeech.QUEUE_FLUSH, nil, "stanza_tts")
+                }
+            }
+        }
+        #endif
     }
 
     // MARK: - Preferences
@@ -702,6 +820,16 @@ struct ReaderView: View {
                     // More menu
                     Menu {
                         Button {
+                            if isSpeaking {
+                                stopSpeaking()
+                            } else {
+                                showHUD = false
+                                startSpeaking()
+                            }
+                        } label: {
+                            Label(isSpeaking ? "Stop Speaking" : "Start Speaking", systemImage: isSpeaking ? "stop.fill" : "speaker.wave.2.fill")
+                        }
+                        Button {
                             toggleBookmark()
                         } label: {
                             Label(
@@ -1083,6 +1211,31 @@ class ReaderViewController: UIViewController {
     func navigator(_ navigator: VisualNavigator, didTapAt point: CGPoint) {
         let viewSize = (navigator as? UIViewController)?.view.bounds.size ?? CGSize(width: 1.0, height: 1.0)
         onTap?(point, viewSize)
+    }
+}
+
+/// Delegate that receives TTS state change callbacks.
+class TTSSynthesizerDelegate: PublicationSpeechSynthesizerDelegate {
+    init() {
+    }
+
+    func publicationSpeechSynthesizer(_ synthesizer: PublicationSpeechSynthesizer, stateDidChange synthesizerState: PublicationSpeechSynthesizer.State) {
+        switch synthesizerState {
+        case .stopped:
+            Task { @MainActor in
+                // TTS finished naturally
+            }
+        case .paused:
+            break
+        case .playing:
+            break
+        @unknown default:
+            break
+        }
+    }
+
+    func publicationSpeechSynthesizer(_ synthesizer: PublicationSpeechSynthesizer, utterance: PublicationSpeechSynthesizer.Utterance, didFailWithError error: PublicationSpeechSynthesizer.Error) {
+        logger.error("TTS error: \(error)")
     }
 }
 #endif

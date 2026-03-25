@@ -118,6 +118,18 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         didSet { defaults.set(enableCatalogs, forKey: "enableCatalogs"); settingsLogger.info("Enable catalogs: \(self.enableCatalogs)") }
     }
 
+    // MARK: - Text-to-Speech
+
+    /// When enabled, the currently spoken utterance is highlighted in the reader.
+    public var ttsHighlightUtterance: Bool {
+        didSet { defaults.set(ttsHighlightUtterance, forKey: "ttsHighlightUtterance"); settingsLogger.info("TTS highlight utterance: \(self.ttsHighlightUtterance)") }
+    }
+
+    /// When enabled, pages turn automatically to follow the spoken text.
+    public var ttsAutoTurnPages: Bool {
+        didSet { defaults.set(ttsAutoTurnPages, forKey: "ttsAutoTurnPages"); settingsLogger.info("TTS auto turn pages: \(self.ttsAutoTurnPages)") }
+    }
+
     // MARK: - Book Restoration
 
     /// The book ID that is currently open in the reader, or 0 if none.
@@ -138,6 +150,8 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         self.sepiaTheme = defaults.bool(forKey: "sepiaTheme")
         self.useInAppBrowser = defaults.object(forKey: "useInAppBrowser") != nil ? defaults.bool(forKey: "useInAppBrowser") : true
         self.enableCatalogs = defaults.bool(forKey: "enableCatalogs")
+        self.ttsHighlightUtterance = defaults.object(forKey: "ttsHighlightUtterance") != nil ? defaults.bool(forKey: "ttsHighlightUtterance") : true
+        self.ttsAutoTurnPages = defaults.object(forKey: "ttsAutoTurnPages") != nil ? defaults.bool(forKey: "ttsAutoTurnPages") : true
         self.animatePageTurns = defaults.object(forKey: "animatePageTurns") != nil ? defaults.bool(forKey: "animatePageTurns") : true
         self.fontSize = defaults.object(forKey: "readerFontSize") != nil ? defaults.double(forKey: "readerFontSize") : 1.0
         self.fontFamily = defaults.string(forKey: "epubFontFamily") ?? ""

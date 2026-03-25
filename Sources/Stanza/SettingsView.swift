@@ -53,6 +53,13 @@ struct SettingsView: View {
                         .accessibilityIdentifier("useInAppBrowserToggle")
                 }
 
+                Section("Text-to-Speech") {
+                    Toggle("Highlight Spoken Text", isOn: $settings.ttsHighlightUtterance)
+                        .accessibilityIdentifier("ttsHighlightToggle")
+                    Toggle("Auto-Turn Pages", isOn: $settings.ttsAutoTurnPages)
+                        .accessibilityIdentifier("ttsAutoTurnToggle")
+                }
+
                 Section("Text Layout") {
                     Picker("Columns", selection: $settings.columnCount) {
                         Text("Auto").tag("")

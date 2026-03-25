@@ -4,6 +4,13 @@
     <!-- permissions needed for using the internet or an embedded WebKit browser -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Required for TTS service discovery on Android 11+ -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
     <application
         android:label="${PRODUCT_NAME}"
         android:name=".AndroidAppMain"
