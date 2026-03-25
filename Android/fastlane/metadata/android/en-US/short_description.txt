@@ -1,1 +1,1 @@
-A free, open-source EPUB ebook reader with catalog browsing.
+The original ebook reader
