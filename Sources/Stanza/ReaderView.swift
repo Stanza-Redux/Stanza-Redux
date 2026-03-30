@@ -335,25 +335,32 @@ struct ReaderView: View {
         isSpeaking = true
         #else
         guard let context = ProcessInfo.processInfo.androidContext else { return }
-        if androidTts == nil {
-            let tts = TextToSpeech(context) { status in
+        let nav = navigator
+        let currentSettings = settings
+        // Callback to continue speaking after a page turn
+        let onPageFinished: () -> Void = {
+            // Wait briefly for the new page to load, then speak it
+            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                if let tts = self.androidTts, self.isSpeaking {
+                    Self.speakCurrentPage(tts: tts, navigator: self.navigator, settings: currentSettings, onPageFinished: nil)
+                }
+            }, 1500) // 1.5s delay for page load
+        }
+        if let existingTts = androidTts {
+            Self.speakCurrentPage(tts: existingTts, navigator: nav, settings: currentSettings, onPageFinished: onPageFinished)
+        } else {
+            var newTts: TextToSpeech? = nil
+            newTts = TextToSpeech(context) { status in
                 if status == TextToSpeech.SUCCESS {
                     logger.info("Android TTS initialized successfully")
+                    if let readyTts = newTts {
+                        Self.speakCurrentPage(tts: readyTts, navigator: nav, settings: currentSettings, onPageFinished: onPageFinished)
+                    }
                 } else {
                     logger.error("Android TTS initialization failed: \(status)")
                 }
             }
-            self.androidTts = tts
-        }
-        // Use JavaScript to extract visible text from the current page, then speak it
-        if let nav = navigator {
-            Task { @MainActor in
-                let result = nav.evaluateJavascript("document.body?.innerText ?? ''")
-                if let text = result, !text.isEmpty {
-                    let cleanText = text.replacingOccurrences(of: "\"", with: "")
-                    androidTts?.speak(cleanText, TextToSpeech.QUEUE_FLUSH, nil, "stanza_tts")
-                }
-            }
+            self.androidTts = newTts
         }
         isSpeaking = true
         #endif
@@ -369,6 +376,21 @@ struct ReaderView: View {
         androidTts?.stop()
         androidTts?.shutdown()
         androidTts = nil
+        // Clear any TTS highlight from the WebView
+        if let nav = navigator, let fragmentView = nav.view, let webView = Self.findWebView(in: fragmentView) {
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                webView.evaluateJavascript("""
+                (function() {
+                    var prev = document.querySelector('.stanza-tts-highlight');
+                    if (prev) {
+                        var parent = prev.parentNode;
+                        while (prev.firstChild) parent.insertBefore(prev.firstChild, prev);
+                        parent.removeChild(prev);
+                    }
+                })();
+                """, nil)
+            }
+        }
         #endif
         isSpeaking = false
     }
@@ -386,17 +408,214 @@ struct ReaderView: View {
         speechSynthesizer?.resume()
         #else
         // Re-extract and speak text on resume
-        if let nav = navigator {
-            Task { @MainActor in
-                let result = nav.evaluateJavascript("document.body?.innerText ?? ''")
-                if let text = result, !text.isEmpty {
-                    let cleanText = text.replacingOccurrences(of: "\"", with: "")
-                    androidTts?.speak(cleanText, TextToSpeech.QUEUE_FLUSH, nil, "stanza_tts")
-                }
-            }
+        if let tts = androidTts {
+            Self.speakCurrentPage(tts: tts, navigator: navigator, settings: settings)
         }
         #endif
     }
+
+    #if SKIP
+    /// Finds the WebView inside the navigator fragment's view hierarchy.
+    private static func findWebView(in view: android.view.View) -> android.webkit.WebView? {
+        if let wv = view as? android.webkit.WebView { return wv }
+        if let vg = view as? android.view.ViewGroup {
+            for i in 0..<vg.childCount {
+                if let found = findWebView(in: vg.getChildAt(i)) { return found }
+            }
+        }
+        return nil
+    }
+
+    /// Cleans a JSON-encoded string result from evaluateJavascript.
+    private static func cleanJSResult(_ text: String) -> String {
+        var s = text
+        if s.hasPrefix("\"") && s.hasSuffix("\"") {
+            s = String(s.dropFirst().dropLast())
+        }
+        s = s.replacingOccurrences(of: "\\n", with: "\n")
+        s = s.replacingOccurrences(of: "\\\"", with: "\"")
+        s = s.replacingOccurrences(of: "\\\\", with: "\\")
+        return s.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    /// Splits text into sentence-like utterances for TTS.
+    private static func splitIntoUtterances(_ text: String) -> [String] {
+        // Split on sentence-ending punctuation followed by whitespace
+        var utterances: [String] = []
+        var current = ""
+        for char in text {
+            current += String(char)
+            if (char == "." || char == "!" || char == "?" || char == "\n") && !current.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                utterances.append(current.trimmingCharacters(in: .whitespacesAndNewlines))
+                current = ""
+            }
+        }
+        if !current.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            utterances.append(current.trimmingCharacters(in: .whitespacesAndNewlines))
+        }
+        return utterances
+    }
+
+    /// Extracts visible text from the navigator's WebView, splits into utterances,
+    /// and speaks them with highlighting and auto-page-turning support.
+    private static func speakCurrentPage(tts: TextToSpeech, navigator: PlatformNavigator?, settings: StanzaSettings? = nil, onPageFinished: (() -> Void)? = nil) {
+        guard let nav = navigator, let fragmentView = nav.view else {
+            logger.warning("TTS: no navigator view available")
+            return
+        }
+        guard let webView = findWebView(in: fragmentView) else {
+            logger.warning("TTS: could not find WebView in navigator")
+            return
+        }
+
+        let highlightEnabled = settings?.ttsHighlightUtterance ?? true
+        let autoTurnPages = settings?.ttsAutoTurnPages ?? true
+
+        android.os.Handler(android.os.Looper.getMainLooper()).post {
+            webView.evaluateJavascript("(document.body ? document.body.innerText : '')") { result in
+                guard let rawText = result, !rawText.isEmpty else {
+                    logger.warning("TTS: evaluateJavascript returned empty result")
+                    return
+                }
+                let cleanText = cleanJSResult(rawText)
+                guard !cleanText.isEmpty else {
+                    logger.warning("TTS: extracted text was empty after cleaning")
+                    return
+                }
+
+                let utterances = splitIntoUtterances(cleanText)
+                logger.info("TTS: speaking \(utterances.count) utterances (\(cleanText.count) chars)")
+
+                // Inject highlight CSS if not already present
+                if highlightEnabled {
+                    webView.evaluateJavascript("""
+                    (function() {
+                        if (!document.getElementById('stanza-tts-style')) {
+                            var style = document.createElement('style');
+                            style.id = 'stanza-tts-style';
+                            style.textContent = '.stanza-tts-highlight { background-color: rgba(255, 200, 0, 0.35); border-radius: 2px; }';
+                            document.head.appendChild(style);
+                        }
+                    })();
+                    """, nil)
+                }
+
+                // Set up utterance progress listener for highlighting and auto-page-turn
+                let listener = TTSUtteranceListener(
+                    utterances: utterances,
+                    webView: webView,
+                    highlightEnabled: highlightEnabled,
+                    autoTurnPages: autoTurnPages,
+                    navigator: nav,
+                    onPageFinished: onPageFinished
+                )
+                tts.setOnUtteranceProgressListener(listener)
+
+                // Queue each utterance with a unique ID
+                tts.speak("", TextToSpeech.QUEUE_FLUSH, nil, nil) // Clear queue
+                for i in 0..<utterances.count {
+                    tts.speak(utterances[i], TextToSpeech.QUEUE_ADD, nil, "utt_\(i)")
+                }
+            }
+        }
+    }
+
+    /// Listener that highlights the current utterance and auto-advances pages.
+    private class TTSUtteranceListener: UtteranceProgressListener {
+        let utterances: [String]
+        let webView: android.webkit.WebView
+        let highlightEnabled: Bool
+        let autoTurnPages: Bool
+        let navigator: PlatformNavigator?
+        let onPageFinished: (() -> Void)?
+
+        init(utterances: [String], webView: android.webkit.WebView, highlightEnabled: Bool, autoTurnPages: Bool, navigator: PlatformNavigator?, onPageFinished: (() -> Void)?) {
+            self.utterances = utterances
+            self.webView = webView
+            self.highlightEnabled = highlightEnabled
+            self.autoTurnPages = autoTurnPages
+            self.navigator = navigator
+            self.onPageFinished = onPageFinished
+        }
+
+        override func onStart(_ utteranceId: String?) {
+            guard highlightEnabled else { return }
+            guard let uttId = utteranceId, uttId.hasPrefix("utt_") else { return }
+            let indexStr = String(uttId.dropFirst(4))
+            guard let index = Int(indexStr), index < utterances.count else { return }
+
+            let utteranceText = utterances[index]
+            // Escape the text for use in a JavaScript string
+            let escaped = utteranceText
+                .replacingOccurrences(of: "\\", with: "\\\\")
+                .replacingOccurrences(of: "'", with: "\\'")
+                .replacingOccurrences(of: "\n", with: "\\n")
+
+            // Highlight the utterance text in the WebView using find-and-mark
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                self.webView.evaluateJavascript("""
+                (function() {
+                    // Remove previous highlight
+                    var prev = document.querySelector('.stanza-tts-highlight');
+                    if (prev) {
+                        var parent = prev.parentNode;
+                        while (prev.firstChild) parent.insertBefore(prev.firstChild, prev);
+                        parent.removeChild(prev);
+                    }
+                    // Find and highlight the utterance text
+                    var text = '\(escaped)';
+                    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+                    while (walker.nextNode()) {
+                        var node = walker.currentNode;
+                        var idx = node.textContent.indexOf(text.substring(0, Math.min(40, text.length)));
+                        if (idx >= 0) {
+                            var range = document.createRange();
+                            range.setStart(node, idx);
+                            range.setEnd(node, Math.min(idx + text.length, node.textContent.length));
+                            var span = document.createElement('span');
+                            span.className = 'stanza-tts-highlight';
+                            range.surroundContents(span);
+                            span.scrollIntoView({behavior: 'smooth', block: 'center'});
+                            break;
+                        }
+                    }
+                })();
+                """, nil)
+            }
+        }
+
+        override func onDone(_ utteranceId: String?) {
+            guard let uttId = utteranceId, uttId.hasPrefix("utt_") else { return }
+            let indexStr = String(uttId.dropFirst(4))
+            guard let index = Int(indexStr) else { return }
+
+            // If this was the last utterance on the page, auto-advance
+            if index >= utterances.count - 1 && autoTurnPages {
+                android.os.Handler(android.os.Looper.getMainLooper()).post {
+                    // Clear highlight
+                    self.webView.evaluateJavascript("""
+                    (function() {
+                        var prev = document.querySelector('.stanza-tts-highlight');
+                        if (prev) {
+                            var parent = prev.parentNode;
+                            while (prev.firstChild) parent.insertBefore(prev.firstChild, prev);
+                            parent.removeChild(prev);
+                        }
+                    })();
+                    """, nil)
+                    // Advance to next page
+                    self.navigator?.goForward(true)
+                    // Notify that page finished so caller can continue speaking
+                    self.onPageFinished?()
+                }
+            }
+        }
+
+        override func onError(_ utteranceId: String?) {
+            logger.error("TTS utterance error: \(utteranceId ?? "nil")")
+        }
+    }
+    #endif
 
     // MARK: - Preferences
 

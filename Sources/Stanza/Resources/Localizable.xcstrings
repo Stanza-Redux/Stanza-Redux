@@ -1476,6 +1476,7 @@
     },
     "Animate Page Turns" : {
       "comment" : "Toggle label in Settings > Reading. When enabled, page turns in the reader are animated.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1553,6 +1554,7 @@
     },
     "Appearance" : {
       "comment" : "Picker label in Settings > Reading for choosing the app theme (System, Light, or Dark).",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1807,6 +1809,7 @@
     },
     "Auto" : {
       "comment" : "Picker option in Settings > Text Layout for automatic column count or content fit mode.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1881,9 +1884,6 @@
           }
         }
       }
-    },
-    "Auto-Turn Pages" : {
-
     },
     "Available Formats" : {
 
@@ -2968,6 +2968,7 @@
     },
     "Center" : {
       "comment" : "Picker option for center text alignment in Settings > Text Layout > Text Alignment.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3376,6 +3377,7 @@
     },
     "Columns" : {
       "comment" : "Picker label in Settings > Text Layout for choosing the number of text columns (Auto, One, Two).",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3453,6 +3455,7 @@
     },
     "Content Fit" : {
       "comment" : "Picker label in Settings > Text Layout for choosing how content fits the screen (Auto, Page, Width).",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3607,6 +3610,7 @@
     },
     "Dark" : {
       "comment" : "Picker option for dark mode in Settings > Reading > Appearance.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3989,6 +3993,9 @@
           }
         }
       }
+    },
+    "Destructive" : {
+
     },
     "Dismiss" : {
       "comment" : "Button label to dismiss the reader when an error occurs while loading a book.",
@@ -5378,6 +5385,7 @@
     },
     "Font" : {
       "comment" : "Picker label in Settings > Reading for selecting the reading font family.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -5532,6 +5540,7 @@
     },
     "Font Size" : {
       "comment" : "Label and accessibility label for the font size slider in Settings > Reading.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -5866,6 +5875,7 @@
     },
     "Hide Status Bar in Reader" : {
       "comment" : "Toggle label in Settings > Reading. When enabled, hides the system status bar while reading.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -5941,11 +5951,9 @@
         }
       }
     },
-    "Highlight Spoken Text" : {
-
-    },
     "Hyphenation" : {
       "comment" : "Picker label in Settings > Text Layout for enabling or disabling word hyphenation.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -6352,8 +6360,12 @@
         }
       }
     },
+    "isPresented=%@" : {
+
+    },
     "Justify" : {
       "comment" : "Picker option for justified text alignment in Settings > Text Layout > Text Alignment.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -6508,6 +6520,7 @@
     },
     "Left" : {
       "comment" : "Picker option for left text alignment in Settings > Text Layout > Text Alignment.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -6585,6 +6598,7 @@
     },
     "Left Tap Advances" : {
       "comment" : "Toggle label in Settings > Reading. When enabled, tapping the left side of the reader advances forward instead of going back.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -6739,6 +6753,7 @@
     },
     "Light" : {
       "comment" : "Picker option for light mode in Settings > Reading > Appearance.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -6816,6 +6831,7 @@
     },
     "Line Height" : {
       "comment" : "Label and accessibility label for the line height slider in Settings > Spacing.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -7121,6 +7137,12 @@
           }
         }
       }
+    },
+    "Long press does not work on Android" : {
+
+    },
+    "Long press works on both" : {
+
     },
     "Margins: %@" : {
       "comment" : "Accessibility label on the page margins button in the reader HUD spacing panel. %@ is the current value or 'Default'.",
@@ -7835,6 +7857,7 @@
     },
     "Off" : {
       "comment" : "Picker option to disable a feature in Settings > Text Layout (used for Hyphenation, Text Normalization, Publisher Styles).",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -7915,6 +7938,7 @@
     },
     "On" : {
       "comment" : "Picker option to enable a feature in Settings > Text Layout (used for Hyphenation, Text Normalization, Publisher Styles).",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -7992,6 +8016,7 @@
     },
     "One" : {
       "comment" : "Picker option for single column layout in Settings > Text Layout > Columns.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8223,6 +8248,7 @@
     },
     "Open Web Pages in Embedded Browser" : {
       "comment" : "Toggle label in Settings > Reading. When enabled, web links open in an in-app browser instead of the system browser.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8300,6 +8326,7 @@
     },
     "Page" : {
       "comment" : "Picker option for page-fit content mode in Settings > Text Layout > Content Fit.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8377,6 +8404,7 @@
     },
     "Page Margins" : {
       "comment" : "Label and accessibility label for the page margins slider in Settings > Spacing.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8477,6 +8505,7 @@
     },
     "Paragraph Spacing" : {
       "comment" : "Label and accessibility label for the paragraph spacing slider in Settings > Spacing.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8631,6 +8660,7 @@
     },
     "Publisher Default" : {
       "comment" : "Picker option in Settings > Reading > Font, representing the publisher's original font choice.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8708,6 +8738,7 @@
     },
     "Publisher Styles" : {
       "comment" : "Picker label in Settings > Text Layout for choosing whether to use the publisher's original CSS styles.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -8862,6 +8893,7 @@
     },
     "Reading" : {
       "comment" : "Section header in the Settings screen for reading-related preferences.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -9251,6 +9283,7 @@
     },
     "Reset All Reading Preferences" : {
       "comment" : "Destructive button label in Settings to reset all EPUB reading preferences to their default values.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -9328,6 +9361,7 @@
     },
     "Reset Font Size" : {
       "comment" : "Button label in Settings > Reading to reset the font size back to 100%. Only shown when font size is not default.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -9559,6 +9593,7 @@
     },
     "Right" : {
       "comment" : "Picker option for right text alignment in Settings > Text Layout > Text Alignment.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -9967,6 +10002,7 @@
     },
     "Sepia Theme" : {
       "comment" : "Toggle label in Settings > Reading. When enabled, uses a warm sepia color theme for the reader.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -10375,6 +10411,7 @@
     },
     "Spacing" : {
       "comment" : "Section header in the Settings screen for spacing-related preferences (line height, margins, etc.).",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -10452,6 +10489,7 @@
     },
     "Start" : {
       "comment" : "Picker option for start-aligned text in Settings > Text Layout > Text Alignment.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -10535,6 +10573,7 @@
     },
     "System" : {
       "comment" : "Picker option in Settings > Reading > Appearance to follow the system light/dark mode.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -10843,6 +10882,7 @@
     },
     "Text Alignment" : {
       "comment" : "Picker label in Settings > Text Layout for choosing text alignment (Default, Start, Left, Center, Right, Justify).",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -10920,6 +10960,7 @@
     },
     "Text Layout" : {
       "comment" : "Section header in Settings for text layout preferences (columns, content fit, hyphenation, etc.).",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -10997,6 +11038,7 @@
     },
     "Text Normalization" : {
       "comment" : "Picker label in Settings > Text Layout for enabling or disabling text normalization.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11071,9 +11113,6 @@
           }
         }
       }
-    },
-    "Text-to-Speech" : {
-
     },
     "Title" : {
       "comment" : "Label for the book title field on the book detail screen and the book edit form.",
@@ -11231,6 +11270,7 @@
     },
     "Two" : {
       "comment" : "Picker option for two-column layout in Settings > Text Layout > Columns.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11385,6 +11425,7 @@
     },
     "Width" : {
       "comment" : "Picker option for width-fit content mode in Settings > Text Layout > Content Fit.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11462,6 +11503,7 @@
     },
     "Word Spacing" : {
       "comment" : "Label and accessibility label for the word spacing slider in Settings > Spacing.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
