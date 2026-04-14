@@ -113,11 +113,6 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         didSet { defaults.set(useInAppBrowser, forKey: "useInAppBrowser"); settingsLogger.info("Use in-app browser: \(self.useInAppBrowser)") }
     }
 
-    /// When enabled, the Catalogs tab is shown for browsing OPDS catalogs.
-    public var enableCatalogs: Bool {
-        didSet { defaults.set(enableCatalogs, forKey: "enableCatalogs"); settingsLogger.info("Enable catalogs: \(self.enableCatalogs)") }
-    }
-
     // MARK: - Text-to-Speech
 
     /// When enabled, the currently spoken utterance is highlighted in the reader.
@@ -149,7 +144,6 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         self.leftTapAdvances = defaults.bool(forKey: "leftTapAdvances")
         self.sepiaTheme = defaults.bool(forKey: "sepiaTheme")
         self.useInAppBrowser = defaults.object(forKey: "useInAppBrowser") != nil ? defaults.bool(forKey: "useInAppBrowser") : true
-        self.enableCatalogs = defaults.bool(forKey: "enableCatalogs")
         self.ttsHighlightUtterance = defaults.object(forKey: "ttsHighlightUtterance") != nil ? defaults.bool(forKey: "ttsHighlightUtterance") : true
         self.ttsAutoTurnPages = defaults.object(forKey: "ttsAutoTurnPages") != nil ? defaults.bool(forKey: "ttsAutoTurnPages") : true
         self.animatePageTurns = defaults.object(forKey: "animatePageTurns") != nil ? defaults.bool(forKey: "animatePageTurns") : true

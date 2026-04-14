@@ -186,12 +186,14 @@ struct AdvancedSettingsView: View {
     var body: some View {
         @Bindable var settings = settings
         Form {
+/*
             Section {
                 Toggle("Enable Catalogs", isOn: $settings.enableCatalogs)
                     .accessibilityIdentifier("enableCatalogsToggle")
             } footer: {
                 Text("Show the Catalogs tab for browsing and downloading books from OPDS catalogs.")
             }
+*/
 
 //            Section("Error Alert Testing") {
 //                Button("Simple Error") {
