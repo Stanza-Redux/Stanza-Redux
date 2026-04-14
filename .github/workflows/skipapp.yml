@@ -15,8 +15,8 @@ permissions:
 
 jobs:
   call-workflow:
-    #uses: skiptools/actions/.github/workflows/skip-app.yml@v1
-    uses: skiptools/actions/.github/workflows/skip-application.yml@app-release
+    uses: skiptools/actions/.github/workflows/skip-app.yml@v1
+    #uses: skiptools/actions/.github/workflows/skip-application.yml@app-release
     with:
       # Readium Swift library doesn't build for macOS
       run-local-tests: false
