@@ -1628,6 +1628,15 @@
         }
       }
     },
+    "Appearance: Dark" : {
+
+    },
+    "Appearance: Light" : {
+
+    },
+    "Appearance: System" : {
+
+    },
     "Are you sure you want to delete \"%@\"? This cannot be undone." : {
       "comment" : "Confirmation message in the delete book alert dialog. %@ is the book title.",
       "localizations" : {
@@ -8465,6 +8474,9 @@
         }
       }
     },
+    "Paged Mode" : {
+
+    },
     "Palatino" : {
       "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation.",
       "localizations" : {
@@ -9757,6 +9769,9 @@
         }
       }
     },
+    "Scroll Mode" : {
+
+    },
     "Search catalog" : {
       "comment" : "Placeholder text in the search bar on the catalog feed screen.",
       "localizations" : {
@@ -10559,6 +10574,9 @@
 
     },
     "Stop Speaking" : {
+
+    },
+    "Switch to Scroll Mode While Reading Aloud" : {
 
     },
     "Sylvan" : {

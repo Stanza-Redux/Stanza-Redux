@@ -52,7 +52,7 @@ typealias PlatformColor = org.readium.r2.navigator.preferences.Color
 let defaults = PlatformDefaults(columnCount: nil, fontSize: nil, fontWeight: nil, hyphens: nil, imageFilter: nil, language: nil, letterSpacing: nil, ligatures: nil, lineHeight: nil, pageMargins: nil, paragraphIndent: nil, paragraphSpacing: nil, publisherStyles: nil, readingProgression: nil, scroll: nil, spread: nil, textAlign: nil, textNormalization: nil, typeScale: nil, wordSpacing: nil)
 
 #if !SKIP
-var navConfig: EPUBNavigatorViewController.Configuration = EPUBNavigatorViewController.Configuration(defaults: defaults, fontFamilyDeclarations: FontManager.fontFamilyDeclarations)
+var navConfig: EPUBNavigatorViewController.Configuration = EPUBNavigatorViewController.Configuration(defaults: defaults, disablePageTurnsWhileScrolling: true, fontFamilyDeclarations: FontManager.fontFamilyDeclarations)
 #else
 var navConfig: org.readium.r2.navigator.epub.EpubNavigatorFactory.Configuration = EpubNavigatorFactory.Configuration(defaults: defaults)
 #endif
@@ -222,6 +222,7 @@ struct ReaderView: View {
         .onChange(of: settings.textNormalization) { applyPreferences() }
         .onChange(of: settings.wordSpacing) { applyPreferences() }
         .onChange(of: settings.letterSpacing) { applyPreferences() }
+        .onChange(of: settings.scrollMode) { applyPreferences() }
     }
 
     private func handleHUDChange() {
@@ -425,6 +426,7 @@ struct ReaderView: View {
             delegate.settings = settings
             delegate.onStopped = { [self] in
                 self.isSpeaking = false
+                if self.settings.ttsScrollMode { self.applyPreferences() }
             }
             synth?.delegate = delegate
             self.ttsDelegate = delegate
@@ -436,6 +438,7 @@ struct ReaderView: View {
             speechSynthesizer?.start()
         }
         isSpeaking = true
+        if settings.ttsScrollMode { applyPreferences() }
         #else
         guard let context = ProcessInfo.processInfo.androidContext else { return }
         let nav = navigator
@@ -466,6 +469,7 @@ struct ReaderView: View {
             self.androidTts = newTts
         }
         isSpeaking = true
+        if settings.ttsScrollMode { applyPreferences() }
         #endif
     }
 
@@ -496,6 +500,7 @@ struct ReaderView: View {
         }
         #endif
         isSpeaking = false
+        if settings.ttsScrollMode { applyPreferences() }
     }
 
     func pauseSpeaking() {
@@ -784,6 +789,9 @@ struct ReaderView: View {
         let hasUserOverride = lineHeightVal != nil || letterSpacingVal != nil || wordSpacingVal != nil || !s.textAlign.isEmpty
         let publisherStylesVal: Bool? = hasUserOverride ? false : (s.publisherStyles == "true" ? true : s.publisherStyles == "false" ? false : nil)
 
+        // Scroll mode: use scroll if user enabled it, or if TTS is active with ttsScrollMode
+        let effectiveScroll: Bool = s.scrollMode || (isSpeaking && s.ttsScrollMode)
+
         // Resolve theme colors for Readium's backgroundColor and textColor
         let themeColors = resolveThemeColors()
         let bgColor = themeColors.background.platformColor
@@ -813,7 +821,7 @@ struct ReaderView: View {
             paragraphSpacing: paragraphSpacingVal,
             publisherStyles: publisherStylesVal,
             readingProgression: nil,
-            scroll: nil,
+            scroll: effectiveScroll,
             spread: nil,
             textAlign: textAlignVal,
             textColor: fgColor,
@@ -848,7 +856,7 @@ struct ReaderView: View {
             paragraphSpacing: paragraphSpacingVal,
             publisherStyles: publisherStylesVal,
             readingProgression: nil,
-            scroll: nil,
+            scroll: effectiveScroll,
             spread: nil,
             textAlign: textAlignVal,
             textColor: fgColor,
@@ -1187,6 +1195,111 @@ struct ReaderView: View {
         .background(Color.black.opacity(0.7))
     }
 
+    @ViewBuilder func appearancePickerPanel() -> some View {
+        let theme = resolveTheme()
+        let lightBg = theme.light.background.uiColor
+        let darkBg = theme.dark.background.uiColor
+        let selected = settings.appearance // "" = system, "light", "dark"
+
+        HStack(spacing: 20) {
+            // System
+            Button {
+                settings.appearance = ""
+                applyPreferences()
+            } label: {
+                let isSelected = selected == ""
+                VStack(spacing: 4) {
+                    ZStack {
+                        // Light half (top-left triangle)
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(lightBg)
+                            .frame(width: 52, height: 44)
+                        // Dark half (bottom-right triangle) via overlay + mask
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(darkBg)
+                            .frame(width: 52, height: 44)
+                            .mask(
+                                GeometryReader { geo in
+                                    Path { path in
+                                        path.move(to: CGPoint(x: geo.size.width, y: 0))
+                                        path.addLine(to: CGPoint(x: 0, y: geo.size.height))
+                                        path.addLine(to: CGPoint(x: geo.size.width, y: geo.size.height))
+                                        path.closeSubpath()
+                                    }
+                                }
+                            )
+                        // Diagonal line
+                        GeometryReader { geo in
+                            Path { path in
+                                path.move(to: CGPoint(x: geo.size.width, y: 0))
+                                path.addLine(to: CGPoint(x: 0, y: geo.size.height))
+                            }
+                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                        }
+                        .frame(width: 52, height: 44)
+                        RoundedRectangle(cornerRadius: 8)
+                            .strokeBorder(isSelected ? Color.accentColor : Color.white.opacity(0.3), lineWidth: isSelected ? 2.0 : 1.0)
+                            .frame(width: 52, height: 44)
+                    }
+                    Text("Auto")
+                        .font(.caption2)
+                        .foregroundStyle(isSelected ? Color.accentColor : Color.white.opacity(0.7))
+                }
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Appearance: System")
+
+            // Light
+            Button {
+                settings.appearance = "light"
+                applyPreferences()
+            } label: {
+                let isSelected = selected == "light"
+                VStack(spacing: 4) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(lightBg)
+                            .frame(width: 52, height: 44)
+                        RoundedRectangle(cornerRadius: 8)
+                            .strokeBorder(isSelected ? Color.accentColor : Color.white.opacity(0.3), lineWidth: isSelected ? 2.0 : 1.0)
+                            .frame(width: 52, height: 44)
+                    }
+                    Text("Light")
+                        .font(.caption2)
+                        .foregroundStyle(isSelected ? Color.accentColor : Color.white.opacity(0.7))
+                }
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Appearance: Light")
+
+            // Dark
+            Button {
+                settings.appearance = "dark"
+                applyPreferences()
+            } label: {
+                let isSelected = selected == "dark"
+                VStack(spacing: 4) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(darkBg)
+                            .frame(width: 52, height: 44)
+                        RoundedRectangle(cornerRadius: 8)
+                            .strokeBorder(isSelected ? Color.accentColor : Color.white.opacity(0.3), lineWidth: isSelected ? 2.0 : 1.0)
+                            .frame(width: 52, height: 44)
+                    }
+                    Text("Dark")
+                        .font(.caption2)
+                        .foregroundStyle(isSelected ? Color.accentColor : Color.white.opacity(0.7))
+                }
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Appearance: Dark")
+        }
+        .padding(.vertical, 12)
+        .frame(maxWidth: .infinity)
+        .background(Color.black.opacity(0.7))
+    }
+
     @ViewBuilder func themePickerPanel() -> some View {
         let isDark = effectiveIsDark()
         ScrollView(.horizontal, showsIndicators: false) {
@@ -1258,6 +1371,15 @@ struct ReaderView: View {
                     // More menu
                     Menu {
                         Button {
+                            settings.scrollMode.toggle()
+                            applyPreferences()
+                        } label: {
+                            Label(
+                                title: { Text(settings.scrollMode ? "Paged Mode" : "Scroll Mode") },
+                                icon: { Image(settings.scrollMode ? "auto_stories" : "swap_vert", bundle: .module) }
+                            )
+                        }
+                        Button {
                             if isSpeaking {
                                 stopSpeaking()
                             } else {
@@ -1284,9 +1406,9 @@ struct ReaderView: View {
                             Label("Share", systemImage: "square.and.arrow.up")
                         }
                     } label: {
-                        Image("more_horiz", bundle: .module)
+                        Image("more_vert", bundle: .module)
                             .font(.system(size: overlayButtonSize))
-                            .background(Rectangle().fill(Color(.systemBackground).opacity(0.5)))
+                            .background(Circle().fill(Color(.systemBackground).opacity(0.5)))
                             #if !os(Android)
                             .contentShape(Circle())
                             #endif
@@ -1300,8 +1422,9 @@ struct ReaderView: View {
 
                 Spacer()
 
-                // Extended HUD: spacing controls + font picker + theme picker
+                // Extended HUD: appearance + theme + font pickers
                 if showExtendedHUD {
+                    appearancePickerPanel()
                     themePickerPanel()
                     // spacingControlsPanel() // disabled for now; looks bad
                     fontPickerPanel()

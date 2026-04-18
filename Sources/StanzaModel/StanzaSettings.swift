@@ -118,6 +118,11 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         didSet { defaults.set(useInAppBrowser, forKey: "useInAppBrowser"); settingsLogger.info("Use in-app browser: \(self.useInAppBrowser)") }
     }
 
+    /// When enabled, the reader uses continuous scrolling instead of paged mode.
+    public var scrollMode: Bool {
+        didSet { defaults.set(scrollMode, forKey: "scrollMode"); settingsLogger.info("Scroll mode: \(self.scrollMode)") }
+    }
+
     // MARK: - Text-to-Speech
 
     /// When enabled, the currently spoken utterance is highlighted in the reader.
@@ -128,6 +133,11 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
     /// When enabled, pages turn automatically to follow the spoken text.
     public var ttsAutoTurnPages: Bool {
         didSet { defaults.set(ttsAutoTurnPages, forKey: "ttsAutoTurnPages"); settingsLogger.info("TTS auto turn pages: \(self.ttsAutoTurnPages)") }
+    }
+
+    /// When enabled, the reader switches to scroll mode while reading aloud.
+    public var ttsScrollMode: Bool {
+        didSet { defaults.set(ttsScrollMode, forKey: "ttsScrollMode"); settingsLogger.info("TTS scroll mode: \(self.ttsScrollMode)") }
     }
 
     // MARK: - Book Restoration
@@ -150,8 +160,10 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         self.sepiaTheme = defaults.bool(forKey: "sepiaTheme")
         self.readingTheme = defaults.string(forKey: "readingTheme") ?? "original"
         self.useInAppBrowser = defaults.object(forKey: "useInAppBrowser") != nil ? defaults.bool(forKey: "useInAppBrowser") : true
+        self.scrollMode = defaults.bool(forKey: "scrollMode")
         self.ttsHighlightUtterance = defaults.object(forKey: "ttsHighlightUtterance") != nil ? defaults.bool(forKey: "ttsHighlightUtterance") : true
         self.ttsAutoTurnPages = defaults.object(forKey: "ttsAutoTurnPages") != nil ? defaults.bool(forKey: "ttsAutoTurnPages") : true
+        self.ttsScrollMode = defaults.object(forKey: "ttsScrollMode") != nil ? defaults.bool(forKey: "ttsScrollMode") : true
         self.animatePageTurns = defaults.object(forKey: "animatePageTurns") != nil ? defaults.bool(forKey: "animatePageTurns") : true
         self.fontSize = defaults.object(forKey: "readerFontSize") != nil ? defaults.double(forKey: "readerFontSize") : 1.0
         self.fontFamily = defaults.string(forKey: "epubFontFamily") ?? ""
@@ -179,6 +191,7 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         fontSize = 1.0
         fontFamily = ""
         readingTheme = "original"
+        scrollMode = false
         columnCount = ""
         fit = ""
         hyphens = ""

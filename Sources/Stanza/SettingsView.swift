@@ -3,14 +3,14 @@
 
 import SwiftUI
 import StanzaModel
+import AppFairUI
 
 struct SettingsView: View {
     @Environment(StanzaSettings.self) var settings: StanzaSettings
 
     var body: some View {
         @Bindable var settings = settings
-        NavigationStack {
-            Form {
+        AppFairSettings(bundle: .module) {
                 Section("Reading") {
                     Picker("Appearance", selection: $settings.appearance) {
                         Text("System").tag("")
@@ -68,6 +68,8 @@ struct SettingsView: View {
                         .accessibilityIdentifier("ttsHighlightToggle")
                     Toggle("Auto-Turn Pages", isOn: $settings.ttsAutoTurnPages)
                         .accessibilityIdentifier("ttsAutoTurnToggle")
+                    Toggle("Switch to Scroll Mode While Reading Aloud", isOn: $settings.ttsScrollMode)
+                        .accessibilityIdentifier("ttsScrollModeToggle")
                 }
 
                 Section("Text Layout") {
@@ -185,7 +187,6 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
-        }
     }
 }
 

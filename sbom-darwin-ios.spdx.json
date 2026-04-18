@@ -1,0 +1,488 @@
+{
+  "creationInfo" : {
+    "created" : "2026-04-18T19:07:59Z",
+    "creators" : [
+      "Tool: skip-sbom"
+    ],
+    "licenseListVersion" : "3.22"
+  },
+  "dataLicense" : "CC0-1.0",
+  "documentNamespace" : "https://skip.dev/spdx/stanza-app/ios",
+  "name" : "stanza-app-ios",
+  "packages" : [
+    {
+      "downloadLocation" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "name" : "stanza-app",
+      "primaryPackagePurpose" : "APPLICATION",
+      "SPDXID" : "SPDXRef-Package-stanza-app",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "source"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://github.com/appfair/appfair-app.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://github.com/appfair/appfair-app.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "appfair-app",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-appfair-app",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "1.0.3"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://github.com/krzyzanowskim/CryptoSwift.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://github.com/krzyzanowskim/CryptoSwift.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "cryptoswift",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-cryptoswift",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "1.9.0"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://github.com/ra1028/DifferenceKit.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://github.com/ra1028/DifferenceKit.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "differencekit",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-differencekit",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "1.3.0"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://github.com/readium/Fuzi.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://github.com/readium/Fuzi.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "fuzi",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-fuzi",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "4.0.0"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://github.com/readium/GCDWebServer.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://github.com/readium/GCDWebServer.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "gcdwebserver",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-gcdwebserver",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "4.0.1"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://source.skip.tools/skip.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://source.skip.tools/skip.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "skip",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-skip",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "1.7.7"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://source.skip.tools/skip-ffi.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://source.skip.tools/skip-ffi.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "skip-ffi",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-skip-ffi",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "1.2.0"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://source.skip.tools/skip-foundation.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://source.skip.tools/skip-foundation.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "skip-foundation",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-skip-foundation",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "1.3.15"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://source.skip.tools/skip-kit.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://source.skip.tools/skip-kit.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "skip-kit",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-skip-kit",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "0.7.0"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://source.skip.tools/skip-lib.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://source.skip.tools/skip-lib.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "skip-lib",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-skip-lib",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "1.3.8"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://source.skip.tools/skip-model.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://source.skip.tools/skip-model.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "skip-model",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-skip-model",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "1.7.1"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://source.skip.tools/skip-sql.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://source.skip.tools/skip-sql.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "skip-sql",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-skip-sql",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "0.16.0"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://source.skip.tools/skip-ui.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://source.skip.tools/skip-ui.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "skip-ui",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-skip-ui",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "1.50.1"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://source.skip.tools/skip-unit.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://source.skip.tools/skip-unit.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "skip-unit",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-skip-unit",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "1.6.0"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://github.com/stephencelis/SQLite.swift.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://github.com/stephencelis/SQLite.swift.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "sqlite.swift",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-sqlite.swift",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "0.16.0"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://github.com/readium/swift-toolkit.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://github.com/readium/swift-toolkit.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "swift-toolkit",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-swift-toolkit",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "3.8.0"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://github.com/scinfu/SwiftSoup.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://github.com/scinfu/SwiftSoup.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "swiftsoup",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-swiftsoup",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "2.13.2"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://github.com/marmelroy/Zip.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://github.com/marmelroy/Zip.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "zip",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-zip",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "2.1.2"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://github.com/readium/ZIPFoundation.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://github.com/readium/ZIPFoundation.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "NOASSERTION",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "zipfoundation",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-zipfoundation",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "3.0.1"
+    }
+  ],
+  "relationships" : [
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-stanza-app",
+      "relationshipType" : "DESCRIBES",
+      "spdxElementId" : "SPDXRef-DOCUMENT"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-appfair-app",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-cryptoswift",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-differencekit",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-fuzi",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-gcdwebserver",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-skip",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-skip-ffi",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-skip-foundation",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-skip-kit",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-skip-lib",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-skip-model",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-skip-sql",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-skip-ui",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-skip-unit",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-sqlite.swift",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-swift-toolkit",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-swiftsoup",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-zip",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-zipfoundation",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    }
+  ],
+  "SPDXID" : "SPDXRef-DOCUMENT",
+  "spdxVersion" : "SPDX-2.3"
+}
