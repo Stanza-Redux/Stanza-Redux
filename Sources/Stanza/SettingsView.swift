@@ -18,8 +18,18 @@ struct SettingsView: View {
                         Text("Dark").tag("dark")
                     }
                     .accessibilityIdentifier("appearancePicker")
-                    Toggle("Sepia Theme", isOn: $settings.sepiaTheme)
-                        .accessibilityIdentifier("sepiaThemeToggle")
+                    Picker("Reading Theme", selection: $settings.readingTheme) {
+                        Text("Original").tag("original")
+                        Text("Parchment").tag("parchment")
+                        Text("Cloister").tag("cloister")
+                        Text("Reverie").tag("reverie")
+                        Text("Sylvan").tag("sylvan")
+                        Text("Meridian").tag("meridian")
+                        Text("Vesper").tag("vesper")
+                        Text("Aurora").tag("aurora")
+                        Text("Solitude").tag("solitude")
+                    }
+                    .accessibilityIdentifier("readingThemePicker")
                     HStack {
                         Text("Font Size")
                         Spacer()

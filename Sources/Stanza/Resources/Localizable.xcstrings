@@ -1728,6 +1728,9 @@
         }
       }
     },
+    "Aurora" : {
+
+    },
     "Author" : {
       "comment" : "Label for the author field in the book detail info section and the book edit form.",
       "localizations" : {
@@ -3296,6 +3299,9 @@
           }
         }
       }
+    },
+    "Cloister" : {
+
     },
     "Close reader" : {
       "comment" : "Accessibility label on the close/dismiss button in the reader HUD top bar.",
@@ -4916,6 +4922,7 @@
     },
     "Enable Catalogs" : {
       "comment" : "Toggle label in Advanced Settings. When enabled, shows the Catalogs tab for browsing OPDS catalogs.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -7199,6 +7206,9 @@
         }
       }
     },
+    "Meridian" : {
+
+    },
     "Metadata" : {
       "comment" : "Section header in the book edit form containing title, author, and identifier fields.",
       "localizations" : {
@@ -8298,6 +8308,9 @@
         }
       }
     },
+    "Original" : {
+
+    },
     "Page" : {
       "comment" : "Picker option for page-fit content mode in Settings > Text Layout > Content Fit.",
       "localizations" : {
@@ -8551,6 +8564,9 @@
           }
         }
       }
+    },
+    "Parchment" : {
+
     },
     "Progress" : {
       "comment" : "Section header and label on the book detail screen showing reading progress, and label in the bookmark info section.",
@@ -9014,6 +9030,9 @@
           }
         }
       }
+    },
+    "Reading Theme" : {
+
     },
     "Ready to download" : {
       "comment" : "Status label shown in the download row view before a download has started.",
@@ -9558,6 +9577,9 @@
         }
       }
     },
+    "Reverie" : {
+
+    },
     "Right" : {
       "comment" : "Picker option for right text alignment in Settings > Text Layout > Text Alignment.",
       "localizations" : {
@@ -9968,6 +9990,7 @@
     },
     "Sepia Theme" : {
       "comment" : "Toggle label in Settings > Reading. When enabled, uses a warm sepia color theme for the reader.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -10299,6 +10322,7 @@
     },
     "Show the Catalogs tab for browsing and downloading books from OPDS catalogs." : {
       "comment" : "Explanatory footer text below the Enable Catalogs toggle in Advanced Settings.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -10373,6 +10397,9 @@
           }
         }
       }
+    },
+    "Solitude" : {
+
     },
     "Spacing" : {
       "comment" : "Section header in the Settings screen for spacing-related preferences (line height, margins, etc.).",
@@ -10532,6 +10559,9 @@
 
     },
     "Stop Speaking" : {
+
+    },
+    "Sylvan" : {
 
     },
     "System" : {
@@ -11076,6 +11106,9 @@
     "Text-to-Speech" : {
 
     },
+    "Theme: %@" : {
+
+    },
     "Title" : {
       "comment" : "Label for the book title field on the book detail screen and the book edit form.",
       "localizations" : {
@@ -11306,6 +11339,9 @@
           }
         }
       }
+    },
+    "Vesper" : {
+
     },
     "View" : {
       "comment" : "Picker label for the segmented control in the TOC/Bookmarks sheet that switches between Contents and Bookmarks tabs.",
