@@ -108,6 +108,11 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         didSet { defaults.set(sepiaTheme, forKey: "sepiaTheme"); settingsLogger.info("Sepia theme: \(self.sepiaTheme)") }
     }
 
+    /// Reading theme: "original", "quiet", "paper", "bold", "calm", "focus".
+    public var readingTheme: String {
+        didSet { defaults.set(readingTheme, forKey: "readingTheme"); settingsLogger.info("Reading theme: '\(self.readingTheme)'") }
+    }
+
     /// When enabled, web links open in an embedded in-app browser instead of the system browser.
     public var useInAppBrowser: Bool {
         didSet { defaults.set(useInAppBrowser, forKey: "useInAppBrowser"); settingsLogger.info("Use in-app browser: \(self.useInAppBrowser)") }
@@ -143,6 +148,7 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         self.hideStatusBarInReader = defaults.object(forKey: "hideStatusBarInReader") != nil ? defaults.bool(forKey: "hideStatusBarInReader") : true
         self.leftTapAdvances = defaults.bool(forKey: "leftTapAdvances")
         self.sepiaTheme = defaults.bool(forKey: "sepiaTheme")
+        self.readingTheme = defaults.string(forKey: "readingTheme") ?? "original"
         self.useInAppBrowser = defaults.object(forKey: "useInAppBrowser") != nil ? defaults.bool(forKey: "useInAppBrowser") : true
         self.ttsHighlightUtterance = defaults.object(forKey: "ttsHighlightUtterance") != nil ? defaults.bool(forKey: "ttsHighlightUtterance") : true
         self.ttsAutoTurnPages = defaults.object(forKey: "ttsAutoTurnPages") != nil ? defaults.bool(forKey: "ttsAutoTurnPages") : true
@@ -172,6 +178,7 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         settingsLogger.info("Resetting all reading preferences to defaults")
         fontSize = 1.0
         fontFamily = ""
+        readingTheme = "original"
         columnCount = ""
         fit = ""
         hyphens = ""

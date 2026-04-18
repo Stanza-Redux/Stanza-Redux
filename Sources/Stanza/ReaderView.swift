@@ -37,10 +37,16 @@ import android.speech.tts.UtteranceProgressListener
 typealias PlatformNavigator = EPUBNavigatorViewController
 typealias PlatformPreferences = EPUBPreferences
 typealias PlatformDefaults = ReadiumNavigator.EPUBDefaults
+typealias PlatformSettings = ReadiumNavigator.EPUBSettings
+typealias PlatformFontFamily = ReadiumNavigator.FontFamily
+typealias PlatformColor = ReadiumNavigator.Color
 #else
 typealias PlatformNavigator = org.readium.r2.navigator.epub.EpubNavigatorFragment
 typealias PlatformPreferences = org.readium.r2.navigator.epub.EpubPreferences
 typealias PlatformDefaults = org.readium.r2.navigator.epub.EpubDefaults
+typealias PlatformSettings = org.readium.r2.navigator.epub.EpubSettings
+typealias PlatformFontFamily = org.readium.r2.navigator.preferences.FontFamily
+typealias PlatformColor = org.readium.r2.navigator.preferences.Color
 #endif
 
 let defaults = PlatformDefaults(columnCount: nil, fontSize: nil, fontWeight: nil, hyphens: nil, imageFilter: nil, language: nil, letterSpacing: nil, ligatures: nil, lineHeight: nil, pageMargins: nil, paragraphIndent: nil, paragraphSpacing: nil, publisherStyles: nil, readingProgression: nil, scroll: nil, spread: nil, textAlign: nil, textNormalization: nil, typeScale: nil, wordSpacing: nil)
@@ -51,7 +57,104 @@ var navConfig: EPUBNavigatorViewController.Configuration = EPUBNavigatorViewCont
 var navConfig: org.readium.r2.navigator.epub.EpubNavigatorFactory.Configuration = EpubNavigatorFactory.Configuration(defaults: defaults)
 #endif
 
+// MARK: - Reading Themes
 
+struct ReadingThemeColor {
+    /// A packed int representing the theme color
+    let rgb: Int
+
+    var platformColor: PlatformColor {
+        #if !SKIP
+        PlatformColor(rawValue: rgb)
+        #else
+        PlatformColor(int: rgb)
+        #endif
+    }
+
+    var uiColor: SwiftUI.Color {
+        let r = Double((rgb >> 16) & 0xFF) / 255.0
+        let g = Double((rgb >> 8) & 0xFF) / 255.0
+        let b = Double(rgb & 0xFF) / 255.0
+
+        return SwiftUI.Color(red: r, green: g, blue: b, opacity: 1.0)
+    }
+}
+
+struct ReadingThemeColors {
+    let background: ReadingThemeColor
+    let text: ReadingThemeColor
+}
+
+struct ReadingTheme {
+    let id: String
+    let name: String
+    let light: ReadingThemeColors
+    let dark: ReadingThemeColors
+}
+
+let readingThemes: [ReadingTheme] = [
+    ReadingTheme(
+        id: "original",
+        name: "Original",
+        light: ReadingThemeColors(background: ReadingThemeColor(rgb: 0xFFFFFF), text: ReadingThemeColor(rgb: 0x000000)),
+        dark: ReadingThemeColors(background: ReadingThemeColor(rgb: 0x000000), text: ReadingThemeColor(rgb: 0xFFFFFF))
+    ),
+    ReadingTheme(
+        id: "parchment",
+        name: "Parchment",
+        light: ReadingThemeColors(background: ReadingThemeColor(rgb: 0xF5EDDA), text: ReadingThemeColor(rgb: 0x3E3224)),
+        dark: ReadingThemeColors(background: ReadingThemeColor(rgb: 0x2C2518), text: ReadingThemeColor(rgb: 0xD4C9AD))
+    ),
+    ReadingTheme(
+        id: "cloister",
+        name: "Cloister",
+        light: ReadingThemeColors(background: ReadingThemeColor(rgb: 0xECEDE8), text: ReadingThemeColor(rgb: 0x3A3D42)),
+        dark: ReadingThemeColors(background: ReadingThemeColor(rgb: 0x1E2024), text: ReadingThemeColor(rgb: 0xB0B3B8))
+    ),
+    ReadingTheme(
+        id: "reverie",
+        name: "Reverie",
+        light: ReadingThemeColors(background: ReadingThemeColor(rgb: 0xF0EDF5), text: ReadingThemeColor(rgb: 0x2E2940)),
+        dark: ReadingThemeColors(background: ReadingThemeColor(rgb: 0x1A172B), text: ReadingThemeColor(rgb: 0xC4BFDA))
+    ),
+    ReadingTheme(
+        id: "sylvan",
+        name: "Sylvan",
+        light: ReadingThemeColors(background: ReadingThemeColor(rgb: 0xEBF0E8), text: ReadingThemeColor(rgb: 0x2B3A2B)),
+        dark: ReadingThemeColors(background: ReadingThemeColor(rgb: 0x18221A), text: ReadingThemeColor(rgb: 0xA8BFA8))
+    ),
+    ReadingTheme(
+        id: "meridian",
+        name: "Meridian",
+        light: ReadingThemeColors(background: ReadingThemeColor(rgb: 0xE8EEF5), text: ReadingThemeColor(rgb: 0x1F2D3D)),
+        dark: ReadingThemeColors(background: ReadingThemeColor(rgb: 0x141D28), text: ReadingThemeColor(rgb: 0xA8BAD0))
+    ),
+    ReadingTheme(
+        id: "vesper",
+        name: "Vesper",
+        light: ReadingThemeColors(background: ReadingThemeColor(rgb: 0xF5EDE8), text: ReadingThemeColor(rgb: 0x3D2B24)),
+        dark: ReadingThemeColors(background: ReadingThemeColor(rgb: 0x28191A), text: ReadingThemeColor(rgb: 0xD4B8AB))
+    ),
+    ReadingTheme(
+        id: "aurora",
+        name: "Aurora",
+        light: ReadingThemeColors(background: ReadingThemeColor(rgb: 0xE8F2F0), text: ReadingThemeColor(rgb: 0x1E3333)),
+        dark: ReadingThemeColors(background: ReadingThemeColor(rgb: 0x132222), text: ReadingThemeColor(rgb: 0xA0C5C0))
+    ),
+    ReadingTheme(
+        id: "solitude",
+        name: "Solitude",
+        light: ReadingThemeColors(background: ReadingThemeColor(rgb: 0xF2F2EF), text: ReadingThemeColor(rgb: 0x444440)),
+        dark: ReadingThemeColors(background: ReadingThemeColor(rgb: 0x202020), text: ReadingThemeColor(rgb: 0xBBBBB5))
+    ),
+]
+
+func findTheme(_ id: String) -> ReadingTheme {
+    for theme in readingThemes {
+        if theme.id == id { return theme }
+    }
+    return readingThemes[0]
+}
 
 struct ReaderView: View {
     let bookID: Int64
@@ -98,7 +201,7 @@ struct ReaderView: View {
     var body: some View {
         readerBodyWithPreferenceHandlers
         .onChange(of: settings.appearance) { applyPreferences() }
-        .onChange(of: settings.sepiaTheme) { applyPreferences() }
+        .onChange(of: settings.readingTheme) { applyPreferences() }
         .onChange(of: colorScheme) { applyPreferences() }
         .onChange(of: showHUD) { handleHUDChange() }
     }
@@ -162,8 +265,8 @@ struct ReaderView: View {
                     .accessibilityIdentifier("readerLoadingIndicator")
             }
         }
-        .preferredColorScheme(settings.sepiaTheme ? .light : settings.appearance == "dark" ? .dark : settings.appearance == "light" ? .light : nil)
-        .background(settings.sepiaTheme ? Color(red: 250.0/255.0, green: 244.0/255.0, blue: 232.0/255.0) : colorScheme == .dark ? Color.black : Color.white)
+        .preferredColorScheme(settings.appearance == "dark" ? .dark : settings.appearance == "light" ? .light : nil)
+        .background(resolveThemeColors().background.uiColor)
         #if !SKIP // unavailable in Skip
         .statusBarHidden(settings.hideStatusBarInReader && !showHUD)
         // this hides the bottom horizontal bar on iOS successfully:
@@ -653,6 +756,15 @@ struct ReaderView: View {
         return colorScheme == .dark
     }
 
+    func resolveTheme() -> ReadingTheme {
+        return findTheme(settings.readingTheme)
+    }
+
+    func resolveThemeColors() -> ReadingThemeColors {
+        let theme = resolveTheme()
+        return effectiveIsDark() ? theme.dark : theme.light
+    }
+
     func applyPreferences() {
         let s = settings
         let isDark = effectiveIsDark()
@@ -672,54 +784,87 @@ struct ReaderView: View {
         let hasUserOverride = lineHeightVal != nil || letterSpacingVal != nil || wordSpacingVal != nil || !s.textAlign.isEmpty
         let publisherStylesVal: Bool? = hasUserOverride ? false : (s.publisherStyles == "true" ? true : s.publisherStyles == "false" ? false : nil)
 
+        // Resolve theme colors for Readium's backgroundColor and textColor
+        let themeColors = resolveThemeColors()
+        let bgColor = themeColors.background.platformColor
+        let fgColor = themeColors.text.platformColor
+
         #if !SKIP
-        if let nav = navigator {
-            let fontFamilyVal: ReadiumNavigator.FontFamily? = s.fontFamily.isEmpty ? nil : ReadiumNavigator.FontFamily(rawValue: s.fontFamily)
-            let columnCountVal = s.columnCount.isEmpty ? nil : ReadiumNavigator.ColumnCount(rawValue: s.columnCount)
-            let fitVal = s.fit.isEmpty ? nil : ReadiumNavigator.Fit(rawValue: s.fit)
-            let textAlignVal = s.textAlign.isEmpty ? nil : ReadiumNavigator.TextAlignment(rawValue: s.textAlign)
-            let themeVal: ReadiumNavigator.Theme = s.sepiaTheme ? .sepia : isDark ? .dark : .light
-            let prefs: PlatformPreferences = EPUBPreferences(
-                columnCount: columnCountVal,
-                fit: fitVal,
-                fontFamily: fontFamilyVal,
-                fontSize: s.fontSize,
-                hyphens: hyphensVal,
-                letterSpacing: letterSpacingVal,
-                lineHeight: lineHeightVal,
-                pageMargins: pageMarginsVal,
-                paragraphSpacing: paragraphSpacingVal,
-                publisherStyles: publisherStylesVal,
-                textAlign: textAlignVal,
-                textNormalization: textNormalizationVal,
-                theme: themeVal,
-                wordSpacing: wordSpacingVal
-            )
-            nav.submitPreferences(prefs)
-        }
+        let fontFamilyVal: PlatformFontFamily? = s.fontFamily.isEmpty ? nil : ReadiumNavigator.FontFamily(rawValue: s.fontFamily)
+        let columnCountVal = s.columnCount.isEmpty ? nil : ReadiumNavigator.ColumnCount(rawValue: s.columnCount)
+        let fitVal = s.fit.isEmpty ? nil : ReadiumNavigator.Fit(rawValue: s.fit)
+        let textAlignVal = s.textAlign.isEmpty ? nil : ReadiumNavigator.TextAlignment(rawValue: s.textAlign)
+        let prefs: PlatformPreferences = EPUBPreferences(
+            backgroundColor: bgColor,
+            columnCount: columnCountVal,
+            fit: fitVal,
+            fontFamily: fontFamilyVal,
+            fontSize: s.fontSize,
+            fontWeight: nil,
+            hyphens: hyphensVal,
+            imageFilter: nil,
+            language: nil,
+            letterSpacing: letterSpacingVal,
+            ligatures: nil,
+            lineHeight: lineHeightVal,
+            offsetFirstPage: nil,
+            pageMargins: pageMarginsVal,
+            paragraphIndent: nil,
+            paragraphSpacing: paragraphSpacingVal,
+            publisherStyles: publisherStylesVal,
+            readingProgression: nil,
+            scroll: nil,
+            spread: nil,
+            textAlign: textAlignVal,
+            textColor: fgColor,
+            textNormalization: textNormalizationVal,
+            theme: nil,
+            typeScale: nil,
+            verticalText: nil,
+            wordSpacing: wordSpacingVal)
         #else
+        let fontFamilyVal: PlatformFontFamily? = s.fontFamily.isEmpty ? nil : org.readium.r2.navigator.preferences.FontFamily(s.fontFamily)
+        let columnCountVal: org.readium.r2.navigator.preferences.ColumnCount? =
+            s.columnCount == "1" ? org.readium.r2.navigator.preferences.ColumnCount.ONE
+            : s.columnCount == "2" ? org.readium.r2.navigator.preferences.ColumnCount.TWO
+            : s.columnCount == "" ? org.readium.r2.navigator.preferences.ColumnCount.AUTO
+            : nil
+        let textAlignVal: org.readium.r2.navigator.preferences.TextAlign? = s.textAlign == "justify" ? org.readium.r2.navigator.preferences.TextAlign.JUSTIFY : s.textAlign == "center" ? org.readium.r2.navigator.preferences.TextAlign.CENTER : s.textAlign == "left" ? org.readium.r2.navigator.preferences.TextAlign.LEFT : s.textAlign == "right" ? org.readium.r2.navigator.preferences.TextAlign.RIGHT : s.textAlign == "start" ? org.readium.r2.navigator.preferences.TextAlign.START : s.textAlign == "end" ? org.readium.r2.navigator.preferences.TextAlign.END : nil
+
+        let prefs: PlatformPreferences = org.readium.r2.navigator.epub.EpubPreferences(
+            backgroundColor: bgColor,
+            columnCount: columnCountVal,
+            fontFamily: fontFamilyVal,
+            fontSize: s.fontSize,
+            fontWeight: nil,
+            hyphens: hyphensVal,
+            imageFilter: nil,
+            language: nil,
+            letterSpacing: letterSpacingVal,
+            ligatures: nil,
+            lineHeight: lineHeightVal,
+            pageMargins: pageMarginsVal,
+            paragraphIndent: nil,
+            paragraphSpacing: paragraphSpacingVal,
+            publisherStyles: publisherStylesVal,
+            readingProgression: nil,
+            scroll: nil,
+            spread: nil,
+            textAlign: textAlignVal,
+            textColor: fgColor,
+            textNormalization: textNormalizationVal,
+            theme: nil,
+            typeScale: nil,
+            verticalText: nil,
+            wordSpacing: wordSpacingVal
+        )
+        #endif
+
         if let nav = navigator {
-            let fontFamilyVal: org.readium.r2.navigator.preferences.FontFamily? = s.fontFamily.isEmpty ? nil : org.readium.r2.navigator.preferences.FontFamily(s.fontFamily)
-            let textAlignVal: org.readium.r2.navigator.preferences.TextAlign? = s.textAlign == "justify" ? org.readium.r2.navigator.preferences.TextAlign.JUSTIFY : s.textAlign == "center" ? org.readium.r2.navigator.preferences.TextAlign.CENTER : s.textAlign == "left" ? org.readium.r2.navigator.preferences.TextAlign.LEFT : s.textAlign == "right" ? org.readium.r2.navigator.preferences.TextAlign.RIGHT : s.textAlign == "start" ? org.readium.r2.navigator.preferences.TextAlign.START : s.textAlign == "end" ? org.readium.r2.navigator.preferences.TextAlign.END : nil
-            let themeVal: org.readium.r2.navigator.preferences.Theme = s.sepiaTheme ? Theme.SEPIA : isDark ? Theme.DARK : Theme.LIGHT
-            let prefs: PlatformPreferences = org.readium.r2.navigator.epub.EpubPreferences(
-                fontFamily: fontFamilyVal,
-                fontSize: s.fontSize,
-                hyphens: hyphensVal,
-                letterSpacing: letterSpacingVal,
-                lineHeight: lineHeightVal,
-                pageMargins: pageMarginsVal,
-                paragraphSpacing: paragraphSpacingVal,
-                publisherStyles: publisherStylesVal,
-                textAlign: textAlignVal,
-                textNormalization: textNormalizationVal,
-                theme: themeVal,
-                wordSpacing: wordSpacingVal
-            )
             nav.submitPreferences(prefs)
         }
-        #endif
     }
+
 
     // MARK: - Status Bar (Android)
 
@@ -1042,6 +1187,46 @@ struct ReaderView: View {
         .background(Color.black.opacity(0.7))
     }
 
+    @ViewBuilder func themePickerPanel() -> some View {
+        let isDark = effectiveIsDark()
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 16) {
+                ForEach(readingThemes, id: \.id) { theme in
+                    let isSelected = settings.readingTheme == theme.id
+                    let colors = isDark ? theme.dark : theme.light
+                    Button {
+                        settings.readingTheme = theme.id
+                        applyPreferences()
+                    } label: {
+                        VStack(spacing: 4) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(colors.background.uiColor)
+                                    .frame(width: 64, height: 44)
+                                RoundedRectangle(cornerRadius: 8)
+                                    .strokeBorder(isSelected ? Color.accentColor : Color.white.opacity(0.3), lineWidth: isSelected ? 2.0 : 1.0)
+                                    .frame(width: 64, height: 44)
+                                Text("Abc")
+                                    .font(.system(size: 20, weight: .regular, design: theme.id == "parchment" ? .serif : .default))
+                                    .foregroundStyle(colors.text.uiColor)
+                            }
+                            Text(theme.name)
+                                .font(.caption2)
+                                .foregroundStyle(isSelected ? Color.accentColor : Color.white.opacity(0.7))
+                                .lineLimit(1)
+                        }
+                        .frame(width: 72)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Theme: \(theme.name)")
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+        }
+        .background(Color.black.opacity(0.7))
+    }
+
     // MARK: - HUD Overlay
 
     @ViewBuilder func hudOverlay(publication: Pub) -> some View {
@@ -1115,9 +1300,10 @@ struct ReaderView: View {
 
                 Spacer()
 
-                // Extended HUD: spacing controls + font picker
+                // Extended HUD: spacing controls + font picker + theme picker
                 if showExtendedHUD {
-                    spacingControlsPanel()
+                    themePickerPanel()
+                    // spacingControlsPanel() // disabled for now; looks bad
                     fontPickerPanel()
                 }
 
