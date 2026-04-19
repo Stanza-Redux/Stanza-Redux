@@ -1,6 +1,6 @@
 {
   "creationInfo" : {
-    "created" : "2026-04-18T19:07:59Z",
+    "created" : "2026-04-18T22:04:07Z",
     "creators" : [
       "Tool: skip-sbom"
     ],
@@ -30,13 +30,13 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "GPL-2.0-only",
+      "licenseDeclared" : "GPL-2.0-only",
       "name" : "appfair-app",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-appfair-app",
       "supplier" : "NOASSERTION",
-      "versionInfo" : "1.0.3"
+      "versionInfo" : "1.0.4"
     },
     {
       "copyrightText" : "NOASSERTION",
@@ -68,8 +68,8 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "Apache-2.0",
+      "licenseDeclared" : "Apache-2.0",
       "name" : "differencekit",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-differencekit",
@@ -87,8 +87,8 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "MIT",
+      "licenseDeclared" : "MIT",
       "name" : "fuzi",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-fuzi",
@@ -106,8 +106,8 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "BSD-2-Clause",
+      "licenseDeclared" : "BSD-2-Clause",
       "name" : "gcdwebserver",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-gcdwebserver",
@@ -125,13 +125,13 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "MPL-2.0",
+      "licenseDeclared" : "MPL-2.0",
       "name" : "skip",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-skip",
       "supplier" : "NOASSERTION",
-      "versionInfo" : "1.7.7"
+      "versionInfo" : "1.8.9"
     },
     {
       "copyrightText" : "NOASSERTION",
@@ -144,13 +144,13 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "MPL-2.0",
+      "licenseDeclared" : "MPL-2.0",
       "name" : "skip-ffi",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-skip-ffi",
       "supplier" : "NOASSERTION",
-      "versionInfo" : "1.2.0"
+      "versionInfo" : "1.2.1"
     },
     {
       "copyrightText" : "NOASSERTION",
@@ -163,13 +163,13 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "MPL-2.0",
+      "licenseDeclared" : "MPL-2.0",
       "name" : "skip-foundation",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-skip-foundation",
       "supplier" : "NOASSERTION",
-      "versionInfo" : "1.3.15"
+      "versionInfo" : "1.4.0"
     },
     {
       "copyrightText" : "NOASSERTION",
@@ -182,13 +182,13 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "MPL-2.0",
+      "licenseDeclared" : "MPL-2.0",
       "name" : "skip-kit",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-skip-kit",
       "supplier" : "NOASSERTION",
-      "versionInfo" : "0.7.0"
+      "versionInfo" : "1.0.3"
     },
     {
       "copyrightText" : "NOASSERTION",
@@ -201,13 +201,13 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "MPL-2.0",
+      "licenseDeclared" : "MPL-2.0",
       "name" : "skip-lib",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-skip-lib",
       "supplier" : "NOASSERTION",
-      "versionInfo" : "1.3.8"
+      "versionInfo" : "1.4.0"
     },
     {
       "copyrightText" : "NOASSERTION",
@@ -220,13 +220,13 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "MPL-2.0",
+      "licenseDeclared" : "MPL-2.0",
       "name" : "skip-model",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-skip-model",
       "supplier" : "NOASSERTION",
-      "versionInfo" : "1.7.1"
+      "versionInfo" : "1.7.3"
     },
     {
       "copyrightText" : "NOASSERTION",
@@ -239,8 +239,8 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "LGPL-3.0-only WITH LGPL-3.0-linking-exception",
+      "licenseDeclared" : "LGPL-3.0-only WITH LGPL-3.0-linking-exception",
       "name" : "skip-sql",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-skip-sql",
@@ -258,13 +258,13 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "MPL-2.0",
+      "licenseDeclared" : "MPL-2.0",
       "name" : "skip-ui",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-skip-ui",
       "supplier" : "NOASSERTION",
-      "versionInfo" : "1.50.1"
+      "versionInfo" : "1.51.3"
     },
     {
       "copyrightText" : "NOASSERTION",
@@ -277,13 +277,32 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "MPL-2.0",
+      "licenseDeclared" : "MPL-2.0",
       "name" : "skip-unit",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-skip-unit",
       "supplier" : "NOASSERTION",
-      "versionInfo" : "1.6.0"
+      "versionInfo" : "1.6.1"
+    },
+    {
+      "copyrightText" : "NOASSERTION",
+      "downloadLocation" : "https://source.skip.tools/skip-xml.git",
+      "externalRefs" : [
+        {
+          "referenceCategory" : "PACKAGE-MANAGER",
+          "referenceLocator" : "https://source.skip.tools/skip-xml.git",
+          "referenceType" : "swiftpm"
+        }
+      ],
+      "filesAnalyzed" : false,
+      "licenseConcluded" : "LGPL-3.0-only WITH LGPL-3.0-linking-exception",
+      "licenseDeclared" : "LGPL-3.0-only WITH LGPL-3.0-linking-exception",
+      "name" : "skip-xml",
+      "primaryPackagePurpose" : "LIBRARY",
+      "SPDXID" : "SPDXRef-Package-skip-xml",
+      "supplier" : "NOASSERTION",
+      "versionInfo" : "0.5.0"
     },
     {
       "copyrightText" : "NOASSERTION",
@@ -296,8 +315,8 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "MIT",
+      "licenseDeclared" : "MIT",
       "name" : "sqlite.swift",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-sqlite.swift",
@@ -315,8 +334,8 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "BSD-3-Clause",
+      "licenseDeclared" : "BSD-3-Clause",
       "name" : "swift-toolkit",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-swift-toolkit",
@@ -334,13 +353,13 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "MIT",
+      "licenseDeclared" : "MIT",
       "name" : "swiftsoup",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-swiftsoup",
       "supplier" : "NOASSERTION",
-      "versionInfo" : "2.13.2"
+      "versionInfo" : "2.13.4"
     },
     {
       "copyrightText" : "NOASSERTION",
@@ -353,8 +372,8 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "MIT",
+      "licenseDeclared" : "MIT",
       "name" : "zip",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-zip",
@@ -372,8 +391,8 @@
         }
       ],
       "filesAnalyzed" : false,
-      "licenseConcluded" : "NOASSERTION",
-      "licenseDeclared" : "NOASSERTION",
+      "licenseConcluded" : "MIT",
+      "licenseDeclared" : "MIT",
       "name" : "zipfoundation",
       "primaryPackagePurpose" : "LIBRARY",
       "SPDXID" : "SPDXRef-Package-zipfoundation",
@@ -454,6 +473,11 @@
     },
     {
       "relatedSpdxElement" : "SPDXRef-Package-skip-unit",
+      "relationshipType" : "DEPENDS_ON",
+      "spdxElementId" : "SPDXRef-Package-stanza-app"
+    },
+    {
+      "relatedSpdxElement" : "SPDXRef-Package-skip-xml",
       "relationshipType" : "DEPENDS_ON",
       "spdxElementId" : "SPDXRef-Package-stanza-app"
     },
