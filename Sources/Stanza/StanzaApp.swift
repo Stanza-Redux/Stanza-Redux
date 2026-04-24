@@ -41,6 +41,10 @@ public struct StanzaRootView : View {
 /// The `userInfo` dictionary contains `"url"` with the file `URL`.
 public let openEpubNotification = Notification.Name("openEpubFile")
 
+/// Notification posted when an OPDS catalog URL is opened via the `opds://` scheme.
+/// The `userInfo` dictionary contains `"url"` with the catalog URL as a `String` (https scheme).
+public let openCatalogNotification = Notification.Name("openCatalogURL")
+
 /// Global application delegate functions.
 ///
 /// These functions can update a shared observable object to communicate app state changes to interested views.

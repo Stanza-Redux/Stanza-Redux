@@ -28,6 +28,13 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- Handle opds:// URL scheme for adding OPDS catalogs -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="opds" />
+            </intent-filter>
             <!-- Handle opening .epub files -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

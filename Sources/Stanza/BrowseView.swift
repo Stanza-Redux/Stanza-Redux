@@ -85,6 +85,7 @@ struct BrowseView: View {
                 AddCatalogView(catalogDB: catalogDB, onAdd: {
                     refreshCatalogs()
                 })
+                .environment(errorManager)
             }
             .navigationDestination(for: CatalogRecord.self) { catalog in
                 CatalogFeedView(
@@ -94,6 +95,9 @@ struct BrowseView: View {
             }
             .task {
                 initDatabases()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: catalogAddedNotification)) { _ in
+                refreshCatalogs()
             }
         }
     }
@@ -146,98 +150,236 @@ struct BrowseView: View {
 // MARK: - AddCatalogView
 
 struct AddCatalogView: View {
+    /// Pre-filled URL from an opds:// link, or nil for manual add
+    var prefilledURL: String? = nil
     let catalogDB: CatalogDatabase?
     let onAdd: () -> Void
     @Environment(\.dismiss) var dismiss
-    @Environment(ErrorManager.self) var errorManager: ErrorManager
     @State var customURL: String = ""
     @State var customName: String = ""
     @State var errorMessage: String? = nil
+    @State var isAdding: Bool = false
+    @State var isFetchingTitle: Bool = false
 
-    let recommended = DefaultCatalog.all
+    var showRecommended: Bool { prefilledURL == nil }
+
+    var effectiveURL: String { prefilledURL ?? customURL }
+
+    var isValidURL: Bool {
+        let url = effectiveURL
+        if url.isEmpty { return false }
+        guard let parsed = URL(string: url) else { return false }
+        let scheme = parsed.scheme ?? ""
+        return scheme == "http" || scheme == "https"
+    }
 
     var body: some View {
         NavigationStack {
             Form {
-                Section("Recommended Catalogs") {
-                    ForEach(recommended) { catalog in
-                        Button {
-                            addCatalog(name: catalog.name, url: catalog.url, desc: catalog.description)
-                        } label: {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(catalog.name)
-                                    .font(.headline)
-                                    .foregroundStyle(.primary)
-                                Text(catalog.description)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                Text(catalog.url)
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary).opacity(0.7)
-                            }
-                            .padding(.vertical, 2)
-                        }
-                        .accessibilityIdentifier("recommendedCatalog_\(catalog.id)")
-                    }
+                if showRecommended {
+                    recommendedSection
                 }
 
-                Section("Custom Catalog") {
-                    TextField("Catalog Name", text: $customName)
-                        .accessibilityIdentifier("customCatalogNameField")
-                    TextField("OPDS Feed URL", text: $customURL)
-                        .accessibilityIdentifier("customCatalogURLField")
-                        #if !SKIP
-                        .textInputAutocapitalization(.never)
-                        .keyboardType(.URL)
-                        #endif
-                    Button("Add Custom Catalog") {
-                        let name = customName.isEmpty ? customURL : customName
-                        addCatalog(name: name, url: customURL, desc: nil)
-                    }
-                    .disabled(customURL.isEmpty)
-                    .accessibilityIdentifier("addCustomCatalogButton")
-                }
+                catalogURLSection
+
+                addButtonSection
 
                 if let error = errorMessage {
                     Section {
                         Text(error)
-                            .foregroundStyle(.red)
+                            .foregroundStyle(Color.red)
                             .accessibilityIdentifier("addCatalogError")
                     }
                 }
             }
-            .navigationTitle("Add Catalog")
+            .navigationTitle(prefilledURL != nil ? "Add OPDS Catalog" : "Add Catalog")
+            #if !os(macOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                         .accessibilityIdentifier("addCatalogCancelButton")
                 }
             }
+            .onAppear {
+                if let url = prefilledURL {
+                    customURL = url
+                    fetchTitle(for: url)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder var recommendedSection: some View {
+        let existingURLs = existingCatalogURLs()
+        let filtered = DefaultCatalog.all.filter { catalog in
+            !existingURLs.contains(catalog.url)
+        }
+        if !filtered.isEmpty {
+            Section("Recommended Catalogs") {
+                ForEach(filtered) { catalog in
+                    Button {
+                        addRecommendedCatalog(catalog)
+                    } label: {
+                        HStack(spacing: 12) {
+                            Image("library_books", bundle: .module)
+                                .font(.title2)
+                                .foregroundStyle(Color.accentColor)
+                                .frame(width: 36)
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(catalog.name)
+                                    .font(.headline)
+                                Text(catalog.description)
+                                    .font(.caption)
+                                    .foregroundStyle(Color.secondary)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("recommendedCatalog_\(catalog.id)")
+                }
+            }
+        }
+    }
+
+    private func addRecommendedCatalog(_ catalog: DefaultCatalog) {
+        guard let db = catalogDB else { return }
+        isAdding = true
+        logger.info("Adding recommended catalog: '\(catalog.name)' url=\(catalog.url)")
+        do {
+            let existing = try db.allCatalogs()
+            if existing.contains(where: { $0.url == catalog.url }) {
+                errorMessage = "This catalog has already been added."
+                isAdding = false
+                return
+            }
+            let sortOrder = Int64(existing.count)
+            try db.addCatalog(CatalogRecord(name: catalog.name, url: catalog.url, desc: catalog.description, sortOrder: sortOrder))
+            logger.info("Recommended catalog added successfully")
+            isAdding = false
+            NotificationCenter.default.post(name: catalogAddedNotification, object: nil)
+            onAdd()
+            dismiss()
+        } catch {
+            logger.error("Failed to add catalog: \(error)")
+            errorMessage = "Failed to add catalog: \(error.localizedDescription)"
+            isAdding = false
+        }
+    }
+
+    @ViewBuilder var catalogURLSection: some View {
+        Section(prefilledURL != nil ? "Catalog" : "Custom Catalog") {
+            if prefilledURL != nil {
+                Text(effectiveURL)
+                    .font(.footnote)
+                    .foregroundStyle(Color.secondary)
+            } else {
+                TextField("OPDS Feed URL", text: $customURL)
+                    .accessibilityIdentifier("customCatalogURLField")
+                    #if !SKIP
+                    .textInputAutocapitalization(.never)
+                    .keyboardType(.URL)
+                    #endif
+            }
+            HStack {
+                TextField("Catalog Name", text: $customName)
+                    .accessibilityIdentifier("customCatalogNameField")
+                if isFetchingTitle {
+                    ProgressView()
+                }
+            }
+            if !isValidURL && !effectiveURL.isEmpty {
+                Text("Invalid URL. Must start with http:// or https://")
+                    .font(.caption)
+                    .foregroundStyle(Color.red)
+            }
+        }
+    }
+
+    @ViewBuilder var addButtonSection: some View {
+        Section {
+            Button(action: {
+                let name = customName.isEmpty ? effectiveURL : customName
+                addCatalog(name: name, url: effectiveURL, desc: nil)
+            }) {
+                HStack {
+                    Spacer()
+                    if isAdding {
+                        ProgressView()
+                    } else {
+                        Text("Add Catalog")
+                            .fontWeight(.semibold)
+                    }
+                    Spacer()
+                }
+            }
+            .disabled(isAdding || !isValidURL)
+            .accessibilityIdentifier("addCatalogButton")
+        }
+    }
+
+    private func existingCatalogURLs() -> Set<String> {
+        guard let db = catalogDB else { return [] }
+        var urls: Set<String> = []
+        if let catalogs = try? db.allCatalogs() {
+            for c in catalogs {
+                urls.insert(c.url)
+            }
+        }
+        return urls
+    }
+
+    private func fetchTitle(for urlString: String) {
+        guard let url = URL(string: urlString) else { return }
+        isFetchingTitle = true
+        Task {
+            do {
+                let feed = try await OPDSService.fetchFeed(url: url)
+                if customName.isEmpty && !feed.title.isEmpty {
+                    customName = feed.title
+                }
+            } catch {
+                logger.warning("Could not fetch catalog title: \(error)")
+            }
+            isFetchingTitle = false
         }
     }
 
     private func addCatalog(name: String, url: String, desc: String?) {
         guard let db = catalogDB else { return }
+        guard isValidURL else {
+            errorMessage = "Please enter a valid URL."
+            return
+        }
+        isAdding = true
         logger.info("Adding catalog: '\(name)' url=\(url)")
         do {
-            // Check for duplicate URL
             let existing = try db.allCatalogs()
             if existing.contains(where: { $0.url == url }) {
                 logger.warning("Duplicate catalog URL: \(url)")
                 errorMessage = "This catalog has already been added."
+                isAdding = false
                 return
             }
             let sortOrder = Int64(existing.count)
             try db.addCatalog(CatalogRecord(name: name, url: url, desc: desc, sortOrder: sortOrder))
             logger.info("Catalog added successfully")
+            isAdding = false
+            NotificationCenter.default.post(name: catalogAddedNotification, object: nil)
             onAdd()
             dismiss()
         } catch {
             logger.error("Failed to add catalog: \(error)")
-            errorManager.errorOccurred(info: AppErrorInfo(title: "Catalog Error", message: "Failed to add catalog.", error: error))
+            errorMessage = "Failed to add catalog: \(error.localizedDescription)"
+            isAdding = false
         }
     }
 }
+
+/// Notification posted after a catalog is added so BrowseView can refresh its list.
+let catalogAddedNotification = Notification.Name("catalogAdded")
 
 // MARK: - CatalogFeedView
 

@@ -1168,6 +1168,7 @@
     },
     "Add Custom Catalog" : {
       "comment" : "Button label to submit the custom catalog URL form in the Add Catalog sheet.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1319,6 +1320,9 @@
           }
         }
       }
+    },
+    "Add OPDS Catalog" : {
+
     },
     "Advanced Settings" : {
       "comment" : "Navigation link label in Settings and navigation title for the Advanced Settings screen.",
@@ -2746,6 +2750,9 @@
           }
         }
       }
+    },
+    "Catalog" : {
+
     },
     "Catalog Name" : {
       "comment" : "Placeholder text for the catalog name input field in the Add Catalog sheet.",
@@ -6344,6 +6351,9 @@
           }
         }
       }
+    },
+    "Invalid URL. Must start with http:// or https://" : {
+
     },
     "Iowan Old Style" : {
       "comment" : "Font family name displayed in the font picker. This is a proper noun and may not need translation.",

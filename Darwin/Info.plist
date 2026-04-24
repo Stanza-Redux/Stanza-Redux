@@ -17,6 +17,19 @@
 		<string>NotoSerif.ttf</string>
 		<string>NotoSans.ttf</string>
 	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleURLName</key>
+			<string>org.appfair.app.Stanza</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>opds</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
