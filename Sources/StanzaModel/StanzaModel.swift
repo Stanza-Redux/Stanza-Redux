@@ -425,7 +425,7 @@ public struct Loc {
     /// Serializes this locator to a JSON string for persistence.
     public var jsonString: String? {
         #if !SKIP
-        return platformValue.jsonString
+        return try? platformValue.jsonString()
         #else
         return platformValue.toJSON().toString()
         #endif
