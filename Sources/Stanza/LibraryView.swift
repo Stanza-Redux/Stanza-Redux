@@ -8,6 +8,8 @@ import SkipKit
 /// Displays a book cover image, or a generic book icon if no cover is available.
 struct BookCoverView: View {
     let coverImagePath: String?
+    /// Book identifier used to look up content restrictions; covers for restricted books are blurred and overlaid with a notice.
+    var bookIdentifier: String? = nil
 
     var body: some View {
         if let path = coverImagePath {
@@ -22,9 +24,11 @@ struct BookCoverView: View {
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: 4))
+            .contentRestrictedCover(uid: bookIdentifier)
         } else {
             placeholderImage
                 .clipShape(RoundedRectangle(cornerRadius: 4))
+                .contentRestrictedCover(uid: bookIdentifier)
         }
     }
 
@@ -165,7 +169,7 @@ struct LibraryView: View {
                     selectedBook = book
                 } label: {
                     HStack(spacing: 12) {
-                        BookCoverView(coverImagePath: book.coverImagePath)
+                        BookCoverView(coverImagePath: book.coverImagePath, bookIdentifier: book.identifier)
                             .frame(width: 50, height: 70)
                         VStack(alignment: .leading) {
                             Text(book.title)

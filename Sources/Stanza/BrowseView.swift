@@ -742,11 +742,13 @@ struct PublicationRow: View {
                 }
                 .frame(width: 50, height: 70)
                 .clipShape(RoundedRectangle(cornerRadius: 4))
+                .contentRestrictedCover(uid: entry.id)
                 .accessibilityIdentifier("pubRowCover")
                 .accessibilityLabel("\(entry.title) cover")
             } else {
                 bookPlaceholder
                     .frame(width: 50, height: 70)
+                    .contentRestrictedCover(uid: entry.id)
                     .accessibilityIdentifier("pubRowPlaceholder")
                     .accessibilityLabel("\(entry.title) placeholder")
             }
@@ -797,6 +799,11 @@ struct OPDSBookDetailView: View {
     @State var importError: String? = nil
     @State var showReader = false
 
+    /// The active content restriction for this entry on the current storefront, if any.
+    var contentRestriction: StorefrontRestriction? {
+        ContentRestrictionService.shared.restriction(forUID: entry.id)
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -819,10 +826,12 @@ struct OPDSBookDetailView: View {
                     .frame(maxHeight: 300)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .shadow(radius: 4)
+                    .contentRestrictedCover(uid: entry.id)
                     .accessibilityIdentifier("bookDetailCover")
                     .accessibilityLabel("\(entry.title) cover image")
                 } else {
                     coverPlaceholder
+                        .contentRestrictedCover(uid: entry.id)
                         .accessibilityIdentifier("bookDetailCoverPlaceholder")
                 }
 
@@ -968,6 +977,17 @@ struct OPDSBookDetailView: View {
             CircularDownloadProgressView(downloader: dl, onCompleted: {
                 importDownloadedBook()
             })
+        } else if let restriction = contentRestriction, restriction.mode == .content {
+            // Storefront has blocked downloading the content of this book.
+            Button {
+                errorManager.errorOccurred(info: AppErrorInfo(title: "Restricted", message: restriction.reason))
+            } label: {
+                Text("Restricted")
+                    .fontWeight(.bold)
+            }
+            .buttonStyle(.bordered)
+            .tint(.red)
+            .accessibilityIdentifier("bookDetailRestrictedButton")
         } else if entry.acquisitionURL != nil {
             // Not yet downloaded — show Get button or menu for multiple formats
             if entry.epubLinks.count > 1 {
@@ -998,6 +1018,12 @@ struct OPDSBookDetailView: View {
     }
 
     func startDownload(from overrideURL: String? = nil) {
+        if let restriction = contentRestriction, restriction.mode == .content {
+            logger.info("Blocking download of restricted book: '\(entry.title)'")
+            importError = restriction.reason
+            errorManager.errorOccurred(info: AppErrorInfo(title: "Restricted", message: restriction.reason))
+            return
+        }
         guard let urlString = overrideURL ?? entry.acquisitionURL, let url = URL(string: urlString) else {
             logger.error("No download URL for book: '\(entry.title)'")
             importError = "No download URL available"
