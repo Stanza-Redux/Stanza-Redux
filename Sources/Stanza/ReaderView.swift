@@ -268,14 +268,14 @@ struct ReaderView: View {
         }
         .preferredColorScheme(settings.appearance == "dark" ? .dark : settings.appearance == "light" ? .light : nil)
         .background(resolveThemeColors().background.uiColor)
-        #if !SKIP // unavailable in Skip
         .statusBarHidden(settings.hideStatusBarInReader && !showHUD)
-        // this hides the bottom horizontal bar on iOS successfully:
-        // “The Home indicator doesn’t appear without specific user intent when you set visibility to hidden.”
-        // https://developer.apple.com/documentation/swiftui/view/persistentsystemoverlays(_:)#discussion
-        // however, it re-apppears briefly (and then fades out again) whenever you tap the next the previous page zone, which is even *more* distracting than just having it always present
-        //.persistentSystemOverlays(settings.hideStatusBarInReader && !showHUD ? .hidden : .automatic)
-        #endif
+//        #if !SKIP // unavailable in Skip
+//        // this hides the bottom horizontal bar on iOS successfully:
+//        // “The Home indicator doesn’t appear without specific user intent when you set visibility to hidden.”
+//        // https://developer.apple.com/documentation/swiftui/view/persistentsystemoverlays(_:)#discussion
+//        // however, it re-apppears briefly (and then fades out again) whenever you tap the next the previous page zone, which is even *more* distracting than just having it always present
+//        //.persistentSystemOverlays(settings.hideStatusBarInReader && !showHUD ? .hidden : .automatic)
+//        #endif
         .task {
             settings.lastOpenBookID = bookID
             await loadBook()

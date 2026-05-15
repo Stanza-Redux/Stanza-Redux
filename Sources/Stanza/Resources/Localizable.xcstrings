@@ -3705,6 +3705,15 @@
         }
       }
     },
+    "Censored" : {
+      "comment" : "fallback censorship banner shown over restricted book covers"
+    },
+    "Censored by Apple" : {
+      "comment" : "censorship banner shown over restricted book covers on the App Store"
+    },
+    "Censored by Google" : {
+      "comment" : "censorship banner shown over restricted book covers on Google Play"
+    },
     "Center" : {
       "comment" : "Picker option for center text alignment in Settings > Text Layout > Text Alignment.",
       "localizations" : {
@@ -11484,6 +11493,9 @@
           }
         }
       }
+    },
+    "Restricted" : {
+
     },
     "Retry" : {
       "comment" : "Button label to retry a failed operation (loading a catalog feed or retrying a failed/cancelled download).",

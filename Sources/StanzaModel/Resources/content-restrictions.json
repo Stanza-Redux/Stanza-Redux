@@ -1,0 +1,13 @@
+{
+  "restrictions": [
+    {
+      "uid": "https://standardebooks.org/ebooks/apuleius/the-golden-ass/william-adlington",
+      "storefronts": {
+        "googleplaystore": {
+          "mode": "cover",
+          "reason": "Censored by Google Play policy (appeals ID 5-1708000040527)"
+        }
+      }
+    }
+  ]
+}
