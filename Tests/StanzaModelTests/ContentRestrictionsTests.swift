@@ -89,14 +89,14 @@ final class ContentRestrictionsTests: XCTestCase {
     }
 
     func testServiceFiltersByStorefront() throws {
-        let googlePlayService = ContentRestrictionService(storefront: Storefront.googlePlay)
+        let googlePlayService = ContentRestrictionService(storefront: Storefront.googlePlayStore)
         let goldenAssUID = "https://standardebooks.org/ebooks/apuleius/the-golden-ass/william-adlington"
         let restriction = try XCTUnwrap(googlePlayService.restriction(forUID: goldenAssUID))
         XCTAssertEqual(ContentRestrictionMode.cover, restriction.mode)
         XCTAssertTrue(restriction.reason.contains("Google Play"))
 
-        // The bundled file only has a googleplay entry, so the App Store should not be restricted.
-        let appStoreService = ContentRestrictionService(storefront: Storefront.appStore)
+        // The bundled file only has a googleplaystore entry, so the App Store should not be restricted.
+        let appStoreService = ContentRestrictionService(storefront: Storefront.appleAppStore)
         XCTAssertNil(appStoreService.restriction(forUID: goldenAssUID))
 
         // An unknown uid should never be restricted.

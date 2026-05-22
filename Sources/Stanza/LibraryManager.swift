@@ -14,7 +14,7 @@ import org.readium.r2.shared.publication.services.cover
 
 /// Manages the book library: database access, importing, cover extraction, and deletion.
 /// Shared via the SwiftUI environment so that both LibraryView and BrowseView use the same instance.
-@Observable public class LibraryManager {
+@Observable public class LibraryManager: @unchecked Sendable {
     /// All books in the library, kept in sync with the database.
     public var books: [BookRecord] = []
 

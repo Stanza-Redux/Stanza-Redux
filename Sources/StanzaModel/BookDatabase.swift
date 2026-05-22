@@ -11,7 +11,7 @@ import SkipSQLCore // needed for transpiled SkipSQL on Android
 let dbLogger = Logger(subsystem: "Stanza", category: "BookDatabase")
 
 /// Metadata for a book stored in the local library database.
-public struct BookRecord: Identifiable, Hashable, SQLCodable {
+public struct BookRecord: Identifiable, Hashable, Sendable, SQLCodable {
     public var id: Int64
     static let id = SQLColumn(name: "ID", type: .long, primaryKey: true, autoincrement: true)
 
@@ -116,7 +116,7 @@ public struct BookRecord: Identifiable, Hashable, SQLCodable {
 }
 
 /// A bookmark stored for a specific book.
-public struct BookmarkRecord: Identifiable, Hashable, SQLCodable {
+public struct BookmarkRecord: Identifiable, Hashable, Sendable, SQLCodable {
     public var id: Int64
     static let id = SQLColumn(name: "ID", type: .long, primaryKey: true, autoincrement: true)
 

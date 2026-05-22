@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import SwiftUI
-import SkipKit
+@preconcurrency import SkipKit
 import StanzaModel
 
 // MARK: - BrowseView
@@ -1093,7 +1093,7 @@ struct OPDSBookDetailView: View {
 }
 
 // if this turns out to be a bottleneck, we could add some caching
-private let textFromOPDSSummaryCache = SkipKit.Cache<String, AttributedString>()
+nonisolated(unsafe) private let textFromOPDSSummaryCache = SkipKit.Cache<String, AttributedString>()
 
 public extension View {
 

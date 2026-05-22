@@ -5,12 +5,12 @@ import Foundation
 import SkipXML
 
 /// Utility for converting simple HTML content to Markdown.
-public struct HTMLMarkdown {
+public struct HTMLMarkdown: Sendable {
     let string: String
     let options: Options
 
     /// Options controlling how HTML elements are converted to Markdown.
-    public struct Options: OptionSet {
+    public struct Options: OptionSet, Sendable {
         public let rawValue: Int
         public init(rawValue: Int) { self.rawValue = rawValue }
 

@@ -7,7 +7,7 @@ import OSLog
 let restrictionsLogger = Logger(subsystem: "Stanza", category: "ContentRestrictions")
 
 /// How a content restriction should be applied to a book.
-public enum ContentRestrictionMode: String, Codable {
+public enum ContentRestrictionMode: String, Codable, Sendable {
     /// The book's cover is blurred and overlaid with a censorship notice, but the book may still be downloaded and read.
     case cover
     /// The book may not be downloaded at all; an error with the configured reason is shown to the user instead.
@@ -15,7 +15,7 @@ public enum ContentRestrictionMode: String, Codable {
 }
 
 /// Restriction details for a single storefront.
-public struct StorefrontRestriction: Codable, Hashable {
+public struct StorefrontRestriction: Codable, Hashable, Sendable {
     public let mode: ContentRestrictionMode
     public let reason: String
 
@@ -26,7 +26,7 @@ public struct StorefrontRestriction: Codable, Hashable {
 }
 
 /// A restriction record for a single book uid, along with the storefronts where the restriction applies.
-public struct ContentRestriction: Codable, Hashable {
+public struct ContentRestriction: Codable, Hashable, Sendable {
     public let uid: String
     public let storefronts: [String: StorefrontRestriction]
 
@@ -58,50 +58,30 @@ public enum Storefront {
     }
 }
 
-/// Loads and caches the bundled content-restrictions.json file and exposes a lookup by book uid.
-public final class ContentRestrictionService {
+/// Loads the bundled content-restrictions.json file once at construction time
+/// and exposes a lookup by book uid. Naturally `Sendable` because all state is immutable.
+public final class ContentRestrictionService: Sendable {
     /// Shared default service that reads from the StanzaModel bundle.
     public static let shared = ContentRestrictionService()
 
-    private let storefront: String
-    private var cachedByUID: [String: StorefrontRestriction]? = nil
-    private var loadAttempted = false
+    /// Map of restricted book uid to the restriction entry for this service's storefront.
+    public let restrictionsByUID: [String: StorefrontRestriction]
 
     public init(storefront: String = Storefront.current) {
-        self.storefront = storefront
+        self.restrictionsByUID = Self.loadRestrictions(forStorefront: storefront)
     }
 
     /// Returns the restriction for the given book uid in the current storefront, or `nil` if the book is unrestricted.
     public func restriction(forUID uid: String) -> StorefrontRestriction? {
-        let restriction = restrictionsByUID()[uid]
+        let restriction = restrictionsByUID[uid]
         if let restriction {
             restrictionsLogger.info("restriction for \(uid): mode=\(restriction.mode.rawValue) reason=\(restriction.reason)")
         }
         return restriction
     }
 
-    /// Returns the cached map of uid to restriction for the current storefront, loading on first access.
-    public func restrictionsByUID() -> [String: StorefrontRestriction] {
-        if let cached = cachedByUID {
-            return cached
-        }
-        if loadAttempted {
-            return [:]
-        }
-        loadAttempted = true
-        let map = loadRestrictions(forStorefront: storefront)
-        cachedByUID = map
-        return map
-    }
-
-    /// Forces a reload of the cached restrictions from the bundle.
-    public func reload() {
-        cachedByUID = nil
-        loadAttempted = false
-    }
-
     /// Reads the bundled restrictions file and returns the entries that apply to the given storefront.
-    private func loadRestrictions(forStorefront storefront: String) -> [String: StorefrontRestriction] {
+    private static func loadRestrictions(forStorefront storefront: String) -> [String: StorefrontRestriction] {
         guard let url = Bundle.module.url(forResource: "content-restrictions", withExtension: "json") else {
             restrictionsLogger.warning("content-restrictions.json not found in bundle")
             return [:]

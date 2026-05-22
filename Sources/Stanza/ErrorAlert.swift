@@ -13,7 +13,7 @@ import Observation
 /// Conforming types provide a title, message, optional underlying error, optional
 /// help URL, and optional numeric code. The ``ErrorManager`` uses these properties
 /// to present a well-formatted alert to the user.
-public protocol ErrorInfo {
+public protocol ErrorInfo: Sendable {
     /// A short title for the alert, or `nil` to use a default "Error" title.
     var title: String? { get }
 
@@ -89,7 +89,7 @@ public struct AppErrorInfo: ErrorInfo {
 ///
 /// The method is safe to call from any thread — it dispatches
 /// to the main actor internally.
-@Observable public class ErrorManager {
+@Observable public class ErrorManager: @unchecked Sendable {
     /// The most recently reported error, or `nil` when dismissed.
     /// Setting this to a non-nil value triggers the alert presentation.
     public var lastErrorInfo: (any ErrorInfo)? = nil
