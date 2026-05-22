@@ -12,7 +12,7 @@ let catalogLogger = Logger(subsystem: "Stanza", category: "CatalogDatabase")
 
 /// A recommended OPDS catalog source. This is the single source of truth used by both
 /// the database seeding (`CatalogDatabase.seedDefaults`) and the UI (`AddCatalogView`).
-public struct DefaultCatalog: Identifiable {
+public struct DefaultCatalog: Identifiable, Sendable {
     public let id: String
     public let name: String
     public let url: String
@@ -34,7 +34,7 @@ public struct DefaultCatalog: Identifiable {
 }
 
 /// Metadata for an OPDS catalog feed stored in the local database.
-public struct CatalogRecord: Identifiable, Hashable, SQLCodable {
+public struct CatalogRecord: Identifiable, Hashable, Sendable, SQLCodable {
     public var id: Int64
     static let id = SQLColumn(name: "ID", type: .long, primaryKey: true, autoincrement: true)
 

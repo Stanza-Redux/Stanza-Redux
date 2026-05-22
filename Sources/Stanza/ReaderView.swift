@@ -5,8 +5,8 @@ import SwiftUI
 import StanzaModel
 import SkipKit
 #if !SKIP
-import ReadiumNavigator
-import ReadiumShared
+@preconcurrency import ReadiumNavigator
+@preconcurrency import ReadiumShared
 import UIKit
 #else
 import android.content.Context
@@ -49,10 +49,10 @@ typealias PlatformFontFamily = org.readium.r2.navigator.preferences.FontFamily
 typealias PlatformColor = org.readium.r2.navigator.preferences.Color
 #endif
 
-let defaults = PlatformDefaults(columnCount: nil, fontSize: nil, fontWeight: nil, hyphens: nil, imageFilter: nil, language: nil, letterSpacing: nil, ligatures: nil, lineHeight: nil, pageMargins: nil, paragraphIndent: nil, paragraphSpacing: nil, publisherStyles: nil, readingProgression: nil, scroll: nil, spread: nil, textAlign: nil, textNormalization: nil, typeScale: nil, wordSpacing: nil)
+nonisolated(unsafe) let defaults = PlatformDefaults(columnCount: nil, fontSize: nil, fontWeight: nil, hyphens: nil, imageFilter: nil, language: nil, letterSpacing: nil, ligatures: nil, lineHeight: nil, pageMargins: nil, paragraphIndent: nil, paragraphSpacing: nil, publisherStyles: nil, readingProgression: nil, scroll: nil, spread: nil, textAlign: nil, textNormalization: nil, typeScale: nil, wordSpacing: nil)
 
 #if !SKIP
-var navConfig: EPUBNavigatorViewController.Configuration = EPUBNavigatorViewController.Configuration(defaults: defaults, disablePageTurnsWhileScrolling: true, fontFamilyDeclarations: FontManager.fontFamilyDeclarations)
+nonisolated(unsafe) var navConfig: EPUBNavigatorViewController.Configuration = EPUBNavigatorViewController.Configuration(defaults: defaults, disablePageTurnsWhileScrolling: true, fontFamilyDeclarations: FontManager.fontFamilyDeclarations)
 #else
 var navConfig: org.readium.r2.navigator.epub.EpubNavigatorFactory.Configuration = EpubNavigatorFactory.Configuration(defaults: defaults)
 #endif

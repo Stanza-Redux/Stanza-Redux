@@ -63,12 +63,12 @@ let stanzaVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as
 /// The User-Agent string used for all network requests in the app.
 public let stanzaUserAgent = "Stanza-Redux/\(stanzaVersion)"
 
-public let httpClient: DefaultHTTPClient = DefaultHTTPClient(userAgent: stanzaUserAgent)
+nonisolated(unsafe) public let httpClient: DefaultHTTPClient = DefaultHTTPClient(userAgent: stanzaUserAgent)
 
 #if !SKIP
-public let assetRetriever = AssetRetriever(httpClient: httpClient)
-let pdfDocumentFactory = DefaultPDFDocumentFactory()
-let publicationOpener = PublicationOpener(
+nonisolated(unsafe) public let assetRetriever = AssetRetriever(httpClient: httpClient)
+nonisolated(unsafe) let pdfDocumentFactory = DefaultPDFDocumentFactory()
+nonisolated(unsafe) let publicationOpener = PublicationOpener(
     parser: DefaultPublicationParser(
         httpClient: httpClient,
         assetRetriever: assetRetriever,

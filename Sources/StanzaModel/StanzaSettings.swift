@@ -9,7 +9,7 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
 
 /// Observable settings model that persists all values to UserDefaults.
 /// A single instance is created at app launch and shared via the environment.
-@Observable public class StanzaSettings {
+@Observable public class StanzaSettings: @unchecked Sendable {
     private let defaults: UserDefaults
 
     // MARK: - General

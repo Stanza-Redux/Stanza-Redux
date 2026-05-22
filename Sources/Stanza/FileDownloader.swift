@@ -219,7 +219,10 @@ public enum FileDownloadState: Equatable {
 // MARK: - iOS URLSession Delegate
 
 #if !SKIP
-private class DownloadDelegate: NSObject, URLSessionDownloadDelegate {
+private final class DownloadDelegate: NSObject, URLSessionDownloadDelegate, @unchecked Sendable {
+    // `weak var` must be mutable, so we suppress the Sendable-mutability warning
+    // via @unchecked Sendable. Access is confined to URLSession's serial delegate
+    // queue plus the constructor, so there is no actual data race.
     weak var downloader: FileDownloader?
 
     init(downloader: FileDownloader) {
