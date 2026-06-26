@@ -7411,6 +7411,9 @@
         }
       }
     },
+    "In Library" : {
+
+    },
     "Increase font size" : {
       "comment" : "Accessibility label on the plus button in the reader HUD bottom bar that increases the font size.",
       "localizations" : {
