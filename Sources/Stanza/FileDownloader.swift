@@ -25,6 +25,14 @@ public enum FileDownloadState: Equatable {
     case cancelled
 }
 
+/// Returns `true` if the given HTTP status code represents a client or server error (>= 400).
+///
+/// Used to reject error responses (e.g. a 404 or 500 error page) before they get saved as a
+/// downloaded file.
+func isFailureHTTPStatus(_ code: Int) -> Bool {
+    code >= 400
+}
+
 /// An observable model that manages downloading a file from a URL to a local destination.
 ///
 /// On iOS, uses `URLSessionDownloadTask` with a delegate for progress reporting.
@@ -230,6 +238,14 @@ private final class DownloadDelegate: NSObject, URLSessionDownloadDelegate, @unc
     }
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        // Reject error responses (e.g. a 404 or 500 HTML error page) instead of saving them as the file.
+        if let httpResponse = downloadTask.response as? HTTPURLResponse, isFailureHTTPStatus(httpResponse.statusCode) {
+            let message = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
+            let error = NSError(domain: "FileDownloader", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "Server returned HTTP \(httpResponse.statusCode): \(message)"])
+            downloader?.handleCompletion(tempURL: nil, error: error)
+            session.finishTasksAndInvalidate()
+            return
+        }
         downloader?.handleCompletion(tempURL: location, error: nil)
         session.finishTasksAndInvalidate()
     }
