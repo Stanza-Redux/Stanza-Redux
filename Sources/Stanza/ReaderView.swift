@@ -918,14 +918,18 @@ struct ReaderView: View {
         #if !SKIP
         UIApplication.shared.isIdleTimerDisabled = on
         #else
-        // On Android, SkipUI's `isIdleTimerDisabled` sets/clears the activity window's
-        // FLAG_KEEP_SCREEN_ON, using the same androidActivity access pattern as the status bar.
+        // On Android the FLAG_KEEP_SCREEN_ON window flag must be set from the UI thread.
+        // This is called from a `.task` (a background coroutine), so marshal the change onto
+        // the UI thread with `runOnUiThread`; calling `window.addFlags` directly from the task
+        // thread blocks and prevents the book from ever loading.
         if let activity = UIApplication.shared.androidActivity {
             let flags = android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-            if on {
-                activity.window.addFlags(flags)
-            } else {
-                activity.window.clearFlags(flags)
+            activity.runOnUiThread {
+                if on {
+                    activity.window.addFlags(flags)
+                } else {
+                    activity.window.clearFlags(flags)
+                }
             }
         }
         #endif
