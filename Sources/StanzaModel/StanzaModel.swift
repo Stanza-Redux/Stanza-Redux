@@ -11,6 +11,7 @@ import ReadiumShared
 import ReadiumStreamer
 #else
 import android.content.ContentResolver
+import kotlin.time.toJavaInstant
 import org.readium.r2.shared.opds.Acquisition
 import org.readium.r2.shared.opds.Facet
 import org.readium.r2.shared.opds.Feed
@@ -285,13 +286,13 @@ public struct Meta {
         Array(platformValue.authors).map({ Contrib(platformValue: $0)} )
     }
 
+    // SKIP INSERT: @kotlin.time.ExperimentalTime
     public var published: Date? {
         #if !SKIP
         return platformValue.published
         #else
-        // org.readium.r2.shared.util.Instant
-        guard let instant = platformValue.published else { return nil }
-        return Date(platformValue: instant.toJavaDate())
+        guard let instant: kotlin.time.Instant = platformValue.published else { return nil }
+        return Date(platformValue: java.util.Date.from(instant.toJavaInstant()))
         #endif
     }
 }
