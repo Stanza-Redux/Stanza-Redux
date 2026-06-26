@@ -123,6 +123,11 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         didSet { defaults.set(scrollMode, forKey: "scrollMode"); settingsLogger.info("Scroll mode: \(self.scrollMode)") }
     }
 
+    /// When enabled, the screen is prevented from dimming/sleeping while the reader is active.
+    public var keepScreenOn: Bool {
+        didSet { defaults.set(keepScreenOn, forKey: "keepScreenOn"); settingsLogger.info("Keep screen on: \(self.keepScreenOn)") }
+    }
+
     // MARK: - Text-to-Speech
 
     /// When enabled, the currently spoken utterance is highlighted in the reader.
@@ -161,6 +166,7 @@ let settingsLogger = Logger(subsystem: "Stanza", category: "Settings")
         self.readingTheme = defaults.string(forKey: "readingTheme") ?? "original"
         self.useInAppBrowser = defaults.object(forKey: "useInAppBrowser") != nil ? defaults.bool(forKey: "useInAppBrowser") : true
         self.scrollMode = defaults.bool(forKey: "scrollMode")
+        self.keepScreenOn = defaults.object(forKey: "keepScreenOn") != nil ? defaults.bool(forKey: "keepScreenOn") : true
         self.ttsHighlightUtterance = defaults.object(forKey: "ttsHighlightUtterance") != nil ? defaults.bool(forKey: "ttsHighlightUtterance") : true
         self.ttsAutoTurnPages = defaults.object(forKey: "ttsAutoTurnPages") != nil ? defaults.bool(forKey: "ttsAutoTurnPages") : true
         self.ttsScrollMode = defaults.object(forKey: "ttsScrollMode") != nil ? defaults.bool(forKey: "ttsScrollMode") : true

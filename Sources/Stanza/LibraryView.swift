@@ -196,18 +196,18 @@ struct LibraryView: View {
                     Button {
                         selectedBook = book
                     } label: {
-                        Label("Open Book", image: "newsstand")
+                        Label(title: { Text("Open Book", bundle: .module) }, icon: { Image("auto_stories", bundle: .module) })
                     }
                     Button {
                         bookForDetail = book
                     } label: {
-                        Label("Show Book Info", systemImage: "info.circle")
+                        Label(title: { Text("Show Book Info", bundle: .module) }, icon: { Image("info", bundle: .module) })
                     }
                     Button(role: .destructive) {
                         bookToDelete = book
                         showDeleteConfirmation = true
                     } label: {
-                        Label("Delete", systemImage: "trash")
+                        Label(title: { Text("Delete", bundle: .module) }, icon: { Image("delete", bundle: .module) })
                     }
                 }
             }

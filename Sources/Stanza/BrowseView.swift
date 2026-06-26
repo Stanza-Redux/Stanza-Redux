@@ -163,7 +163,7 @@ struct AddCatalogView: View {
 
     var showRecommended: Bool { prefilledURL == nil }
 
-    var effectiveURL: String { prefilledURL ?? customURL }
+    var effectiveURL: String { normalizedCatalogURLString(prefilledURL ?? customURL) }
 
     var isValidURL: Bool {
         let url = effectiveURL
@@ -376,6 +376,14 @@ struct AddCatalogView: View {
             isAdding = false
         }
     }
+}
+
+/// Normalizes a pasted catalog URL string by trimming surrounding whitespace and newlines.
+///
+/// A leading or trailing space in a pasted URL otherwise causes URL validation to fail, so
+/// this is applied before validation and before persisting the catalog.
+func normalizedCatalogURLString(_ raw: String) -> String {
+    raw.trimmingCharacters(in: .whitespacesAndNewlines)
 }
 
 /// Notification posted after a catalog is added so BrowseView can refresh its list.
@@ -724,6 +732,7 @@ struct PubLink: Hashable {
 
 struct PublicationRow: View {
     let entry: OPDSPubEntry
+    @Environment(LibraryManager.self) var library: LibraryManager
 
     var body: some View {
         HStack(spacing: 12) {
@@ -771,6 +780,16 @@ struct PublicationRow: View {
                         .foregroundStyle(.secondary).opacity(0.7)
                         .lineLimit(2)
                         .accessibilityIdentifier("pubRowSummary")
+                }
+                if library.book(withIdentifier: entry.id) != nil {
+                    HStack(spacing: 4) {
+                        Image("check_circle", bundle: .module)
+                            .font(.caption)
+                        Text("In Library", bundle: .module)
+                            .font(.caption)
+                    }
+                    .foregroundStyle(.green)
+                    .accessibilityIdentifier("inLibraryBadge")
                 }
             }
         }
@@ -973,10 +992,24 @@ struct OPDSBookDetailView: View {
             .buttonStyle(.borderedProminent)
             .accessibilityIdentifier("bookDetailReadButton")
         } else if let dl = downloader {
-            // Download in progress — show circular progress; tap cancels
-            CircularDownloadProgressView(downloader: dl, onCompleted: {
-                importDownloadedBook()
-            })
+            switch dl.state {
+            case .failed, .cancelled:
+                // Download failed or was cancelled — offer a retry.
+                Button {
+                    dl.reset()
+                    dl.start()
+                } label: {
+                    Text("Retry", bundle: .module)
+                        .fontWeight(.bold)
+                }
+                .buttonStyle(.borderedProminent)
+                .accessibilityIdentifier("retryDownloadButton")
+            default:
+                // Download in progress — show circular progress; tap cancels
+                CircularDownloadProgressView(downloader: dl, onCompleted: {
+                    importDownloadedBook()
+                })
+            }
         } else if let restriction = contentRestriction, restriction.mode == .content {
             // Storefront has blocked downloading the content of this book.
             Button {

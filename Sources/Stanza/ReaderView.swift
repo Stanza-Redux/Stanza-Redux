@@ -156,6 +156,13 @@ func findTheme(_ id: String) -> ReadingTheme {
     return readingThemes[0]
 }
 
+/// The English-language label for the number of pages remaining in the current chapter.
+/// Locks the singular/plural choice so it can be unit-tested; the view itself localizes
+/// the same two literals via `bundle: .module`.
+func pagesLeftInChapterLabel(_ count: Int) -> String {
+    count == 1 ? "1 page left in chapter" : "\(count) pages left in chapter"
+}
+
 struct ReaderView: View {
     let bookID: Int64
     let filePath: String
@@ -243,6 +250,11 @@ struct ReaderView: View {
         Group {
             if let publication = viewModel?.publication {
                 readerViewContainer(publication: publication)
+                    .accessibilityIdentifier("readerContainer")
+                    #if !SKIP // .accessibilityAction(named:) is not yet supported by the Skip transpiler
+                    .accessibilityAction(named: Text("Next Page", bundle: .module)) { goForward() }
+                    .accessibilityAction(named: Text("Previous Page", bundle: .module)) { goBackward() }
+                    #endif
                     .overlay {
                         hudOverlay(publication: publication)
                     }
@@ -256,13 +268,19 @@ struct ReaderView: View {
                     }
             } else if let error = error {
                 VStack {
-                    Text("Error: \(String(describing: error))")
+                    Text("Error: \(error.localizedDescription)", bundle: .module)
                         .accessibilityIdentifier("readerErrorMessage")
-                    Button("Dismiss") { dismiss() }
+                    Button {
+                        dismiss()
+                    } label: {
+                        Text("Dismiss", bundle: .module)
+                    }
                         .accessibilityIdentifier("readerErrorDismissButton")
                 }
             } else {
-                ProgressView("Loading...")
+                ProgressView {
+                    Text("Loading...", bundle: .module)
+                }
                     .accessibilityIdentifier("readerLoadingIndicator")
             }
         }
@@ -278,10 +296,12 @@ struct ReaderView: View {
 //        #endif
         .task {
             settings.lastOpenBookID = bookID
+            applyKeepScreenOn(settings.keepScreenOn)
             await loadBook()
         }
         .onDisappear {
             if isSpeaking { stopSpeaking() }
+            applyKeepScreenOn(false)
             saveCurrentLocator()
             settings.lastOpenBookID = 0
         }
@@ -890,6 +910,27 @@ struct ReaderView: View {
     }
     #endif
 
+    // MARK: - Keep Screen On
+
+    /// Prevents (or allows) the screen from dimming/sleeping while the reader is active.
+    /// Always disable on disappear so the setting never leaks outside the reader.
+    func applyKeepScreenOn(_ on: Bool) {
+        #if !SKIP
+        UIApplication.shared.isIdleTimerDisabled = on
+        #else
+        // On Android, SkipUI's `isIdleTimerDisabled` sets/clears the activity window's
+        // FLAG_KEEP_SCREEN_ON, using the same androidActivity access pattern as the status bar.
+        if let activity = UIApplication.shared.androidActivity {
+            let flags = android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+            if on {
+                activity.window.addFlags(flags)
+            } else {
+                activity.window.clearFlags(flags)
+            }
+        }
+        #endif
+    }
+
     // MARK: - Bookmarks
 
     func refreshBookmarks() {
@@ -1186,7 +1227,7 @@ struct ReaderView: View {
                         .frame(width: 72)
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel("Font: \(name)")
+                    .accessibilityLabel(Text("Font: \(name)", bundle: .module))
                 }
             }
             .padding(.horizontal, 16)
@@ -1241,13 +1282,13 @@ struct ReaderView: View {
                             .strokeBorder(isSelected ? Color.accentColor : Color.white.opacity(0.3), lineWidth: isSelected ? 2.0 : 1.0)
                             .frame(width: 52, height: 44)
                     }
-                    Text("Auto")
+                    Text("Auto", bundle: .module)
                         .font(.caption2)
                         .foregroundStyle(isSelected ? Color.accentColor : Color.white.opacity(0.7))
                 }
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("Appearance: System")
+            .accessibilityLabel(Text("Appearance: System", bundle: .module))
 
             // Light
             Button {
@@ -1264,13 +1305,13 @@ struct ReaderView: View {
                             .strokeBorder(isSelected ? Color.accentColor : Color.white.opacity(0.3), lineWidth: isSelected ? 2.0 : 1.0)
                             .frame(width: 52, height: 44)
                     }
-                    Text("Light")
+                    Text("Light", bundle: .module)
                         .font(.caption2)
                         .foregroundStyle(isSelected ? Color.accentColor : Color.white.opacity(0.7))
                 }
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("Appearance: Light")
+            .accessibilityLabel(Text("Appearance: Light", bundle: .module))
 
             // Dark
             Button {
@@ -1287,13 +1328,13 @@ struct ReaderView: View {
                             .strokeBorder(isSelected ? Color.accentColor : Color.white.opacity(0.3), lineWidth: isSelected ? 2.0 : 1.0)
                             .frame(width: 52, height: 44)
                     }
-                    Text("Dark")
+                    Text("Dark", bundle: .module)
                         .font(.caption2)
                         .foregroundStyle(isSelected ? Color.accentColor : Color.white.opacity(0.7))
                 }
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("Appearance: Dark")
+            .accessibilityLabel(Text("Appearance: Dark", bundle: .module))
         }
         .padding(.vertical, 12)
         .frame(maxWidth: .infinity)
@@ -1331,7 +1372,7 @@ struct ReaderView: View {
                         .frame(width: 72)
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel("Theme: \(theme.name)")
+                    .accessibilityLabel(Text("Theme: \(theme.name)", bundle: .module))
                 }
             }
             .padding(.horizontal, 16)
@@ -1375,7 +1416,7 @@ struct ReaderView: View {
                             applyPreferences()
                         } label: {
                             Label(
-                                title: { Text(settings.scrollMode ? "Paged Mode" : "Scroll Mode") },
+                                title: { Text(settings.scrollMode ? "Paged Mode" : "Scroll Mode", bundle: .module) },
                                 icon: { Image(settings.scrollMode ? "auto_stories" : "swap_vert", bundle: .module) }
                             )
                         }
@@ -1388,7 +1429,7 @@ struct ReaderView: View {
                             }
                         } label: {
                             Label(
-                                title: { Text(isSpeaking ? "Stop Speaking" : "Start Speaking") },
+                                title: { Text(isSpeaking ? "Stop Speaking" : "Start Speaking", bundle: .module) },
                                 icon: { Image(isSpeaking ? "stop_circle" : "volume_up", bundle: .module) }
                             )
                         }
@@ -1396,14 +1437,14 @@ struct ReaderView: View {
                             toggleBookmark()
                         } label: {
                             Label(
-                                title: { Text(isCurrentPageBookmarked ? "Remove Bookmark" : "Add Bookmark") },
+                                title: { Text(isCurrentPageBookmarked ? "Remove Bookmark" : "Add Bookmark", bundle: .module) },
                                 icon: { Image(isCurrentPageBookmarked ? "bookmark_filled" : "bookmark", bundle: .module) }
                             )
                         }
                         Button {
                             shareBook()
                         } label: {
-                            Label("Share", systemImage: "square.and.arrow.up")
+                            Label(title: { Text("Share", bundle: .module) }, icon: { Image("share", bundle: .module) })
                         }
                     } label: {
                         Image("more_vert", bundle: .module)
@@ -1440,7 +1481,7 @@ struct ReaderView: View {
                             .accessibilityIdentifier("readerChapterTitle")
                         Spacer()
                         if let pagesLeft = pagesLeftInChapter {
-                            Text("\(pagesLeft) pages left in chapter")
+                            Text(pagesLeft == 1 ? "1 page left in chapter" : "\(pagesLeft) pages left in chapter", bundle: .module)
                                 .foregroundStyle(Color.white.opacity(0.7))
                                 .accessibilityIdentifier("readerPagesLeft")
                         }

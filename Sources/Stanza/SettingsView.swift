@@ -11,27 +11,31 @@ struct SettingsView: View {
     var body: some View {
         @Bindable var settings = settings
         AppFairSettings(bundle: .module) {
-                Section("Reading") {
-                    Picker("Appearance", selection: $settings.appearance) {
-                        Text("System").tag("")
-                        Text("Light").tag("light")
-                        Text("Dark").tag("dark")
+                Section {
+                    Picker(selection: $settings.appearance) {
+                        Text("System", bundle: .module).tag("")
+                        Text("Light", bundle: .module).tag("light")
+                        Text("Dark", bundle: .module).tag("dark")
+                    } label: {
+                        Text("Appearance", bundle: .module)
                     }
                     .accessibilityIdentifier("appearancePicker")
-                    Picker("Reading Theme", selection: $settings.readingTheme) {
-                        Text("Original").tag("original")
-                        Text("Parchment").tag("parchment")
-                        Text("Cloister").tag("cloister")
-                        Text("Reverie").tag("reverie")
-                        Text("Sylvan").tag("sylvan")
-                        Text("Meridian").tag("meridian")
-                        Text("Vesper").tag("vesper")
-                        Text("Aurora").tag("aurora")
-                        Text("Solitude").tag("solitude")
+                    Picker(selection: $settings.readingTheme) {
+                        Text("Original", bundle: .module).tag("original")
+                        Text("Parchment", bundle: .module).tag("parchment")
+                        Text("Cloister", bundle: .module).tag("cloister")
+                        Text("Reverie", bundle: .module).tag("reverie")
+                        Text("Sylvan", bundle: .module).tag("sylvan")
+                        Text("Meridian", bundle: .module).tag("meridian")
+                        Text("Vesper", bundle: .module).tag("vesper")
+                        Text("Aurora", bundle: .module).tag("aurora")
+                        Text("Solitude", bundle: .module).tag("solitude")
+                    } label: {
+                        Text("Reading Theme", bundle: .module)
                     }
                     .accessibilityIdentifier("readingThemePicker")
                     HStack {
-                        Text("Font Size")
+                        Text("Font Size", bundle: .module)
                         Spacer()
                         Text("\(Int(settings.fontSize * 100))%")
                             .foregroundStyle(.secondary)
@@ -39,154 +43,224 @@ struct SettingsView: View {
                     }
                     Slider(value: $settings.fontSize, in: 0.5...3.0, step: 0.1)
                         .accessibilityIdentifier("fontSizeSlider")
-                        .accessibilityLabel("Font Size")
+                        .accessibilityLabel(Text("Font Size", bundle: .module))
                     if settings.fontSize != 1.0 {
-                        Button("Reset Font Size") {
+                        Button {
                             settings.fontSize = 1.0
+                        } label: {
+                            Text("Reset Font Size", bundle: .module)
                         }
                         .accessibilityIdentifier("resetFontSizeButton")
                     }
-                    Picker("Font", selection: $settings.fontFamily) {
+                    Picker(selection: $settings.fontFamily) {
                         ForEach(FontManager.allFonts) { font in
                             Text(font.name == "Default" ? "Publisher Default" : font.name).tag(font.tag)
                         }
+                    } label: {
+                        Text("Font", bundle: .module)
                     }
                     .accessibilityIdentifier("fontPicker")
 
-                    Toggle("Animate Page Turns", isOn: $settings.animatePageTurns)
+                    Toggle(isOn: $settings.animatePageTurns) {
+                        Text("Animate Page Turns", bundle: .module)
+                    }
                         .accessibilityIdentifier("animatePageTurnsToggle")
-                    Toggle("Left Tap Advances", isOn: $settings.leftTapAdvances)
+                    Toggle(isOn: $settings.leftTapAdvances) {
+                        Text("Left Tap Advances", bundle: .module)
+                    }
                         .accessibilityIdentifier("leftTapAdvancesToggle")
-                    Toggle("Hide Status Bar in Reader", isOn: $settings.hideStatusBarInReader)
+                    Toggle(isOn: $settings.hideStatusBarInReader) {
+                        Text("Hide Status Bar in Reader", bundle: .module)
+                    }
                         .accessibilityIdentifier("hideStatusBarToggle")
-                    Toggle("Open Web Pages in Embedded Browser", isOn: $settings.useInAppBrowser)
+                    Toggle(isOn: $settings.keepScreenOn) {
+                        Text("Keep Screen On While Reading", bundle: .module)
+                    }
+                        .accessibilityIdentifier("keepScreenOnToggle")
+                    Toggle(isOn: $settings.useInAppBrowser) {
+                        Text("Open Web Pages in Embedded Browser", bundle: .module)
+                    }
                         .accessibilityIdentifier("useInAppBrowserToggle")
+                } header: {
+                    Text("Reading", bundle: .module)
                 }
 
-                Section("Text-to-Speech") {
-                    Toggle("Highlight Spoken Text", isOn: $settings.ttsHighlightUtterance)
+                Section {
+                    Toggle(isOn: $settings.ttsHighlightUtterance) {
+                        Text("Highlight Spoken Text", bundle: .module)
+                    }
                         .accessibilityIdentifier("ttsHighlightToggle")
-                    Toggle("Auto-Turn Pages", isOn: $settings.ttsAutoTurnPages)
+                    Toggle(isOn: $settings.ttsAutoTurnPages) {
+                        Text("Auto-Turn Pages", bundle: .module)
+                    }
                         .accessibilityIdentifier("ttsAutoTurnToggle")
-                    Toggle("Switch to Scroll Mode While Reading Aloud", isOn: $settings.ttsScrollMode)
+                    Toggle(isOn: $settings.ttsScrollMode) {
+                        Text("Switch to Scroll Mode While Reading Aloud", bundle: .module)
+                    }
                         .accessibilityIdentifier("ttsScrollModeToggle")
+                } header: {
+                    Text("Text-to-Speech", bundle: .module)
                 }
 
-                Section("Text Layout") {
-                    Picker("Columns", selection: $settings.columnCount) {
-                        Text("Auto").tag("")
-                        Text("One").tag("1")
-                        Text("Two").tag("2")
+                Section {
+                    Picker(selection: $settings.columnCount) {
+                        Text("Auto", bundle: .module).tag("")
+                        Text("One", bundle: .module).tag("1")
+                        Text("Two", bundle: .module).tag("2")
+                    } label: {
+                        Text("Columns", bundle: .module)
                     }
                     .accessibilityIdentifier("columnsPicker")
 
-                    Picker("Content Fit", selection: $settings.fit) {
-                        Text("Auto").tag("")
-                        Text("Page").tag("page")
-                        Text("Width").tag("width")
+                    Picker(selection: $settings.fit) {
+                        Text("Auto", bundle: .module).tag("")
+                        Text("Page", bundle: .module).tag("page")
+                        Text("Width", bundle: .module).tag("width")
+                    } label: {
+                        Text("Content Fit", bundle: .module)
                     }
                     .accessibilityIdentifier("contentFitPicker")
 
-                    Picker("Hyphenation", selection: $settings.hyphens) {
-                        Text("Default").tag("")
-                        Text("On").tag("true")
-                        Text("Off").tag("false")
+                    Picker(selection: $settings.hyphens) {
+                        Text("Default", bundle: .module).tag("")
+                        Text("On", bundle: .module).tag("true")
+                        Text("Off", bundle: .module).tag("false")
+                    } label: {
+                        Text("Hyphenation", bundle: .module)
                     }
                     .accessibilityIdentifier("hyphenationPicker")
 
-                    Picker("Text Alignment", selection: $settings.textAlign) {
-                        Text("Default").tag("")
-                        Text("Start").tag("start")
-                        Text("Left").tag("left")
-                        Text("Center").tag("center")
-                        Text("Right").tag("right")
-                        Text("Justify").tag("justify")
+                    Picker(selection: $settings.textAlign) {
+                        Text("Default", bundle: .module).tag("")
+                        Text("Start", bundle: .module).tag("start")
+                        Text("Left", bundle: .module).tag("left")
+                        Text("Center", bundle: .module).tag("center")
+                        Text("Right", bundle: .module).tag("right")
+                        Text("Justify", bundle: .module).tag("justify")
+                    } label: {
+                        Text("Text Alignment", bundle: .module)
                     }
                     .accessibilityIdentifier("textAlignmentPicker")
 
-                    Picker("Text Normalization", selection: $settings.textNormalization) {
-                        Text("Default").tag("")
-                        Text("On").tag("true")
-                        Text("Off").tag("false")
+                    Picker(selection: $settings.textNormalization) {
+                        Text("Default", bundle: .module).tag("")
+                        Text("On", bundle: .module).tag("true")
+                        Text("Off", bundle: .module).tag("false")
+                    } label: {
+                        Text("Text Normalization", bundle: .module)
                     }
                     .accessibilityIdentifier("textNormalizationPicker")
 
-                    Picker("Publisher Styles", selection: $settings.publisherStyles) {
-                        Text("Default").tag("")
-                        Text("On").tag("true")
-                        Text("Off").tag("false")
+                    Picker(selection: $settings.publisherStyles) {
+                        Text("Default", bundle: .module).tag("")
+                        Text("On", bundle: .module).tag("true")
+                        Text("Off", bundle: .module).tag("false")
+                    } label: {
+                        Text("Publisher Styles", bundle: .module)
                     }
                     .accessibilityIdentifier("publisherStylesPicker")
+                } header: {
+                    Text("Text Layout", bundle: .module)
                 }
 
-                Section("Spacing") {
+                Section {
                     VStack(alignment: .leading) {
                         HStack {
-                            Text("Line Height")
+                            Text("Line Height", bundle: .module)
                             Spacer()
-                            Text(settings.lineHeight > 0.0 ? String(format: "%.1f", settings.lineHeight) : "Default")
+                            Group {
+                                if settings.lineHeight > 0.0 {
+                                    Text(String(format: "%.1f", settings.lineHeight))
+                                } else {
+                                    Text("Default", bundle: .module)
+                                }
+                            }
                                 .foregroundStyle(.secondary)
                                 .accessibilityIdentifier("lineHeightValue")
                         }
                         Slider(value: $settings.lineHeight, in: 0.0...3.0, step: 0.1)
                             .accessibilityIdentifier("lineHeightSlider")
-                            .accessibilityLabel("Line Height")
+                            .accessibilityLabel(Text("Line Height", bundle: .module))
                     }
 
                     VStack(alignment: .leading) {
                         HStack {
-                            Text("Page Margins")
+                            Text("Page Margins", bundle: .module)
                             Spacer()
-                            Text(settings.pageMargins > 0.0 ? String(format: "%.1f", settings.pageMargins) : "Default")
+                            Group {
+                                if settings.pageMargins > 0.0 {
+                                    Text(String(format: "%.1f", settings.pageMargins))
+                                } else {
+                                    Text("Default", bundle: .module)
+                                }
+                            }
                                 .foregroundStyle(.secondary)
                                 .accessibilityIdentifier("pageMarginsValue")
                         }
                         Slider(value: $settings.pageMargins, in: 0.0...4.0, step: 0.1)
                             .accessibilityIdentifier("pageMarginsSlider")
-                            .accessibilityLabel("Page Margins")
+                            .accessibilityLabel(Text("Page Margins", bundle: .module))
                     }
 
                     VStack(alignment: .leading) {
                         HStack {
-                            Text("Paragraph Spacing")
+                            Text("Paragraph Spacing", bundle: .module)
                             Spacer()
-                            Text(settings.paragraphSpacing > 0.0 ? String(format: "%.1f", settings.paragraphSpacing) : "Default")
+                            Group {
+                                if settings.paragraphSpacing > 0.0 {
+                                    Text(String(format: "%.1f", settings.paragraphSpacing))
+                                } else {
+                                    Text("Default", bundle: .module)
+                                }
+                            }
                                 .foregroundStyle(.secondary)
                                 .accessibilityIdentifier("paragraphSpacingValue")
                         }
                         Slider(value: $settings.paragraphSpacing, in: 0.0...4.0, step: 0.1)
                             .accessibilityIdentifier("paragraphSpacingSlider")
-                            .accessibilityLabel("Paragraph Spacing")
+                            .accessibilityLabel(Text("Paragraph Spacing", bundle: .module))
                     }
 
                     VStack(alignment: .leading) {
                         HStack {
-                            Text("Word Spacing")
+                            Text("Word Spacing", bundle: .module)
                             Spacer()
-                            Text(settings.wordSpacing > 0.0 ? String(format: "%.1f", settings.wordSpacing) : "Default")
+                            Group {
+                                if settings.wordSpacing > 0.0 {
+                                    Text(String(format: "%.1f", settings.wordSpacing))
+                                } else {
+                                    Text("Default", bundle: .module)
+                                }
+                            }
                                 .foregroundStyle(.secondary)
                                 .accessibilityIdentifier("wordSpacingValue")
                         }
                         Slider(value: $settings.wordSpacing, in: 0.0...2.0, step: 0.05)
                             .accessibilityIdentifier("wordSpacingSlider")
-                            .accessibilityLabel("Word Spacing")
+                            .accessibilityLabel(Text("Word Spacing", bundle: .module))
                     }
+                } header: {
+                    Text("Spacing", bundle: .module)
                 }
 
                 Section {
-                    NavigationLink("Advanced Settings") {
+                    NavigationLink {
                         AdvancedSettingsView()
+                    } label: {
+                        Text("Advanced Settings", bundle: .module)
                     }
                     .accessibilityIdentifier("advancedSettingsLink")
 
-                    Button("Reset All Reading Preferences") {
+                    Button {
                         settings.resetReadingPreferences()
+                    } label: {
+                        Text("Reset All Reading Preferences", bundle: .module)
                     }
                     .foregroundStyle(.red)
                     .accessibilityIdentifier("resetAllPreferencesButton")
                 }
             }
-            .navigationTitle("Settings")
+            .navigationTitle(Text("Settings", bundle: .module))
     }
 }
 
@@ -254,6 +328,6 @@ struct AdvancedSettingsView: View {
 //                }
 //            }
         }
-        .navigationTitle("Advanced Settings")
+        .navigationTitle(Text("Advanced Settings", bundle: .module))
     }
 }
