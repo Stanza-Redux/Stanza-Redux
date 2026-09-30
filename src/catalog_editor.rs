@@ -93,7 +93,12 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
     let invalidate = cancel.clone();
     watch(
         move || url.get(),
-        move |_, _| {
+        move |new, old| {
+            // A native text field may echo a programmatic update or commit the same preview
+            // on focus loss. Only a changed URL invalidates the validation request/result.
+            if old == Some(new) {
+                return;
+            }
             invalidate();
             validated.set(None);
             error.set(String::new());

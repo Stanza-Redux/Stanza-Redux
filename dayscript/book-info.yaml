@@ -5,6 +5,9 @@ flow:
   - input: { id: catalog-editor-url, text: 'http://127.0.0.1:18765/rich' }
   - tap: { id: catalog-editor-validate }
   - wait_for: { id: catalog-editor-valid, timeout_secs: 30 }
+  # Native blur/commit may echo an unchanged URL after validation. It must stay valid.
+  - input: { id: catalog-editor-url, text: 'http://127.0.0.1:18765/rich' }
+  - wait_for: { id: catalog-editor-valid }
   - tap: { id: catalog-editor-save }
   - assert_missing: { id: catalog-editor }
   - wait_for: { id: catalog-list-1-Book collection }

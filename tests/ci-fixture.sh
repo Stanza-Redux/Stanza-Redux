@@ -10,13 +10,18 @@ export STANZA_FIXTURE_TOKEN="stanza-$$-$RANDOM"
 "$STANZA_PYTHON" -u tests/catalog_server.py > "$STANZA_FIXTURE_LOG" 2>&1 &
 STANZA_FIXTURE_PID=$!
 stanza_fixture_cleanup() {
-    local result=$?
+    local result=$1
     if [ "$result" != 0 ]; then tail -60 "$STANZA_FIXTURE_LOG" >&2 || true; fi
     kill "$STANZA_FIXTURE_PID" 2>/dev/null || true
     wait "$STANZA_FIXTURE_PID" 2>/dev/null || true
 }
-trap stanza_fixture_cleanup EXIT
-"$STANZA_PYTHON" tests/prepare_fixture.py
+trap 'stanza_fixture_cleanup "$?"' EXIT
+echo "Starting OPDS fixture on 127.0.0.1:$STANZA_FIXTURE_PORT with $($STANZA_PYTHON --version 2>&1)"
+if ! "$STANZA_PYTHON" tests/prepare_fixture.py; then
+    echo "OPDS fixture startup failed; server output follows:" >&2
+    cat "$STANZA_FIXTURE_LOG" >&2 || true
+    exit 1
+fi
 case "${DAY_SCRIPT_TARGET:-}" in
     android-mdc)
         STANZA_ADB="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}/platform-tools/adb"

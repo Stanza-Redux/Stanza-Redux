@@ -1,5 +1,60 @@
 # Local validation
 
+## CI run 36759848951 — 2026-09-30
+
+Investigated [run 36759848951](https://github.com/Stanza-Redux/Stanza-Redux/actions/runs/36759848951)
+and its screenshot artifacts. Builds/packages succeeded; all 15 application execution jobs
+failed. The lint and fixture-test jobs passed.
+
+Corrections in this local checkout and its patched dependencies:
+
+- **Android tablet:** reproduced the invisible library list and misplaced book overview.
+  Material copied numeric menu-item IDs onto drawer row views, colliding with fragment-container
+  IDs. Day's navigation suite now allocates unique IDs and maps them back to row indices.
+  The failing native frame assertion passes, and screenshots show the overview in its content pane.
+- **Catalog validation:** ignore unchanged URL notifications. A field's native echo or focus-loss
+  commit must not cancel an in-flight validation or clear its completed result. `book-info.yaml`
+  now repeats the same input after validation and checks that the result remains usable.
+- **Windows XAML browser:** release the engine when Day disposes the piece, rather than on XAML
+  `Unloaded`, which can occur during temporary reparenting. Native Windows verification is pending.
+- **Windows Qt browser:** defer Wry/WebView2 construction until after `showEvent` returns; its
+  nested message pump must not run during Day's tree construction. Handle closing before and
+  during startup. A Qt C++ test exercises the actual QWidget host with a fake WebView2 bridge;
+  the webview CI workflow now runs it. Actual Windows engine verification is pending.
+- **macOS fixture startup:** bypass proxy/PAC discovery for the owned loopback health probe,
+  allow 30 seconds, report the last connection/ownership error, and print the server log on
+  startup failure. Cleanup preserves the failing command's status. The hosted failure's exact
+  cause was not recoverable from its logs; this hardening is not a confirmed reproduction/fix.
+- **Reader Back failures:** the run resolved Day `a63af675`, before the local Back-routing fix
+  now at `b2fe4948`. That fix is required for the reader-dismissal assertions on web, Android,
+  GTK and Harmony. The local tests below use the newer framework.
+
+Validation after these changes:
+
+- Chromium: **451/451** steps across all 11 scripts, 39 screenshots, isolated browser profile.
+- macOS AppKit, iPhone UIKit, Android phone and tablet: **109/109** each, book-info plus demo scripts.
+- Stanza Rust unit tests: **27 passed**. Python fixture tests: **8 passed**, including proxy
+  bypass, foreign-listener and connection-error diagnostics, and Bash failure cleanup.
+- Day mock UI/navigation tests: **212 passed**. Webview Rust tests: **19 passed**; Node tests:
+  **16 passed**; native Qt startup lifecycle test: **passed**.
+- Rust formatting and diff whitespace checks passed.
+- Harmony Rust/cdylib compilation passed. HAP assembly still fails locally because
+  `@ohos/hvigor-ohos-plugin` is unavailable. No Harmony emulator was launched.
+
+Still unverified or unresolved:
+
+- Linux Qt crashed in `QPainter::save` with “Cannot destroy paint device that is being painted.”
+  No speculative graphics-effect change was made. The local Docker daemon is unavailable;
+  the packaged release binary does not provide the debug executable's crash symbols.
+- Harmony tablet lost fixture connectivity during catalog-loading after earlier scripts passed.
+  This requires an emulator/runner trace to distinguish transport failure from cancellation.
+- Windows changes need compilation and native execution in CI. The Qt host lifecycle test uses
+  a stub engine and cannot establish that COM initialization or rendering succeeds.
+- macOS hosted fixture startup needs a rerun with the improved diagnostics. Local startup works
+  with the macOS system Bash and through AppKit/iOS walkthroughs.
+
+No CI rerun was triggered and no commits or pushes were made by this investigation.
+
 ## CI failure investigation — 2026-09-30
 
 Investigated [run 36671873835](https://github.com/Stanza-Redux/Stanza-Redux/actions/runs/36671873835).
