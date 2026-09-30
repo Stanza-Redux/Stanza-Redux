@@ -1,0 +1,34 @@
+flow:
+  - navigate: { route: catalogs }
+  - menu: { id: add-opds-catalog }
+  - wait_for: { id: catalog-editor-url }
+  - input: { id: catalog-editor-url, text: 'http://127.0.0.1:18765/cancellation' }
+  - tap: { id: catalog-editor-validate }
+  - wait_for: { id: catalog-editor-valid, timeout_secs: 30 }
+  - tap: { id: catalog-editor-save }
+  - assert_missing: { id: catalog-editor }
+  - wait_for: { id: catalog-list-1-Cancellation fixture }
+  - select: { id: catalog-list-1-Cancellation fixture, index: 0 }
+  - wait_for: { id: catalog-loading }
+  - assert_missing: { id: catalog-list-1-Cancellation fixture }
+  - screenshot: { name: pushed-loading-destination }
+  - nav_back: { native: true, only_on: [uikit, mdc] }
+  - nav_back: { only_on: [appkit, gtk, qt, xaml, arkui, dom] }
+  - wait_for: { id: catalog-list-1-Cancellation fixture }
+  - assert_missing: { id: catalog-loading }
+  - select: { id: catalog-list-1-Cancellation fixture, index: 1 }
+  - wait_for: { id: catalog-list-2-Slow thumbnails }
+  - wait_for: { id: 'catalog-placeholder-46-http://127.0.0.1:18765/cancel-cover' }
+  - screenshot: { name: pending-thumbnail }
+  - nav_back: {}
+  - wait_for: { id: catalog-list-1-Cancellation fixture }
+  - select: { id: catalog-list-1-Cancellation fixture, index: 2 }
+  - wait_for: { id: catalog-list-2-Requests cancelled, timeout_secs: 10 }
+  - assert_missing: { id: catalog-loading }
+  - nav_back: {}
+  - nav_back: {}
+  - assert_visible: { id: catalog-sources }
+  - menu: { id: manage-catalogs-menu }
+  - scroll_to: { id: 'catalog-remove-http://127.0.0.1:18765/cancellation' }
+  - tap: { id: 'catalog-remove-http://127.0.0.1:18765/cancellation' }
+  - toolbar: { item: catalog-manager-done }

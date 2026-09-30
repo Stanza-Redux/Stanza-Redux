@@ -1,0 +1,43 @@
+flow:
+  - navigate: { route: catalogs }
+  - menu: { id: add-opds-catalog }
+  - wait_for: { id: catalog-editor-url }
+  - input: { id: catalog-editor-url, text: 'http://127.0.0.1:18765/catalog' }
+  - tap: { id: catalog-editor-validate }
+  - wait_for: { id: catalog-editor-valid, timeout_secs: 30 }
+  - tap: { id: catalog-editor-save }
+  - assert_missing: { id: catalog-editor }
+  - wait_for: { id: catalog-list-1-Stanza test catalog, timeout_secs: 30 }
+  - toolbar: { item: catalog-search }
+  - assert_presented: {}
+  - respond: { text: 'Alice' }
+  - wait_for: { id: catalog-list-2-Search results }
+  - select: { id: catalog-list-2-Search results, index: 0 }
+  - scroll_to: { id: download-book }
+  - tap: { id: download-book }
+  - wait_for: { id: book-webview, timeout_secs: 30 }
+  - web_eval: { id: book-webview, script: 'String(stanza.state().ready && stanza.state().height > 100 && stanza.state().pages < 1000)', text: 'true', timeout_secs: 40 }
+  - web_eval: { id: book-webview, script: "String(stanza.state().title.includes('Alice'))", text: 'true' }
+  - web_eval: { id: book-webview, script: "stanza.next();true", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready&&!stanza.state().animating)", text: "true" }
+  - screenshot: { name: acquired-reader }
+  - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),1000);true", text: "true" }
+  - assert_missing: { id: book-webview }
+  - navigate: { route: catalogs }
+  - menu: { id: add-opds-catalog }
+  - wait_for: { id: catalog-editor-url }
+  - input: { id: catalog-editor-url, text: 'http://127.0.0.1:18765/json' }
+  - tap: { id: catalog-editor-validate }
+  - wait_for: { id: catalog-editor-valid, timeout_secs: 30 }
+  - tap: { id: catalog-editor-save }
+  - assert_missing: { id: catalog-editor }
+  - wait_for: { id: catalog-list-1-OPDS 2 fixture, timeout_secs: 30 }
+  - screenshot: { name: opds2 }
+  - menu: { id: manage-catalogs-menu }
+  - scroll_to: { id: 'catalog-remove-http://127.0.0.1:18765/catalog' }
+  - tap: { id: 'catalog-remove-http://127.0.0.1:18765/catalog' }
+  - toolbar: { item: catalog-manager-done }
+  - menu: { id: manage-catalogs-menu }
+  - scroll_to: { id: 'catalog-remove-http://127.0.0.1:18765/json' }
+  - tap: { id: 'catalog-remove-http://127.0.0.1:18765/json' }
+  - toolbar: { item: catalog-manager-done }

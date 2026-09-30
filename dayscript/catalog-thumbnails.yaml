@@ -1,0 +1,21 @@
+# tests/catalog_server.py supplies delayed, distinct covers for 120 books.
+flow:
+  - navigate: { route: catalogs }
+  - menu: { id: add-opds-catalog }
+  - wait_for: { id: catalog-editor-url }
+  - input: { id: catalog-editor-url, text: 'http://127.0.0.1:18765/many' }
+  - tap: { id: catalog-editor-validate }
+  - wait_for: { id: catalog-editor-valid, timeout_secs: 30 }
+  - tap: { id: catalog-editor-save }
+  - assert_missing: { id: catalog-editor }
+  - wait_for: { id: catalog-list-1-Thumbnail stress }
+  - wait_for: { id: 'catalog-placeholder-46-http://127.0.0.1:18765/covers/0.png' }
+  - screenshot: { name: thumbnails-loading }
+  - wait_for: { id: 'catalog-cover-46-http://127.0.0.1:18765/covers/0.png' }
+  - wait_for: { id: 'catalog-cover-46-http://127.0.0.1:18765/covers/1.png' }
+  - wait_for: { id: 'catalog-cover-46-http://127.0.0.1:18765/covers/2.png' }
+  - screenshot: { name: thumbnails-loaded }
+  - menu: { id: manage-catalogs-menu }
+  - scroll_to: { id: 'catalog-remove-http://127.0.0.1:18765/many' }
+  - tap: { id: 'catalog-remove-http://127.0.0.1:18765/many' }
+  - toolbar: { item: catalog-manager-done }

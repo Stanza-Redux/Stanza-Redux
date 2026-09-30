@@ -1,0 +1,58 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "Day on HarmonyOS ArkUI (native Rust cdylib)",
+    "mainElement": "EntryAbility",
+    // "default" is the OpenHarmony device type the Oniro emulator reports ("phone" is a HarmonyOS-only
+    // syscap set, absent from the public OpenHarmony SDK's device-define).
+    "deviceTypes": ["default", "tablet"],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$profile:main_pages",
+    // Required even for the loopback dayscript socket: OpenHarmony denies bind and listen
+    // without it, and the engine thread dies silently.
+    "requestPermissions": [
+      { "name": "ohos.permission.INTERNET" }
+    ],
+    // Both abilities and both pages ($profile:main_pages) are the framework's: `day build`
+    // stages them into ets/day/ from the day-arkui crate (docs/harmonyos.md), so the paths
+    // below are fixed and never edited per app.
+    "abilities": [
+      {
+        "name": "EntryAbility",
+        "srcEntry": "./ets/day/EntryAbility.ets",
+        "description": "The app's main window",
+        "icon": "$media:layered_image",
+        "label": "$string:EntryAbility_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "skills": [
+          {
+            "entities": ["entity.system.home"],
+            "actions": ["action.system.home"]
+          },
+          {
+            // Deep links (docs/deep-links.md): <scheme>://<route>. `day build` keeps the
+            // scheme below in step with Day.toml [app] id; HarmonyOS has no generated include.
+            "actions": ["ohos.want.action.viewData"],
+            "uris": [{ "scheme": "stanzaredux" }]
+          }
+        ]
+      },
+      {
+        // Secondary day windows (docs/windows.md): one multiton instance per open window.
+        "name": "DayWindowAbility",
+        "srcEntry": "./ets/day/DayWindowAbility.ets",
+        "description": "Day secondary window",
+        "icon": "$media:layered_image",
+        "label": "$string:EntryAbility_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "launchType": "multiton",
+        "exported": false
+      }
+    ]
+  }
+}

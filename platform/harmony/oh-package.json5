@@ -1,0 +1,9 @@
+{
+  "modelVersion": "5.0.0",
+  // A constant, like the Gradle rootProject.name: DevEco shows it and nothing else reads it,
+  // so the app's identity stays in Day.toml (AppScope/app.json5 carries the bundle name).
+  "name": "dayapp",
+  "version": "1.0.0",
+  "description": "The hvigor host project of a Day app (docs/harmonyos.md)",
+  "dependencies": {}
+}

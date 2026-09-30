@@ -1,0 +1,60 @@
+[package]
+name = "stanza-redux"
+version.workspace = true
+edition = "2024"
+# Generates typed `res::` constants from `resource/` (see build.rs).
+build = "build.rs"
+
+[features]
+# `mock` keeps bare cargo and rust-analyzer compiling; `day build` overrides it with
+# `--no-default-features --features <backend>` (https://daybrite.dev/docs/project-structure).
+default = ["mock"]
+appkit = ["day/appkit"]
+gtk = ["day/gtk"]
+qt = ["day/qt"]
+uikit = ["day/uikit"]
+mdc = ["day/mdc"]
+xaml = ["day/xaml"]
+arkui = ["day/arkui"]
+dom = ["day/dom"]
+mock = ["day/mock"]
+
+# rlib for the desktop bin; the mobile pipeline requests staticlib/cdylib via `cargo rustc`.
+[lib]
+# A constant lib name: staged artifacts and the `dayapp::` import never move on a package rename.
+name = "dayapp"
+crate-type = ["rlib"]
+
+[dependencies]
+async-lock = "3"
+futures-channel = "0.3"
+day-piece-webview = { git = "https://github.com/daybrite/day-piece-webview.git" }
+day-part-http = { git = "https://github.com/daybrite/day.git" }
+day-piece-colorpicker = { git = "https://github.com/daybrite/day.git" }
+day-part-fs = { git = "https://github.com/daybrite/day.git" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+url = "2"
+roxmltree = "0.20"
+zip = { version = "2", default-features = false, features = ["deflate"] }
+base64 = "0.22"
+sha2 = "0.10"
+sha1 = "0.10"
+percent-encoding = "2"
+day = { git = "https://github.com/daybrite/day.git", features = ["persistence"] }
+
+[build-dependencies]
+day-build = { git = "https://github.com/daybrite/day.git" }
+
+
+[workspace]
+
+[workspace.package]
+version = "1.4.5"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp"] }
+rusqlite = { version = "0.40", features = ["bundled"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+day-dom = { git = "https://github.com/daybrite/day.git" }

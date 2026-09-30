@@ -1,0 +1,67 @@
+flow:
+  - navigate: { route: library }
+  - wait_for: { id: library-folders }
+  - screenshot: { name: library-folders }
+  - select: { id: library-folders, index: 1 }
+  - wait_for: { id: library-list }
+  - input: { id: library-search, text: Alice }
+  - assert_missing: { id: library-empty }
+  - select: { id: library-list, index: 0 }
+  - wait_for: { id: open-local-book }
+  - tap: { id: open-local-book }
+  - wait_for: { id: book-webview, timeout_secs: 30 }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
+  - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),300);true", text: "true" }
+  - assert_missing: { id: book-webview }
+  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
+  - nav_back: {}
+  - select: { id: library-folders, index: 0 }
+  - wait_for: { id: library-list }
+  - screenshot: { name: library-recents }
+  - select: { id: library-list, index: 0 }
+  - wait_for: { id: local-book-title }
+  - wait_for: { id: book-metadata }
+  - screenshot: { name: library-overview }
+  - tap: { id: open-local-book }
+  - wait_for: { id: book-webview }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
+  - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),300);true", text: "true" }
+  - assert_missing: { id: book-webview }
+  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
+  - nav_back: {}
+  - wait_for: { id: library-folders }
+  - select: { id: library-folders, index: 2 }
+  - wait_for: { id: library-authors }
+  - screenshot: { name: library-authors }
+  - select: { id: library-authors, index: 0 }
+  - wait_for: { id: library-list }
+  - screenshot: { name: library-author-books }
+  - nav_back: {}
+  - nav_back: {}
+  - select: { id: library-folders, index: 3 }
+  - wait_for: { id: library-genres }
+  - screenshot: { name: library-genres }
+  - select: { id: library-genres, index: 0 }
+  - wait_for: { id: library-list }
+  - screenshot: { name: library-genre-books }
+  - nav_back: {}
+  - nav_back: {}
+  - select: { id: library-folders, index: 1 }
+  - wait_for: { id: library-list }
+  - input: { id: library-search, text: NoSuchFixtureBook }
+  - screenshot: { name: library-empty-search }
+  - input: { id: library-search, text: Alice }
+  - assert_missing: { id: library-empty }
+  - select: { id: library-list, index: 0 }
+  - wait_for: { id: open-local-book }
+  - screenshot: { name: library-title-search }
+  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
+  - nav_back: {}
+  - navigate: { route: settings }
+  - select: { id: language, index: 1 }
+  - navigate: { route: library }
+  - assert_visible: { id: library-folders }
+  - screenshot: { name: library-french }
+  - navigate: { route: settings }
+  - select: { id: language, index: 0 }
+  - navigate: { route: library }

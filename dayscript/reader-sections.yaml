@@ -1,0 +1,30 @@
+# Exercise native relative EPUB resources through the real resource provider.
+flow:
+  - navigate: { route: library }
+  - wait_for: { id: library-folders }
+  - select: { id: library-folders, index: 1 }
+  - wait_for: { id: library-list }
+  - input: { id: library-search, text: Alice }
+  - assert_missing: { id: library-empty }
+  - select: { id: library-list, index: 0 }
+  - tap: { id: open-local-book }
+  - wait_for: { id: book-webview, timeout_secs: 30 }
+  - web_eval: { id: book-webview, script: 'String(stanza.state().ready)', text: 'true', timeout_secs: 40 }
+  - web_eval: { id: book-webview, script: 'stanza.goToChapter(0);true', text: 'true' }
+  - web_eval: { id: book-webview, script: 'String(stanza.state().ready&&stanza.state().chapter===0)', text: 'true', timeout_secs: 40 }
+  # The bundled Alice cover uses SVG's relative xlink:href. Probe that exact URL;
+  # neither the publication attribute nor the section document may use a blob URL.
+  - web_eval:
+      id: book-webview
+      script: "(()=>{const f=document.getElementById('book'),d=f.contentDocument,h=d.querySelector('svg image').getAttribute('xlink:href');window.coverProbe=new Image();coverProbe.src=new URL(h,d.baseURI).href;return !f.src.startsWith('blob:')&&!h.includes(':')&&!f.hasAttribute('srcdoc')})()"
+      text: 'true'
+  - web_eval: { id: book-webview, script: 'String(coverProbe.complete&&coverProbe.naturalWidth>0)', text: 'true', timeout_secs: 30 }
+  - web_eval: { id: book-webview, script: 'stanza.goToChapter(3);true', text: 'true' }
+  - web_eval: { id: book-webview, script: 'String(stanza.state().ready&&stanza.state().chapter===3)', text: 'true', timeout_secs: 40 }
+  - screenshot: { name: reader-lazy-section }
+  - web_eval: { id: book-webview, script: 'stanza.goToChapter(2);stanza.goToChapter(4);true', text: 'true' }
+  - web_eval: { id: book-webview, script: 'String(stanza.state().ready&&stanza.state().chapter===4)', text: 'true', timeout_secs: 40 }
+  - web_eval: { id: book-webview, script: 'stanza.configure({size:24,columns:2});true', text: 'true' }
+  - web_eval: { id: book-webview, script: 'String(stanza.state().ready&&stanza.state().chapter===4&&stanza.state().pages>0)', text: 'true', timeout_secs: 40 }
+  - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),300);true", text: 'true' }
+  - assert_missing: { id: book-webview }

@@ -1,0 +1,38 @@
+# The chapter-only query must be answered by Day FTS, not a title/author substring filter.
+flow:
+  - navigate: { route: library }
+  - wait_for: { id: library-folders }
+  - select: { id: library-folders, index: 1 }
+  - wait_for: { id: library-list }
+  - input: { id: library-search, text: waistcoat }
+  - assert_missing: { id: library-empty }
+  - select: { id: library-list, index: 0 }
+  - wait_for: { id: local-book-title }
+  - assert_text: { id: local-book-title, text: "Alice's Adventures in Wonderland" }
+  - screenshot: { name: persistence-chapter-search }
+  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
+  - input: { id: library-search, text: Carroll }
+  - assert_missing: { id: library-empty }
+  - input: { id: library-search, text: fantasy }
+  - assert_missing: { id: library-empty }
+  - input: { id: library-search, text: 'title:NoSuchFixture' }
+  - wait_for: { id: library-empty }
+  - input: { id: library-search, text: Alice }
+  - assert_missing: { id: library-empty }
+  - select: { id: library-list, index: 0 }
+  - wait_for: { id: open-local-book }
+  - tap: { id: open-local-book }
+  - wait_for: { id: book-webview, timeout_secs: 30 }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
+  - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),300);true", text: "true" }
+  - assert_missing: { id: book-webview }
+  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
+  - nav_back: {}
+  - select: { id: library-folders, index: 0 }
+  - wait_for: { id: library-list }
+  - assert_missing: { id: library-empty }
+  - select: { id: library-list, index: 0 }
+  - wait_for: { id: local-book-title }
+  - screenshot: { name: persistence-recents }
+  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
+  - nav_back: {}

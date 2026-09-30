@@ -1,0 +1,60 @@
+# The store listing (https://daybrite.dev/docs/store): the submission info, the localized text
+# and the screenshots each listing shows, in this one file. It belongs to the App Store record
+# and the Play listing the App Fair creates for the app. The same tree may be written as
+# store/storefront.yaml instead; `day store` reads either.
+#
+# `day store stage` turns it into the layouts App Store Connect and Google Play expect, under
+# build/day/store/<target>/, for `fastlane deliver` / `fastlane supply`; the App Fair's queue
+# runs that from the release. bundle-id is left out, so `day store` uses the id the app is
+# built with.
+#
+# [storefront.submission-info] is shared by every store; [storefront.<target>.submission-info]
+# and [storefront.<target>.<store>.submission-info] override it key by key.
+[storefront.submission-info]
+# copyright = "2026 Stanza Redux"
+# contact-email = "support@example.com" # where a store reviewer writes back
+# review-notes = "How to exercise the app, for the store reviewer."
+
+[storefront.ios-uikit.apple-app-store.submission-info]
+# apple-category = "DEVELOPER_TOOLS"    # App Store primary category
+# (Google Play's category is set in the Play Console; `supply` cannot write it.)
+
+# The listing text, in the default locale (en). A table per other locale carries what differs
+# and inherits the rest: the name, the keywords' `app fair` and the URLs are set once. A field
+# may also be `<field>-ref = "store/…"`, a project file holding the text, and a locale may
+# live in store/app.<tag>.toml beside this file. `day lint` holds every field to the stores'
+# limits (https://daybrite.dev/docs/store).
+[storefront.metadata]
+name = "Stanza Redux"
+subtitle = "Your EPUB library"
+short = "Browse OPDS catalogs, download EPUB books, and read offline."
+description = """
+Browse OPDS catalogs and keep EPUB books in an offline library. Adjust text size, typeface,
+line spacing, margins, and light, sepia, or dark paper. Wide screens support two-column reading.
+Stanza Redux remembers your place and includes English and French interfaces.
+"""
+keywords = ["app fair", "free software", "open source"]
+release-notes = "First release."
+privacy-url = "https://appfair.org/privacy"
+
+[storefront.metadata.fr]
+subtitle = "Votre bibliothèque EPUB"
+short = "Parcourez des catalogues, téléchargez des EPUB et lisez hors connexion."
+description = """
+Parcourez des catalogues OPDS et conservez vos livres EPUB dans une bibliothèque hors connexion.
+Réglez la taille des caractères, la police, l'interligne, les marges et le thème clair, sépia ou sombre.
+Les écrans larges permettent la lecture sur deux colonnes. Stanza Redux mémorise votre position de lecture.
+"""
+keywords = ["app fair", "logiciel libre", "open source"]
+release-notes = "Première version."
+
+# Which captures the listings show, in order: names of `screenshot:` steps in
+# dayscript/demo.yaml, the light theme unless { name = "…", theme = "dark" }. A target's list
+# serves the website's page for the target and its stores' listings; a store can list device
+# kinds of its own ([storefront.ios-uikit.apple-app-store.screenshots] with `iphone = [...]`,
+# `ipad = [...]`). `day lint` checks every name (https://daybrite.dev/docs/store#screenshots).
+[storefront.ios-uikit.screenshots]
+default = ["library", "reader", "settings"]
+
+[storefront.android-mdc.screenshots]
+default = ["library", "reader", "settings"]

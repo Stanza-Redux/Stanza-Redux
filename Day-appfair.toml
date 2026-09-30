@@ -1,0 +1,14 @@
+# The App Fair build of this app (https://daybrite.dev/docs/flavors). `day --flavor appfair …`
+# merges this over Day.toml, and the catalog (github.com/appfair/appfair-apps) builds, signs and
+# submits every release that way. Only the id differs; Day.toml keeps the app's own.
+
+[app]
+id = "org.appfair.app.StanzaRedux"
+
+# All stores share this id: the app token with hyphens removed and case preserved.
+# Uncomment and customize these overrides if separate store ids are needed.
+# [app.android]
+# id = "org.appfair.app.StanzaRedux"
+
+# [app.harmony]
+# id = "org.appfair.app.StanzaRedux"

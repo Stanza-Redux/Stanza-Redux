@@ -1,0 +1,32 @@
+# The Day project manifest (https://daybrite.dev/docs/cli). `name`/`version` come from
+# Cargo.toml; any [app] property may be overridden per platform, toolkit, or target.
+schema = 1
+
+[app]
+id = "org.appfair.app.StanzaRedux"
+title = "Stanza Redux"
+build = 24
+targets = ["macos-appkit", "macos-gtk", "macos-qt", "ios-uikit", "android-mdc", "linux-gtk", "linux-qt", "windows-xaml", "windows-gtk", "windows-qt", "harmony-arkui", "web-dom"]
+
+# The window's geometry in points (https://daybrite.dev/docs/size-classes). `day build` carries
+# all four into the Android manifest's <layout> element and the iOS Info.plist.
+[window]
+width = 960
+height = 640
+min_width = 320
+min_height = 400
+
+# Preserve v1 identities so signed updates retain the existing app container.
+[app.android]
+id = "org.appfair.app.Stanza_Redux"
+
+[app.ios]
+id = "org.appfair.app.Stanza-Redux"
+
+[app.macos]
+id = "org.appfair.app.Stanza-Redux"
+
+[[file_types]]
+extensions = ["epub"]
+mime_types = ["application/epub+zip"]
+apple_uti = "org.idpf.epub-container"

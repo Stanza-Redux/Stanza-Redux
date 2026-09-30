@@ -1,0 +1,49 @@
+flow:
+  - navigate: { route: settings }
+  - wait_for: { id: language }
+  - navigate: { route: library }
+  - screenshot: { name: library }
+  - select: { id: library-folders, index: 1 }
+  - wait_for: { id: library-list }
+  - input: { id: library-search, text: Alice }
+  - select: { id: library-list, index: 0 }
+  - wait_for: { id: open-local-book }
+  - tap: { id: open-local-book }
+  - wait_for: { id: book-webview, timeout_secs: 30 }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && stanza.state().height > 100 && stanza.state().pages < 1000)", text: "true", timeout_secs: 40 }
+  - web_eval: { id: book-webview, script: "String(stanza.state().title.includes('Alice'))", text: "true" }
+  - web_eval: { id: book-webview, script: "stanza.goToChapter(2); true", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && stanza.state().text.length > 20)", text: "true" }
+  - screenshot: { name: reader }
+  - web_eval: { id: book-webview, script: "document.getElementById('next-page').click();true", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && !stanza.state().animating && stanza.state().page > 0)", text: "true", timeout_secs: 15 }
+  - web_eval: { id: book-webview, script: "document.getElementById('previous-page').click();true", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && !stanza.state().animating)", text: "true" }
+  - web_eval: { id: book-webview, script: "document.querySelector('#book').contentDocument.body.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:innerWidth/2,clientY:innerHeight/2}));String(!stanza.state().controls)", text: "true" }
+  - screenshot: { name: immersive }
+  - web_eval: { id: book-webview, script: "document.querySelector('#book').contentDocument.body.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:innerWidth/2,clientY:innerHeight/2}));String(stanza.state().controls)", text: "true" }
+  - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('appearance').click(),1000);true", text: "true" }
+  - wait_for: { id: font-size }
+  - set_value: { id: font-size, value: 26 }
+  - select: { id: reader-theme, index: 2 }
+  - select: { id: reader-columns, index: 1 }
+  - screenshot: { name: settings }
+  - tap: { id: reader-settings-done }
+  - wait_for: { id: book-webview }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && stanza.state().height > 100 && stanza.state().pages < 1000)", text: "true", timeout_secs: 40 }
+  - screenshot: { name: night }
+  - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),1000);true", text: "true" }
+  - assert_missing: { id: book-webview }
+  - navigate: { route: catalogs }
+  - wait_for: { id: catalog-sources }
+  - screenshot: { name: catalogs }
+  - navigate: { route: library }
+  - select: { id: library-folders, index: 0 }
+  - wait_for: { id: library-list }
+  - select: { id: library-list, index: 0 }
+  - wait_for: { id: open-local-book }
+  - tap: { id: open-local-book }
+  - wait_for: { id: book-webview }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && stanza.state().chapter===2)", text: "true", timeout_secs: 40 }
+  - nav_back: {}
+  - assert_missing: { id: book-webview }

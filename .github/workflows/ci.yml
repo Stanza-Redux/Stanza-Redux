@@ -1,0 +1,69 @@
+# Stanza Redux's CI: build every target the app declares, and run its walkthrough in every
+# language it ships (https://daybrite.dev/docs/ci). The shared Day workflow does the work.
+#
+# It runs on a push and on a pull request. The App Fair queue rebuilds the app from a tag
+# when it publishes, so there is nothing for a timer to catch.
+name: "Stanza-Redux"
+
+on:
+  push:
+    branches: ["**"]
+    tags: ["v[0-9]+.[0-9]+.[0-9]+*"]
+  pull_request:
+  # Marking a staged release Latest (see `release-mode` below) rebuilds the site against it.
+  release:
+    types: [released]
+  workflow_dispatch:
+
+# The repository's own jobs run this checkout's code with a read-only token. The write grants
+# sit on the job that calls the shared workflow, whose release and Pages jobs alone use them;
+# its build legs, which run this code too, narrow their token to read-only themselves.
+permissions:
+  contents: read
+
+jobs:
+  # The catalog's rules: the licence texts, the licence notice in every source file, and the
+  # flavor manifest holding the ids this app publishes under. The submission checks run the same
+  # action (github.com/appfair/appfair-apps).
+  appfair-lint:
+    name: appfair-lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: appfair/appfair-apps/.github/actions/appfair-lint@main
+
+  app:
+    uses: daybrite/actions/.github/workflows/dayapp.yml@v1
+    permissions:
+      contents: write # release assets on a tag build
+      pages: write    # web-dom → GitHub Pages (deploy-web)
+      id-token: write # deploy-pages OIDC token (deploy-web)
+    secrets: inherit
+    with:
+      # The targets this app was scaffolded with. Add one with `day project add-target`, and
+      # add it here too.
+      #targets: "windows-xaml, macos-appkit, linux-gtk, linux-qt, ios-uikit, android-mdc, harmony-arkui, web-dom"
+      scripts: auto
+      # Every language the app ships, read from resource/locales/, so a language added to the app
+      # is walked through without editing this file. Each locale captures its own screenshots.
+      locales: all
+      #locales: en fr
+      themes: light dark
+      # One build per target, the base app, on every push and tag. Day-appfair.toml changes
+      # only the ids, and the App Fair queue builds that flavor itself from the tag; appfair-lint
+      # checks its ids on every push. Release assets, Pages and the website come from this
+      # build, which is what the queue compares its own against.
+      # A tagged build attaches its packages to the release. The App Fair queue compares its
+      # own build against these, so leave them on.
+      release-assets: true
+      # A tag publishes a pre-release: the packages are downloadable by tag, and
+      # releases/latest, the download links on the site and everything else that reads "the
+      # latest release" keep describing the version before it. Marking the release Latest, which
+      # the App Fair's queue also does once it has attached its signed packages, fires the
+      # `release: released` event above and rebuilds the site against the new version.
+      release-mode: pre-release
+      # website/site.toml makes the workflow build and deploy the full project site
+      # (https://games-fair.github.io/Games-Fair/) from the daybrite/daysite template on every
+      # push to main, with the web build hosted at /Games-Fair/webapp/. deploy-web stays on as
+      # the fallback: were website/ ever removed, the bare web app would return to the Pages root.
+      deploy-web: true

@@ -1,0 +1,46 @@
+flow:
+  - navigate: { route: catalogs }
+  - menu: { id: add-opds-catalog }
+  - wait_for: { id: catalog-editor-url }
+  - input: { id: catalog-editor-url, text: 'http://127.0.0.1:18765/loading-fixture' }
+  - tap: { id: catalog-editor-validate }
+  - wait_for: { id: catalog-editor-valid, timeout_secs: 30 }
+  - tap: { id: catalog-editor-save }
+  - assert_missing: { id: catalog-editor }
+  - wait_for: { id: catalog-list-1-Loading fixture }
+  - select: { id: catalog-list-1-Loading fixture, index: 0 }
+  - wait_for: { id: catalog-loading }
+  - screenshot: { name: catalog-loading }
+  - nav_back: { native: true, only_on: [uikit, mdc] }
+  - nav_back: { only_on: [appkit, gtk, qt, xaml, arkui, dom] }
+  - assert_missing: { id: catalog-loading }
+  - assert_visible: { id: catalog-list-1-Loading fixture }
+  - select: { id: catalog-list-1-Loading fixture, index: 0 }
+  - wait_for: { id: catalog-loading }
+  - wait_for: { id: catalog-list-2-Slow catalog }
+  - assert_missing: { id: catalog-loading }
+  - wait_for: { id: 'catalog-cover-46-http://127.0.0.1:18765/slow-cover.jpg' }
+  - screenshot: { name: catalog-covers }
+  - select: { id: catalog-list-2-Slow catalog, index: 1 }
+  - assert_text: { id: publication-title, text: Broken cover }
+  - nav_back: { native: true, only_on: [uikit, mdc] }
+  - nav_back: { only_on: [appkit, gtk, qt, xaml, arkui, dom] }
+  - nav_back: { native: true, only_on: [uikit, mdc] }
+  - nav_back: { only_on: [appkit, gtk, qt, xaml, arkui, dom] }
+  - wait_for: { id: catalog-list-1-Loading fixture }
+  - select: { id: catalog-list-1-Loading fixture, index: 1 }
+  - wait_for: { id: catalog-error }
+  - assert_missing: { id: catalog-loading }
+  - nav_back: {}
+  - assert_visible: { id: catalog-list-1-Loading fixture }
+  - select: { id: catalog-list-1-Loading fixture, index: 2 }
+  - wait_for: { id: catalog-list-2-Stanza test catalog }
+  - wait_for: { id: 'catalog-cover-46-http://127.0.0.1:18765/cover.jpg' }
+  - screenshot: { name: catalog-atom-cover }
+  - nav_back: { native: true, only_on: [uikit, mdc] }
+  - nav_back: { only_on: [appkit, gtk, qt, xaml, arkui, dom] }
+  - assert_visible: { id: catalog-list-1-Loading fixture }
+  - menu: { id: manage-catalogs-menu }
+  - scroll_to: { id: 'catalog-remove-http://127.0.0.1:18765/loading-fixture' }
+  - tap: { id: 'catalog-remove-http://127.0.0.1:18765/loading-fixture' }
+  - toolbar: { item: catalog-manager-done }

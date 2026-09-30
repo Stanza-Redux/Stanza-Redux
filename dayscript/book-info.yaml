@@ -1,0 +1,51 @@
+flow:
+  - navigate: { route: catalogs }
+  - menu: { id: add-opds-catalog }
+  - wait_for: { id: catalog-editor-url }
+  - input: { id: catalog-editor-url, text: 'http://127.0.0.1:18765/rich' }
+  - tap: { id: catalog-editor-validate }
+  - wait_for: { id: catalog-editor-valid, timeout_secs: 30 }
+  - tap: { id: catalog-editor-save }
+  - assert_missing: { id: catalog-editor }
+  - wait_for: { id: catalog-list-1-Book collection }
+  - assert_text: { id: 'catalog-cover-46-http://127.0.0.1:18765/cover.jpg', text: '' }
+  - screenshot: { name: book-list }
+  - select: { id: catalog-list-1-Book collection, index: 0 }
+  - assert_visible: { id: publication-title }
+  - screenshot: { name: remote-book-overview }
+  - scroll_to: { id: book-metadata }
+  - screenshot: { name: remote-book-metadata }
+  - nav_back: { native: true, only_on: [uikit, mdc] }
+  - nav_back: { native: true, only_on: [uikit, mdc] }
+  - navigate: { route: library }
+  - select: { id: library-folders, index: 1 }
+  - wait_for: { id: library-list }
+  - input: { id: library-search, text: Alice }
+  - select: { id: library-list, index: 0 }
+  - wait_for: { id: book-metadata }
+  - screenshot: { name: local-book-overview }
+  - tap: { id: open-local-book }
+  - wait_for: { id: book-webview }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
+  - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('appearance').click(),500);true", text: "true" }
+  - wait_for: { id: reader-justified }
+  - toggle: { id: reader-justified, value: true }
+  - toggle: { id: reader-hyphenation, value: false }
+  - screenshot: { name: reader-typography }
+  - scroll_to: { id: paragraph-spacing }
+  - set_value: { id: paragraph-spacing, value: 1.2 }
+  - screenshot: { name: reader-layout }
+  - tap: { id: reader-settings-done }
+  - wait_for: { id: book-webview }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
+  - web_eval: { id: book-webview, script: "String(document.querySelector('#book').contentDocument.documentElement.style.getPropertyValue('--USER__textAlign')==='justify')", text: "true" }
+  - web_eval: { id: book-webview, script: "String(document.querySelector('#book').contentDocument.documentElement.style.getPropertyValue('--USER__bodyHyphens')==='none')", text: "true" }
+  - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),500);true", text: "true" }
+  - assert_missing: { id: book-webview }
+  - navigate: { route: settings }
+  - screenshot: { name: settings-page }
+  - navigate: { route: catalogs }
+  - menu: { id: manage-catalogs-menu }
+  - scroll_to: { id: 'catalog-remove-http://127.0.0.1:18765/rich' }
+  - tap: { id: 'catalog-remove-http://127.0.0.1:18765/rich' }
+  - toolbar: { item: catalog-manager-done }

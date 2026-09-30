@@ -1,0 +1,61 @@
+APP FAIR DISTRIBUTION EXCEPTION
+
+The software is licensed under the terms contained in the accompanying
+LICENSE.txt file (the "License"), subject to the following additional
+permission (the "App Fair Distribution Exception").
+
+The App Fair Distribution Exception applies exclusively when this
+software is built, packaged, signed, submitted, published, conveyed, or
+distributed to an application store, marketplace, distribution service,
+or other distribution channel by way of the App Fair Project's
+distribution system ("App Fair Distribution").
+
+For purposes of App Fair Distribution, notwithstanding any provision of
+the License, the App Fair Project and any persons, services, or systems
+acting as part of the App Fair distribution process are permitted to
+build, package, sign, submit, publish, convey, and distribute this
+software, in source or executable form, through any application store,
+marketplace, distribution service, or other distribution channel
+supported by the App Fair Project.
+
+To the extent that any term, condition, technical requirement, usage
+rule, contractual restriction, or other requirement imposed by such a
+distribution channel conflicts with, or would otherwise prevent
+compliance with, any condition of the License, that condition of the
+License is waived solely to the extent necessary to permit App Fair
+Distribution through that channel.
+
+This permission applies to App Fair Distribution through every
+application store, marketplace, distribution service, or other
+distribution channel supported by the App Fair Project, whether
+supported now or in the future.
+
+Except for the additional permission granted for App Fair Distribution
+as described above, all terms and conditions of the License remain in
+effect.
+
+SPDX IDENTIFICATION
+
+The intended SPDX exception identifier for the App Fair Distribution
+Exception is:
+
+```
+App-Fair-Distribution-Exception
+```
+
+If and when this identifier is included in the SPDX License List, this
+exception may be combined with the SPDX identifier of the applicable
+License using the SPDX "WITH" operator.
+
+For example, for software licensed under the GNU Affero General Public
+License version 3.0 only:
+
+```
+SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+```
+
+The license identifier should correspond to the License contained in
+LICENSE.txt.
+
+This App Fair Distribution Exception forms part of the licensing terms
+for software to which it is expressly applied.

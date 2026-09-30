@@ -1,0 +1,52 @@
+flow:
+  - navigate: { route: catalogs }
+  - menu: { id: add-opds-catalog }
+  - wait_for: { id: catalog-editor-url }
+  - input: { id: catalog-editor-url, text: 'http://127.0.0.1:18765/subjects' }
+  - input: { id: catalog-editor-title, text: My test catalog }
+  - tap: { id: catalog-editor-validate }
+  - wait_for: { id: catalog-editor-valid, timeout_secs: 30 }
+  - tap: { id: catalog-editor-save }
+  - assert_missing: { id: catalog-editor }
+  - toolbar: { item: manage-catalogs }
+  - scroll_to: { id: 'catalog-up-http://127.0.0.1:18765/subjects' }
+  - tap: { id: 'catalog-up-http://127.0.0.1:18765/subjects' }
+  - tap: { id: 'catalog-down-http://127.0.0.1:18765/subjects' }
+  - screenshot: { name: catalog-management }
+  - toolbar: { item: catalog-manager-done }
+  - wait_for: { id: catalog-list-1-Subjects }
+  - select: { id: catalog-list-1-Subjects, index: 0 }
+  - wait_for: { id: catalog-list-2-Authors }
+  - select: { id: catalog-list-2-Authors, index: 1 }
+  - wait_for: { id: catalog-list-3-Facet }
+  - nav_back: { native: true, only_on: [uikit, mdc] }
+  - nav_back: { only_on: [appkit, gtk, qt, xaml, arkui, dom] }
+  - wait_for: { id: catalog-list-2-Authors }
+  - select: { id: catalog-list-2-Authors, index: 1 }
+  - wait_for: { id: catalog-list-3-Facet }
+  - key: { id: catalog-browser, key: ArrowLeft }
+  - wait_for: { id: catalog-list-2-Authors }
+  - key: { id: catalog-browser, key: ArrowRight }
+  - wait_for: { id: catalog-list-3-Facet }
+  - select: { id: catalog-list-3-Facet, index: 0 }
+  - wait_for: { id: catalog-list-4-OPDS 2 fixture }
+  - select: { id: catalog-list-4-OPDS 2 fixture, index: 0 }
+  - assert_text: { id: publication-title, text: Alice in Wonderland }
+  - nav_back: {}
+  - wait_for: { id: catalog-list-4-OPDS 2 fixture }
+  - nav_back: {}
+  - wait_for: { id: catalog-list-3-Facet }
+  - screenshot: { name: catalog-facets }
+  - toolbar: { item: manage-catalogs }
+  - scroll_to: { id: 'catalog-remove-http://127.0.0.1:18765/subjects' }
+  - tap: { id: 'catalog-remove-http://127.0.0.1:18765/subjects' }
+  - assert_missing: { id: 'catalog-remove-http://127.0.0.1:18765/subjects' }
+  - toolbar: { item: catalog-manager-done }
+  - nav_back: {}
+  - wait_for: { id: catalog-list-2-Authors }
+  - nav_back: {}
+  - wait_for: { id: catalog-list-1-Subjects }
+  - nav_back: {}
+  - assert_route: { route: catalogs }
+  - assert_visible: { id: catalog-sources }
+  - screenshot: { name: catalog-root }

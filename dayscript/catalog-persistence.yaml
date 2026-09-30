@@ -1,0 +1,27 @@
+# Synthetic catalog: exercise live lists after insert, field edit, reorder, and delete.
+flow:
+  - navigate: { route: catalogs }
+  - menu: { id: add-opds-catalog }
+  - wait_for: { id: catalog-editor-url }
+  - input: { id: catalog-editor-url, text: 'http://127.0.0.1:18765/subjects?persistence-fixture=1' }
+  - input: { id: catalog-editor-title, text: Persistence fixture }
+  - tap: { id: catalog-editor-validate }
+  - wait_for: { id: catalog-editor-valid, timeout_secs: 30 }
+  - tap: { id: catalog-editor-save }
+  - assert_missing: { id: catalog-editor }
+  - menu: { id: manage-catalogs-menu }
+  - scroll_to: { id: 'catalog-up-http://127.0.0.1:18765/subjects?persistence-fixture=1' }
+  - tap: { id: 'catalog-up-http://127.0.0.1:18765/subjects?persistence-fixture=1' }
+  - tap: { id: 'catalog-down-http://127.0.0.1:18765/subjects?persistence-fixture=1' }
+  - tap: { id: 'catalog-edit-http://127.0.0.1:18765/subjects?persistence-fixture=1' }
+  - wait_for: { id: catalog-editor-title }
+  - input: { id: catalog-editor-title, text: Renamed fixture }
+  - tap: { id: catalog-editor-validate }
+  - wait_for: { id: catalog-editor-valid, timeout_secs: 30 }
+  - tap: { id: catalog-editor-save }
+  - assert_missing: { id: catalog-editor }
+  - screenshot: { name: persistence-catalog-edit }
+  - tap: { id: 'catalog-remove-http://127.0.0.1:18765/subjects?persistence-fixture=1' }
+  - assert_missing: { id: 'catalog-remove-http://127.0.0.1:18765/subjects?persistence-fixture=1' }
+  - toolbar: { item: catalog-manager-done }
+  - navigate: { route: library }
