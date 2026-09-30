@@ -42,6 +42,7 @@ jobs:
     with:
       # The targets this app was scaffolded with. Add one with `day project add-target`, and
       # add it here too.
+      targets: all
       #targets: "windows-xaml, macos-appkit, linux-gtk, linux-qt, ios-uikit, android-mdc, harmony-arkui, web-dom"
       scripts: auto
       # Every language the app ships, read from resource/locales/, so a language added to the app
