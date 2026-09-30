@@ -1,5 +1,47 @@
 # Local validation
 
+## CI failure investigation — 2026-09-30
+
+Investigated [run 36671873835](https://github.com/Stanza-Redux/Stanza-Redux/actions/runs/36671873835).
+The OPDS fixture was never started by CI, causing catalog validation failures and subsequent
+walkthrough failures. Two example programs also lacked the required SPDX header. Portable
+macOS/Windows GTK and Qt jobs attempted packaging that Day does not implement.
+
+Changes:
+
+- Start and health-check the OPDS fixture through the shared workflow's new `script-setup` input;
+  forward its port after Android/Harmony device boot and clean it up on exit. Cancellation
+  fixture responses now permit browser CORS. Four Python fixture tests run in CI.
+- Add the missing example license headers. Share the catalog loading indicator rather than
+  declaring its ID twice. Day's route lint now recognizes formatted `.item_icon(...)` entries.
+- Keep compilation and walkthroughs for portable GTK/Qt targets, but skip unsupported packaging
+  and omit those targets from package-consumer matrices.
+- Install WebView2 explicitly for Windows XAML. GTK resource responses now include the HTTP
+  Content-Type header needed for script/style loading with `nosniff`. These platform fixes
+  require Linux/Windows CI confirmation.
+- Fix Day's relative Back routing: inactive tabs do not consume navigation; a reader cover and
+  its internal stack take precedence over the covered library. Walkthroughs now clean up
+  navigation state explicitly for the shared web session.
+
+Local results:
+
+- Full Chromium app walkthrough suite: **449/449 steps**, 39 screenshots.
+- AppKit reader/settings walkthrough: **54/54 steps**.
+- Updated book-info walkthrough: **53/53** on iPhone UIKit and Android MDC; the original
+  **50/50** also passed on AppKit before the added navigation cleanup steps.
+- Stanza Rust tests: **27 passed**; fixture tests: **4 passed**; App Fair lint: **6 rules passed**.
+- Day mock navigation/UI suite: **212 passed**; route-lint regression and `cargo check` passed.
+- Shared workflow tests: **68 passed**; `actionlint` passed. Webview Rust tests: **19 passed**.
+- Full WebKit remains blocked by the previously recorded synchronous SQLite-worker stack
+  overflow. No async persistence change was attempted.
+- Harmony Rust compilation passed; HAP assembly still fails because the local SDK lacks
+  `@ohos/hvigor-ohos-plugin`. No local Harmony emulator was launched.
+
+These are local results, not a successful rerun of the hosted matrix. The shared workflow must
+expose `script-setup` on `v1`, and CI must resolve the fixed Day/webview revisions, before the
+app workflow can consume all fixes.
+
+
 ## EPUB resource-provider migration — 2026-09-29
 
 - `stanza.load` receives metadata only. A provider mounts the generated reader asset directory

@@ -243,6 +243,23 @@ python3 tests/catalog_server.py
 day launch -p macos-appkit --script dayscript/demo.yaml --script dayscript/catalog.yaml --script dayscript/browser.yaml
 ```
 
+CI uses `script-setup: source tests/ci-fixture.sh` in the shared Day workflow. It starts the
+fixture after device boot, waits for its health check, forwards port 18765 for Android/Harmony,
+and stops the server on exit. The `script-setup` input must be available on the shared workflow's
+`v1` reference before this workflow can run. To use the same setup locally, from the project root:
+
+```sh
+DAY_SCRIPT_TARGET=android-mdc ANDROID_SERIAL=emulator-5554 bash -c '
+  source tests/ci-fixture.sh
+  day launch -p android-mdc --script dayscript/book-info.yaml
+'
+python3 -m unittest discover -s tests -p 'test_*.py' -v
+```
+
+The fixture binds loopback only. Stop an existing server on port 18765 before using this wrapper;
+it refuses to reuse another process's server. Web CI runs all scripts in one browser session to
+preserve OPFS storage, so walkthroughs return to the library/catalog root before finishing.
+
 For persistence regression coverage, run `dayscript/library.yaml`, `dayscript/persistence.yaml`
 and `dayscript/catalog-persistence.yaml` on each local target. The catalog test needs the fixture
 server above. `NODE_PATH=/path/to/node_modules node tests/persistence-browser.cjs <local-web-url>`
