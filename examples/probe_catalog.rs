@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
 //! Read-only OPDS probe: cargo run --example probe_catalog -- [--acquire] https://…
 use std::collections::{HashSet, VecDeque};
 fn get(url: &str) -> day_part_http::Response {

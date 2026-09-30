@@ -265,16 +265,7 @@ pub fn view(a: App) -> impl Piece {
                             move || {
                                 column((
                                     spacer(),
-                                    row((
-                                        spacer(),
-                                        column((
-                                            spinner().frame(28., 28.),
-                                            label(res::str::loading()),
-                                        ))
-                                        .spacing(8.)
-                                        .id("catalog-loading"),
-                                        spacer(),
-                                    )),
+                                    row((spacer(), loading_indicator(), spacer())),
                                     spacer(),
                                 ))
                                 .grow()
@@ -439,16 +430,19 @@ fn catalog_key(a: App, key: &str) {
         _ => {}
     }
 }
+fn loading_indicator() -> impl Piece {
+    column((spinner().frame(28., 28.), label(res::str::loading())))
+        .spacing(8.)
+        .id("catalog-loading")
+}
 fn loading(a: App, depth: usize) -> impl Piece {
     when(
         move || a.busy.get() && a.catalog_path.get().len() == depth,
         move || {
-            column((spinner().frame(28., 28.), label(res::str::loading())))
-                .spacing(8.)
+            loading_indicator()
                 .padding(20.)
                 .background(Color::hex(0xf1f3f6))
                 .corner_radius(12.)
-                .id("catalog-loading")
         },
     )
 }

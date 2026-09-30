@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
 //! Export the bundled book for browser-level layout/security regression tests.
 fn main() {
     let book = dayapp::epub::parse(

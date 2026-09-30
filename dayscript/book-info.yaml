@@ -42,6 +42,9 @@ flow:
   - web_eval: { id: book-webview, script: "String(document.querySelector('#book').contentDocument.documentElement.style.getPropertyValue('--USER__bodyHyphens')==='none')", text: "true" }
   - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),500);true", text: "true" }
   - assert_missing: { id: book-webview }
+  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
+  - nav_back: {}
+  - wait_for: { id: library-folders }
   - navigate: { route: settings }
   - screenshot: { name: settings-page }
   - navigate: { route: catalogs }

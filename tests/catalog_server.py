@@ -3,6 +3,7 @@
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import json
+import os
 import time
 import struct
 import zlib
@@ -41,6 +42,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-Type', 'application/opds+json' if kind == 'feed' else 'image/png')
             self.send_header('Content-Length', '1048576')
+            self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
             try:
                 for _ in range(256):
@@ -49,7 +51,9 @@ class Handler(BaseHTTPRequestHandler):
                 with COUNTS_LOCK: CANCELLED[kind] += 1
                 self.log_message('cancelled %s request', kind)
             return
-        if path == '/loading-fixture':
+        if path == '/health':
+            data, mime = os.environ.get('STANZA_FIXTURE_TOKEN', 'stanza-catalog-fixture').encode(), 'text/plain'
+        elif path == '/loading-fixture':
             mime = 'application/opds+json'
             data = json.dumps({'metadata': {'title': 'Loading fixture'}, 'navigation': [
                 {'title': 'Slow catalog', 'href': '/slow'},
@@ -106,7 +110,7 @@ class Handler(BaseHTTPRequestHandler):
         elif path == '/alice.epub':
             data, mime = BOOK.read_bytes(), 'application/epub+zip'
         elif path == '/search.xml':
-            data = b'<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"><Url type="application/atom+xml" template="http://127.0.0.1:18765/results?q={searchTerms}"/></OpenSearchDescription>'
+            data = b'<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"><Url type="application/atom+xml" template="http://127.0.0.1:PORT/results?q={searchTerms}"/></OpenSearchDescription>'
         elif path in ('/subjects', '/authors', '/facet'):
             mime = 'application/opds+json'
             next_path = {'/subjects':'/authors','/authors':'/facet','/facet':'/json'}[path]
@@ -129,6 +133,8 @@ class Handler(BaseHTTPRequestHandler):
             if path == '/results': data = data.replace(b'Stanza test catalog', b'Search results')
         else:
             status, data = 404, b'Not found'
+        if path == '/search.xml':
+            data = data.replace(b':PORT/', (':' + str(self.server.server_port) + '/').encode())
         self.send_response(status)
         self.send_header('Content-Type', mime)
         self.send_header('Content-Length', str(len(data)))
@@ -136,4 +142,5 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         try: self.wfile.write(data)
         except (BrokenPipeError, ConnectionResetError): pass
-ThreadingHTTPServer(('0.0.0.0', 18765), Handler).serve_forever()
+if __name__ == '__main__':
+    ThreadingHTTPServer(('127.0.0.1', int(os.environ.get('STANZA_FIXTURE_PORT', '18765'))), Handler).serve_forever()

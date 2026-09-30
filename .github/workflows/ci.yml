@@ -32,6 +32,15 @@ jobs:
       - uses: actions/checkout@v7
       - uses: appfair/appfair-apps/.github/actions/appfair-lint@main
 
+  test-fixtures:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -p 'test_*.py' -v
+
   app:
     uses: daybrite/actions/.github/workflows/dayapp.yml@v1
     permissions:
@@ -44,6 +53,10 @@ jobs:
       # add it here too.
       targets: all
       #targets: "windows-xaml, macos-appkit, linux-gtk, linux-qt, ios-uikit, android-mdc, harmony-arkui, web-dom"
+      target-packages: |
+        windows-xaml: webview2-runtime
+      # Requires the shared workflow's script-setup support; fixtures run after device boot.
+      script-setup: source tests/ci-fixture.sh
       scripts: auto
       # Every language the app ships, read from resource/locales/, so a language added to the app
       # is walked through without editing this file. Each locale captures its own screenshots.

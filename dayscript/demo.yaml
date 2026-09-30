@@ -34,6 +34,9 @@ flow:
   - screenshot: { name: night }
   - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),1000);true", text: "true" }
   - assert_missing: { id: book-webview }
+  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
+  - nav_back: {}
+  - wait_for: { id: library-folders }
   - navigate: { route: catalogs }
   - wait_for: { id: catalog-sources }
   - screenshot: { name: catalogs }
@@ -47,3 +50,6 @@ flow:
   - web_eval: { id: book-webview, script: "String(stanza.state().ready && stanza.state().chapter===2)", text: "true", timeout_secs: 40 }
   - nav_back: {}
   - assert_missing: { id: book-webview }
+  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
+  - nav_back: {}
+  - wait_for: { id: library-folders }
