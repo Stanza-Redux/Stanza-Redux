@@ -1,60 +1,321 @@
-# The store listing (https://daybrite.dev/docs/store): the submission info, the localized text
-# and the screenshots each listing shows, in this one file. It belongs to the App Store record
-# and the Play listing the App Fair creates for the app. The same tree may be written as
-# store/storefront.yaml instead; `day store` reads either.
-#
-# `day store stage` turns it into the layouts App Store Connect and Google Play expect, under
-# build/day/store/<target>/, for `fastlane deliver` / `fastlane supply`; the App Fair's queue
-# runs that from the release. bundle-id is left out, so `day store` uses the id the app is
-# built with.
-#
-# [storefront.submission-info] is shared by every store; [storefront.<target>.submission-info]
-# and [storefront.<target>.<store>.submission-info] override it key by key.
+# SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+# Shared listing text; Day maps these locale tags and fields to each store.
 [storefront.submission-info]
-# copyright = "2026 Stanza Redux"
-# contact-email = "support@example.com" # where a store reviewer writes back
-# review-notes = "How to exercise the app, for the store reviewer."
+copyright = "2026 The App Fair Project"
+contact-email = "support@appfair.org"
+review-notes = """
+Version 2 replaces the earlier Stanza app while retaining its bundle/package identifiers.
+No sign-in, purchase, or subscription is required. First launch adds Alice’s Adventures in
+Wonderland to the library; select Library > Titles, select Alice, and choose Open book.
+Catalogs browses public OPDS services and can download unencrypted EPUBs. Open Book imports
+an EPUB from the device. Reading works offline once a book is in the local library.
+Tap the center of a reading page to show its controls. The Aa, contents, and bookmark
+buttons open reading settings, chapter navigation, and saved bookmarks.
+Downloaded books from v1 are imported separately without modifying the old database.
+"""
 
 [storefront.ios-uikit.apple-app-store.submission-info]
-# apple-category = "DEVELOPER_TOOLS"    # App Store primary category
-# (Google Play's category is set in the Play Console; `supply` cannot write it.)
+apple-category = "BOOKS"
 
-# The listing text, in the default locale (en). A table per other locale carries what differs
-# and inherits the rest: the name, the keywords' `app fair` and the URLs are set once. A field
-# may also be `<field>-ref = "store/…"`, a project file holding the text, and a locale may
-# live in store/app.<tag>.toml beside this file. `day lint` holds every field to the stores'
-# limits (https://daybrite.dev/docs/store).
 [storefront.metadata]
 name = "Stanza Redux"
-subtitle = "Your EPUB library"
-short = "Browse OPDS catalogs, download EPUB books, and read offline."
+marketing-url = "https://stanza-redux.app/"
+support-url = "https://github.com/Stanza-Redux/Stanza-Redux/issues"
+privacy-url = "https://appfair.org/privacy/"
+subtitle = "EPUB reader & OPDS library"
+short = "Read EPUBs offline. Browse catalogs, save bookmarks, and adjust every page."
 description = """
-Browse OPDS catalogs and keep EPUB books in an offline library. Adjust text size, typeface,
-line spacing, margins, and light, sepia, or dark paper. Wide screens support two-column reading.
-Stanza Redux remembers your place and includes English and French interfaces.
-"""
-keywords = ["app fair", "free software", "open source"]
-release-notes = "First release."
-privacy-url = "https://appfair.org/privacy"
+Read a chapter on the train, find your next book in an online catalog, or settle into a two-page spread at your desk. Stanza Redux is a free, open-source EPUB reader for phones, tablets, and computers.
 
-[storefront.metadata.fr]
-subtitle = "Votre bibliothèque EPUB"
-short = "Parcourez des catalogues, téléchargez des EPUB et lisez hors connexion."
+Bring your own EPUB files or browse OPDS catalogs, including Standard Ebooks, Project Gutenberg, and Ebooks Gratuits. Explore authors and subjects, see book details and covers, and download books into your library. You can add, validate, rename, and reorder your own catalogs.
+
+Browse your library by title, author, or genre. Search your books, return to recently opened titles, and keep reading without an internet connection. Your reading position is saved on this device. Alice’s Adventures in Wonderland is included to get you started; you can remove it at any time.
+
+Make the page comfortable: choose a typeface and text size, adjust margins and line and paragraph spacing, and switch between light, sepia, dark, or custom colors. Use a single column or a two-column layout on wide screens. Turn pages with taps, swipes, or keyboard arrows. Save bookmarks, search the table of contents, and jump within a chapter without losing your previous position.
+
+No ads, purchases, subscriptions, or account required. Your library stays on your device; browsing a catalog contacts that catalog’s server. Supports unencrypted EPUB files up to 64 MB. DRM-protected books, PDF, audiobooks, and cloud synchronization are not supported.
+
+Version 2 uses the Day framework with native controls on each platform. The interface is available in 13 languages. Source code: github.com/Stanza-Redux/Stanza-Redux
+"""
+keywords = ["epub", "ebook", "reader", "books", "library", "opds", "offline", "gutenberg", "bookmark", "reading", "catalog"]
+release-notes = "Version 2: a rebuilt reader with library browsing by title, author and genre; OPDS catalogs; bookmarks; chapter navigation; and adjustable page layouts. Adds all 13 interface languages from version 1. Downloaded books from the previous app are imported on upgrade."
+promo = "Explore free book catalogs, build an offline EPUB library, and read with the type, spacing, and colors you choose."
+
+[storefront.metadata."ar"]
+subtitle = "قارئ EPUB وفهارس OPDS"
+short = "اقرأ EPUB دون اتصال. تصفّح الفهارس واحفظ الإشارات واضبط الصفحات."
 description = """
-Parcourez des catalogues OPDS et conservez vos livres EPUB dans une bibliothèque hors connexion.
-Réglez la taille des caractères, la police, l'interligne, les marges et le thème clair, sépia ou sombre.
-Les écrans larges permettent la lecture sur deux colonnes. Stanza Redux mémorise votre position de lecture.
-"""
-keywords = ["app fair", "logiciel libre", "open source"]
-release-notes = "Première version."
+Stanza Redux قارئ EPUB مجاني ومفتوح المصدر للهواتف والأجهزة اللوحية والحواسيب.
 
-# Which captures the listings show, in order: names of `screenshot:` steps in
-# dayscript/demo.yaml, the light theme unless { name = "…", theme = "dark" }. A target's list
-# serves the website's page for the target and its stores' listings; a store can list device
-# kinds of its own ([storefront.ios-uikit.apple-app-store.screenshots] with `iphone = [...]`,
-# `ipad = [...]`). `day lint` checks every name (https://daybrite.dev/docs/store#screenshots).
+استورد ملفات EPUB أو تصفّح فهارس OPDS مثل Standard Ebooks وProject Gutenberg وEbooks Gratuits. ابحث حسب المؤلف والموضوع، وشاهد الأغلفة والتفاصيل ثم نزّل الكتب. أضف فهارسك وتحقّق منها ورتّبها.
+
+تصفّح المكتبة حسب العنوان أو المؤلف أو النوع، وعد إلى قراءاتك الأخيرة. تبقى الكتب المنزّلة وموضع القراءة على جهازك. يتضمن التطبيق أليس في بلاد العجائب بالإنجليزية، ويمكنك إزالته.
+
+اضبط الخط والحجم والهوامش والتباعد. اختر ورقًا فاتحًا أو بنيًا أو داكنًا أو ألوانًا مخصّصة. تدعم الشاشات العريضة عمودين. قلّب الصفحات بالنقر أو السحب أو أسهم لوحة المفاتيح، واحفظ الإشارات وابحث عن الفصول.
+
+بلا إعلانات أو مشتريات أو اشتراكات أو حساب. يتصل تصفّح الفهرس بخادم ذلك الفهرس. يدعم EPUB غير المشفّر حتى 64 ميغابايت؛ لا يدعم DRM أو PDF أو الكتب الصوتية أو المزامنة السحابية.
+
+واجهة بثلاث عشرة لغة وعناصر أصلية لكل منصة باستخدام Day. الشفرة: github.com/Stanza-Redux/Stanza-Redux
+"""
+keywords = ["epub", "كتب", "قراءة", "قارئ", "مكتبة", "opds", "دون اتصال", "إشارات", "فهارس"]
+release-notes = "الإصدار 2: قارئ جديد، ومكتبة حسب العنوان والمؤلف والنوع، وفهارس OPDS، وإشارات مرجعية وتنقّل بين الفصول وتخطيط قابل للتعديل. جميع لغات الإصدار 1 الثلاث عشرة. تُستورد الكتب المنزّلة من التطبيق السابق عند التحديث."
+promo = "استكشف فهارس الكتب المجانية واحفظ EPUB دون اتصال واختر الخط والتباعد والألوان المناسبة للقراءة."
+
+[storefront.metadata."de"]
+subtitle = "EPUB-Reader mit OPDS-Katalogen"
+short = "EPUBs offline lesen. Kataloge, Lesezeichen und anpassbare Seiten."
+description = """
+Stanza Redux ist ein kostenloser, quelloffener EPUB-Reader für Smartphones, Tablets und Computer.
+
+Importiere EPUB-Dateien oder stöbere in OPDS-Katalogen wie Standard Ebooks, Project Gutenberg und Ebooks Gratuits. Entdecke Autoren und Themen, sieh Cover und Buchdetails an und lade Bücher herunter. Eigene Kataloge lassen sich hinzufügen, prüfen und ordnen.
+
+Durchsuche deine Bibliothek nach Titel, Autor oder Genre und öffne zuletzt gelesene Bücher. Heruntergeladene Bücher und Lesepositionen bleiben auf deinem Gerät. Alice im Wunderland ist auf Englisch enthalten und kann entfernt werden.
+
+Passe Schrift, Textgröße, Ränder und Abstände an. Wähle helles, sepiafarbenes, dunkles oder eigenes Papier. Breite Bildschirme unterstützen zwei Spalten. Blättere per Tippen, Wischen oder Pfeiltasten, setze Lesezeichen und suche Kapitel.
+
+Keine Werbung, Käufe, Abos oder Konten. Beim Katalogbesuch wird dessen Server kontaktiert. Unterstützt unverschlüsselte EPUBs bis 64 MB; kein DRM, PDF, Hörbuch oder Cloud-Abgleich.
+
+Oberfläche in 13 Sprachen, native Bedienelemente mit Day. Quellcode: github.com/Stanza-Redux/Stanza-Redux
+"""
+keywords = ["epub", "ebooks", "lesen", "bücher", "bibliothek", "opds", "offline", "lesezeichen", "katalog"]
+release-notes = "Version 2: neu entwickelter Reader mit Bibliothek nach Titel, Autor und Genre, OPDS-Katalogen, Lesezeichen, Kapitelnavigation und anpassbarem Layout. Alle 13 Sprachen aus Version 1. Heruntergeladene Bücher der bisherigen App werden beim Update importiert."
+promo = "Entdecke kostenlose Buchkataloge und lies deine EPUBs offline mit passender Schrift, passenden Abständen und Farben."
+
+[storefront.metadata."es"]
+subtitle = "Lector EPUB y catálogos OPDS"
+short = "Lee EPUB sin conexión. Catálogos, marcadores y páginas a tu medida."
+description = """
+Stanza Redux es un lector EPUB gratuito y de código abierto para móviles, tabletas y ordenadores.
+
+Importa EPUB o explora catálogos OPDS como Standard Ebooks, Project Gutenberg y Ebooks Gratuits. Busca autores y temas, consulta portadas y detalles, y descarga libros. Añade, verifica y organiza tus propios catálogos.
+
+Explora la biblioteca por título, autor o género y vuelve a tus lecturas recientes. Los libros descargados y tu posición de lectura permanecen en el dispositivo. Incluye Alicia en el país de las maravillas en inglés; puedes eliminarlo.
+
+Ajusta la letra, el tamaño, los márgenes y el espaciado. Elige papel claro, sepia, oscuro o colores propios. Usa dos columnas en pantallas anchas. Pasa páginas con toques, gestos o flechas del teclado, guarda marcadores y busca capítulos.
+
+Sin anuncios, compras, suscripciones ni cuenta. Consultar un catálogo contacta con su servidor. Admite EPUB sin cifrar de hasta 64 MB; no admite DRM, PDF, audiolibros ni sincronización en la nube.
+
+Interfaz en 13 idiomas, controles nativos con Day. Código: github.com/Stanza-Redux/Stanza-Redux
+"""
+keywords = ["epub", "libros", "lector", "lectura", "biblioteca", "opds", "sin conexión", "marcadores", "catálogo"]
+release-notes = "Versión 2: lector renovado, biblioteca por título, autor y género, catálogos OPDS, marcadores, navegación por capítulos y diseño ajustable. Los 13 idiomas de la versión 1. Los libros descargados de la aplicación anterior se importan al actualizar."
+promo = "Explora catálogos gratuitos, guarda tus EPUB sin conexión y elige la letra, el espaciado y los colores."
+
+[storefront.metadata."fr"]
+subtitle = "Livres EPUB et catalogues OPDS"
+short = "Lisez vos EPUB hors ligne. Catalogues, signets et mise en page personnalisable."
+description = """
+Stanza Redux est un lecteur EPUB libre et gratuit pour téléphones, tablettes et ordinateurs.
+
+Importez vos EPUB ou explorez les catalogues OPDS, dont Standard Ebooks, Project Gutenberg et Ebooks Gratuits. Parcourez les auteurs et les sujets, consultez les couvertures et les détails, puis téléchargez un livre. Ajoutez, vérifiez et organisez vos propres catalogues.
+
+Retrouvez vos livres par titre, auteur ou genre, recherchez dans votre bibliothèque et reprenez une lecture récente. Les livres téléchargés et votre position de lecture restent sur votre appareil. Alice au pays des merveilles est fourni en anglais ; vous pouvez le supprimer.
+
+Réglez la police, la taille du texte, les marges et l’espacement. Choisissez un papier clair, sépia, sombre ou des couleurs personnalisées. Les écrans larges proposent deux colonnes. Tournez les pages d’un geste ou au clavier, posez des signets et recherchez un chapitre.
+
+Sans publicité, achats, abonnement ni compte. Consulter un catalogue contacte son serveur. EPUB non chiffrés jusqu’à 64 Mo ; pas de DRM, PDF, livres audio ni synchronisation dans le nuage.
+
+Interface en 13 langues, commandes natives grâce à Day. Code source : github.com/Stanza-Redux/Stanza-Redux
+"""
+keywords = ["epub", "livres", "lecture", "bibliothèque", "opds", "hors ligne", "signets", "gutenberg", "catalogue"]
+release-notes = "Version 2 : lecteur reconstruit, bibliothèque par titre, auteur et genre, catalogues OPDS, signets, navigation par chapitre et mise en page réglable. Interface dans les 13 langues de la version 1. Les livres téléchargés dans l’ancienne application sont importés lors de la mise à jour."
+promo = "Explorez des catalogues gratuits, conservez vos EPUB hors ligne et ajustez chaque page à votre lecture."
+
+[storefront.metadata."hi"]
+subtitle = "EPUB रीडर और OPDS पुस्तकालय"
+short = "EPUB ऑफ़लाइन पढ़ें। कैटलॉग खोजें, बुकमार्क रखें और पृष्ठ सजाएँ।"
+description = """
+Stanza Redux फ़ोन, टैबलेट और कंप्यूटर के लिए मुफ़्त, ओपन-सोर्स EPUB रीडर है।
+
+EPUB आयात करें या Standard Ebooks, Project Gutenberg और Ebooks Gratuits जैसे OPDS कैटलॉग देखें। लेखक और विषय खोजें, कवर और विवरण देखें और पुस्तकें डाउनलोड करें। अपने कैटलॉग जोड़ें, जाँचें और व्यवस्थित करें।
+
+शीर्षक, लेखक या शैली के अनुसार पुस्तकालय देखें और हाल की पढ़ाई जारी रखें। डाउनलोड की गई पुस्तकें और पढ़ने का स्थान डिवाइस पर रहते हैं। अंग्रेज़ी में एलिस इन वंडरलैंड साथ दी गई है; आप इसे हटा सकते हैं।
+
+फ़ॉन्ट, आकार, हाशिए और अंतराल बदलें। हल्का, सेपिया, गहरा काग़ज़ या अपने रंग चुनें। चौड़ी स्क्रीन पर दो स्तंभ उपलब्ध हैं। टैप, स्वाइप या कीबोर्ड तीरों से पृष्ठ पलटें, बुकमार्क सहेजें और अध्याय खोजें।
+
+विज्ञापन, खरीदारी, सदस्यता या खाते की ज़रूरत नहीं। कैटलॉग देखने पर उसके सर्वर से संपर्क होता है। 64 MB तक की बिना एन्क्रिप्शन वाली EPUB समर्थित हैं; DRM, PDF, ऑडियोबुक या क्लाउड सिंक समर्थित नहीं हैं।
+
+13 भाषाओं में इंटरफ़ेस और Day के साथ हर प्लेटफ़ॉर्म के मूल नियंत्रण। स्रोत कोड: github.com/Stanza-Redux/Stanza-Redux
+"""
+keywords = ["epub", "पुस्तक", "पढ़ना", "रीडर", "पुस्तकालय", "opds", "ऑफ़लाइन", "बुकमार्क"]
+release-notes = "संस्करण 2: नया रीडर, शीर्षक, लेखक और शैली के अनुसार पुस्तकालय, OPDS कैटलॉग, बुकमार्क, अध्याय नेविगेशन और पृष्ठ सेटिंग। संस्करण 1 की सभी 13 भाषाएँ। अपडेट पर पुराने ऐप की डाउनलोड की गई पुस्तकें आयात होती हैं।"
+promo = "मुफ़्त पुस्तक कैटलॉग देखें, EPUB ऑफ़लाइन रखें और पढ़ने के लिए फ़ॉन्ट, अंतराल और रंग चुनें।"
+
+[storefront.metadata."id"]
+subtitle = "Pembaca EPUB dan katalog OPDS"
+short = "Baca EPUB luring. Jelajahi katalog, simpan penanda, atur tampilan halaman."
+description = """
+Stanza Redux adalah pembaca EPUB gratis dan sumber terbuka untuk ponsel, tablet, dan komputer.
+
+Impor EPUB atau jelajahi katalog OPDS, termasuk Standard Ebooks, Project Gutenberg, dan Ebooks Gratuits. Telusuri penulis dan topik, lihat sampul serta detail, lalu unduh buku. Tambahkan, periksa, dan urutkan katalog Anda sendiri.
+
+Telusuri perpustakaan berdasarkan judul, penulis, atau genre dan lanjutkan bacaan terakhir. Buku unduhan dan posisi membaca tersimpan di perangkat. Alice’s Adventures in Wonderland disertakan dalam bahasa Inggris dan dapat dihapus.
+
+Atur font, ukuran teks, margin, dan jarak. Pilih kertas terang, sepia, gelap, atau warna kustom. Layar lebar mendukung dua kolom. Balik halaman dengan ketukan, usapan, atau tombol panah, simpan penanda, dan cari bab.
+
+Tanpa iklan, pembelian, langganan, atau akun. Menelusuri katalog menghubungi server katalog tersebut. Mendukung EPUB tanpa enkripsi hingga 64 MB; tidak mendukung DRM, PDF, buku audio, atau sinkronisasi awan.
+
+Antarmuka dalam 13 bahasa, kontrol bawaan platform dengan Day. Kode: github.com/Stanza-Redux/Stanza-Redux
+"""
+keywords = ["epub", "buku", "pembaca", "perpustakaan", "opds", "luring", "penanda", "katalog"]
+release-notes = "Versi 2: pembaca baru, perpustakaan berdasarkan judul, penulis dan genre, katalog OPDS, penanda, navigasi bab, dan tata letak yang dapat diatur. Ke-13 bahasa versi 1 tersedia. Buku unduhan dari aplikasi sebelumnya diimpor saat pembaruan."
+promo = "Jelajahi katalog gratis, simpan EPUB luring, dan pilih font, jarak, serta warna untuk membaca."
+
+[storefront.metadata."it"]
+subtitle = "Lettore EPUB e cataloghi OPDS"
+short = "Leggi EPUB offline. Cataloghi, segnalibri e pagine personalizzabili."
+description = """
+Stanza Redux è un lettore EPUB gratuito e open source per telefoni, tablet e computer.
+
+Importa EPUB o esplora cataloghi OPDS come Standard Ebooks, Project Gutenberg ed Ebooks Gratuits. Sfoglia autori e argomenti, guarda copertine e dettagli e scarica libri. Aggiungi, verifica e organizza i tuoi cataloghi.
+
+Sfoglia la biblioteca per titolo, autore o genere e riprendi le letture recenti. Libri scaricati e posizione di lettura restano sul dispositivo. È incluso Alice nel paese delle meraviglie in inglese, che puoi rimuovere.
+
+Regola carattere, dimensioni, margini e spaziatura. Scegli carta chiara, seppia, scura o colori personalizzati. Gli schermi larghi consentono due colonne. Volta pagina con tocchi, gesti o frecce della tastiera, salva segnalibri e cerca capitoli.
+
+Niente pubblicità, acquisti, abbonamenti o account. La consultazione di un catalogo contatta il suo server. EPUB non crittografati fino a 64 MB; niente DRM, PDF, audiolibri o sincronizzazione cloud.
+
+Interfaccia in 13 lingue, controlli nativi con Day. Codice: github.com/Stanza-Redux/Stanza-Redux
+"""
+keywords = ["epub", "libri", "lettore", "lettura", "biblioteca", "opds", "offline", "segnalibri", "cataloghi"]
+release-notes = "Versione 2: lettore ricostruito, biblioteca per titolo, autore e genere, cataloghi OPDS, segnalibri, navigazione nei capitoli e impaginazione regolabile. Tutte le 13 lingue della versione 1. I libri scaricati dalla vecchia app vengono importati con l’aggiornamento."
+promo = "Esplora cataloghi gratuiti, conserva EPUB offline e scegli caratteri, spaziatura e colori per leggere."
+
+[storefront.metadata."ja"]
+subtitle = "EPUBリーダーとOPDSライブラリ"
+short = "EPUBをオフラインで。カタログ検索、ブックマーク、読みやすいページ設定。"
+description = """
+Stanza Reduxは、スマートフォン、タブレット、パソコンで使える無料のオープンソースEPUBリーダーです。
+
+EPUBを取り込むか、Standard Ebooks、Project Gutenberg、Ebooks GratuitsなどのOPDSカタログを閲覧できます。著者やテーマから探し、表紙や詳細を確認してダウンロード。独自のカタログの追加、検証、並べ替えもできます。
+
+書名、著者、ジャンル別にライブラリを閲覧し、最近読んだ本を再開できます。ダウンロードした本と読書位置は端末に保存されます。英語版『不思議の国のアリス』が付属し、不要なら削除できます。
+
+書体、文字サイズ、余白、行間、段落間隔を調整。用紙はライト、セピア、ダーク、カスタム色から選べます。広い画面では2段組みに対応。タップ、スワイプ、矢印キーでページをめくり、ブックマークや章の検索も使えます。
+
+広告、購入、定期購読、アカウントは不要です。カタログ閲覧時は各カタログのサーバーに接続します。64 MB以下の未暗号化EPUBに対応。DRM、PDF、オーディオブック、クラウド同期には対応していません。
+
+13言語のインターフェイスとDayによる各プラットフォームの標準コントロール。ソースコード：github.com/Stanza-Redux/Stanza-Redux
+"""
+keywords = ["epub", "電子書籍", "読書", "本", "リーダー", "ライブラリ", "opds", "オフライン", "ブックマーク"]
+release-notes = "バージョン2：リーダーを再構築。書名・著者・ジャンル別の書庫、OPDSカタログ、ブックマーク、章の移動、ページ設定に対応。バージョン1の全13言語を追加。更新時に旧アプリのダウンロード済み書籍を取り込みます。"
+promo = "無料のカタログで本を探し、EPUBをオフラインに保存。書体、間隔、色を好みに合わせて読めます。"
+
+[storefront.metadata."ko"]
+subtitle = "EPUB 리더와 OPDS 보관함"
+short = "EPUB을 오프라인으로 읽으세요. 카탈로그, 책갈피, 편안한 페이지 설정."
+description = """
+Stanza Redux는 휴대폰, 태블릿, 컴퓨터에서 쓰는 무료 오픈 소스 EPUB 리더입니다.
+
+EPUB을 가져오거나 Standard Ebooks, Project Gutenberg, Ebooks Gratuits 등의 OPDS 카탈로그를 둘러보세요. 저자와 주제별로 찾고, 표지와 상세 정보를 확인한 뒤 다운로드하세요. 나만의 카탈로그를 추가하고 확인하고 정렬할 수 있습니다.
+
+제목, 저자, 장르로 보관함을 탐색하고 최근 읽던 책을 이어 보세요. 다운로드한 책과 읽던 위치는 기기에 저장됩니다. 영어판 이상한 나라의 앨리스가 포함되며 언제든 삭제할 수 있습니다.
+
+글꼴, 크기, 여백과 간격을 조절하세요. 밝은 종이, 세피아, 어두운 종이, 사용자 지정 색상을 선택할 수 있습니다. 넓은 화면에서는 두 단으로 읽을 수 있습니다. 탭, 쓸어 넘기기, 키보드 화살표로 페이지를 넘기고 책갈피를 저장하거나 장을 검색하세요.
+
+광고, 구매, 구독, 계정이 필요 없습니다. 카탈로그 탐색 시 해당 서버에 접속합니다. 암호화되지 않은 64 MB 이하 EPUB을 지원하며 DRM, PDF, 오디오북, 클라우드 동기화는 지원하지 않습니다.
+
+13개 언어의 인터페이스와 Day 기반 플랫폼 기본 컨트롤. 소스 코드: github.com/Stanza-Redux/Stanza-Redux
+"""
+keywords = ["epub", "전자책", "독서", "책", "리더", "보관함", "opds", "오프라인", "책갈피"]
+release-notes = "버전 2: 새로 만든 리더, 제목·저자·장르별 보관함, OPDS 카탈로그, 책갈피, 장 탐색, 페이지 설정. 버전 1의 13개 언어를 모두 추가했습니다. 업데이트 시 이전 앱에서 다운로드한 책을 가져옵니다."
+promo = "무료 카탈로그를 탐색하고 EPUB을 오프라인으로 보관하세요. 글꼴, 간격, 색상을 직접 고를 수 있습니다."
+
+[storefront.metadata."pt-BR"]
+subtitle = "Leitor EPUB e catálogos OPDS"
+short = "Leia EPUB offline. Catálogos, marcadores e páginas personalizáveis."
+description = """
+Stanza Redux é um leitor EPUB gratuito e de código aberto para celulares, tablets e computadores.
+
+Importe EPUB ou explore catálogos OPDS como Standard Ebooks, Project Gutenberg e Ebooks Gratuits. Navegue por autores e assuntos, veja capas e detalhes e baixe livros. Adicione, verifique e organize seus próprios catálogos.
+
+Navegue na biblioteca por título, autor ou gênero e retome leituras recentes. Os livros baixados e a posição de leitura ficam no dispositivo. Alice no País das Maravilhas está incluído em inglês e pode ser removido.
+
+Ajuste fonte, tamanho, margens e espaçamento. Escolha papel claro, sépia, escuro ou cores personalizadas. Telas largas oferecem duas colunas. Vire páginas com toques, gestos ou setas do teclado, salve marcadores e encontre capítulos.
+
+Sem anúncios, compras, assinaturas ou conta. Consultar um catálogo acessa seu servidor. EPUB sem criptografia de até 64 MB; sem DRM, PDF, audiolivros ou sincronização em nuvem.
+
+Interface em 13 idiomas, controles nativos com Day. Código: github.com/Stanza-Redux/Stanza-Redux
+"""
+keywords = ["epub", "livros", "leitor", "leitura", "biblioteca", "opds", "offline", "marcadores", "catálogos"]
+release-notes = "Versão 2: leitor reconstruído, biblioteca por título, autor e gênero, catálogos OPDS, marcadores, navegação por capítulos e layout ajustável. Os 13 idiomas da versão 1. Livros baixados no app anterior são importados ao atualizar."
+promo = "Explore catálogos gratuitos, guarde EPUB offline e escolha fonte, espaçamento e cores para ler."
+
+[storefront.metadata."ru"]
+subtitle = "EPUB и каталоги OPDS"
+short = "Читайте EPUB офлайн. Каталоги, закладки и настройка страниц."
+description = """
+Stanza Redux — бесплатная читалка EPUB с открытым кодом для телефонов, планшетов и компьютеров.
+
+Импортируйте EPUB или открывайте каталоги OPDS: Standard Ebooks, Project Gutenberg и Ebooks Gratuits. Ищите по авторам и темам, смотрите обложки и сведения, скачивайте книги. Добавляйте, проверяйте и упорядочивайте свои каталоги.
+
+Находите книги по названию, автору или жанру, возвращайтесь к недавним. Скачанные книги и позиция чтения остаются на устройстве. Включена «Алиса в Стране чудес» на английском; её можно удалить.
+
+Настройте шрифт, размер, поля и интервалы. Выберите светлую, тёмную бумагу, сепию или свои цвета. На широких экранах доступны два столбца. Листайте касаниями, жестами или стрелками клавиатуры, ставьте закладки и ищите главы.
+
+Без рекламы, покупок, подписки и аккаунта. При просмотре каталога приложение обращается к его серверу. Поддерживаются незашифрованные EPUB до 64 МБ; DRM, PDF, аудиокниги и облачная синхронизация не поддерживаются.
+
+Интерфейс на 13 языках, системные элементы управления с Day. Код: github.com/Stanza-Redux/Stanza-Redux
+"""
+keywords = ["epub", "книги", "читалка", "чтение", "библиотека", "opds", "офлайн", "закладки", "каталог"]
+release-notes = "Версия 2: новая читалка, библиотека по названию, автору и жанру, каталоги OPDS, закладки, переходы по главам и настройка страниц. Все 13 языков версии 1. Скачанные в прежнем приложении книги импортируются при обновлении."
+promo = "Открывайте бесплатные каталоги, храните EPUB офлайн и выбирайте удобные шрифт, интервалы и цвета."
+
+[storefront.metadata."zh-CN"]
+subtitle = "EPUB阅读器与OPDS书库"
+short = "离线阅读EPUB，浏览目录、保存书签，调整每一页的排版。"
+description = """
+Stanza Redux是一款适用于手机、平板和电脑的免费开源EPUB阅读器。
+
+导入EPUB，或浏览Standard Ebooks、Project Gutenberg、Ebooks Gratuits等OPDS目录。按作者和主题查找，查看封面与详情，再下载图书。也可以添加、验证和排列自己的目录。
+
+按书名、作者或类别浏览书库，搜索图书，继续最近的阅读。下载的图书和阅读位置保存在本机。内置英文版《爱丽丝梦游仙境》，可随时移除。
+
+调整字体、字号、页边距、行距和段间距。选择浅色、褐色、深色或自定义颜色。宽屏支持双栏阅读。通过轻点、滑动或键盘方向键翻页，保存书签，搜索章节并跳转到章节内的位置。
+
+无广告、无内购、无订阅，无需账号。浏览目录时会连接该目录的服务器。支持64 MB以内的未加密EPUB，不支持DRM、PDF、有声书或云同步。
+
+界面支持13种语言，通过Day使用各平台原生控件。源代码：github.com/Stanza-Redux/Stanza-Redux
+"""
+keywords = ["epub", "电子书", "阅读", "图书", "书库", "opds", "离线", "书签", "目录"]
+release-notes = "版本2：重建阅读器，按书名、作者和类别浏览书库，支持OPDS目录、书签、章节导航与页面设置。加入版本1的全部13种界面语言。更新时会导入旧应用中已下载的图书。"
+promo = "浏览免费图书目录，建立离线EPUB书库，自由选择字体、间距和颜色。"
+
 [storefront.ios-uikit.screenshots]
-default = ["library", "reader", "settings"]
+default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
 
 [storefront.android-mdc.screenshots]
-default = ["library", "reader", "settings"]
+default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
+
+[storefront.macos-appkit.screenshots]
+default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
+
+[storefront.macos-gtk.screenshots]
+default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
+
+[storefront.macos-qt.screenshots]
+default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
+
+[storefront.linux-gtk.screenshots]
+default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
+
+[storefront.linux-qt.screenshots]
+default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
+
+[storefront.windows-winui.screenshots]
+default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
+
+[storefront.windows-xaml.screenshots]
+default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
+
+[storefront.windows-gtk.screenshots]
+default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
+
+[storefront.windows-qt.screenshots]
+default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
+
+[storefront.harmony-arkui.screenshots]
+default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
+
+[storefront.web-dom.screenshots]
+default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]

@@ -1,25 +1,6 @@
-# Stanza Redux's website (https://daybrite.dev/docs/website), built by the shared dayapp workflow
-# from the daybrite/daysite template: a localized landing page from store/'s listing, the
-# walkthrough's screenshots, the downloads, and the web build under /webapp/. Its presence is
-# what makes the workflow build and deploy the site to this repository's GitHub Pages, on every
-# push to the default branch and on every release tag (README, "One-time repository setup").
-# Everything content-ful comes from Day.toml, store/ and the release pipeline; this file holds
-# only what is site-specific.
-
-# The site's canonical URL. An App Fair app lives at github.com/<token>/<token>, and GitHub
-# Pages serves that at https://<token, lowercased>.github.io/<token>: the host lowercases the
-# organization, the path keeps the repository's case.
-host = "https://stanza-redux.github.io/Stanza-Redux"
-locales = ["en", "fr"]
-
-# Which languages the site is built in, and in what order the picker offers them. Left unset,
-# the site takes every locale the app ships (resource/locales/), which is what this app wants;
-# set it only to narrow or reorder that list, after which `day localize add` and `remove` keep
-# it in step.
-# locales = ["en", "fr"]
-
-# Optional, spelled out to edit (https://github.com/daybrite/daysite#site-toml):
-# accent-color = "#3B82F6"        # brand accent, any CSS color
-# default-theme = "system"        # light | dark | system
-# webapp = "webapp"               # the hosted web build's subdirectory
-# default-platform = "web"        # which platform the picker preselects
+# SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+host = "https://stanza-redux.app"
+locales = ["en", "ar", "de", "es", "fr", "hi", "id", "it", "ja", "ko", "pt-BR", "ru", "zh-CN"]
+accent-color = "#526A58"
+default-platform = "ios"
+icon-effect = "raise"

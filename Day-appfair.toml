@@ -1,14 +1,10 @@
-# The App Fair build of this app (https://daybrite.dev/docs/flavors). `day --flavor appfair …`
-# merges this over Day.toml, and the catalog (github.com/appfair/appfair-apps) builds, signs and
-# submits every release that way. Only the id differs; Day.toml keeps the app's own.
-
+# SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+# Retain the v1 identifiers: changing them would create separate store apps.
 [app]
-id = "org.appfair.app.StanzaRedux"
+id = "org.appfair.app.Stanza-Redux"
 
-# All stores share this id: the app token with hyphens removed and case preserved.
-# Uncomment and customize these overrides if separate store ids are needed.
-# [app.android]
-# id = "org.appfair.app.StanzaRedux"
+[app.android]
+id = "org.appfair.app.Stanza_Redux"
 
-# [app.harmony]
-# id = "org.appfair.app.StanzaRedux"
+[app.harmony]
+id = "org.appfair.app.Stanza_Redux"

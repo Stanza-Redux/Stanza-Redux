@@ -58,11 +58,30 @@ jobs:
       # Requires the shared workflow's script-setup support; fixtures run after device boot.
       script-setup: source tests/ci-fixture.sh
       scripts: auto
+      # Regression suites run once per device; only the store tour crosses all languages/themes.
+      scripts-once: >-
+        dayscript/book-info.yaml
+        dayscript/browser.yaml
+        dayscript/catalog-cancellation.yaml
+        dayscript/catalog-loading.yaml
+        dayscript/catalog-persistence.yaml
+        dayscript/catalog-thumbnails.yaml
+        dayscript/catalog.yaml
+        dayscript/demo.yaml
+        dayscript/library.yaml
+        dayscript/navigation-settle.yaml
+        dayscript/persistence.yaml
+        dayscript/reader-affordances.yaml
+        dayscript/reader-margins.yaml
+        dayscript/reader-sections.yaml
       # Every language the app ships, read from resource/locales/, so a language added to the app
       # is walked through without editing this file. Each locale captures its own screenshots.
       locales: all
       #locales: en fr
       themes: light dark
+      android-devices: |
+        device=pixel, os=36, orientation=portrait, slug=phone
+        device=medium_tablet, os=36, orientation=landscape, slug=tablet
       # One build per target, the base app, on every push and tag. Day-appfair.toml changes
       # only the ids, and the App Fair queue builds that flavor itself from the tag; appfair-lint
       # checks its ids on every push. Release assets, Pages and the website come from this
@@ -77,7 +96,7 @@ jobs:
       # `release: released` event above and rebuilds the site against the new version.
       release-mode: pre-release
       # website/site.toml makes the workflow build and deploy the full project site
-      # (https://games-fair.github.io/Games-Fair/) from the daybrite/daysite template on every
-      # push to main, with the web build hosted at /Games-Fair/webapp/. deploy-web stays on as
+      # (https://stanza-redux.app/) from the daybrite/daysite template on every
+      # push to main, with the web build hosted at /webapp/. deploy-web stays on as
       # the fallback: were website/ ever removed, the bare web app would return to the Pages root.
       deploy-web: true

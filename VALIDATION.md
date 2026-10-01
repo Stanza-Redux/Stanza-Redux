@@ -1,5 +1,36 @@
 # Local validation
 
+## Version 2 store preparation — 2026-10-01
+
+Prepared 2.0.0 / build 25 with the existing Apple and Android application identifiers
+and store listing IDs. All 13 v1 languages have complete generated UI catalogs and
+store text; the settings language picker and startup locale selection cover them all.
+
+- Rust library tests: **29 passed**. Python fixture/release tests: **13 passed**.
+- `cargo fmt --all -- --check` and `git diff --check` passed.
+- `day lint`: **0 errors**, 21 unused localization-key warnings.
+- App Fair submission lint: **all six rules passed**.
+- Apple and Google text staging passed: 122 and 55 files respectively.
+- Store screenshot validation passed for English, French and Arabic: iPhone Pro Max
+  (1320×2868), iPad Pro 13-inch (2064×2752), and Android phone (1080×1920).
+- New store walkthrough: **137 passed on macOS AppKit**, **136 passed with one
+  desktop-only skip on iOS UIKit and Android MDC**. English, French and Arabic
+  were exercised on both mobile targets; each tour captures eight screenshots.
+- The local website builds all 13 languages. Browser checks returned HTTP 200 for
+  every language and found no JavaScript errors. CI is configured to produce the
+  complete language/theme/device gallery; that remote matrix has not been run here.
+
+A Pixel 6 Android 14 emulator hit an application-startup ANR in native text measurement
+(`Paint.syncTextLocalesWithMinikin`) before the tour could complete. The Pixel 5
+Android 11 emulator completed all three languages. Strict `cargo clippy --lib --tests
+-- -D warnings` remains blocked by existing reader-code lints (mostly collapsible
+conditionals, plus a large enum, test-module ordering and a unit-valued binding).
+These checks do not establish that the entire release matrix is clean.
+
+The public-domain book fixture is separate from shipped assets and records source
+URLs and SHA-256 hashes. Captures use actual acquired EPUBs, not rendered mockups.
+No GitHub release, store upload, commit, or push was performed.
+
 ## Chapter-boundary margins — 2026-10-01
 
 Fixed final-spread alignment in the shared reader. Browser column overflow stops at the

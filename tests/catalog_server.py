@@ -12,6 +12,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from socketserver import TCPServer
 from pathlib import Path
 import json
+from showcase_catalog import response as showcase_response
 import os
 import time
 import struct
@@ -69,7 +70,10 @@ class Handler(BaseHTTPRequestHandler):
                 with COUNTS_LOCK: CANCELLED[kind] += 1
                 self.log_message('cancelled %s request', kind)
             return
-        if path == '/health':
+        showcase = showcase_response(path) if path.startswith('/showcase') else None
+        if showcase is not None:
+            data, mime = showcase
+        elif path == '/health':
             data, mime = os.environ.get('STANZA_FIXTURE_TOKEN', 'stanza-catalog-fixture').encode(), 'text/plain'
         elif path == '/loading-fixture':
             mime = 'application/opds+json'

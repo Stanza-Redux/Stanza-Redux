@@ -163,3 +163,18 @@ return_position = Revenir à la position précédente
 contents_search = Rechercher un chapitre
 contents_empty = Aucun chapitre correspondant.
 chapter_percent = { $percent } du chapitre
+
+# Native language names in the language picker.
+language_ar = العربية
+language_de = Deutsch
+language_en = English
+language_es = Español
+language_fr = Français
+language_hi = हिन्दी
+language_id = Bahasa Indonesia
+language_it = Italiano
+language_ja = 日本語
+language_ko = 한국어
+language_pt_br = Português (Brasil)
+language_ru = Русский
+language_zh_cn = 简体中文

@@ -1,7 +1,10 @@
 # Stanza Redux
 
-An EPUB reader built with Day and the App Fair template. The interface is available in English
-and French. This checkout is local: no GitHub repository, release, or submission has been created.
+A free EPUB reader built with Day and the App Fair template. Version 2 replaces the earlier
+Stanza app while keeping its Apple and Android store identifiers.
+
+The interface and store listing support Arabic, Chinese (Simplified), English, French, German,
+Hindi, Indonesian, Italian, Japanese, Korean, Portuguese (Brazil), Russian, and Spanish.
 
 ## Use
 
@@ -303,9 +306,61 @@ AGPL-3.0-only with the App Fair Distribution Exception. See `LICENSE.txt` and
 
 ## Localization and resources
 
-App-owned strings use generated `res::str` accessors in English and French, including errors,
+App-owned strings use generated `res::str` accessors in all 13 locale catalogs, including errors,
 progress, units, accessibility text and reader controls. Worker errors carry a message constructor
 and diagnostic details; presentation formats the message on the UI thread. The embedded reader
 receives its translations from Rust. Publication metadata is displayed as supplied by the book or
 catalog. Bundled assets use generated `res::assets` and `res::vectors` constants. The project and
 global agent instructions record these requirements.
+
+## Version 2 store preparation
+
+`Cargo.toml` declares version 2.0.0 and `Day.toml` build 25. The v1 checkout records
+1.4.4 / build 23; the intervening Day prototype used build 24. Both the base and
+App Fair builds retain `org.appfair.app.Stanza-Redux` on Apple and
+`org.appfair.app.Stanza_Redux` on Android. Existing listing IDs live in `[store]`.
+
+`store/storefront.toml` supplies each language’s description, subtitle, Play short
+description, keywords, release notes, promotional text, reviewer instructions, and URLs.
+Day validates store length limits and maps language tags to Apple/Google spellings.
+
+The store gallery uses eight named captures from `dayscript/store-walkthrough.yaml`.
+It downloads three real books from the loopback OPDS fixture, exercises page turns,
+and captures light, dark, and sepia pages, contents, settings, catalog details, and
+the populated library. It waits for cover images before capturing. Test books and
+their source hashes are documented in `tests/fixtures/books/README.md`; the extra
+EPUBs are test fixtures, not shipped app assets.
+
+```sh
+# Bash, from the project root. Requires a booted simulator/emulator for mobile.
+source tests/ci-fixture.sh
+day launch -p macos-appkit --script dayscript/store-walkthrough.yaml
+day launch -p ios-uikit --script dayscript/store-walkthrough.yaml
+# On Android, set ANDROID_SERIAL to the device you selected.
+adb -s "$ANDROID_SERIAL" reverse tcp:18765 tcp:18765
+day launch -p android-mdc --android-device "$ANDROID_SERIAL" --script dayscript/store-walkthrough.yaml
+```
+
+Use a temporary `DAY_DATA_DIR` for a clean desktop capture library; do not delete
+a personal library to prepare screenshots. If port 18765 is occupied, set
+`STANZA_FIXTURE_PORT` and replace the port in a temporary copy of the walkthrough.
+
+CI captures every locale in light and dark themes. iPhone and iPad profiles come
+from the shared workflow; Android uses a 9:16 phone and a landscape tablet.
+Regression scripts run once per device using `scripts-once`, avoiding a full
+regression rerun for every marketing image. Captures are selected explicitly in
+the storefront for each target, so diagnostic screenshots do not enter listings.
+
+```sh
+day lint
+python3 -m unittest discover -s tests -p 'test_*.py'
+cargo test --lib
+day store stage -p ios-uikit
+day store stage -p android-mdc
+# Generate the website data and start Astro using a local daysite checkout:
+DAYSITE_CONFIG="$PWD/website/site.toml" DAY_BIN=day node /path/to/daysite/scripts/preview.mjs
+```
+
+These commands stage local artifacts only. Store submission, signing credentials,
+and publication remain separate from preparing this checkout. Review the generated
+listings and screenshots before submitting the release.

@@ -1,0 +1,525 @@
+# SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+# Run after sourcing tests/ci-fixture.sh. Real EPUB downloads, no public network.
+# Gallery labels match the generated UI catalogs; publication text is not translated.
+name: store-walkthrough
+flow:
+- navigate:
+    route: catalogs
+- menu:
+    id: add-opds-catalog
+- wait_for:
+    id: catalog-editor-url
+    timeout_secs: 30
+- input:
+    id: catalog-editor-url
+    text: http://127.0.0.1:18765/showcase
+- tap:
+    id: catalog-editor-validate
+- wait_for:
+    id: catalog-editor-valid
+    timeout_secs: 30
+- tap:
+    id: catalog-editor-save
+- assert_missing:
+    id: catalog-editor
+- wait_for:
+    id: catalog-list-1-Public-domain classics
+    timeout_secs: 30
+- wait_for:
+    id: catalog-cover-46-http://127.0.0.1:18765/showcase/cover/alice
+    timeout_secs: 30
+- wait_for:
+    id: catalog-cover-46-http://127.0.0.1:18765/showcase/cover/frankenstein
+    timeout_secs: 30
+- wait_for:
+    id: catalog-cover-46-http://127.0.0.1:18765/showcase/cover/the-time-machine
+    timeout_secs: 30
+- screenshot:
+    name: discover
+    title:
+      ar: الفهارس
+      de: Kataloge
+      en: Catalogs
+      es: Catálogos
+      fr: Catalogues
+      hi: कैटलॉग
+      id: Katalog
+      it: Cataloghi
+      ja: カタログ
+      ko: 카탈로그
+      pt-BR: Catálogos
+      ru: Каталоги
+      zh-CN: 目录
+- select:
+    id: catalog-list-1-Public-domain classics
+    index: 0
+- wait_for:
+    id: publication-title
+    timeout_secs: 30
+- wait_for:
+    id: catalog-cover-160-http://127.0.0.1:18765/showcase/cover/alice
+    timeout_secs: 30
+- scroll_to:
+    id: download-book
+- tap:
+    id: download-book
+- wait_for:
+    id: book-webview
+    timeout_secs: 60
+- web_eval:
+    id: book-webview
+    script: String(stanza.state().ready && !stanza.state().animating && stanza.state().height>100)
+    text: 'true'
+    timeout_secs: 40
+- web_eval:
+    id: book-webview
+    script: setTimeout(()=>document.getElementById('appearance').click(),300);true
+    text: 'true'
+    timeout_secs: 40
+- wait_for:
+    id: font-size
+    timeout_secs: 30
+- set_value:
+    id: font-size
+    value: 20
+- set_value:
+    id: line-height
+    value: 1.5
+- toggle:
+    id: reader-justified
+    value: false
+- toggle:
+    id: reader-hyphenation
+    value: true
+- screenshot:
+    name: reading-settings
+    title:
+      ar: الإعدادات
+      de: Einstellungen
+      en: Settings
+      es: Ajustes
+      fr: Réglages
+      hi: सेटिंग
+      id: Pengaturan
+      it: Impostazioni
+      ja: 設定
+      ko: 설정
+      pt-BR: Configurações
+      ru: Настройки
+      zh-CN: 设置
+- scroll_to:
+    id: reader-theme
+- select:
+    id: reader-theme
+    index: 0
+- scroll_to:
+    id: margins
+- set_value:
+    id: margins
+    value: 24
+- set_value:
+    id: paragraph-spacing
+    value: 0.6
+- scroll_to:
+    id: reader-columns
+- select:
+    id: reader-columns
+    index: 1
+- tap:
+    id: reader-settings-done
+- wait_for:
+    id: book-webview
+    timeout_secs: 30
+- web_eval:
+    id: book-webview
+    script: String(stanza.state().ready && !stanza.state().animating && stanza.state().height>100)
+    text: 'true'
+    timeout_secs: 40
+- web_eval:
+    id: book-webview
+    script: stanza.goToChapter(2);true
+    text: 'true'
+    timeout_secs: 40
+- web_eval:
+    id: book-webview
+    script: String(stanza.state().ready && stanza.state().chapter===2 && stanza.state().page===0)
+    text: 'true'
+    timeout_secs: 40
+- web_eval:
+    id: book-webview
+    script: String([...document.querySelector('#book').contentDocument.images].every(i=>i.complete) && document.querySelector('#book').contentDocument.fonts.status==='loaded')
+    text: 'true'
+    timeout_secs: 40
+- pause:
+    secs: 0.7
+- screenshot:
+    name: reading-alice
+    title:
+      ar: Alice’s Adventures in Wonderland · قراءة
+      de: Alice’s Adventures in Wonderland · Lesen
+      en: Alice’s Adventures in Wonderland · Read
+      es: Alice’s Adventures in Wonderland · Leer
+      fr: Alice’s Adventures in Wonderland · Lire
+      hi: Alice’s Adventures in Wonderland · पढ़ें
+      id: Alice’s Adventures in Wonderland · Baca
+      it: Alice’s Adventures in Wonderland · Leggi
+      ja: Alice’s Adventures in Wonderland · 読む
+      ko: Alice’s Adventures in Wonderland · 읽기
+      pt-BR: Alice’s Adventures in Wonderland · Ler
+      ru: Alice’s Adventures in Wonderland · Читать
+      zh-CN: Alice’s Adventures in Wonderland · 阅读
+- web_eval:
+    id: book-webview
+    script: document.getElementById('contents').click();true
+    text: 'true'
+    timeout_secs: 40
+- screenshot:
+    name: reading-contents
+    title:
+      ar: المحتويات
+      de: Inhalt
+      en: Contents
+      es: Índice
+      fr: Table des matières
+      hi: विषय-सूची
+      id: Daftar isi
+      it: Indice
+      ja: 目次
+      ko: 목차
+      pt-BR: Sumário
+      ru: Содержание
+      zh-CN: 目录
+- web_eval:
+    id: book-webview
+    script: document.getElementById('contents-done').click();true
+    text: 'true'
+    timeout_secs: 40
+- web_eval:
+    id: book-webview
+    script: stanza.next();true
+    text: 'true'
+    timeout_secs: 40
+- web_eval:
+    id: book-webview
+    script: String(stanza.state().ready && !stanza.state().animating && stanza.state().page>0)
+    text: 'true'
+    timeout_secs: 40
+- web_eval:
+    id: book-webview
+    script: setTimeout(()=>document.getElementById('close-reader').click(),300);true
+    text: 'true'
+    timeout_secs: 40
+- assert_missing:
+    id: book-webview
+- navigate:
+    route: catalogs
+- nav_back: {}
+- wait_for:
+    id: catalog-list-1-Public-domain classics
+    timeout_secs: 30
+- select:
+    id: catalog-list-1-Public-domain classics
+    index: 1
+- wait_for:
+    id: publication-title
+    timeout_secs: 30
+- wait_for:
+    id: catalog-cover-160-http://127.0.0.1:18765/showcase/cover/frankenstein
+    timeout_secs: 30
+- screenshot:
+    name: book-details
+    title:
+      ar: تفاصيل الكتاب
+      de: Buchdetails
+      en: Book details
+      es: Detalles del libro
+      fr: Détails du livre
+      hi: पुस्तक का विवरण
+      id: Detail buku
+      it: Dettagli del libro
+      ja: 本の詳細
+      ko: 책 상세 정보
+      pt-BR: Detalhes do livro
+      ru: О книге
+      zh-CN: 图书详情
+- scroll_to:
+    id: download-book
+- tap:
+    id: download-book
+- wait_for:
+    id: book-webview
+    timeout_secs: 60
+- web_eval:
+    id: book-webview
+    script: String(stanza.state().ready && !stanza.state().animating && stanza.state().height>100)
+    text: 'true'
+    timeout_secs: 40
+- web_eval:
+    id: book-webview
+    script: setTimeout(()=>document.getElementById('appearance').click(),300);true
+    text: 'true'
+    timeout_secs: 40
+- wait_for:
+    id: font-size
+    timeout_secs: 30
+- set_value:
+    id: font-size
+    value: 20
+- set_value:
+    id: line-height
+    value: 1.5
+- toggle:
+    id: reader-justified
+    value: false
+- toggle:
+    id: reader-hyphenation
+    value: true
+- scroll_to:
+    id: reader-theme
+- select:
+    id: reader-theme
+    index: 2
+- scroll_to:
+    id: margins
+- set_value:
+    id: margins
+    value: 24
+- set_value:
+    id: paragraph-spacing
+    value: 0.6
+- scroll_to:
+    id: reader-columns
+- select:
+    id: reader-columns
+    index: 1
+- tap:
+    id: reader-settings-done
+- wait_for:
+    id: book-webview
+    timeout_secs: 30
+- web_eval:
+    id: book-webview
+    script: String(stanza.state().ready && !stanza.state().animating && stanza.state().height>100)
+    text: 'true'
+    timeout_secs: 40
+- web_eval:
+    id: book-webview
+    script: stanza.goToChapter(6);true
+    text: 'true'
+    timeout_secs: 40
+- web_eval:
+    id: book-webview
+    script: String(stanza.state().ready && stanza.state().chapter===6 && stanza.state().page===0)
+    text: 'true'
+    timeout_secs: 40
+- web_eval:
+    id: book-webview
+    script: String([...document.querySelector('#book').contentDocument.images].every(i=>i.complete) && document.querySelector('#book').contentDocument.fonts.status==='loaded')
+    text: 'true'
+    timeout_secs: 40
+- pause:
+    secs: 0.7
+- screenshot:
+    name: reading-frankenstein
+    title:
+      ar: Frankenstein · قراءة
+      de: Frankenstein · Lesen
+      en: Frankenstein · Read
+      es: Frankenstein · Leer
+      fr: Frankenstein · Lire
+      hi: Frankenstein · पढ़ें
+      id: Frankenstein · Baca
+      it: Frankenstein · Leggi
+      ja: Frankenstein · 読む
+      ko: Frankenstein · 읽기
+      pt-BR: Frankenstein · Ler
+      ru: Frankenstein · Читать
+      zh-CN: Frankenstein · 阅读
+- web_eval:
+    id: book-webview
+    script: setTimeout(()=>document.getElementById('close-reader').click(),300);true
+    text: 'true'
+    timeout_secs: 40
+- assert_missing:
+    id: book-webview
+- navigate:
+    route: catalogs
+- nav_back: {}
+- wait_for:
+    id: catalog-list-1-Public-domain classics
+    timeout_secs: 30
+- select:
+    id: catalog-list-1-Public-domain classics
+    index: 2
+- wait_for:
+    id: publication-title
+    timeout_secs: 30
+- wait_for:
+    id: catalog-cover-160-http://127.0.0.1:18765/showcase/cover/the-time-machine
+    timeout_secs: 30
+- scroll_to:
+    id: download-book
+- tap:
+    id: download-book
+- wait_for:
+    id: book-webview
+    timeout_secs: 60
+- web_eval:
+    id: book-webview
+    script: String(stanza.state().ready && !stanza.state().animating && stanza.state().height>100)
+    text: 'true'
+    timeout_secs: 40
+- web_eval:
+    id: book-webview
+    script: setTimeout(()=>document.getElementById('appearance').click(),300);true
+    text: 'true'
+    timeout_secs: 40
+- wait_for:
+    id: font-size
+    timeout_secs: 30
+- set_value:
+    id: font-size
+    value: 20
+- set_value:
+    id: line-height
+    value: 1.5
+- toggle:
+    id: reader-justified
+    value: false
+- toggle:
+    id: reader-hyphenation
+    value: true
+- scroll_to:
+    id: reader-theme
+- select:
+    id: reader-theme
+    index: 1
+- scroll_to:
+    id: margins
+- set_value:
+    id: margins
+    value: 24
+- set_value:
+    id: paragraph-spacing
+    value: 0.6
+- scroll_to:
+    id: reader-columns
+- select:
+    id: reader-columns
+    index: 1
+- tap:
+    id: reader-settings-done
+- wait_for:
+    id: book-webview
+    timeout_secs: 30
+- web_eval:
+    id: book-webview
+    script: String(stanza.state().ready && !stanza.state().animating && stanza.state().height>100)
+    text: 'true'
+    timeout_secs: 40
+- web_eval:
+    id: book-webview
+    script: stanza.goToChapter(2);true
+    text: 'true'
+    timeout_secs: 40
+- web_eval:
+    id: book-webview
+    script: String(stanza.state().ready && stanza.state().chapter===2 && stanza.state().page===0)
+    text: 'true'
+    timeout_secs: 40
+- web_eval:
+    id: book-webview
+    script: String([...document.querySelector('#book').contentDocument.images].every(i=>i.complete) && document.querySelector('#book').contentDocument.fonts.status==='loaded')
+    text: 'true'
+    timeout_secs: 40
+- pause:
+    secs: 0.7
+- screenshot:
+    name: reading-sepia
+    title:
+      ar: The Time Machine · قراءة
+      de: The Time Machine · Lesen
+      en: The Time Machine · Read
+      es: The Time Machine · Leer
+      fr: The Time Machine · Lire
+      hi: The Time Machine · पढ़ें
+      id: The Time Machine · Baca
+      it: The Time Machine · Leggi
+      ja: The Time Machine · 読む
+      ko: The Time Machine · 읽기
+      pt-BR: The Time Machine · Ler
+      ru: The Time Machine · Читать
+      zh-CN: The Time Machine · 阅读
+- web_eval:
+    id: book-webview
+    script: setTimeout(()=>document.getElementById('close-reader').click(),300);true
+    text: 'true'
+    timeout_secs: 40
+- assert_missing:
+    id: book-webview
+- navigate:
+    route: catalogs
+- nav_back: {}
+- wait_for:
+    id: catalog-list-1-Public-domain classics
+    timeout_secs: 30
+- menu:
+    id: manage-catalogs-menu
+- scroll_to:
+    id: catalog-remove-http://127.0.0.1:18765/showcase
+- tap:
+    id: catalog-remove-http://127.0.0.1:18765/showcase
+- toolbar:
+    item: catalog-manager-done
+- nav_back: {}
+- wait_for:
+    id: catalog-sources
+    timeout_secs: 30
+- navigate:
+    route: library
+- wait_for:
+    id: library-folders
+    timeout_secs: 30
+- select:
+    id: library-folders
+    index: 1
+- wait_for:
+    id: library-list
+    timeout_secs: 30
+- input:
+    id: library-search
+    text: ''
+- select:
+    id: library-list
+    index: 0
+    only_on:
+    - appkit
+- wait_for:
+    id: catalog-cover-46-library:books/84c5f495b42b2d8d25cfdfd3ebf468516c962ecab45812dd9052ccdab8b0485f.cover
+    timeout_secs: 60
+- wait_for:
+    id: catalog-cover-46-library:books/b82b1ad5cdd15439ab99e864741a0343f107adc796ce4326e44235a3f6f558a7.cover
+    timeout_secs: 60
+- wait_for:
+    id: catalog-cover-46-library:books/f52cfd0c629d87db3ef91ced77ef5fd7e8fc8f3a997c73aede05e67091d14eec.cover
+    timeout_secs: 60
+- screenshot:
+    name: bookshelf
+    title:
+      ar: المكتبة
+      de: Bibliothek
+      en: Library
+      es: Biblioteca
+      fr: Bibliothèque
+      hi: पुस्तकालय
+      id: Perpustakaan
+      it: Biblioteca
+      ja: ライブラリ
+      ko: 보관함
+      pt-BR: Biblioteca
+      ru: Библиотека
+      zh-CN: 书库
+- nav_back: {}
+- wait_for:
+    id: library-folders
+    timeout_secs: 30

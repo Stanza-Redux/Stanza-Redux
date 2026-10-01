@@ -530,16 +530,31 @@ async fn fetch_bytes(
     }
     Ok((bytes, final_url))
 }
+// Protocol locale tags, paired with the generated endonyms in the settings picker.
+const LANGUAGE_TAGS: &[&str] = &[
+    "en", "ar", "de", "es", "fr", "hi", "id", "it", "ja", "ko", "pt-BR", "ru", "zh-CN",
+];
+
+fn language_index(locale: &str) -> usize {
+    LANGUAGE_TAGS
+        .iter()
+        .position(|tag| tag.eq_ignore_ascii_case(locale))
+        .or_else(|| {
+            LANGUAGE_TAGS
+                .iter()
+                .position(|tag| tag.split('-').next() == locale.split(['-', '_']).next())
+        })
+        .unwrap_or(0)
+}
+
 pub fn root() -> impl Piece {
-    let lang = Signal::new(if day::locale().get_untracked().starts_with("fr") {
-        1
-    } else {
-        0
-    });
+    let lang = Signal::new(language_index(&day::locale().get_untracked()));
     watch(
         move || lang.get(),
         move |i, _| {
-            set_locale(if *i == 1 { "fr" } else { "en" });
+            if let Some(locale) = LANGUAGE_TAGS.get(*i) {
+                set_locale(locale);
+            }
         },
     );
     let prefs: Preferences = saved("stanza.preferences");
@@ -807,8 +822,19 @@ fn settings_page(a: App) -> impl Piece {
                     res::str::language(),
                     picker(
                         [
-                            res::str::language_english().format(),
-                            res::str::language_french().format(),
+                            res::str::language_en().format(),
+                            res::str::language_ar().format(),
+                            res::str::language_de().format(),
+                            res::str::language_es().format(),
+                            res::str::language_fr().format(),
+                            res::str::language_hi().format(),
+                            res::str::language_id().format(),
+                            res::str::language_it().format(),
+                            res::str::language_ja().format(),
+                            res::str::language_ko().format(),
+                            res::str::language_pt_br().format(),
+                            res::str::language_ru().format(),
+                            res::str::language_zh_cn().format(),
                         ],
                         a.language,
                     )
@@ -1217,6 +1243,27 @@ fn settings(a: App) -> impl Piece {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn supported_languages_keep_their_startup_selection() {
+        let catalog_tags: std::collections::BTreeSet<_> =
+            res::locales::CATALOG.iter().map(|(tag, _)| *tag).collect();
+        assert_eq!(catalog_tags, LANGUAGE_TAGS.iter().copied().collect());
+        for (index, tag) in LANGUAGE_TAGS.iter().enumerate() {
+            assert_eq!(language_index(tag), index);
+        }
+        for (requested, expected) in [
+            ("de-DE", "de"),
+            ("fr-CA", "fr"),
+            ("zh-Hans", "zh-CN"),
+            ("pt", "pt-BR"),
+            ("ja-JP", "ja"),
+            ("ar-SA", "ar"),
+            ("unknown", "en"),
+        ] {
+            assert_eq!(LANGUAGE_TAGS[language_index(requested)], expected);
+        }
+    }
+
     #[test]
     fn existing_library_and_reader_preferences_migrate() {
         let book: Saved =

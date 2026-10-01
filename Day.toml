@@ -5,7 +5,7 @@ schema = 1
 [app]
 id = "org.appfair.app.StanzaRedux"
 title = "Stanza Redux"
-build = 24
+build = 25
 targets = ["macos-appkit", "macos-gtk", "macos-qt", "ios-uikit", "android-mdc", "linux-gtk", "linux-qt", "windows-winui", "windows-xaml", "windows-gtk", "windows-qt", "harmony-arkui", "web-dom"]
 
 # The window's geometry in points (https://daybrite.dev/docs/size-classes). `day build` carries
@@ -30,3 +30,8 @@ id = "org.appfair.app.Stanza-Redux"
 extensions = ["epub"]
 mime_types = ["application/epub+zip"]
 apple_uti = "org.idpf.epub-container"
+
+# Existing v1 store records; retain their identifiers for in-place upgrades.
+[store]
+apple-app-id = "1639831676"
+google-play-id = "org.appfair.app.Stanza_Redux"

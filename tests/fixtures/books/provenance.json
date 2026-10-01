@@ -1,0 +1,12 @@
+[
+  {
+    "file": "frankenstein.epub",
+    "source": "https://www.gutenberg.org/ebooks/84.epub3.images",
+    "sha256": "b82b1ad5cdd15439ab99e864741a0343f107adc796ce4326e44235a3f6f558a7"
+  },
+  {
+    "file": "the-time-machine.epub",
+    "source": "https://www.gutenberg.org/ebooks/35.epub3.images",
+    "sha256": "f52cfd0c629d87db3ef91ced77ef5fd7e8fc8f3a997c73aede05e67091d14eec"
+  }
+]

@@ -51,7 +51,7 @@ day-build = { git = "https://github.com/daybrite/day.git" }
 [workspace]
 
 [workspace.package]
-version = "1.4.5"
+version = "2.0.0"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp"] }
