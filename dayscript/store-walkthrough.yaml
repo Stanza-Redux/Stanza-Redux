@@ -2,6 +2,8 @@
 # Run after sourcing tests/ci-fixture.sh. Real EPUB downloads, no public network.
 # Gallery labels match the generated UI catalogs; publication text is not translated.
 name: store-walkthrough
+# Later captures require earlier navigation and acquisition to succeed.
+on_failure: stop
 flow:
 - navigate:
     route: catalogs
