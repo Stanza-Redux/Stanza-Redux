@@ -378,9 +378,51 @@ impl App {
                             "done":res::str::done().format(), "hint":res::str::reader_gestures().format(),
                             "appTitle":res::str::app_title().format(), "appearanceGlyph":res::str::appearance_glyph().format(),
                             "position":res::str::position_text("{chapter}", "{chapters}", "{page}", "{pages}").format(),
+                            "bookmarkAdd":res::str::bookmark_add().format(),
+                            "bookmarkRemove":res::str::bookmark_remove().format(),
+                            "bookmarks":res::str::bookmarks().format(),
+                            "bookmarksEmpty":res::str::bookmarks_empty().format(),
+                            "chapterPosition":res::str::chapter_position().format(),
+                            "returnPosition":res::str::return_position().format(),
+                            "contentsSearch":res::str::contents_search().format(),
+                            "contentsEmpty":res::str::contents_empty().format(),
+                            "chapterPercent":res::str::chapter_percent("{percent}").format(),
                             "locale":day::locale().get_untracked(),
                         });
-                        self.eval(format!("stanza.load({json},{prefs},{pos},{labels})"))
+                        let bookmarks = self
+                            .database
+                            .get_untracked()
+                            .map(|db| db.bookmark_query(&b.id).try_collect())
+                            .transpose();
+                        match bookmarks {
+                            Ok(rows) => self.eval(format!(
+                                "stanza.load({json},{prefs},{pos},{labels},{})",
+                                serde_json::to_string(&rows.unwrap_or_default()).unwrap()
+                            )),
+                            Err(error) => self.error(error.to_string()),
+                        }
+                    }
+                }
+            }
+            Some("bookmark") => {
+                if let (Some(book), Some(db)) =
+                    (self.book.get_untracked(), self.database.get_untracked())
+                {
+                    let result = if let Some(id) = data["remove"].as_str() {
+                        db.remove_bookmark(&book.id, id)
+                    } else if let (Some(chapter), Some(progress)) =
+                        (data["chapter"].as_u64(), data["progress"].as_f64())
+                    {
+                        if let Some(entry) = book.chapters.get(chapter as usize) {
+                            db.add_bookmark(&book.id, chapter as u32, progress, entry.title.clone())
+                        } else {
+                            return LinkPolicy::Ignore;
+                        }
+                    } else {
+                        return LinkPolicy::Ignore;
+                    };
+                    if let Err(error) = result {
+                        self.error(error.to_string());
                     }
                 }
             }

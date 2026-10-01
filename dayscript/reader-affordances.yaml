@@ -1,0 +1,30 @@
+# Shared reader controls use the actual native resource provider and persistence bridge.
+flow:
+  - navigate: { route: library }
+  - select: { id: library-folders, index: 1 }
+  - wait_for: { id: library-list }
+  - input: { id: library-search, text: Alice }
+  - select: { id: library-list, index: 0 }
+  - wait_for: { id: open-local-book }
+  - tap: { id: open-local-book }
+  - wait_for: { id: book-webview, timeout_secs: 30 }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
+  - web_eval: { id: book-webview, script: "stanza.goToChapter(2);true", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && stanza.state().chapter===2 && stanza.state().page===0)", text: "true" }
+  - web_eval: { id: book-webview, script: "window.hadBookmark=document.getElementById('bookmark').getAttribute('aria-pressed')==='true';if(!hadBookmark)document.getElementById('bookmark').click();true", text: "true" }
+  - web_eval: { id: book-webview, script: "document.getElementById('bookmark').getAttribute('aria-pressed')", text: "true" }
+  - web_eval: { id: book-webview, script: "var s=document.getElementById('chapter-progress');s.value='600';s.dispatchEvent(new Event('change'));true", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && stanza.state().page>0)", text: "true" }
+  - screenshot: { name: reader-position-controls }
+  - web_eval: { id: book-webview, script: "document.getElementById('return-position').click();true", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && stanza.state().page===0 && document.getElementById('bookmark').getAttribute('aria-pressed')==='true')", text: "true" }
+  - web_eval: { id: book-webview, script: "document.getElementById('contents').click();document.getElementById('bookmarks-tab').click();String(document.querySelectorAll('.bookmark-row').length>0)", text: "true" }
+  - screenshot: { name: reader-bookmarks }
+  - web_eval: { id: book-webview, script: "document.getElementById('contents-tab').click();var s=document.getElementById('contents-search');s.value='zzzz-unmatched-fixture';s.dispatchEvent(new Event('input'));String(!document.getElementById('contents-empty').hidden)", text: "true" }
+  - web_eval: { id: book-webview, script: "document.getElementById('contents-done').click();if(!hadBookmark)document.getElementById('bookmark').click();true", text: "true" }
+  - web_eval: { id: book-webview, script: "String((document.getElementById('bookmark').getAttribute('aria-pressed')==='true')===hadBookmark)", text: "true" }
+  - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),500);true", text: "true" }
+  - assert_missing: { id: book-webview }
+  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, winui, arkui, dom] }
+  - nav_back: {}
+  - wait_for: { id: library-folders }

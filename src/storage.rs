@@ -38,6 +38,8 @@ pub struct BookRecord {
     contents: Many<ContentRecord>,
     #[model(relation(target = MetadataRecord, inverse = "book", delete = "cascade"))]
     metadata: Many<MetadataRecord>,
+    #[model(relation(target = BookmarkRecord, inverse = "book", delete = "cascade"))]
+    bookmarks: Many<BookmarkRecord>,
 }
 #[derive(Model, Clone, Default, PartialEq)]
 #[model(table = "library_folders")]
@@ -86,6 +88,17 @@ struct MetadataRecord {
     #[model(json)]
     json: crate::metadata::Metadata,
 }
+#[derive(Model, Clone, Default, PartialEq, serde::Serialize)]
+#[model(table = "bookmarks")]
+pub struct BookmarkRecord {
+    #[model(id)]
+    pub id: String,
+    #[serde(skip)]
+    pub book: One<BookRecord>,
+    pub chapter: u32,
+    pub progress: f64,
+    pub title: String,
+}
 #[derive(Clone)]
 pub struct Library {
     db: ModelContainer,
@@ -126,7 +139,8 @@ impl Library {
                 ContentRecord,
                 CatalogRecord,
                 ImportRecord,
-                MetadataRecord
+                MetadataRecord,
+                BookmarkRecord
             ],
             plan,
         )?;
@@ -376,6 +390,47 @@ impl Library {
         self.db.insert(ImportRecord { key: marker.into() });
         self.db.save()
     }
+    pub fn bookmark_query(&self, book: &str) -> Query<BookmarkRecord> {
+        self.db
+            .query::<BookmarkRecord>()
+            .filter(BookmarkRecord::book().eq(One::to(book.to_owned())))
+            .sort(BookmarkRecord::chapter().asc())
+            .sort(BookmarkRecord::progress().asc())
+            .live()
+    }
+    pub fn add_bookmark(
+        &self,
+        book: &str,
+        chapter: u32,
+        progress: f64,
+        title: String,
+    ) -> Result<(), DbError> {
+        if !progress.is_finite() || self.db.try_get::<BookRecord>(book.to_owned())?.is_none() {
+            return Ok(());
+        }
+        let progress = (progress.clamp(0., 1.) * 1_000_000.).round() / 1_000_000.;
+        let id = format!("{book}:{chapter}:{progress:.6}");
+        if self.db.try_get::<BookmarkRecord>(id.clone())?.is_none() {
+            self.db.insert(BookmarkRecord {
+                id,
+                book: One::to(book.to_owned()),
+                chapter,
+                progress,
+                title,
+            });
+            self.db.save()?;
+        }
+        Ok(())
+    }
+    pub fn remove_bookmark(&self, book: &str, id: &str) -> Result<(), DbError> {
+        if let Some(row) = self.db.try_get::<BookmarkRecord>(id.to_owned())? {
+            if row.book().read() == One::to(book.to_owned()) {
+                self.db.delete::<BookmarkRecord>(id.to_owned())?;
+                self.db.save()?;
+            }
+        }
+        Ok(())
+    }
     pub fn position(&self, id: &str, chapter: u32, progress: f64) -> Result<(), DbError> {
         if let Some(book) = self.db.try_get::<BookRecord>(id.to_owned())? {
             book.chapter().write(chapter);
@@ -526,6 +581,61 @@ impl Library {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn bookmarks_are_live_scoped_deduplicated_and_cascade_after_reopen() {
+        let path =
+            std::env::temp_dir().join(format!("stanza-bookmarks-{}.sqlite", std::process::id()));
+        let _ = std::fs::remove_file(&path);
+        {
+            let db = Library::with_driver(Sqlite::at(&path)).unwrap();
+            for id in ["a", "b"] {
+                db.put(&Saved {
+                    id: id.into(),
+                    title: "Bookmark fixture".into(),
+                    ..Default::default()
+                })
+                .unwrap();
+            }
+            let query = db.bookmark_query("a");
+            let count = Signal::new(0usize);
+            let observed = query.clone();
+            let _watch = watch(move || observed.count(), move |n, _| count.set(*n));
+            db.add_bookmark("a", 3, 0.6, "Later fixture".into())
+                .unwrap();
+            db.add_bookmark("a", 1, 0.2, "Earlier fixture".into())
+                .unwrap();
+            db.add_bookmark("a", 1, 0.2, "Duplicate fixture".into())
+                .unwrap();
+            db.add_bookmark("b", 1, 0.2, "Other book fixture".into())
+                .unwrap();
+            db.add_bookmark("missing", 0, 0.0, String::new()).unwrap();
+            db.add_bookmark("a", 0, f64::NAN, String::new()).unwrap();
+            day::reactive::flush_sync();
+            assert_eq!(count.get(), 2);
+            let rows = query.try_collect().unwrap();
+            assert_eq!(
+                rows.iter().map(|b| b.chapter).collect::<Vec<_>>(),
+                vec![1, 3]
+            );
+            db.remove_bookmark("b", &rows[0].id).unwrap();
+            assert_eq!(query.count(), 2); // cannot remove another book's bookmark
+            assert_eq!(db.book("a").unwrap().progress, 0.0); // saving is not navigation
+        }
+        {
+            let db = Library::with_driver(Sqlite::at(&path)).unwrap();
+            let query = db.bookmark_query("a");
+            let rows = query.try_collect().unwrap();
+            assert_eq!(rows.len(), 2);
+            assert_eq!(rows[0].progress, 0.2);
+            db.remove_bookmark("a", &rows[0].id).unwrap();
+            assert_eq!(query.count(), 1);
+            db.remove("a").unwrap();
+            assert_eq!(query.count(), 0);
+            assert_eq!(db.bookmark_query("b").count(), 1);
+        }
+        let _ = std::fs::remove_file(path);
+    }
+
     #[test]
     fn live_queries_follow_fts_membership_edits_and_recency_without_refresh_signals() {
         let db = Library::with_driver(Sqlite::memory()).unwrap();

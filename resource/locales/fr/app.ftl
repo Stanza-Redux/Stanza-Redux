@@ -153,3 +153,13 @@ open_book_file = Ouvrir un livre…
 increase_font = Agrandir le texte
 decrease_font = Réduire le texte
 book_import_failed = Impossible d’importer le livre.
+
+bookmark_add = Ajouter un signet à cette page
+bookmark_remove = Supprimer le signet
+bookmarks = Signets
+bookmarks_empty = Aucun signet. Utilisez le bouton de signet pour enregistrer une page.
+chapter_position = Position dans le chapitre
+return_position = Revenir à la position précédente
+contents_search = Rechercher un chapitre
+contents_empty = Aucun chapitre correspondant.
+chapter_percent = { $percent } du chapitre

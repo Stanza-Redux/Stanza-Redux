@@ -153,3 +153,13 @@ open_book_file = Open Book…
 increase_font = Increase Font Size
 decrease_font = Decrease Font Size
 book_import_failed = Could not import the book.
+
+bookmark_add = Bookmark this page
+bookmark_remove = Remove bookmark
+bookmarks = Bookmarks
+bookmarks_empty = No bookmarks yet. Use the bookmark button to save a page.
+chapter_position = Position in chapter
+return_position = Return to previous position
+contents_search = Find a chapter
+contents_empty = No matching chapters.
+chapter_percent = { $percent } through chapter

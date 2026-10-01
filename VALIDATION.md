@@ -1,5 +1,26 @@
 # Local validation
 
+## Reader affordances — 2026-10-01
+
+Added per-book bookmarks backed by a Day live query, chapter-position scrubbing,
+searchable contents, and return-to-position after a contents, bookmark, slider or internal-link
+jump. All labels use generated English/French resource accessors. Keyboard focus returns to
+the reader after navigation; the contents dialog traps Tab and restores focus on Escape.
+
+- Rust library tests: **28 passed**, including bookmark durability, live updates, stable order,
+  duplicate suppression, cross-book isolation and cascade deletion.
+- Chromium/WebKit reader suites: **8 passed**, covering existing pagination, relative resources,
+  gestures and chapter focus, plus the new controls. The final focus adjustment also passed
+  both affordance tests independently.
+- `dayscript/reader-affordances.yaml`: **27 passed / 1 platform skip on macOS AppKit**,
+  **28 passed on Android**, **28 passed on iPhone in French**. Each captured the position controls
+  and bookmarks panel through the native WebView/resource provider and database bridge.
+- The new dayscript is discovered by CI's existing `scripts: auto` configuration.
+- Rust formatting and whitespace checks passed. No commits or pushes were made.
+
+Bookmarks store chapter/progression rather than exact text anchors; changing typography can
+move a bookmark to a nearby page. Legacy v1 bookmarks are not imported by this change.
+
 ## CI run 36797085305 — 2026-09-30
 
 Investigated [run 36797085305](https://github.com/Stanza-Redux/Stanza-Redux/actions/runs/36797085305).

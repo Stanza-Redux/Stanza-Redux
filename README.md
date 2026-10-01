@@ -23,7 +23,16 @@ above the bottom tabs. AppKit uses a sidebar, a library browser column and a per
 pane. Local and catalog books share the same overview, with Open or Download as the primary action.
 Opening a book presents the reader over the navigation.
 Tap either edge or swipe horizontally to turn pages; tap the middle to show or hide the controls.
-The toolbar offers Library, Contents and Aa (reader settings). Page buttons and arrow/Page Up/Page Down
+The toolbar offers Library, Contents, a bookmark toggle and Aa (reader settings).
+Contents includes chapter search and a Bookmarks tab. Bookmarks are stored per book in the
+Day database, ordered by reading position, and removed with the book. The list follows a
+live query, including changes from another reader window.
+
+The footer slider previews the position within the current chapter; releasing it moves to that
+page. Chapter, bookmark and internal-link jumps offer a **Return to previous position** button.
+Bookmarks use the reader's chapter/progression locator, so their page may shift when typography
+or window dimensions change. They do not record an exact text selection.
+ Page buttons and arrow/Page Up/Page Down
 keys also work. Page turns slide; reduced-motion preferences disable the animation. Short or canceled
 swipes return to the current page. Two columns require a viewport at least 640 points wide.
 Desktop View → Full Screen uses the platform's full-screen window mode.

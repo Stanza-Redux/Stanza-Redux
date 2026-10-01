@@ -5,6 +5,31 @@ use day_piece_webview::{ResourceProvider, ResourceResponse, web_view_resources};
 const CONTENT_POLICY: &str = "default-src 'none'; script-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; media-src 'self' data:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'";
 pub fn view(a: App) -> day_piece_webview::WebView {
     let book = a.book.get_untracked();
+    if let (Some(db), Some(book)) = (a.database.get_untracked(), &book) {
+        // The query belongs to this reader scope. Insert/delete and cross-window updates
+        // update the shell; there is no app-owned refresh signal or browser-side storage.
+        let query = db.bookmark_query(&book.id);
+        watch(
+            move || {
+                (
+                    a.ready.get(),
+                    query.try_collect().map_err(|e| e.to_string()),
+                )
+            },
+            move |(ready, rows), _| {
+                if !ready {
+                    return;
+                }
+                match rows {
+                    Ok(rows) => a.eval(format!(
+                        "stanza.bookmarks({})",
+                        serde_json::to_string(rows).unwrap()
+                    )),
+                    Err(error) => a.error(error.clone()),
+                }
+            },
+        );
+    }
     let provider = ResourceProvider::with_site(res::assets::reader, move |request| {
         let Some(book) = &book else {
             return ResourceResponse::not_found();
