@@ -7,17 +7,16 @@ import tempfile
 from pathlib import Path
 import threading
 import unittest
-from http.server import ThreadingHTTPServer
 from urllib.request import urlopen
 from unittest.mock import patch
-from catalog_server import Handler
+from catalog_server import Handler, FixtureServer
 from prepare_fixture import wait_ready
 
 
 class CatalogFixtureTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        cls.server = FixtureServer(('127.0.0.1', 0), Handler)
         cls.thread = threading.Thread(target=cls.server.serve_forever, daemon=True)
         cls.thread.start()
         cls.base = 'http://127.0.0.1:' + str(cls.server.server_port)
@@ -27,6 +26,12 @@ class CatalogFixtureTests(unittest.TestCase):
         cls.server.shutdown()
         cls.server.server_close()
         cls.thread.join()
+
+    def test_bind_does_not_resolve_loopback_hostname(self):
+        with patch('socket.getfqdn', side_effect=AssertionError('unexpected DNS lookup')):
+            with FixtureServer(('127.0.0.1', 0), Handler) as server:
+                self.assertEqual(server.server_name, '127.0.0.1')
+                self.assertGreater(server.server_port, 0)
 
     def test_health_identifies_the_owned_fixture(self):
         with patch.dict(os.environ, STANZA_FIXTURE_TOKEN='owned-fixture-123'):

@@ -1,5 +1,54 @@
 # Local validation
 
+## CI run 36786446870 — 2026-09-30
+
+Investigated [run 36786446870](https://github.com/Stanza-Redux/Stanza-Redux/actions/runs/36786446870).
+The Android phone/tablet, web, Linux GTK and Windows GTK execution jobs passed. Ten
+execution jobs failed; the failure groups below account for all ten. Builds/packages
+completed before these execution failures.
+
+- **Harmony phone/tablet:** resource-provider workers could not read bundled reader assets.
+  Day's ArkUI native resource manager was thread-local, so worker reads returned `None` and
+  the reader loaded a 404 response (`stanza is not defined` in subsequent evaluations).
+  Day now shares the native manager under a mutex, protecting complete reads against
+  replacement/release. NAPI initialization stays on the host thread. A host regression test
+  executes the actual resource reader with fake NDK calls on a worker and checks resource
+  lifetime across manager replacement. It is included in Day's Unix host CI suite.
+- **Windows XAML:** provider responses used `CoreDispatcher.RunAsync`, a UWP/CoreWindow
+  dispatcher unsuitable for XAML Islands. The reader stalled at its first evaluation.
+  The provider now uses the desktop `Windows.System.DispatcherQueue`; WinUI continues to
+  use `Microsoft.UI.Dispatching.DispatcherQueue`. Native Windows verification is pending;
+  this corrects a dispatcher mismatch but is not a locally confirmed fix for the hang.
+- **Windows Qt:** this run reports the previously suspected reentrancy panic explicitly:
+  Wry's WebView2 startup pumps a dayscript callback while Day's tree is mutably borrowed.
+  The pending deferred-startup fix and its Qt C++ lifecycle test are retained. The test
+  covers close-before-startup and close-during-startup as well as one-shot initialization.
+  The pending XAML changes were reconciled with upstream WinUI/WebSession support.
+- **AppKit, macOS GTK/Qt, iPhone and iPad:** all fail during fixture startup, before app launch.
+  The previous proxy bypass did not resolve the hosted failure. The fixture now binds its
+  numeric loopback address without `HTTPServer`'s reverse-DNS lookup, reports startup
+  stages, and emits periodic thread stacks until it receives a request. A test rejects any
+  DNS lookup during binding. These are startup hardening/diagnostics; the hosted cause
+  remains unconfirmed, and the timeout was not increased again.
+- **Linux Qt:** reproduced the second-book-open SIGSEGV using this run's actual AppImage
+  in an Ubuntu 24.04 x86_64 container. A minimal Qt 6.4 WebEngine close/reopen example
+  passes; the complete reader sequence crashes. Hiding before detachment and enabling
+  shared OpenGL contexts both still crash in diagnostic interposers, so neither speculative
+  change was applied. GDB cannot read registers through this host's Rosetta Linux emulation.
+  This failure remains unresolved.
+
+Local validation:
+
+- AppKit book-info + demo: **104 passed, 5 platform skips**, 13 screenshots.
+- Stanza Rust: **27 passed**. Python fixture tests: **9 passed**.
+- WebView Rust: **19 passed**. Node tests: **16 passed**. Qt C++ startup test: **passed**.
+- Day ArkUI worker-resource regression: **passed**; Rust formatting checks passed.
+- Harmony Rust/CDylib compilation: **passed**. HAP packaging is blocked by the local SDK's
+  missing `@ohos/hvigor-ohos-plugin`. No Harmony emulator was launched.
+- Windows XAML/WinUI and actual Windows Qt browser execution require CI/native Windows.
+
+All changes remain local; no commits, pushes, or remote CI runs were made.
+
 ## CI run 36759848951 — 2026-09-30
 
 Investigated [run 36759848951](https://github.com/Stanza-Redux/Stanza-Redux/actions/runs/36759848951)

@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 """Deterministic OPDS/EPUB fixture. Run before dayscript/catalog.yaml (port 18765)."""
+# Start diagnostics before potentially slow standard-library imports. This process is an
+# owned CI fixture; a blocked startup/accept must leave a stack in its captured log.
+if __name__ == '__main__':
+    import faulthandler
+    faulthandler.enable()
+    faulthandler.dump_traceback_later(10, repeat=True)
+    print('OPDS fixture: importing server modules', flush=True)
+
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from socketserver import TCPServer
 from pathlib import Path
 import json
 import os
@@ -10,6 +19,13 @@ import zlib
 import zipfile
 import threading
 from urllib.parse import urlparse
+class FixtureServer(ThreadingHTTPServer):
+    def server_bind(self):
+        # HTTPServer resolves getfqdn(host) here; our numeric loopback fixture needs no
+        # DNS, and runner resolver configuration must not hold up socket activation.
+        TCPServer.server_bind(self)
+        self.server_name, self.server_port = self.server_address[:2]
+
 BOOK = Path(__file__).resolve().parents[1] / 'resource/assets/Alice.epub'
 # Unique, high-contrast covers make reuse mistakes visible without external services.
 COVER_COLORS = [(194, 61, 65), (47, 117, 181), (43, 143, 102), (135, 79, 171), (210, 139, 44)]
@@ -32,6 +48,8 @@ CANCELLED = {'feed': 0, 'cover': 0}
 COUNTS_LOCK = threading.Lock()
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
+        if __name__ == '__main__':
+            faulthandler.cancel_dump_traceback_later()
         path = urlparse(self.path).path
         self.log_message('User-Agent: %s', self.headers.get('User-Agent', ''))
         status, mime = 200, 'application/atom+xml'
@@ -143,4 +161,8 @@ class Handler(BaseHTTPRequestHandler):
         try: self.wfile.write(data)
         except (BrokenPipeError, ConnectionResetError): pass
 if __name__ == '__main__':
-    ThreadingHTTPServer(('127.0.0.1', int(os.environ.get('STANZA_FIXTURE_PORT', '18765'))), Handler).serve_forever()
+    address = ('127.0.0.1', int(os.environ.get('STANZA_FIXTURE_PORT', '18765')))
+    print(f'OPDS fixture: binding {address}, pid={os.getpid()}', flush=True)
+    with FixtureServer(address, Handler) as server:
+        print(f'OPDS fixture: listening on {server.server_address}', flush=True)
+        server.serve_forever()
