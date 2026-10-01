@@ -1,5 +1,48 @@
 # Local validation
 
+## CI run 36797085305 — 2026-09-30
+
+Investigated [run 36797085305](https://github.com/Stanza-Redux/Stanza-Redux/actions/runs/36797085305).
+Nine application execution jobs passed and six failed. The earlier Apple fixture-startup
+failures did not recur. Windows XAML passed in this run; the pending dispatcher change
+was not needed to obtain that result.
+
+- **macOS and Linux Qt:** the macOS crash was reproduced under LLDB. A pending pane resize
+  arrived inside `QGraphicsEffect::sourcePixmap`. Day synchronously drained UI actions from
+  that callback, attached a WebView and destroyed the window backing store while Qt was
+  still painting it. Day now defers/coalesces pane and list-viewport resize notifications.
+  Disposing the filter cancels delivery; a weak pointer also protects the host lifetime.
+  The native regression is included in Day's Qt CI job. Linux's matching paint crash is
+  expected to share this fix, but a rebuilt complete Linux app has not been run locally.
+- **iPhone UIKit:** screenshots remained blocked by interrupted navigation coordinators.
+  Readiness now considers visible stacks and pending tab selections. Tab-switch retries
+  wait 50 ms instead of exhausting a tight dispatch loop, and superseded requests are
+  discarded. `dayscript/navigation-settle.yaml` covers Back followed by rapid tab switches.
+- **Harmony phone/tablet:** this run resolved Day `fbb1d13b`, before the worker-safe resource
+  manager fix in `9996c074`. The earlier missing-reader failure therefore remains unverified
+  against that fix in CI. A separate log-forwarder panic (`WouldBlock` writing stdout)
+  was fixed locally: failed diagnostic writes no longer terminate the forwarding thread.
+- **Windows Qt:** the WebView2 nested-message-pump panic recurred. This run did not include
+  the pending deferred-startup fix in day-piece-webview. Its native lifecycle regression
+  still passes locally; execution with actual WebView2 requires Windows CI.
+
+Local validation against patched dependencies:
+
+- macOS Qt, book-info + demo: **107 passed, 2 platform skips per variant**, light/dark ×
+  English/French; 13 screenshots per variant. A separate demo run passed **54/54**.
+- iPhone UIKit, book-info + navigation-settle: **69/69 per variant**, light/dark ×
+  English/French; nine screenshots per variant.
+- Native Qt resize regression: **passed on macOS Qt 6.11 and Linux Qt 6.4**.
+- Existing Windows Qt startup lifecycle test, using a fake browser bridge: **passed**.
+- Day CLI log-format/write-failure tests: **4 passed**. ArkUI worker-resource test: **passed**.
+- Harmony Rust/CDylib compilation: **passed**. HAP packaging still fails because the local
+  SDK lacks `@ohos/hvigor-ohos-plugin`. No Harmony emulator was launched.
+- Rust formatting and whitespace checks passed.
+
+No commits, pushes or remote CI runs were made by the agent. During validation, the Day
+checkout advanced to `29988fd2`, containing the framework fixes above; the Stanza test and
+validation notes remain uncommitted.
+
 ## CI run 36786446870 — 2026-09-30
 
 Investigated [run 36786446870](https://github.com/Stanza-Redux/Stanza-Redux/actions/runs/36786446870).

@@ -52,7 +52,7 @@ jobs:
       # The targets this app was scaffolded with. Add one with `day project add-target`, and
       # add it here too.
       targets: all
-      #targets: "windows-xaml, macos-appkit, linux-gtk, linux-qt, ios-uikit, android-mdc, harmony-arkui, web-dom"
+      #targets: "windows-winui, macos-appkit, linux-gtk, linux-qt, ios-uikit, android-mdc, harmony-arkui, web-dom"
       target-packages: |
         windows-xaml: webview2-runtime
       # Requires the shared workflow's script-setup support; fixtures run after device boot.
