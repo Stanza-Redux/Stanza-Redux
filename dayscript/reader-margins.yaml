@@ -1,0 +1,29 @@
+# Verify the actual native WebView can reach a complete final two-column spread.
+flow:
+  - navigate: { route: library }
+  - select: { id: library-folders, index: 1 }
+  - wait_for: { id: library-list }
+  - input: { id: library-search, text: Alice }
+  - select: { id: library-list, index: 0 }
+  - wait_for: { id: open-local-book }
+  - tap: { id: open-local-book }
+  - wait_for: { id: book-webview, timeout_secs: 30 }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
+  - web_eval: { id: book-webview, script: "stanza.configure({size:22,line:1.6,margin:36,columns:2});true", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready)", text: "true" }
+  - web_eval: { id: book-webview, script: "stanza.goToChapter(2);true", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && stanza.state().chapter===2 && stanza.state().page===0)", text: "true" }
+  - web_eval: { id: book-webview, script: "(()=>{const s=document.getElementById('chapter-progress');s.value='1000';s.dispatchEvent(new Event('change'));return true})()", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && stanza.state().page===stanza.state().pages-1)", text: "true" }
+  - web_eval: { id: book-webview, script: "(()=>{const s=stanza.state(),f=document.getElementById('book');return String(Math.abs(f.contentWindow.scrollX-s.page*s.width)<1)})()", text: "true" }
+  - web_eval: { id: book-webview, script: "(()=>{const f=document.getElementById('book'),r=[...f.contentDocument.querySelectorAll('p')].flatMap(p=>[...p.getClientRects()]).filter(r=>r.width>0&&r.right>1&&r.left<f.clientWidth-1);return String(r.length>0&&r.every(r=>r.left>=35&&r.right<=f.clientWidth-35))})()", text: "true" }
+  - screenshot: { name: reader-last-page-margins }
+  - web_eval: { id: book-webview, script: "stanza.next();true", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && stanza.state().chapter===3 && stanza.state().page===0)", text: "true" }
+  - web_eval: { id: book-webview, script: "stanza.previous();true", text: "true" }
+  - web_eval: { id: book-webview, script: "(()=>{const s=stanza.state();return String(s.ready&&s.chapter===2&&s.page===s.pages-1&&Math.abs(document.getElementById('book').contentWindow.scrollX-s.page*s.width)<1)})()", text: "true" }
+  - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),500);true", text: "true" }
+  - assert_missing: { id: book-webview }
+  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, winui, arkui, dom] }
+  - nav_back: {}
+  - wait_for: { id: library-folders }

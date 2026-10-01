@@ -1,5 +1,26 @@
 # Local validation
 
+## Chapter-boundary margins — 2026-10-01
+
+Fixed final-spread alignment in the shared reader. Browser column overflow stops at the
+last occupied column, omitting its trailing margin and any empty second column. This clamped
+`scrollTo` before the requested page boundary. An out-of-flow, inaccessible extent marker now
+reserves the complete final spread without adding a text column or changing pagination.
+
+- Reproduced with Project Gutenberg's Frankenstein (ebook 84), chapter 7, in WebKit and Chromium.
+  At a 1000-pixel viewport the requested last offset was 17000, but the browser stopped at 16464;
+  the corrected extent permits 17000 and restores the 36-pixel margin.
+- `tests/reader-margins.mjs`: both engines passed all 24 layout combinations each: one/two
+  columns, two margins, LTR/RTL, and short/odd/even column counts; first and last pages and
+  chapter transitions are checked geometrically.
+- Existing reader and affordance browser suites: **8 passed**.
+- `dayscript/reader-margins.yaml`: **26 passed / 1 platform skip on AppKit**. CI discovers it
+  through `scripts: auto`.
+- The actual Frankenstein library entry also passed the final scroll-offset and visible-text
+  margin assertions in AppKit. The rebuilt app was left open at that chapter's last page.
+
+No commits or pushes were made.
+
 ## Reader affordances — 2026-10-01
 
 Added per-book bookmarks backed by a Day live query, chapter-position scrubbing,
