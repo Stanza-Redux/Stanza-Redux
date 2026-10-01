@@ -54,7 +54,7 @@ jobs:
       targets: all
       #targets: "windows-winui, macos-appkit, linux-gtk, linux-qt, ios-uikit, android-mdc, harmony-arkui, web-dom"
       target-packages: |
-        windows-xaml: webview2-runtime
+        windows-winui, windows-xaml: webview2-runtime
       # Requires the shared workflow's script-setup support; fixtures run after device boot.
       script-setup: source tests/ci-fixture.sh
       scripts: auto
