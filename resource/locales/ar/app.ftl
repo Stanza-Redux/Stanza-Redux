@@ -81,6 +81,7 @@ book_information = معلومات الكتاب
 open_book = فتح الكتاب
 justified = ضبط النص
 hyphenation = تقسيم الكلمات
+hide_status_bar = إخفاء شريط الحالة
 paragraph_spacing = تباعد الفقرات
 typography = الخطوط
 page_layout = تخطيط الصفحة

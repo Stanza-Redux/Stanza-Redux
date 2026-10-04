@@ -81,6 +81,7 @@ book_information = 책 정보
 open_book = 책 열기
 justified = 양쪽 정렬
 hyphenation = 단어 나누기
+hide_status_bar = 상태 표시줄 숨기기
 paragraph_spacing = 문단 간격
 typography = 글자 설정
 page_layout = 페이지 레이아웃

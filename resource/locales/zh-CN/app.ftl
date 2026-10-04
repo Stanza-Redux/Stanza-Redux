@@ -81,6 +81,7 @@ book_information = 图书信息
 open_book = 打开图书
 justified = 两端对齐
 hyphenation = 断字
+hide_status_bar = 隐藏状态栏
 paragraph_spacing = 段间距
 typography = 排版
 page_layout = 页面布局

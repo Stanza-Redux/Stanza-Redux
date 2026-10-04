@@ -81,6 +81,7 @@ book_information = Informasi buku
 open_book = Buka buku
 justified = Teks rata kiri-kanan
 hyphenation = Pemenggalan kata
+hide_status_bar = Sembunyikan bilah status
 paragraph_spacing = Jarak paragraf
 typography = Tipografi
 page_layout = Tata letak halaman

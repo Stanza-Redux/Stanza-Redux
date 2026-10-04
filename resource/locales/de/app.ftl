@@ -81,6 +81,7 @@ book_information = Buchinformationen
 open_book = Buch öffnen
 justified = Blocksatz
 hyphenation = Silbentrennung
+hide_status_bar = Statusleiste ausblenden
 paragraph_spacing = Absatzabstand
 typography = Typografie
 page_layout = Seitenlayout

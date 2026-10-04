@@ -81,6 +81,7 @@ book_information = 書誌情報
 open_book = 本を開く
 justified = 両端揃え
 hyphenation = ハイフネーション
+hide_status_bar = ステータスバーを隠す
 paragraph_spacing = 段落間隔
 typography = 文字設定
 page_layout = ページレイアウト

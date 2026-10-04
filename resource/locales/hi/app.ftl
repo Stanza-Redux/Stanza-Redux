@@ -81,6 +81,7 @@ book_information = पुस्तक की जानकारी
 open_book = पुस्तक खोलें
 justified = दोनों ओर संरेखण
 hyphenation = शब्द विभाजन
+hide_status_bar = स्टेटस बार छिपाएँ
 paragraph_spacing = अनुच्छेदों के बीच दूरी
 typography = अक्षर विन्यास
 page_layout = पृष्ठ विन्यास

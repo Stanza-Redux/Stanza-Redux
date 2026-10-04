@@ -81,6 +81,7 @@ book_information = Сведения о книге
 open_book = Открыть книгу
 justified = По ширине
 hyphenation = Перенос слов
+hide_status_bar = Скрывать строку состояния
 paragraph_spacing = Интервал между абзацами
 typography = Типографика
 page_layout = Макет страницы

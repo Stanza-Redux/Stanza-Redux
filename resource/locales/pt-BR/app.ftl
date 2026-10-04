@@ -81,6 +81,7 @@ book_information = Informações do livro
 open_book = Abrir livro
 justified = Texto justificado
 hyphenation = Hifenização
+hide_status_bar = Ocultar barra de status
 paragraph_spacing = Espaçamento entre parágrafos
 typography = Tipografia
 page_layout = Layout da página

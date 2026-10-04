@@ -84,6 +84,7 @@ book_information = Book information
 open_book = Open book
 justified = Justified text
 hyphenation = Hyphenation
+hide_status_bar = Hide status bar
 paragraph_spacing = Paragraph spacing
 typography = Typography
 page_layout = Page layout

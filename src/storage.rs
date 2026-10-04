@@ -5,6 +5,8 @@ use day::persistence::{DbError, DbErrorKind, Fetch, Many, One, Query};
 use day::prelude::*;
 
 pub const SEARCH_INDEX_VERSION: u32 = 2;
+/// Searchable chapter text as (content id, text) pairs, built off the UI thread.
+type ChapterText = Vec<(String, String)>;
 
 #[derive(Model, Clone, Default, PartialEq)]
 #[model(
@@ -491,7 +493,9 @@ impl Library {
         self.db.insert(ImportRecord { key: key.into() });
         self.db.save()
     }
-    fn chapter_text(b: &crate::epub::Book) -> Result<Vec<ContentRecord>, DbError> {
+    /// Each chapter's searchable text, keyed by its content id. Pure, so it runs on a worker
+    /// thread: inflating and parsing every chapter of a long book takes seconds on a phone.
+    fn chapter_text(b: &crate::epub::Book) -> Result<ChapterText, DbError> {
         b.chapters
             .iter()
             .map(|chapter| {
@@ -519,38 +523,44 @@ impl Library {
                     .filter_map(|n| n.text())
                     .collect::<Vec<_>>()
                     .join(" ");
-                Ok(ContentRecord {
-                    id: serde_json::to_string(&(&b.id, &chapter.path)).expect("string tuple"),
-                    book: One::to(b.id.clone()),
+                Ok((
+                    serde_json::to_string(&(&b.id, &chapter.path)).expect("string tuple"),
                     text,
-                })
+                ))
             })
             .collect()
     }
-    fn stage_index(
-        &self,
-        b: &crate::epub::Book,
-        contents: Vec<ContentRecord>,
-    ) -> Result<(), DbError> {
+    fn stage_index(&self, b: &crate::epub::Book, contents: ChapterText) -> Result<(), DbError> {
         self.stage_metadata(&b.id, &b.metadata)?;
-        for content in contents {
-            self.db.insert(content);
+        for (id, text) in contents {
+            self.db.insert(ContentRecord {
+                id,
+                book: One::to(b.id.clone()),
+                text,
+            });
         }
         if let Some(book) = self.db.try_get::<BookRecord>(b.id.clone())? {
             book.indexed().write(SEARCH_INDEX_VERSION);
         }
         Ok(())
     }
-    pub fn index_book(&self, b: &crate::epub::Book) -> Result<(), DbError> {
-        let contents = Self::chapter_text(b)?;
+    fn save_index(&self, b: &crate::epub::Book, contents: ChapterText) -> Result<(), DbError> {
         self.stage_index(b, contents)?;
         self.db.save()
     }
-    pub fn install(&self, row: &Saved, b: &crate::epub::Book) -> Result<(), DbError> {
-        let contents = Self::chapter_text(b)?;
+    fn install_with(
+        &self,
+        row: &Saved,
+        b: &crate::epub::Book,
+        contents: ChapterText,
+    ) -> Result<(), DbError> {
         self.stage_book(row)?;
         self.stage_index(b, contents)?;
         self.db.save()
+    }
+    #[cfg(test)]
+    pub fn install(&self, row: &Saved, b: &crate::epub::Book) -> Result<(), DbError> {
+        self.install_with(row, b, Self::chapter_text(b)?)
     }
     /// One-time bridge from the first Day prototype. Keep old prefs intact for recovery.
     pub fn import_preferences(&self) -> Result<(), DbError> {
@@ -900,10 +910,25 @@ mod tests {
     }
 }
 
+/// Extract a book's chapter text on a worker thread; only the database writes stay on the UI
+/// thread. Indexing a long book on the UI thread froze the app at launch.
+async fn extract_text(b: &crate::epub::Book) -> Result<ChapterText, String> {
+    let b = b.clone();
+    crate::covers::background(move || Library::chapter_text(&b))
+        .await?
+        .map_err(|e| e.to_string())
+}
 /// Write assets before committing metadata. Interrupted writes leave only replaceable orphans.
 pub async fn store_book(db: &Library, b: &crate::epub::Book, bytes: Vec<u8>) -> Result<(), String> {
     let row = write_assets(b, bytes).await?;
-    db.install(&row, b).map_err(|e| e.to_string())
+    let contents = extract_text(b).await?;
+    db.install_with(&row, b, contents)
+        .map_err(|e| e.to_string())
+}
+/// Rebuild a saved book's metadata and search text with the current parser.
+pub async fn index_book(db: &Library, b: &crate::epub::Book) -> Result<(), String> {
+    let contents = extract_text(b).await?;
+    db.save_index(b, contents).map_err(|e| e.to_string())
 }
 pub async fn write_assets(b: &crate::epub::Book, bytes: Vec<u8>) -> Result<Saved, String> {
     day_part_fs::write_future(&format!("books/{}.epub", b.id), bytes)

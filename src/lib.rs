@@ -96,6 +96,8 @@ struct Preferences {
     justified: bool,
     hyphenation: bool,
     paragraph_spacing: f64,
+    /// Hide the system status bar while a book is open (phones and tablets).
+    hide_status_bar: bool,
 }
 impl Default for Preferences {
     fn default() -> Self {
@@ -111,6 +113,7 @@ impl Default for Preferences {
             justified: false,
             hyphenation: true,
             paragraph_spacing: 0.6,
+            hide_status_bar: false,
         }
     }
 }
@@ -628,7 +631,9 @@ pub fn root() -> impl Piece {
             }
 
             // Enrich older Day libraries in the background. Authors are parsed as separate
-            // creators; a comma in a person's name is never treated as a delimiter.
+            // creators; a comma in a person's name is never treated as a delimiter. The
+            // current index version already carries the current parser's metadata, so a book
+            // that names no author is not parsed and indexed again on every launch.
             let books = match db.try_books() {
                 Ok(books) => books,
                 Err(e) => {
@@ -637,20 +642,18 @@ pub fn root() -> impl Piece {
                 }
             };
             for book in books {
-                let old = db.metadata(&book.id);
-                if old.as_ref().is_some_and(|m| !m.authors.is_empty())
-                    && db
-                        .book(&book.id)
-                        .is_some_and(|b| b.indexed == storage::SEARCH_INDEX_VERSION)
+                if db
+                    .book(&book.id)
+                    .is_some_and(|b| b.indexed == storage::SEARCH_INDEX_VERSION)
                 {
                     continue;
                 }
                 if let Ok(mut parsed) = epub::open_saved(&book.id).await {
-                    if let Some(old) = old {
+                    if let Some(old) = db.metadata(&book.id) {
                         parsed.metadata.supplement(&old);
                     }
-                    if let Err(e) = db.index_book(&parsed) {
-                        a.error(e.to_string());
+                    if let Err(e) = storage::index_book(&db, &parsed).await {
+                        a.error(e);
                     }
                 }
             }
@@ -980,6 +983,7 @@ fn reader(a: App) -> impl Piece {
         a.ready.set(false);
         reader_resources::view(a).js(a.js).id("book-webview")
     })
+    .status_bar_hidden(move || a.prefs.get().hide_status_bar)
 }
 
 fn setting_slider(
@@ -1021,6 +1025,7 @@ fn settings(a: App) -> impl Piece {
     let justified = Signal::new(p.justified);
     let hyphenation = Signal::new(p.hyphenation);
     let paragraph = Signal::new(p.paragraph_spacing);
+    let hide_status_bar = Signal::new(p.hide_status_bar);
     watch(
         move || {
             (
@@ -1035,6 +1040,7 @@ fn settings(a: App) -> impl Piece {
                 justified.get(),
                 hyphenation.get(),
                 paragraph.get(),
+                hide_status_bar.get(),
             )
         },
         move |&(
@@ -1049,6 +1055,7 @@ fn settings(a: App) -> impl Piece {
             justified,
             hyphenation,
             paragraph_spacing,
+            hide_status_bar,
         ),
               _| {
             let rgb = |c: Color| {
@@ -1067,6 +1074,7 @@ fn settings(a: App) -> impl Piece {
                 justified,
                 hyphenation,
                 paragraph_spacing,
+                hide_status_bar,
             });
         },
     );
@@ -1093,6 +1101,7 @@ fn settings(a: App) -> impl Piece {
             sync!(justified, p.justified);
             sync!(hyphenation, p.hyphenation);
             sync!(paragraph, p.paragraph_spacing);
+            sync!(hide_status_bar, p.hide_status_bar);
         },
     );
     scroll(
@@ -1196,6 +1205,18 @@ fn settings(a: App) -> impl Piece {
                             .height(48.),
                         ))
                         .spacing(10.)
+                    },
+                ),
+                // Only where the platform has a status bar to hide (phones and tablets).
+                when(
+                    || capability(Cap::StatusBarHidden) != Support::Unsupported,
+                    move || {
+                        row((
+                            label(res::str::hide_status_bar()).grow_w(),
+                            toggle(hide_status_bar).id("reader-hide-status-bar"),
+                        ))
+                        .spacing(12.)
+                        .height(48.)
                     },
                 ),
             ))

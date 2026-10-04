@@ -120,15 +120,20 @@ mod native {
             return Err("Unsafe legacy book path".into());
         }
         let root = documents.canonicalize().map_err(|e| e.to_string())?;
-        let path = root
-            .join(relative)
-            .canonicalize()
-            .map_err(|e| e.to_string())?;
+        let path = root.join(relative).canonicalize().map_err(|e| {
+            if e.kind() == std::io::ErrorKind::NotFound {
+                format!("{MISSING}: {e}")
+            } else {
+                e.to_string()
+            }
+        })?;
         if !path.starts_with(&root) {
             return Err("Legacy book symlink escapes documents directory".into());
         }
         Ok(path)
     }
+    /// Prefix of the error for a row whose EPUB no longer exists.
+    const MISSING: &str = "Legacy EPUB is missing";
     pub fn position(row: &LegacyBook, book: &epub::Book) -> (u32, f64) {
         let locator = row
             .locator
@@ -175,8 +180,17 @@ mod native {
                     if metadata.len() > 64 * 1024 * 1024 {
                         return Err("Legacy EPUB exceeds 64 MB".into());
                     }
-                    let bytes = std::fs::read(path).map_err(|e| e.to_string())?;
-                    let mut b = epub::parse(&bytes).map_err(|e| e.to_string())?;
+                    // Read and parse on a worker thread: a v1 library holds dozens of books,
+                    // and parsing them on the UI thread froze the first launch.
+                    let (bytes, parsed) = crate::covers::background(move || {
+                        std::fs::read(path).map(|bytes| {
+                            let parsed = epub::parse(&bytes);
+                            (bytes, parsed)
+                        })
+                    })
+                    .await?
+                    .map_err(|e| e.to_string())?;
+                    let mut b = parsed.map_err(|e| e.to_string())?;
                     // Never overwrite a book or reading position that already exists in the new library.
                     if db.try_book(&b.id).map_err(|e| e.to_string())?.is_none() {
                         if !row.title.is_empty() {
@@ -194,6 +208,11 @@ mod native {
                 }
                 .await;
                 if let Err(e) = result {
+                    // A missing EPUB will never import. Report it once rather than on
+                    // every launch.
+                    if e.starts_with(MISSING) {
+                        let _ = db.mark_imported(&key);
+                    }
                     errors.push(format!("{}: {e}", row.title));
                 }
             }
@@ -223,6 +242,11 @@ mod native {
             assert_eq!(std::fs::read(&db).unwrap(), before);
             assert!(book_path(&root, "../outside.epub").is_err());
             assert!(book_path(&root, "/old/container/Documents/Books/a.epub").is_ok());
+            assert!(
+                book_path(&root, "Books/missing.epub")
+                    .unwrap_err()
+                    .starts_with(MISSING)
+            );
             let b = epub::parse(crate::sample_book().unwrap().as_slice()).unwrap();
             let mut row = rows.into_iter().next().unwrap();
             row.locator = Some(
