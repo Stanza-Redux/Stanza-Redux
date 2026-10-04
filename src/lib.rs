@@ -98,6 +98,8 @@ struct Preferences {
     paragraph_spacing: f64,
     /// Hide the system status bar while a book is open (phones and tablets).
     hide_status_bar: bool,
+    /// A tap on the left edge turns forward, like the right edge, instead of back.
+    left_tap_advances: bool,
 }
 impl Default for Preferences {
     fn default() -> Self {
@@ -114,6 +116,7 @@ impl Default for Preferences {
             hyphenation: true,
             paragraph_spacing: 0.6,
             hide_status_bar: false,
+            left_tap_advances: false,
         }
     }
 }
@@ -681,6 +684,16 @@ pub fn root() -> impl Piece {
             }
         },
     );
+    // The Settings window (docs/windows.md in day): Settings… with ⌘, on macOS and Preferences on
+    // the other desktops. The Settings section keeps working too: one set of rows, two ways in.
+    day::register_preferences_with(
+        day::WindowOptions {
+            title: res::str::settings().format(),
+            size: Size::new(560., 720.),
+            ..Default::default()
+        },
+        move || preferences_window(a),
+    );
     let open_book = documents::open_command(a);
     app_menu_reactive(move || {
         vec![
@@ -821,34 +834,54 @@ fn settings_page(a: App) -> impl Piece {
         move || {
             column((
                 label(res::str::settings()).font(Font::LargeTitle).bold(),
-                labeled(
-                    res::str::language(),
-                    picker(
-                        [
-                            res::str::language_en().format(),
-                            res::str::language_ar().format(),
-                            res::str::language_de().format(),
-                            res::str::language_es().format(),
-                            res::str::language_fr().format(),
-                            res::str::language_hi().format(),
-                            res::str::language_id().format(),
-                            res::str::language_it().format(),
-                            res::str::language_ja().format(),
-                            res::str::language_ko().format(),
-                            res::str::language_pt_br().format(),
-                            res::str::language_ru().format(),
-                            res::str::language_zh_cn().format(),
-                        ],
-                        a.language,
-                    )
-                    .id("language"),
-                ),
-                settings(a),
+                settings_body(a, false),
             ))
             .spacing(16.)
             .align(HAlign::Leading)
         },
     )
+}
+
+/// The desktop Settings window (Settings… / ⌘, on macOS, Preferences on the other desktops):
+/// the same rows as the Settings section, under the window's own title.
+fn preferences_window(a: App) -> impl Piece {
+    settings_body(a, true).padding(20.)
+}
+
+/// The interface language and the reader settings. `fill` lets the reader settings scroll in
+/// the rest of a window instead of sizing to their content.
+fn settings_body(a: App, fill: bool) -> impl Piece {
+    column((
+        labeled(
+            res::str::language(),
+            picker(
+                [
+                    res::str::language_en().format(),
+                    res::str::language_ar().format(),
+                    res::str::language_de().format(),
+                    res::str::language_es().format(),
+                    res::str::language_fr().format(),
+                    res::str::language_hi().format(),
+                    res::str::language_id().format(),
+                    res::str::language_it().format(),
+                    res::str::language_ja().format(),
+                    res::str::language_ko().format(),
+                    res::str::language_pt_br().format(),
+                    res::str::language_ru().format(),
+                    res::str::language_zh_cn().format(),
+                ],
+                a.language,
+            )
+            .id("language"),
+        ),
+        if fill {
+            settings(a).grow().any()
+        } else {
+            settings(a).any()
+        },
+    ))
+    .spacing(16.)
+    .align(HAlign::Leading)
 }
 
 /// Remote and downloaded books share the same presentation. The caller supplies
@@ -1026,6 +1059,7 @@ fn settings(a: App) -> impl Piece {
     let hyphenation = Signal::new(p.hyphenation);
     let paragraph = Signal::new(p.paragraph_spacing);
     let hide_status_bar = Signal::new(p.hide_status_bar);
+    let left_tap_advances = Signal::new(p.left_tap_advances);
     watch(
         move || {
             (
@@ -1041,6 +1075,7 @@ fn settings(a: App) -> impl Piece {
                 hyphenation.get(),
                 paragraph.get(),
                 hide_status_bar.get(),
+                left_tap_advances.get(),
             )
         },
         move |&(
@@ -1056,6 +1091,7 @@ fn settings(a: App) -> impl Piece {
             hyphenation,
             paragraph_spacing,
             hide_status_bar,
+            left_tap_advances,
         ),
               _| {
             let rgb = |c: Color| {
@@ -1075,6 +1111,7 @@ fn settings(a: App) -> impl Piece {
                 hyphenation,
                 paragraph_spacing,
                 hide_status_bar,
+                left_tap_advances,
             });
         },
     );
@@ -1102,6 +1139,7 @@ fn settings(a: App) -> impl Piece {
             sync!(hyphenation, p.hyphenation);
             sync!(paragraph, p.paragraph_spacing);
             sync!(hide_status_bar, p.hide_status_bar);
+            sync!(left_tap_advances, p.left_tap_advances);
         },
     );
     scroll(
@@ -1114,6 +1152,9 @@ fn settings(a: App) -> impl Piece {
                             res::str::serif().format(),
                             res::str::sans().format(),
                             res::str::mono().format(),
+                            res::str::font_montserrat().format(),
+                            res::str::font_noto_sans().format(),
+                            res::str::font_noto_serif().format(),
                         ],
                         font,
                     )
@@ -1122,6 +1163,9 @@ fn settings(a: App) -> impl Piece {
                             res::str::serif().format(),
                             res::str::sans().format(),
                             res::str::mono().format(),
+                            res::str::font_montserrat().format(),
+                            res::str::font_noto_sans().format(),
+                            res::str::font_noto_serif().format(),
                         ]
                     })
                     .id("reader-font")
@@ -1253,6 +1297,12 @@ fn settings(a: App) -> impl Piece {
                 label(res::str::columns_hint())
                     .font(Font::Footnote)
                     .secondary(),
+                row((
+                    label(res::str::left_tap_advances()).grow_w(),
+                    toggle(left_tap_advances).id("reader-left-tap-advances"),
+                ))
+                .spacing(12.)
+                .height(48.),
             ))
             .title(res::str::page_layout()),
         ))

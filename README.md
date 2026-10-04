@@ -189,6 +189,7 @@ keys continue working across chapter boundaries, including inside the web app’
 | `src/epub.rs` | EPUB ZIP/package/spine/contents parsing and embedded resources |
 | `resource/assets/reader/reader.js` | Reflow, pagination, links, gestures and reading-position reports |
 | `resource/assets/reader/readium-css/` | Vendored Readium CSS and its font resources |
+| `resource/assets/reader/fonts/` | Bundled reader typefaces (Montserrat, Noto Sans, Noto Serif) and their OFL licenses |
 | `resource/locales/{en,fr}/` | Interface translations |
 | `dayscript/` and `tests/` | App walkthrough, local OPDS fixture and browser rendering tests |
 

@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
 (()=>{
 'use strict';
+// The font setting's stacks, by `prefs.font`: three system stacks, then the bundled faces in
+// fonts/ (see fonts/README.md). The chapter document lives under book/, so each face's URL is
+// resolved against this page, and the private family names never match an installed font.
+const FONTS=['Georgia,serif','system-ui,sans-serif','ui-monospace,monospace',"'Stanza Montserrat',system-ui,sans-serif","'Stanza Noto Sans',system-ui,sans-serif","'Stanza Noto Serif',Georgia,serif"];
+const FONT_FACES=[['Stanza Montserrat','Montserrat-Regular.ttf','400'],['Stanza Noto Sans','NotoSans.ttf','100 900'],['Stanza Noto Serif','NotoSerif.ttf','100 900']].map(([family,file,weight])=>`@font-face{font-family:'${family}';src:url('${new URL('fonts/'+file,document.baseURI).href}') format('truetype');font-weight:${weight};font-style:normal;font-display:block}`).join('');
 let frame=document.getElementById('book');let book=null,prefs={},chapter=0,page=0,pages=1,ready=false,serial=0;
 function event(type,data={}){const a=document.getElementById('event');a.href='stanza://'+type+'?data='+encodeURIComponent(JSON.stringify(data));a.click()}
 const resourceRoot=new URL('../book/',location.href);
@@ -41,8 +46,8 @@ async function show(index,progress=0,fragment='',direction=0){
  const colors=settings();document.documentElement.style.setProperty('--paper',colors.bg);document.documentElement.style.setProperty('--ink',colors.fg);document.body.style.background=colors.bg;
  const head=doc.head;
  const add=(content,first=false)=>{const el=doc.createElement('style');el.textContent=content;first?head.prepend(el):head.append(el)};
- add(window.stanzaCSS.before,true); if(!doc.querySelector('link[rel=stylesheet]'))add(window.stanzaCSS.default); add(window.stanzaCSS.after);
- const cols=prefs.columns===2&&frame.clientWidth>=640?2:1,gap=Math.max(12,prefs.margin||24),font=['Georgia,serif','system-ui,sans-serif','ui-monospace,monospace'][prefs.font||0];
+ add(FONT_FACES,true); add(window.stanzaCSS.before,true); if(!doc.querySelector('link[rel=stylesheet]'))add(window.stanzaCSS.default); add(window.stanzaCSS.after);
+ const cols=prefs.columns===2&&frame.clientWidth>=640?2:1,gap=Math.max(12,prefs.margin||24),font=FONTS[prefs.font||0]||FONTS[0];
  // An explicit column width: iOS 18's WebKit lays out no columns at all for a column-count of 1
  // with an auto width, so a chapter ran down past the page instead of across pages.
  const colWidth=Math.max(1,Math.floor((frame.clientWidth-gap*2-(cols-1)*gap*2)/cols));
@@ -231,7 +236,8 @@ function gestures(d,entry){
   }
   if(selected()||e.target.closest?.('button,input,textarea,select,audio,video'))return;
   const fraction=e.clientX/frame.clientWidth;
-  if(fraction<.25)turn(book.rtl?1:-1);else if(fraction>.75)turn(book.rtl?-1:1);else chrome(!controls);
+  // "Left tap advances" turns the left edge into a second forward zone for one-handed reading.
+  if(fraction<.25)turn(prefs.left_tap_advances||book.rtl?1:-1);else if(fraction>.75)turn(book.rtl?-1:1);else chrome(!controls);
  });
  let wheelX=0,wheelY=0,wheelLast=0,wheelFired=false;
  d.addEventListener('wheel',e=>{
