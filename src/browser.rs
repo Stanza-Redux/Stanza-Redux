@@ -607,8 +607,13 @@ fn manager(a: App) -> impl Piece {
     let Some(db) = a.database.get_untracked() else {
         return label(res::str::database_unavailable()).any();
     };
+    // One live query for the rows and for every move button's enabled state. A query built
+    // inside the binding is dropped as soon as it answers, so a reorder never re-ran the
+    // binding and the old first and last rows kept their disabled buttons.
+    let catalogs = db.catalog_query();
+    let rows = catalogs.clone();
     column((scroll(
-        column((each(db.catalog_query(), move |item| {
+        column((each(rows, move |item| {
             let c = opds::Link {
                 title: item.title().read(),
                 url: item.url().read(),
@@ -633,8 +638,10 @@ fn manager(a: App) -> impl Piece {
                     button(res::str::move_up())
                         .enabled({
                             let u = up.clone();
+                            let catalogs = catalogs.clone();
                             move || {
-                                a.catalogs()
+                                catalogs
+                                    .try_collect()
                                     .is_ok_and(|c| c.first().is_some_and(|c| c.url != u))
                             }
                         })
@@ -643,8 +650,10 @@ fn manager(a: App) -> impl Piece {
                     button(res::str::move_down())
                         .enabled({
                             let u = down.clone();
+                            let catalogs = catalogs.clone();
                             move || {
-                                a.catalogs()
+                                catalogs
+                                    .try_collect()
                                     .is_ok_and(|c| c.last().is_some_and(|c| c.url != u))
                             }
                         })

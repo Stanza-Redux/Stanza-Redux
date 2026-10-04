@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Native macOS cold/warm file-open regression. Run after `day launch -p TARGET`.
 Usage: python3 tests/desktop-documents.py macos-appkit [path/to/day]
-Also supports macos-gtk and macos-qt. Restarts only the selected Stanza build.
+Restarts only the Stanza build it tests.
 """
 import hashlib
 import json
@@ -12,12 +12,11 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
 target = sys.argv[1]
-assert target in ('macos-appkit', 'macos-gtk', 'macos-qt')
+assert target == 'macos-appkit'
 day = sys.argv[2] if len(sys.argv) > 2 else 'day'
 book = root / 'resource/assets/Alice.epub'  # Test fixture; production uses generated resources.
 key = 'reader-' + hashlib.sha256(book.read_bytes()).hexdigest()
-app = root / ('build/day/macos-appkit/Debug/StanzaRedux.app' if target == 'macos-appkit'
-              else f'build/day/{target}/debug/stanza-redux.app')
+app = root / 'build/day/macos-appkit/Debug/StanzaRedux.app'
 sessions = root / 'build/day/sessions.json'
 entry = next(e for e in json.loads(sessions.read_text()) if e['target'] == target)
 subprocess.run([day, 'stop', '-p', target], cwd=root, check=True)

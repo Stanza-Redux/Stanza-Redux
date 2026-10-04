@@ -59,8 +59,8 @@ handles native registration and temporary provider access. See Day's document gu
 installer/PWA requirements and untested-platform limitations.
 
 Run `python3 tests/desktop-documents.py macos-appkit /path/to/day` after launching that build
-to exercise cold/warm OS delivery, reader reuse, closing, and reopening. The script also accepts
-`macos-gtk` and `macos-qt`. `tests/documents.mjs <local-web-url>` exercises the browser picker
+to exercise cold/warm OS delivery, reader reuse, closing, and reopening.
+`tests/documents.mjs <local-web-url>` exercises the browser picker
 and simulated launchQueue delivery; it does not test installation of a PWA file handler.
 
 ## Catalog covers

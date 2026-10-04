@@ -6,7 +6,7 @@ schema = 1
 id = "org.appfair.app.StanzaRedux"
 title = "Stanza Redux"
 build = 26
-targets = ["macos-appkit", "macos-gtk", "macos-qt", "ios-uikit", "android-mdc", "linux-gtk", "linux-qt", "windows-winui", "windows-xaml", "windows-gtk", "windows-qt", "harmony-arkui", "web-dom"]
+targets = ["macos-appkit", "ios-uikit", "android-mdc", "linux-gtk", "linux-qt", "windows-winui", "harmony-arkui", "web-dom"]
 
 # The window's geometry in points (https://daybrite.dev/docs/size-classes). `day build` carries
 # all four into the Android manifest's <layout> element and the iOS Info.plist.

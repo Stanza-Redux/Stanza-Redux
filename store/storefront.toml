@@ -290,12 +290,6 @@ default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-fr
 [storefront.macos-appkit.screenshots]
 default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
 
-[storefront.macos-gtk.screenshots]
-default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
-
-[storefront.macos-qt.screenshots]
-default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
-
 [storefront.linux-gtk.screenshots]
 default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
 
@@ -303,15 +297,6 @@ default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-fr
 default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
 
 [storefront.windows-winui.screenshots]
-default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
-
-[storefront.windows-xaml.screenshots]
-default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
-
-[storefront.windows-gtk.screenshots]
-default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
-
-[storefront.windows-qt.screenshots]
 default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
 
 [storefront.harmony-arkui.screenshots]
