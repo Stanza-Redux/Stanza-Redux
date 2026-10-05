@@ -7,6 +7,19 @@ on_failure: stop
 flow:
 - navigate:
     route: catalogs
+# An interrupted locale run may have saved the fixture without reaching teardown.
+# Remove only that catalog; retain the user's other catalogs and downloaded books.
+- menu:
+    id: manage-catalogs-menu
+- wait_for:
+    id: catalog-manager-list
+- tap:
+    id: catalog-remove-http://127.0.0.1:18765/showcase
+    if_present: true
+- assert_missing:
+    id: catalog-remove-http://127.0.0.1:18765/showcase
+- toolbar:
+    item: catalog-manager-done
 - menu:
     id: add-opds-catalog
 - wait_for:

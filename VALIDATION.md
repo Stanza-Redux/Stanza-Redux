@@ -1,5 +1,47 @@
 # Local validation
 
+## Harmony CI crash investigation — 2026-10-05
+
+The [tablet job](https://github.com/Stanza-Redux/Stanza-Redux/actions/runs/37323460405/job/111808308321)
+built successfully. English, Arabic, and German store tours passed, then the Spanish
+run aborted in ArkWeb's `Chrome_InProcGp` thread (`SIGABRT`, native assertion) while
+opening the first acquired book. The job did not retain the native assertion text or
+faultlogger stack. Its later catalog-editor failures were secondary: the interrupted
+tour left the fixture catalog saved, and subsequent additions failed duplicate-URL validation.
+The same CI run's Harmony phone job passed.
+
+The store tour now removes only its own fixture catalog before setup, using Day's new
+`tap.if_present` option. It leaves other catalogs and acquired books intact. The matching
+local Day changes add Harmony faultlogger collection on engine loss, filtering by app
+and launch age with the guest clock. CI needs those Day engine/CLI changes as well as
+the updated tour; the app uses an ignored local dependency patch for this validation.
+
+Visual inspection found another framework defect: covers were mounted inside the root
+Navigation page, underneath pushed NavDestinations. A reader WebView could load and
+pass JavaScript checks while the book-details page was still drawn above it. Day now
+mounts covers into a separate full-window NodeContent layer above Navigation, resizes
+their content with that layer, and routes native Back to the top cover. The complete
+English walkthrough passed again with visibly correct reader text, controls, and settings
+screenshots. Earlier successful script counts alone did not establish correct presentation.
+The final build also passed the English and Arabic dark-theme tours (141 steps each).
+In a normal-mode English launch, physical emulator taps opened/closed reader settings
+and advanced the page; native Back dismissed the reader and preserved its book-details
+page. The book was reopened and left running for interactive use.
+
+Local OpenHarmony 7.0.0.39 phone emulator results:
+
+- Signed x86_64 Harmony build succeeded.
+- Original tour: English, Arabic, German, Spanish all passed (136 steps and 8 screenshots each).
+- Updated tour: Spanish, Japanese, Arabic, each in light and dark, all passed
+  (141 steps and 8 screenshots per run; one desktop-only step skipped).
+- Interrupted-run recovery: saved the fixture catalog without teardown, relaunched,
+  then completed the updated English tour (141 steps, 8 screenshots).
+- Day dayscript engine: 19 tests passed. CLI crash diagnostics: 4 tests passed.
+
+The original native GPU assertion has not reproduced locally. These changes fix
+cover visibility, fixture recovery, and missing crash diagnostics; they do not establish a fix for the
+tablet-only native assertion. No commits, pushes, or remote CI reruns were performed.
+
 ## Version 2 store preparation — 2026-10-01
 
 Prepared 2.0.0 / build 25 with the existing Apple and Android application identifiers
