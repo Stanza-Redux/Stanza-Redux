@@ -30,7 +30,7 @@ flow:
   - screenshot: { name: settings }
   - tap: { id: reader-settings-done }
   - wait_for: { id: book-webview }
-  - web_eval: { id: book-webview, script: "String(stanza.state().ready && stanza.state().height > 100 && stanza.state().pages < 1000)", text: "true", timeout_secs: 40 }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && !stanza.state().animating && stanza.state().height > 100 && stanza.state().pages < 1000)", text: "true", timeout_secs: 40 }
   - screenshot: { name: night }
   - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),1000);true", text: "true" }
   - assert_missing: { id: book-webview }

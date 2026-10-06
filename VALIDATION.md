@@ -1,5 +1,151 @@
 # Local validation
 
+## Harmony tablet walkthrough — 2026-10-06
+
+Every dayscript ran on the local OpenHarmony 7.0 x86_64 emulator in a 1200×720 tablet
+panel (three-column sidebar navigation), against a local Day and day-piece-webview:
+demo 54/54, library 66/66, browser 50/50, catalog 44/44, catalog-loading 41/41,
+catalog-cancellation 32/32, catalog-persistence 25/25, catalog-thumbnails 19/19,
+book-info 53/53, persistence 36/36, reader-affordances 28/28, reader-margins 27/27,
+reader-sections 23/23 (navigation-settle is UIKit-only). The catalog scripts need
+`tests/catalog_server.py` and `hdc rport tcp:18765 tcp:18765`, as `tests/ci-fixture.sh`
+does; without the forward every catalog step fails on "catalog-editor-valid".
+
+Two glitches came from reading the screenshots rather than the step counts:
+
+- Reader screenshots (`reader`, `immersive`, `night`, `reader-position-controls`,
+  `reader-bookmarks`) showed the page one or more steps behind the script: the
+  toolbar still up after the hide, a blank page after a theme change. ArkWeb paints
+  on its own thread and, under the emulator's software GL, trails the DOM the script
+  just changed by seconds, while Day's ArkUI render checkpoint cannot see that work.
+  Day's ArkTS piece contract gained an optional `settle` hook the capture awaits, and
+  day-piece-webview's implementation arms four animation frames in every live page,
+  lets any CSS transition run out, and polls for the result (capped at two seconds).
+  Re-runs of `demo.yaml` capture the current page. The `night` step now also waits
+  for `!stanza.state().animating` before its screenshot. A residual: right after the
+  page-turn animations the compositor can still be a frame behind, so the `immersive`
+  shot can catch the toolbar a few pixels into its slide.
+- After switching the language in Settings, the Library title bar stayed "Library"
+  while the sidebar rows re-localized: a `nav_stack`'s root title was resolved once at
+  build. Day now binds a live root title (the `nav` item titles already were), and the
+  bar retitles while the stack shows its root and again on a pop to it.
+
+Also from this run: `store-walkthrough` died once with a `THREAD_BLOCK_6S` app freeze
+(the main thread stuck in ArkWeb's `webViewTask` after a reader re-render); `day` now
+recognizes `appfreeze-*` faultlogger reports in its post-mortem, which looked only for
+crashes. An ArkWeb renderer exited (code 0) once on the first book open after a fresh
+install; the next launch was fine. Under dayscript the status bar no longer animates
+when the reader hides it.
+
+## Harmony Settings scroll bounds — 2026-10-05
+
+The Settings scroll viewport extended to y=666 while its tab's visible content
+ended at y=632. At the maximum offset, the last row extended to y=652, leaving
+"Left tap advances" clipped behind the tab bar. The form's content extent was
+being reported; its viewport incorrectly included space occupied by native chrome.
+
+Day's ArkUI tab host could finish layout before resident pages were attached.
+Insertion sized those pages natively but did not report their usable bounds to
+Day, leaving `NavLayout` at its full-host fallback. The toolkit also allowed that
+fallback to overwrite resident pages' native frames. It now reports each newly
+attached page's current size after its listener is installed and preserves native
+frame ownership for both tab pages and stack pages. Deferred reports verify that
+the page still belongs to the host and read the latest size.
+
+The independent navigation fixture now has a long, wrapping scroll form and
+dynamic content. Its six native geometry checks passed: initial layout, growth,
+shrinkage with offset clamping, revealing the final control, physical swipes, and
+destroying/rebuilding the tabs. Content grew from 1070 to 2792 pixels and shrank
+back; the final control remained reachable above the tab bar.
+
+After rebuilding Stanza, its viewport ends at y=614 and the complete final row
+ends at y=599. Physical swipes reached it, real mouse input toggled it successfully,
+and its original value was restored. Changing Sepia to Custom grew content from
+869 to 978 pixels; restoring Sepia returned it to 869, with the last row reachable
+in both cases. The original theme was restored. Stanza is left running at the
+bottom of Settings, showing the complete row and switch.
+
+Screenshots, native hierarchies and results are in the ignored
+`build/day/harmony-scroll-investigation/` directory. The reusable regression is
+Day's `toolkits/day-arkui/tests/navigation/scroll_emulator.py`. No app-specific
+padding or sizing workaround, commit, or push was needed.
+
+## Harmony navigation ownership — 2026-10-05
+
+The reported screen was captured: Settings was displayed under a Catalogs title
+bar while Library remained highlighted. A separate `Harmony-Nav-Probe` app,
+containing only two tab-local stacks and a plain Settings page, reproduced the
+wrong Catalogs header over Library and the stale tab highlight. This was a shared
+Day toolkit defect in multi-host navigation, rather than a Stanza-specific route bug.
+
+Day previously put the entire window inside one ArkTS Navigation and kept one
+Rust navigation host/path/attachment list. Realizing Catalogs overwrote Library's
+host bookkeeping. Day now embeds a native `Navigation`/`NavPathStack` at each
+stack's own position, addresses callbacks to that host, and sizes root/pushed
+content from its actual native bounds. Covers remain above the whole window.
+Tab selection updates the highlight, host disposal clears only its own state,
+and hiding a resident tab is not treated as popping it. Plain apps retain their
+window toolbar. Stanza's application navigation code is unchanged.
+
+Validation on the local OpenHarmony 7.0.0.39 x86_64 phone:
+
+- The framework's new `toolkits/day-arkui/tests/navigation/` fixture passed 65
+  native TitleBar checks using real mouse tab clicks and system Back. This includes
+  independent retained histories, hidden-tab pushes, guarded Back, immediate
+  push/pop, and destroying/recreating both hosts with live destinations.
+- The plain-window toolbar's real mouse action passed separately.
+- The full English store walkthrough passed twice: 141 steps, one desktop-only
+  skip, eight screenshots per run. The final run took 23.480 seconds.
+- Screenshots verified Settings has no Catalogs container and the correct tab is
+  highlighted; Library and Catalogs each display their own native title/actions.
+- After a fresh launch, all ten reader mouse/touch check groups passed, including
+  trusted mouse page turns and wheel events, text selection, native settings Done,
+  Back and reopening the reader. Stanza was left running on the corrected Settings
+  screen, with its native hierarchy checked for the absence of a stray TitleBar.
+
+An additional normal-mode book-opening check hit a native GPU assertion:
+`Chrome_InProcGp → __assert_fail → kms_swrast_dri.so!draw_flush`. The faultlogger
+report is retained under `build/day/harmony-navigation-investigation/`. This is
+the same GPU-thread failure class as the earlier CI investigation, but these
+results do not prove an identical cause or fix it. A fresh launch opened the book
+successfully; the navigation walkthrough results must not be read as resolving
+that intermittent emulator/WebView graphics failure.
+
+The generated throwaway project remains at `../Harmony-Nav-Probe/`; reusable
+source, driver, and instructions are in Day's regression fixture directory.
+No commits, pushes, or remote CI runs were performed.
+
+## Harmony reader mouse input — 2026-10-05
+
+The apparent reader freeze was reproduced with actual mouse events. ArkUI routed
+them to the WebView, but the OpenHarmony 7.0.0.39 system adapter called
+`WebSendMouseEvent`, which the installed x86 ArkWeb 5.0.1.106sp40 engine does not
+implement. Hilog reported `function WebSendMouseEvent isn't existing`. The reader's
+HTML controls and text therefore ignored the mouse. Earlier `uitest uiInput click`
+checks injected touch and did not establish mouse compatibility.
+
+The local `daybrite/actions` WebView installer now adapts the two mouse/wheel
+wrappers to the engine's supported legacy APIs, only for the exact tested emulator
+library SHA-256. Readable assembly, deterministic byte reproduction, ABI tests,
+unknown-library rejection, and setup documentation accompany the adapter. The
+patched library was installed locally and the emulator rebooted; no Stanza or Day
+production code workaround was needed. The original guest library is retained at
+`/system/lib64/libarkweb_core_loader_glue.z.so.day-mouse-backup`.
+
+After rebuilding Stanza without temporary input tracing, all ten local check groups
+passed: mouse opening of HTML reader settings, native Done, trusted mouse page
+turn, drag selection of EPUB text, trusted wheel events, touch opening of settings,
+mouse Done after touch, native Back, and reopening the reader (plus observer setup).
+The pointer observer explicitly verified `pointerType === "mouse"` and `isTrusted`;
+wheel events were also trusted. Selection was confirmed through the real iframe
+selection and a screenshot. The actions installer/ABI suite passed all 11 tests,
+including the optional transformation test against the original emulator library.
+
+Artifacts and the local reproduction driver are in the ignored
+`build/day/harmony-mouse-investigation/` directory. The app was left running with
+Alice open. This validates the local phone emulator, not a remote CI run or the
+previous tablet GPU assertion. The setup changes remain local and uncommitted.
+
 ## Harmony CI crash investigation — 2026-10-05
 
 The [tablet job](https://github.com/Stanza-Redux/Stanza-Redux/actions/runs/37323460405/job/111808308321)
