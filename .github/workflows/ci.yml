@@ -57,6 +57,16 @@ jobs:
         windows-winui: webview2-runtime
       # Requires the shared workflow's script-setup support; fixtures run after device boot.
       script-setup: source tests/ci-fixture.sh
+      # HarmonyOS runs on the phone panel only for now. The default tablet row (a 1280×800
+      # panel on the same emulator image) kills the store tour intermittently inside ArkWeb's
+      # in-process GPU thread as a book opens: `Chrome_InProcGp → __assert_fail →
+      # kms_swrast_dri.so!draw_flush`, a Mesa software-rasterizer assertion in the OpenHarmony
+      # 7.0 image itself, not in the app or in Day (run 37467985399, job 112283938626, after two
+      # clean tour variants; VALIDATION.md "Harmony CI crash investigation"). The phone panel
+      # passes. Restore the second row once the emulator image's GPU stack is fixed:
+      #   device=tablet, orientation=landscape, slug=tablet
+      harmony-devices: |
+        device=phone, orientation=portrait, slug=phone
       scripts: auto
       # Regression suites run once per device; only the store tour crosses all languages/themes.
       scripts-once: >-

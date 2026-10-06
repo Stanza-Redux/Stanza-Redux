@@ -30,6 +30,17 @@ Two glitches came from reading the screenshots rather than the step counts:
   build. Day now binds a live root title (the `nav` item titles already were), and the
   bar retitles while the stack shows its root and again on a pop to it.
 
+The CI tablet row's crash ([job 112283938626](https://github.com/Stanza-Redux/Stanza-Redux/actions/runs/37467985399/job/112283938626),
+after two clean tour variants) reproduced locally on CI's exact panel (`day devices boot
+--headless --device tablet`, 1280×800): two clean `store-walkthrough` runs, then the third
+died at `tap download-book` with the identical report — `Chrome_InProcGp` → `__assert_fail`
+→ `kms_swrast_dri.so(draw_flush+54)`, `SIGABRT`. Day-News's tablet row dies with the same
+stack as its article web view opens. That is a Mesa software-rasterizer assertion inside
+the OpenHarmony 7.0.0.39 image's ArkWeb GPU thread, not app or Day code, and nothing in the
+app's hands avoids it, so `.github/workflows/ci.yml` now runs HarmonyOS on the phone panel
+only (`harmony-devices`), with the tablet row kept in a comment to restore once the image's
+GPU stack is fixed.
+
 Also from this run: `store-walkthrough` died once with a `THREAD_BLOCK_6S` app freeze
 (the main thread stuck in ArkWeb's `webViewTask` after a reader re-render); `day` now
 recognizes `appfreeze-*` faultlogger reports in its post-mortem, which looked only for
