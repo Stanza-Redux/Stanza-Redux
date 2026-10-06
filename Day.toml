@@ -5,7 +5,7 @@ schema = 1
 [app]
 id = "org.appfair.app.StanzaRedux"
 title = "Stanza Redux"
-build = 28
+build = 29
 targets = ["macos-appkit", "ios-uikit", "android-mdc", "linux-gtk", "linux-qt", "windows-winui", "harmony-arkui", "web-dom"]
 
 # The window's geometry in points (https://daybrite.dev/docs/size-classes). `day build` carries
