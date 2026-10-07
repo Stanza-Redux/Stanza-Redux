@@ -106,7 +106,7 @@ jobs:
       # `release: released` event above and rebuilds the site against the new version.
       release-mode: pre-release
       # website/site.toml makes the workflow build and deploy the full project site
-      # (https://stanza-redux.app/) from the daybrite/daysite template on every
+      # (https://stanza-redux.app/) from daysite with the appfair/appsite theme on every
       # push to main, with the web build hosted at /webapp/. deploy-web stays on as
       # the fallback: were website/ ever removed, the bare web app would return to the Pages root.
       deploy-web: true

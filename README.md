@@ -359,9 +359,28 @@ cargo test --lib
 day store stage -p ios-uikit
 day store stage -p android-mdc
 # Generate the website data and start Astro using a local daysite checkout:
-DAYSITE_CONFIG="$PWD/website/site.toml" DAY_BIN=day node /path/to/daysite/scripts/preview.mjs
+DAYSITE_CONFIG="$PWD/website/site.toml" DAYSITE_THEME=/path/to/appsite \
+  node /path/to/daysite/scripts/install-customization.mjs
+DAYSITE_CONFIG="$PWD/website/site.toml" DAYSITE_THEME=/path/to/appsite DAY_BIN=day \
+  node /path/to/daysite/scripts/preview.mjs
 ```
 
 These commands stage local artifacts only. Store submission, signing credentials,
 and publication remain separate from preparing this checkout. Review the generated
 listings and screenshots before submitting the release.
+
+## Website theme
+
+`website/site.toml` selects [App Fair's appsite theme](https://github.com/appfair/appsite)
+at `main`. The shared Day workflow fetches the theme and uses its Astro configuration,
+App Fair header/footer, and journal pages automatically on qualifying website deployments.
+The app keeps its own URL, accent color, platform choices, localized listings, screenshots,
+and downloads. Project customization can be added in `website/daysite.config.mjs`;
+`website/theme.css` is applied after the theme's styles.
+
+This requires the published customization-capable daysite renderer, the theme repository,
+and the updated `daybrite/actions` `v1` workflow. No separate website deployment workflow is
+needed. For local previews, clone and install daysite, clone appsite, and set `DAYSITE_THEME`
+to the appsite checkout's absolute path before installing customization dependencies or
+running the preview. See Day's [app website guide](https://daybrite.dev/docs/websites)
+for setup, customization, GitHub Pages, and custom domains.

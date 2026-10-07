@@ -4,3 +4,9 @@ locales = ["en", "ar", "de", "es", "fr", "hi", "id", "it", "ja", "ko", "pt-BR", 
 accent-color = "#526A58"
 default-platform = "ios"
 icon-effect = "raise"
+
+# Shared App Fair branding and Astro configuration; CI checks out this theme automatically.
+# Requires the customization-capable daysite renderer and daybrite/actions v1 release.
+[theme]
+repository = "appfair/appsite"
+ref = "main"
