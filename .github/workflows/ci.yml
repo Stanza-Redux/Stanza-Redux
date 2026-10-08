@@ -52,6 +52,12 @@ jobs:
       # The targets this app was scaffolded with. Add one with `day project add-target`, and
       # add it here too.
       targets: all
+      # Build against the tip of the day branch the app tracks, not the revision the committed
+      # lock pins: a sample app exists to prove the current framework still builds it, and a
+      # lock left at an older revision would silently stop testing day at all. The revision is
+      # resolved once per run, so every leg compiles the same one. Refresh the lock locally
+      # (`cargo update -p day`) when a new framework API lands, so a local build matches.
+      update-day-deps: true
       #targets: "windows-winui, macos-appkit, linux-gtk, linux-qt, ios-uikit, android-mdc, harmony-arkui, web-dom"
       target-packages: |
         windows-winui: webview2-runtime
