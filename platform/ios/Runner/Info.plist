@@ -73,6 +73,8 @@
 		<dict>
 			<key>UTTypeIdentifier</key>
 			<string>org.idpf.epub-container</string>
+			<key>UTTypeDescription</key>
+			<string>EPUB document</string>
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.data</string>
