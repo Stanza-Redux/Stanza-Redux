@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
 //! Library models and operations. Legacy formats are translated by `legacy`.
 use crate::{Saved, opds};
-use day::persistence::{DbError, DbErrorKind, Fetch, Many, One, Query};
 use day::prelude::*;
+use day_persistence::prelude::*;
+use day_persistence::{DbError, DbErrorKind, Fetch, Query};
 
 pub const SEARCH_INDEX_VERSION: u32 = 2;
 /// Searchable chapter text as (content id, text) pairs, built off the UI thread.
@@ -116,7 +117,7 @@ impl Library {
     fn with_driver(driver: Sqlite) -> Result<Self, DbError> {
         // Existing libraries have no foreign key in metadata and keep recency separately.
         // Transform owned data before Day installs the new constraints and FTS shadows.
-        let plan = day::persistence::MigrationPlan::new().custom(0, 1, |conn| {
+        let plan = day_persistence::MigrationPlan::new().custom(0, 1, |conn| {
             let mut tables = Vec::new();
             conn.query("SELECT name FROM sqlite_master WHERE type = 'table'", &[], &mut |row| {
                 if let Ok(name) = row.get(0).as_text() { tables.push(name.to_owned()); }
@@ -703,8 +704,8 @@ mod tests {
     }
     #[test]
     fn previous_library_schema_migrates_without_losing_position_metadata_or_recency() {
-        use day::persistence::SqliteConnection;
-        use day::persistence::SqliteDriver;
+        use day_persistence::SqliteConnection;
+        use day_persistence::SqliteDriver;
         let path =
             std::env::temp_dir().join(format!("stanza-old-schema-{}.sqlite", std::process::id()));
         let _ = std::fs::remove_file(&path);
