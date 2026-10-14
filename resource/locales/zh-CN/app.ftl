@@ -174,3 +174,11 @@ language_ko = 한국어
 language_pt_br = Português (Brasil)
 language_ru = Русский
 language_zh_cn = 简体中文
+
+# Catalog discovery and recovery.
+catalog_heading = 发现下一本好书
+catalog_hint = 浏览独立书目，为书库增添新的故事。
+catalog_empty = 添加书目，开始探索。
+catalog_no_results = 没有结果。请尝试其他搜索，或返回继续浏览。
+retry = 重试
+refresh = 刷新

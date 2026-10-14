@@ -6,6 +6,27 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 #[derive(Clone)]
+enum CatalogRequest {
+    Feed(String),
+    Search(opds::Link, String),
+}
+impl CatalogRequest {
+    async fn load(self) -> Result<opds::Feed, AppError> {
+        match self {
+            Self::Feed(url) => load_feed(url).await,
+            Self::Search(link, query) => {
+                let template = if link.mime.contains("opensearch") {
+                    let (bytes, url) = fetch_bytes(&link.url, 1024 * 1024, None).await?;
+                    opds::open_search(&bytes, &url)?
+                } else {
+                    link.url
+                };
+                load_feed(opds::search_url(&template, &query)?).await
+            }
+        }
+    }
+}
+#[derive(Clone)]
 pub struct CatalogPage {
     id: u64,
     depth: usize,
@@ -15,6 +36,7 @@ pub struct CatalogPage {
     loading: bool,
     failure: Option<AppError>,
     request: Option<day::TaskHandle>,
+    retry: Option<CatalogRequest>,
 }
 impl PartialEq for CatalogPage {
     fn eq(&self, other: &Self) -> bool {
@@ -41,18 +63,28 @@ impl Route for CatalogPage {
 }
 impl App {
     pub fn browse_validated(self, url: String, feed: opds::Feed) {
-        self.url.set(url);
+        self.url.set(url.clone());
         let title = feed.title.clone();
-        self.load_catalog(true, title, async move { Ok(feed) });
+        self.load_catalog(true, false, title, CatalogRequest::Feed(url), async move {
+            Ok(feed)
+        });
     }
     pub fn browse_named(self, url: String, root: bool, title: String) {
         self.url.set(url.clone());
-        self.load_catalog(root, title, async move { load_feed(url).await });
+        self.load_catalog(
+            root,
+            false,
+            title,
+            CatalogRequest::Feed(url.clone()),
+            async move { load_feed(url).await },
+        );
     }
     fn load_catalog(
         self,
         root: bool,
+        replace: bool,
         title: String,
+        retry: CatalogRequest,
         load: impl std::future::Future<Output = Result<opds::Feed, AppError>> + 'static,
     ) {
         self.cancel();
@@ -63,7 +95,7 @@ impl App {
         let depth = if root {
             1
         } else {
-            self.catalog_path.get_untracked().len() + 1
+            self.catalog_path.get_untracked().len() + 1 - usize::from(replace)
         };
         let page = CatalogPage {
             id,
@@ -77,6 +109,7 @@ impl App {
             loading: true,
             failure: None,
             request: None,
+            retry: Some(retry),
         };
         // Push before I/O; the destination owns loading and its native Back stays usable.
         let mut path = if root {
@@ -84,6 +117,9 @@ impl App {
         } else {
             self.catalog_path.get_untracked()
         };
+        if replace {
+            path.pop();
+        }
         path.push(page);
         self.catalog_forward.set(Vec::new());
         self.catalog_path.set(path);
@@ -106,6 +142,21 @@ impl App {
                 page.request = Some(task);
             }
         });
+    }
+    fn reload_catalog(self, id: u64) {
+        let Some(page) = self
+            .catalog_path
+            .get_untracked()
+            .last()
+            .cloned()
+            .filter(|p| p.id == id && !p.loading)
+        else {
+            return;
+        };
+        let Some(retry) = page.retry.clone() else {
+            return;
+        };
+        self.load_catalog(false, true, page.title(), retry.clone(), retry.load());
     }
     pub fn catalog_step(self, forward: bool) {
         if self.reader_open.get_untracked().is_some() {
@@ -137,6 +188,7 @@ impl App {
                 loading: false,
                 failure: None,
                 request: None,
+                retry: None,
             })
         });
     }
@@ -153,6 +205,7 @@ impl App {
                 loading: false,
                 failure: None,
                 request: None,
+                retry: None,
             })
         });
     }
@@ -282,6 +335,10 @@ pub fn view(a: App) -> impl Piece {
                                         .secondary()
                                         .padding(24.)
                                         .id("catalog-error"),
+                                    button(res::str::retry())
+                                        .prominent()
+                                        .action(move || a.reload_catalog(page_id))
+                                        .id("catalog-retry"),
                                     spacer(),
                                 ))
                                 .grow()
@@ -298,9 +355,12 @@ pub fn view(a: App) -> impl Piece {
                     },
                 )
                 .toolbar(move || {
-                    let Some(page) = current(a, page_id)
-                        .filter(|_| a.catalog_path.get().last().is_some_and(|p| p.id == page_id))
-                    else {
+                    let Some(page) = current(a, page_id).filter(|_| {
+                        a.catalog_path.get().last().is_some_and(|p| p.id == page_id)
+                            && a.section.get() == "catalogs"
+                            && a.reader_open.get().is_none()
+                            && a.catalog_editor.get().is_none()
+                    }) else {
                         return vec![];
                     };
                     let title = page.title();
@@ -319,7 +379,16 @@ pub fn view(a: App) -> impl Piece {
                         } else {
                             None
                         };
-                        catalog_actions(a, false, search, title)
+                        let mut actions = catalog_actions(a, false, search, title);
+                        if page.retry.is_some() && page.publication.is_none() {
+                            actions.push(
+                                toolbar_button("catalog-refresh", res::str::refresh())
+                                    .icon(Symbol::Refresh)
+                                    .placement(ToolbarPlacement::Secondary)
+                                    .action(move || a.reload_catalog(page_id)),
+                            );
+                        }
+                        actions
                     }
                 })
                 .any()
@@ -450,39 +519,73 @@ fn sources(a: App) -> impl Piece {
     let Some(db) = a.database.get_untracked() else {
         return label(res::str::database_unavailable()).any();
     };
-    list(db.catalog_query(), move |slot| {
-        row((
-            column((
-                label(move || slot.title().read()).font(Font::Headline),
-                label(move || slot.url().read()).font(Font::Footnote),
-            ))
-            .spacing(4.)
-            .align(HAlign::Leading)
-            .grow(),
-            vector(res::vectors::chevron_forward)
-                .frame(12., 24.)
-                .decorative(),
+    let catalogs = db.catalog_query();
+    let empty = catalogs.clone();
+    column((
+        column((
+            label(res::str::catalog_heading()).font(Font::Title).bold(),
+            label(res::str::catalog_hint())
+                .font(Font::Footnote)
+                .secondary(),
         ))
-        .spacing(12.)
-        .padding(16.)
-        .context_menu_fn(move |_| {
-            let url = slot.url().read();
-            vec![
-                menu_item(res::str::edit_catalog().format())
-                    .icon(Symbol::Edit)
-                    .id("edit-opds-catalog")
-                    .action(move || {
-                        a.catalog_editor
-                            .set(Some(catalog_editor::EditorRoute::Edit(url.clone())))
+        .align(HAlign::Leading)
+        .spacing(6.)
+        .padding(20.)
+        .grow_w(),
+        when(
+            move || empty.try_collect().is_ok_and(|rows| rows.is_empty()),
+            move || {
+                column((
+                    label(res::str::catalog_empty()).secondary(),
+                    button(res::str::add_catalog()).prominent().action(move || {
+                        a.catalog_editor.set(Some(catalog_editor::EditorRoute::Add))
                     }),
-            ]
+                ))
+                .spacing(16.)
+                .padding(24.)
+            },
+        ),
+        list(catalogs, move |slot| {
+            row((
+                covers::favicon(move || opds::favicon_url(&slot.url().read())),
+                column((
+                    label(move || slot.title().read())
+                        .font(Font::Headline)
+                        .single_line(),
+                    label(move || opds::catalog_host(&slot.url().read()))
+                        .font(Font::Footnote)
+                        .secondary()
+                        .single_line(),
+                ))
+                .spacing(4.)
+                .align(HAlign::Leading)
+                .grow(),
+                vector(res::vectors::chevron_forward)
+                    .frame(12., 24.)
+                    .decorative(),
+            ))
+            .spacing(12.)
+            .padding(16.)
+            .context_menu_fn(move |_| {
+                let url = slot.url().read();
+                vec![
+                    menu_item(res::str::edit_catalog().format())
+                        .icon(Symbol::Edit)
+                        .id("edit-opds-catalog")
+                        .action(move || {
+                            a.catalog_editor
+                                .set(Some(catalog_editor::EditorRoute::Edit(url.clone())))
+                        }),
+                ]
+            })
         })
-    })
-    .row_height(RowHeight::Uniform(76.))
-    .on_select(move |catalog| {
-        a.browse_named(catalog.url().read(), true, catalog.title().read());
-    })
-    .id("catalog-sources")
+        .row_height(RowHeight::Uniform(88.))
+        .on_select(move |catalog| {
+            a.browse_named(catalog.url().read(), true, catalog.title().read());
+        })
+        .id("catalog-sources")
+        .grow(),
+    ))
     .grow()
     .overlay(loading(a, 0))
     .any()
@@ -516,6 +619,7 @@ impl CatalogRow {
     fn subtitle(&self) -> String {
         match self {
             Self::Book(p) => p.author.clone(),
+            Self::Link(l) => l.description.clone(),
             _ => String::new(),
         }
     }
@@ -534,55 +638,113 @@ fn results(a: App, feed: Rc<opds::Feed>, depth: usize) -> impl Piece {
     if let Some(next) = &feed.next {
         rows.push(CatalogRow::Next(next.clone()));
     }
+    let summary = res::str::catalog_counts(
+        feed.entries.len() as i64,
+        (feed.navigation.len() + feed.facets.len()) as i64,
+    );
+    let no_results = rows.is_empty();
+    let icon = feed.icon.clone();
     let rows = Rc::new(rows);
     let source = rows.clone();
-    list(
-        items(
-            move || source.iter().cloned().enumerate().collect::<Vec<_>>(),
-            |(i, _): &(usize, CatalogRow)| *i,
-        ),
-        move |slot| {
-            row((
+    column((
+        row((
+            covers::favicon(move || icon.clone()),
+            column((
+                label(feed.title.clone()).font(Font::Headline).single_line(),
+                label(summary).font(Font::Caption).secondary(),
                 when(
-                    move || matches!(slot.get().1, CatalogRow::Book(_)),
-                    move || covers::view(move || slot.get().1.cover(), 46., 64.),
-                ),
-                column((
-                    label(move || slot.get().1.title())
-                        .font(Font::Headline)
-                        .single_line(),
-                    label(move || slot.get().1.subtitle())
-                        .font(Font::Footnote)
-                        .secondary()
-                        .single_line(),
-                    when(
-                        move || !slot.get().1.genre().is_empty(),
+                    {
+                        let description = feed.description.clone();
+                        move || !description.is_empty()
+                    },
+                    {
+                        let description = feed.description.clone();
                         move || {
-                            label(move || slot.get().1.genre())
-                                .font(Font::Caption)
+                            label(description.clone())
+                                .font(Font::Footnote)
                                 .secondary()
                                 .single_line()
-                        },
-                    ),
-                ))
-                .spacing(4.)
-                .align(HAlign::Leading)
-                .grow(),
-                vector(res::vectors::chevron_forward)
-                    .frame(12., 24.)
-                    .decorative(),
+                        }
+                    },
+                ),
             ))
-            .spacing(12.)
-            .padding(16.)
-        },
-    )
-    .row_height(RowHeight::Uniform(96.))
-    .on_select(move |i| match &rows[i] {
-        CatalogRow::Link(l) => a.browse_named(l.url.clone(), false, l.title.clone()),
-        CatalogRow::Next(u) => a.browse(u.clone(), false),
-        CatalogRow::Book(p) => a.select_publication(detail_feed.clone(), p.clone()),
-    })
-    .id(list_id)
+            .align(HAlign::Leading)
+            .spacing(4.)
+            .grow(),
+        ))
+        .spacing(12.)
+        .padding(16.),
+        when(
+            move || no_results,
+            || {
+                label(res::str::catalog_no_results())
+                    .secondary()
+                    .padding(24.)
+                    .id("catalog-empty")
+            },
+        ),
+        list(
+            items(
+                move || source.iter().cloned().enumerate().collect::<Vec<_>>(),
+                |(i, _): &(usize, CatalogRow)| *i,
+            ),
+            move |slot| {
+                row((
+                    when(
+                        move || matches!(slot.get().1, CatalogRow::Book(_)),
+                        move || covers::view(move || slot.get().1.cover(), 46., 64.),
+                    )
+                    .otherwise(move || {
+                        vector(res::vectors::catalog_folder)
+                            .frame(28., 28.)
+                            .padding(9.)
+                            .background(Color::hex(0xeee8da))
+                            .corner_radius(12.)
+                            .decorative()
+                    }),
+                    column((
+                        label(move || slot.get().1.title())
+                            .font(Font::Headline)
+                            .single_line(),
+                        when(
+                            move || !slot.get().1.subtitle().is_empty(),
+                            move || {
+                                label(move || slot.get().1.subtitle())
+                                    .font(Font::Footnote)
+                                    .secondary()
+                                    .single_line()
+                            },
+                        ),
+                        when(
+                            move || !slot.get().1.genre().is_empty(),
+                            move || {
+                                label(move || slot.get().1.genre())
+                                    .font(Font::Caption)
+                                    .secondary()
+                                    .single_line()
+                            },
+                        ),
+                    ))
+                    .spacing(4.)
+                    .align(HAlign::Leading)
+                    .grow(),
+                    vector(res::vectors::chevron_forward)
+                        .frame(12., 24.)
+                        .decorative(),
+                ))
+                .spacing(12.)
+                .padding(16.)
+            },
+        )
+        .row_height(RowHeight::Uniform(96.))
+        .on_select(move |i| match &rows[i] {
+            CatalogRow::Link(l) => a.browse_named(l.url.clone(), false, l.title.clone()),
+            CatalogRow::Next(u) => a.browse(u.clone(), false),
+            CatalogRow::Book(p) => a.select_publication(detail_feed.clone(), p.clone()),
+        })
+        .id(list_id)
+        .grow(),
+    ))
     .grow()
     .overlay(loading(a, depth))
 }
@@ -593,15 +755,14 @@ pub(crate) async fn load_feed(url: String) -> Result<opds::Feed, AppError> {
         .map_err(AppError::from)?
 }
 fn search(a: App, link: opds::Link, query: String) {
-    a.load_catalog(false, res::str::search().format(), async move {
-        let template = if link.mime.contains("opensearch") {
-            let (bytes, url) = fetch_bytes(&link.url, 1024 * 1024, None).await?;
-            opds::open_search(&bytes, &url)?
-        } else {
-            link.url
-        };
-        load_feed(opds::search_url(&template, &query)?).await
-    });
+    let request = CatalogRequest::Search(link, query.trim().to_owned());
+    a.load_catalog(
+        false,
+        false,
+        res::str::search().format(),
+        request.clone(),
+        request.load(),
+    );
 }
 fn manager(a: App) -> impl Piece {
     let Some(db) = a.database.get_untracked() else {

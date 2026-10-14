@@ -7,6 +7,8 @@ use url::Url;
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct Link {
     pub title: String,
+    #[serde(default)]
+    pub description: String,
     pub url: String,
     pub mime: String,
     pub rel: String,
@@ -24,6 +26,7 @@ pub struct Publication {
 #[derive(Clone, Debug, Default)]
 pub struct Feed {
     pub title: String,
+    pub icon: String,
     pub description: String,
     pub updated: String,
     pub is_catalog: bool,
@@ -32,6 +35,34 @@ pub struct Feed {
     pub facets: Vec<Link>,
     pub next: Option<String>,
     pub search: Option<Link>,
+}
+/// Use the catalog's own origin; never disclose subscriptions to an icon aggregator.
+pub fn favicon_url(address: &str) -> String {
+    let Ok(mut url) = Url::parse(address) else {
+        return String::new();
+    };
+    if !matches!(url.scheme(), "http" | "https") {
+        return String::new();
+    }
+    let path = match url.host_str() {
+        Some("www.gutenberg.org" | "gutenberg.org") => "/gutenberg/favicon.ico",
+        Some("standardebooks.org" | "www.standardebooks.org") => {
+            "/images/favicons/favicon-64x64.png"
+        }
+        _ => "/favicon.ico",
+    };
+    url.set_path(path);
+    url.set_query(None);
+    url.set_fragment(None);
+    let _ = url.set_username("");
+    let _ = url.set_password(None);
+    url.into()
+}
+pub fn catalog_host(address: &str) -> String {
+    Url::parse(address)
+        .ok()
+        .and_then(|u| u.host_str().map(str::to_owned))
+        .unwrap_or_default()
 }
 fn text(v: &Value) -> String {
     v.as_str()
@@ -58,6 +89,7 @@ pub fn resolve(base: &str, href: &str) -> Result<String, AppError> {
 fn json_link(v: &Value, base: &str) -> Option<Link> {
     Some(Link {
         title: text(&v["title"]),
+        description: crate::metadata::plain(&text(&v["description"])),
         url: resolve(base, v["href"].as_str()?).ok()?,
         mime: text(&v["type"]),
         rel: many(&v["rel"])
@@ -143,6 +175,9 @@ impl Publication {
     }
 }
 fn top_link(f: &mut Feed, l: Link) {
+    if rel(&l, "icon") {
+        f.icon = l.url.clone();
+    }
     if rel(&l, "next") {
         f.next = Some(l.url.clone())
     }
@@ -168,6 +203,7 @@ fn base_at(n: roxmltree::Node, base: &str) -> String {
 fn xml_link(n: roxmltree::Node, base: &str) -> Option<Link> {
     Some(Link {
         title: n.attribute("title").unwrap_or_default().into(),
+        description: String::new(),
         url: resolve(&base_at(n, base), n.attribute("href")?).ok()?,
         mime: n.attribute("type").unwrap_or_default().into(),
         rel: n.attribute("rel").unwrap_or_default().into(),
@@ -187,6 +223,7 @@ pub fn parse(bytes: &[u8], base: &str) -> Result<Feed, AppError> {
     if let Ok(v) = serde_json::from_slice::<Value>(bytes) {
         let mut f = Feed {
             title: text(&v["metadata"]["title"]),
+            icon: favicon_url(base),
             description: crate::metadata::plain(&text(&v["metadata"]["description"])),
             updated: text(&v["metadata"]["modified"]),
             is_catalog: ["publications", "navigation", "groups"]
@@ -250,6 +287,14 @@ pub fn parse(bytes: &[u8], base: &str) -> Result<Feed, AppError> {
     }
     let mut f = Feed {
         title: child(root, "title"),
+        icon: {
+            let icon = child(root, "icon");
+            if icon.is_empty() {
+                favicon_url(base)
+            } else {
+                resolve(&base_at(root, base), &icon).unwrap_or_else(|_| favicon_url(base))
+            }
+        },
         description: crate::metadata::plain(&child(root, "subtitle")),
         updated: child(root, "updated"),
         is_catalog: root.tag_name().name() == "feed",
@@ -346,6 +391,7 @@ pub fn parse(bytes: &[u8], base: &str) -> Result<Feed, AppError> {
                 l.mime.contains("atom") || l.mime.contains("opds") || l.rel == "subsection"
             }) {
                 l.title = title.clone();
+                l.description = p.description.clone();
                 f.navigation.push(l)
             }
         }
@@ -394,6 +440,48 @@ pub fn open_search(bytes: &[u8], base: &str) -> Result<String, AppError> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    // Synthetic fixtures matching the public Gutenberg navigation/detail shapes.
+    #[test]
+    fn catalog_icons_and_navigation_descriptions() {
+        let feed = parse(br#"<feed xmlns='http://www.w3.org/2005/Atom' xml:base='/catalog/'>
+          <title>Fixture catalog</title><icon>icons/site.ico</icon>
+          <link rel='search' type='application/opensearchdescription+xml' href='search.xml'/>
+          <link rel='next' href='?page=2'/>
+          <entry><title>Fixture book</title><content type='text'>Fixture author</content>
+          <link rel='subsection' type='application/atom+xml;profile=opds-catalog' href='book.opds'/></entry>
+        </feed>"#, "https://example.org/root").unwrap();
+        assert_eq!(feed.icon, "https://example.org/catalog/icons/site.ico");
+        assert_eq!(feed.navigation[0].description, "Fixture author");
+        assert_eq!(
+            feed.navigation[0].url,
+            "https://example.org/catalog/book.opds"
+        );
+        assert_eq!(
+            feed.next.as_deref(),
+            Some("https://example.org/catalog/?page=2")
+        );
+        assert!(feed.search.is_some());
+        let json = parse(br#"{"metadata":{"title":"Fixture"},"links":[{"rel":"icon","href":"icon.png"}],"navigation":[{"title":"Category","description":"<p>Fixture summary</p>","href":"books"}]}"#, "https://example.org/").unwrap();
+        assert_eq!(json.icon, "https://example.org/icon.png");
+        assert_eq!(json.navigation[0].description, "Fixture summary");
+    }
+    #[test]
+    fn favicons_stay_on_origin_without_credentials_or_query() {
+        assert_eq!(
+            favicon_url("https://reader:secret@example.org:8443/opds?token=private#shelf"),
+            "https://example.org:8443/favicon.ico"
+        );
+        assert_eq!(
+            catalog_host("https://reader:secret@example.org/opds?token=private"),
+            "example.org"
+        );
+        assert_eq!(
+            favicon_url("https://www.gutenberg.org/ebooks/search.opds/"),
+            "https://www.gutenberg.org/gutenberg/favicon.ico"
+        );
+        assert!(favicon_url("file:///tmp/catalog").is_empty());
+        assert!(favicon_url("invalid").is_empty());
+    }
     #[test]
     fn atom_relative_enclosure() {
         let f=parse(br#"<feed xmlns='http://www.w3.org/2005/Atom' xml:base='/books/'><title>Books</title><link rel='next' href='?page=2'/><entry><title>Alice</title><author><name>Carroll</name></author><link rel='enclosure' type='application/epub+zip' href='alice.epub'/></entry></feed>"#,"https://example.org/catalog").unwrap();

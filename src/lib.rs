@@ -72,8 +72,12 @@ async fn bundled_sample() -> Result<Vec<u8>, AppError> {
         Ok(bytes)
     }
 }
-// Match the legacy application's actual header, including its current release version.
-pub const USER_AGENT: &str = "Stanza-Redux/1.4.4";
+// Gutenberg requires an identifiable client and a contact URL.
+pub const USER_AGENT: &str = concat!(
+    "Stanza-Redux/",
+    env!("CARGO_PKG_VERSION"),
+    " (+https://github.com/Stanza-Redux/Stanza-Redux)"
+);
 #[derive(Clone, Debug, Default, Serialize, Deserialize, PartialEq)]
 struct Saved {
     id: String,
@@ -198,7 +202,7 @@ fn defaults() -> Vec<opds::Link> {
         ),
         (
             res::str::catalog_gutenberg().format(),
-            "https://www.gutenberg.org/ebooks.opds/",
+            "https://www.gutenberg.org/ebooks/search.opds/",
         ),
         (
             res::str::catalog_ebooks_gratuits().format(),

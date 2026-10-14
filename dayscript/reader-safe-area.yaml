@@ -1,0 +1,28 @@
+# Native safe-area chrome must be included in the chapter pagination bounds.
+# Verify complete pages, stable control toggles, and changes in control height.
+flow:
+  - navigate: { route: library }
+  - select: { id: library-folders, index: 1 }
+  - wait_for: { id: library-list }
+  - input: { id: library-search, text: Alice }
+  - select: { id: library-list, index: 0 }
+  - wait_for: { id: open-local-book }
+  - tap: { id: open-local-book }
+  - wait_for: { id: book-webview, timeout_secs: 30 }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
+  - web_eval: { id: book-webview, script: "stanza.goToChapter(2);true", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && stanza.state().chapter===2 && !stanza.state().animating)", text: "true" }
+  - web_eval: { id: book-webview, script: "window.checkInsets=()=>{const f=document.getElementById('book'),s=getComputedStyle(f.contentDocument.documentElement);return parseFloat(s.paddingTop)>=document.getElementById('toolbar').offsetHeight+24 && parseFloat(s.paddingBottom)>=document.getElementById('footer').offsetHeight+24};String(checkInsets())", text: "true" }
+  - screenshot: { name: reader-safe-area-first-page }
+  - web_eval: { id: book-webview, script: "stanza.next();true", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && !stanza.state().animating && stanza.state().page===1 && checkInsets())", text: "true" }
+  - screenshot: { name: reader-safe-area-next-page }
+  - web_eval: { id: book-webview, script: "window.pageBeforeHide=stanza.state().page;window.pagesBeforeHide=stanza.state().pages;document.getElementById('book').contentDocument.body.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:innerWidth/2,clientY:innerHeight/2}));String(!stanza.state().controls)", text: "true" }
+  - web_eval: { id: book-webview, script: "document.getElementById('book').contentDocument.body.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:innerWidth/2,clientY:innerHeight/2}));String(stanza.state().controls && stanza.state().page===pageBeforeHide && stanza.state().pages===pagesBeforeHide && checkInsets())", text: "true" }
+  - web_eval: { id: book-webview, script: "var s=document.getElementById('chapter-progress');s.value='1000';s.dispatchEvent(new Event('change'));true", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && !stanza.state().animating && stanza.state().page===stanza.state().pages-1 && checkInsets())", text: "true" }
+  - screenshot: { name: reader-safe-area-last-page }
+  - web_eval: { id: book-webview, script: "window.footerPadding=document.getElementById('footer').style.paddingBottom;document.getElementById('footer').style.paddingBottom=(parseFloat(getComputedStyle(document.getElementById('footer')).paddingBottom)+40)+'px';true", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && checkInsets())", text: "true" }
+  - web_eval: { id: book-webview, script: "document.getElementById('footer').style.paddingBottom=footerPadding;true", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && Math.abs(parseFloat(getComputedStyle(document.getElementById('book').contentDocument.documentElement).paddingBottom)-document.getElementById('footer').offsetHeight-24)<1)", text: "true" }

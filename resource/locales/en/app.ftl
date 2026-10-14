@@ -183,3 +183,11 @@ language_ko = 한국어
 language_pt_br = Português (Brasil)
 language_ru = Русский
 language_zh_cn = 简体中文
+
+# Catalog discovery and recovery.
+catalog_heading = Discover your next book
+catalog_hint = Browse independent catalogs and bring a new story to your library.
+catalog_empty = Add a catalog to start exploring.
+catalog_no_results = No results here. Try another search or go back to browse.
+retry = Try again
+refresh = Refresh

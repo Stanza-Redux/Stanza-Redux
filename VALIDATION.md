@@ -1,5 +1,56 @@
 # Local validation
 
+## iOS reader clipping — 2026-10-14
+
+- Reproduced in the iPhone 18 Pro simulator (iOS 27): the 874-point reader viewport
+  reserved only 60 points above and 88 below chapter text, while the safe-area toolbar
+  and footer measured 117 and 121 points. Text therefore ran behind both controls.
+- Pagination and image bounds now reserve the measured control heights plus the reader
+  margin. A border-box ResizeObserver reflows when safe areas or wrapped controls change;
+  hiding/showing controls preserves the page and pagination.
+- `dayscript/reader-safe-area.yaml`: 25/25 steps pass in the native iOS simulator.
+  Screenshots of the first, next, and final chapter pages were captured; the next-page
+  and final-page screenshots were visually inspected. The script also verifies control toggles and a
+  footer-height change without a viewport resize.
+- The new `tests/reader-chrome-insets.mjs` checks actual text-line bounds in Chromium and
+  WebKit, including portrait, landscape, a 320-point viewport, final pages, and footer
+  resizing. Both engines failed with the old fixed offsets and pass with measured insets.
+- All 12 tests across `reader.mjs`, `reader-affordances.mjs`, `reader-margins.mjs`, and
+  `reader-chrome-insets.mjs` pass. `cargo fmt --check` and `git diff --check` also pass.
+
+## Catalog and reader polish — 2026-10-13
+
+- `cargo fmt --check`, `git diff --check`, and all 31 Rust unit tests pass. Added coverage
+  includes Atom/OPDS2 icon metadata, navigation descriptions, safe same-origin favicon URLs,
+  and ICO thumbnail decoding; row-reuse coverage exercises the shared fallback loader.
+- All 14 Python tests pass, including completeness of the 13 localization catalogs.
+- All 10 tests in `reader.mjs`, `reader-affordances.mjs`, and `reader-margins.mjs` pass in
+  Chromium and WebKit. This includes Home/End with return-position history, 320-point touch
+  targets and overflow checks, Arabic chrome, pagination, selection, gestures, resource
+  isolation, and keyboard focus across chapters.
+- `dayscript/catalog-polish.yaml`: 31/31 steps pass on macOS AppKit and web Chromium.
+  The synthetic fixture exercises favicon loading, refresh, a 503 followed by successful
+  retry, empty catalogs, and Back without an extra failed destination. Native validation
+  uses a temporary `DAY_DATA_DIR`; web uses the Day Playwright driver with a fresh profile.
+- macOS AppKit, iOS UIKit simulator, Android MDC arm64 debug APK, and web DOM builds pass.
+  Mobile device interactions, Windows, Linux and Harmony were not exercised in this change.
+  WebKit tests cover the reader shell; the full app/OPFS walkthrough was run in Chromium.
+- Live Project Gutenberg navigation and book-detail feeds parse successfully. The acquisition
+  probe downloaded and parsed *Pride and Prejudice* (561,102 bytes, 17 spine sections).
+  Public OPDS responses allow CORS; the built-in sources' favicon endpoints do not, so web
+  displays original bundled source artwork. This is an intentional fallback, not a proxy.
+- Gutenberg's new JSON OPDS2 service remains access-by-request according to its official
+  documentation. No testing endpoint or access credentials were provided; the documented
+  public XML entry URL is used for newly seeded catalogs. Existing subscriptions are retained.
+
+Reproduce the catalog walkthrough with `source tests/ci-fixture.sh` and
+`day launch --target <target> --script dayscript/catalog-polish.yaml`. For web set
+`DAY_WEB_DRIVER` to the `day web driver` script via Node,
+`DAY_WEB_DRIVER_BROWSER=chromium`, and `DAY_WEB_DRIVER_PLAYWRIGHT` to the directory
+containing Playwright's `node_modules`. Without the driver, screenshot capture is unavailable;
+the initial default-browser attempt did not complete the storage-dependent walkthrough.
+Screenshots are under the ignored `build/day/screenshots/<target>/default/` directory.
+
 ## Harmony tablet walkthrough — 2026-10-06
 
 Every dayscript ran on the local OpenHarmony 7.0 x86_64 emulator in a 1200×720 tablet

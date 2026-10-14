@@ -174,3 +174,11 @@ language_ko = 한국어
 language_pt_br = Português (Brasil)
 language_ru = Русский
 language_zh_cn = 简体中文
+
+# Catalog discovery and recovery.
+catalog_heading = 次に読む本を見つけよう
+catalog_hint = 独立したカタログを閲覧して、新しい物語をライブラリに追加しましょう。
+catalog_empty = カタログを追加して本を探しましょう。
+catalog_no_results = 結果がありません。別の検索を試すか、戻ってカタログを閲覧してください。
+retry = 再試行
+refresh = 更新

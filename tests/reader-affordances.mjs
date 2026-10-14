@@ -26,7 +26,7 @@ for(const engine of [chromium,webkit])test(`${engine.name()}: bookmarks, seek/re
    },true);
   });
   await page.goto(`http://127.0.0.1:${server.address().port}/`);
-  await page.evaluate(book=>fixtureLoad(book,{size:20,margin:24,columns:1},{chapter:2},{locale:'en',position:'{chapter}/{chapters} · {page}/{pages}',contents:'Contents fixture',done:'Done fixture',bookmarkAdd:'Save fixture',bookmarkRemove:'Remove fixture',bookmarks:'Bookmarks fixture',bookmarksEmpty:'Empty fixture',chapterPosition:'Position fixture',returnPosition:'Return fixture',contentsSearch:'Find fixture',contentsEmpty:'No matches fixture',chapterPercent:'{percent} in fixture'}),book);
+  await page.evaluate(book=>fixtureLoad(book,{size:20,margin:24,columns:1},{chapter:2},window.fixtureLabels={locale:'en',appearanceGlyph:'Aa',appearance:'Appearance fixture',close:'Library fixture',previous:'Previous fixture',next:'Next fixture',position:'{chapter}/{chapters} · {page}/{pages}',contents:'Contents fixture',done:'Done fixture',bookmarkAdd:'Save fixture',bookmarkRemove:'Remove fixture',bookmarks:'Bookmarks fixture',bookmarksEmpty:'Empty fixture',chapterPosition:'Position fixture',returnPosition:'Return fixture',contentsSearch:'Find fixture',contentsEmpty:'No matches fixture',chapterPercent:'{percent} in fixture'}),book);
   const settled=()=>page.waitForFunction(()=>stanza.state().ready&&!stanza.state().animating);
   await settled();
   assert.equal(await page.locator('#bookmark').getAttribute('aria-pressed'),'false');
@@ -66,8 +66,28 @@ for(const engine of [chromium,webkit])test(`${engine.name()}: bookmarks, seek/re
   await page.locator('#contents-list button').last().click();await settled();
   assert.notEqual(await page.evaluate(()=>stanza.state().chapter),3);
   assert.ok(target);await page.locator('#return-position').click();await settled();assert.equal(await page.evaluate(()=>stanza.state().chapter),3);
+  // Real Home/End keys seek within a chapter and preserve a way back.
+  await page.evaluate(()=>stanza.goToChapter(2));await settled();
+  await page.evaluate(()=>document.body.focus());await page.keyboard.press('End');await settled();
+  assert.equal(await page.evaluate(()=>stanza.state().page),await page.evaluate(()=>stanza.state().pages-1));
+  await page.keyboard.press('Home');await settled();
+  assert.equal(await page.evaluate(()=>stanza.state().page),0);
+  assert.equal(await page.locator('#return-position').isVisible(),true);
+  assert.ok(await page.locator('#chapter-title').textContent());
+  assert.equal(await page.locator('#book').getAttribute('title'),book.title);
+  // A long chapter title must not push touch targets outside a phone viewport.
+  await page.locator('#chapter-title').evaluate(el=>el.textContent='Long chapter fixture '.repeat(40));
+  await page.setViewportSize({width:320,height:568});await page.waitForTimeout(300);await settled();
+  await page.locator('#chapter-title').evaluate(el=>el.textContent='Long chapter fixture '.repeat(40));
+  for(const id of ['previous-page','next-page','contents','bookmark','appearance']){
+   const box=await page.locator('#'+id).boundingBox();assert.ok(box.x>=0&&box.x+box.width<=321);assert.ok(box.width>=44&&box.height>=44);
+  }
+  await page.evaluate(book=>fixtureLoad(book,{size:20,margin:24,columns:1},{chapter:2},{...window.fixtureLabels,locale:'ar'}),book);await settled();
+  assert.equal(await page.locator('html').getAttribute('dir'),'rtl');
+  assert.equal(await page.locator('#chapter-progress').getAttribute('dir'),'ltr');
   // Controls fit the narrow viewport and the reading footer never overflows horizontally.
-  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+  await page.screenshot({path:`/tmp/stanza-affordances-${engine.name()}.png`});
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,JSON.stringify(await page.evaluate(()=>[...document.querySelectorAll('body *')].filter(el=>el.getBoundingClientRect().right>innerWidth+1).map(el=>[el.id,el.getBoundingClientRect().right]))));
   await page.screenshot({path:`/tmp/stanza-affordances-${engine.name()}.png`});
  }finally{await browser.close();await new Promise(r=>server.close(r))}
 });

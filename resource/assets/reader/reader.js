@@ -7,6 +7,8 @@
 const FONTS=['Georgia,serif','system-ui,sans-serif','ui-monospace,monospace',"'Stanza Montserrat',system-ui,sans-serif","'Stanza Noto Sans',system-ui,sans-serif","'Stanza Noto Serif',Georgia,serif"];
 const FONT_FACES=[['Stanza Montserrat','Montserrat-Regular.ttf','400'],['Stanza Noto Sans','NotoSans.ttf','100 900'],['Stanza Noto Serif','NotoSerif.ttf','100 900']].map(([family,file,weight])=>`@font-face{font-family:'${family}';src:url('${new URL('fonts/'+file,document.baseURI).href}') format('truetype');font-weight:${weight};font-style:normal;font-display:block}`).join('');
 let frame=document.getElementById('book');let book=null,prefs={},chapter=0,page=0,pages=1,ready=false,serial=0;
+let measuredChrome='';
+function chromeSize(){return [document.getElementById('toolbar').offsetHeight,document.getElementById('footer').offsetHeight]}
 function event(type,data={}){const a=document.getElementById('event');a.href='stanza://'+type+'?data='+encodeURIComponent(JSON.stringify(data));a.click()}
 const resourceRoot=new URL('../book/',location.href);
 function path(base,href){
@@ -51,8 +53,13 @@ async function show(index,progress=0,fragment='',direction=0){
  // An explicit column width: iOS 18's WebKit lays out no columns at all for a column-count of 1
  // with an auto width, so a chapter ran down past the page instead of across pages.
  const colWidth=Math.max(1,Math.floor((frame.clientWidth-gap*2-(cols-1)*gap*2)/cols));
+ // Fixed control-height guesses miss iOS safe areas and wrapped/localized chrome.
+ // Measure even while controls are hidden: opacity/transform leave their layout size
+ // intact, so revealing them never covers text or changes the current page.
+ const [toolbarHeight,footerHeight]=chromeSize();measuredChrome=`${toolbarHeight},${footerHeight}`;
+ const topInset=gap+toolbarHeight,bottomInset=gap+footerHeight;
  doc.documentElement.style.cssText=`--USER__fontSize:${prefs.size||20}px;--USER__fontFamily:${font};--USER__fontOverride:readium-font-on;--USER__advancedSettings:readium-advanced-on;--USER__lineHeight:${prefs.line||1.6};--USER__colCount:${cols};--USER__textAlign:${prefs.justified?"justify":"start"};--USER__bodyHyphens:${prefs.hyphenation===false?"none":"auto"};--USER__backgroundColor:${colors.bg};--USER__textColor:${colors.fg};`;
- add(`html:root{height:${frame.clientHeight}px!important;min-height:${frame.clientHeight}px!important;max-height:${frame.clientHeight}px!important;width:${frame.clientWidth}px!important;min-width:${frame.clientWidth}px!important;max-width:${frame.clientWidth}px!important;box-sizing:border-box!important;padding:${gap+36}px ${gap}px ${gap+64}px!important;margin:0!important;column-count:${cols}!important;column-gap:${gap*2}px!important;column-width:${colWidth}px!important;column-fill:auto!important;overflow:hidden!important;background:${colors.bg}!important;color:${colors.fg}!important}body{margin:0!important;padding:0!important;max-width:none!important;min-width:0!important;font-family:${font}!important;font-size:${prefs.size||20}px!important;line-height:${prefs.line||1.6}!important;background:transparent!important;color:inherit!important}p{line-height:inherit!important;text-align:${prefs.justified?"justify":"start"}!important;hyphens:${prefs.hyphenation===false?"none":"auto"}!important;-webkit-hyphens:${prefs.hyphenation===false?"none":"auto"}!important;margin-block-end:${prefs.paragraph_spacing??0.6}em!important}img,svg{max-width:100%!important;max-height:${Math.max(1,frame.clientHeight-gap*2-100-(prefs.size||20)*(prefs.line||1.6))}px!important;object-fit:contain}a{color:inherit}*{animation:none!important;transition:none!important}`);
+ add(`html:root{height:${frame.clientHeight}px!important;min-height:${frame.clientHeight}px!important;max-height:${frame.clientHeight}px!important;width:${frame.clientWidth}px!important;min-width:${frame.clientWidth}px!important;max-width:${frame.clientWidth}px!important;box-sizing:border-box!important;padding:${topInset}px ${gap}px ${bottomInset}px!important;margin:0!important;column-count:${cols}!important;column-gap:${gap*2}px!important;column-width:${colWidth}px!important;column-fill:auto!important;overflow:hidden!important;background:${colors.bg}!important;color:${colors.fg}!important}body{margin:0!important;padding:0!important;max-width:none!important;min-width:0!important;font-family:${font}!important;font-size:${prefs.size||20}px!important;line-height:${prefs.line||1.6}!important;background:transparent!important;color:inherit!important}p{line-height:inherit!important;text-align:${prefs.justified?"justify":"start"}!important;hyphens:${prefs.hyphenation===false?"none":"auto"}!important;-webkit-hyphens:${prefs.hyphenation===false?"none":"auto"}!important;margin-block-end:${prefs.paragraph_spacing??0.6}em!important}img,svg{max-width:100%!important;max-height:${Math.max(1,frame.clientHeight-topInset-bottomInset-(prefs.size||20)*(prefs.line||1.6))}px!important;object-fit:contain}a{color:inherit}*{animation:none!important;transition:none!important}`);
  const d=doc,w=frame.contentWindow;
  const layout=()=>{if(n!==serial)return;const width=frame.clientWidth;pages=Math.max(1,Math.ceil((d.documentElement.scrollWidth-1)/width));reserveLastSpread(d,width,pages,book.rtl);page=Math.max(0,Math.min(pages-1,Math.round(progress*(pages-1))));if(fragment){const el=d.getElementById(decodeURIComponent(fragment));if(el)page=Math.floor((el.getBoundingClientRect().left+Math.abs(w.scrollX))/width)}w.scrollTo({left:(book.rtl?-1:1)*page*width,behavior:'instant'});if(outgoing){slideChapters(outgoing,direction,report)}else{ready=true;report()}};
  gestures(d,entry);
@@ -74,6 +81,7 @@ function chrome(visible){
 function readerLabels(value={}){
  labels=value;
  document.documentElement.lang=labels.locale;
+ document.documentElement.dir=/^(ar|fa|he|ur)(-|$)/i.test(labels.locale||'')?'rtl':'ltr';
  document.getElementById("hint").textContent=labels.appTitle||"";
  document.getElementById("appearance").textContent=labels.appearanceGlyph||"";
  for(const [id,key] of [['close-reader','close'],['contents','contents'],['appearance','appearance'],['previous-page','previous'],['next-page','next']]){
@@ -87,6 +95,7 @@ function readerLabels(value={}){
  const back=document.getElementById('return-position');back.title=labels.returnPosition||'';back.setAttribute('aria-label',back.title);
  for(const [id,key] of [['contents-search','contentsSearch'],['chapter-progress','chapterPosition']])document.getElementById(id).setAttribute('aria-label',labels[key]||'');
  document.getElementById('contents-search').placeholder=labels.contentsSearch||'';
+ document.getElementById('chapter-progress').dir='ltr';
 }
 function renderContents(){
  const list=document.getElementById('contents-list');list.replaceChildren();
@@ -143,6 +152,7 @@ function positionChrome(){
  const slider=document.getElementById('chapter-progress'),value=pages>1?page/(pages-1):0;
  slider.disabled=!ready||pages<=1;slider.value=Math.round(value*1000);slider.setAttribute('aria-valuetext',chapterPercent(value));
  document.getElementById('chapter-percent').textContent=percent(value);
+ const chapterTitle=document.getElementById('chapter-title');chapterTitle.textContent=book.chapters[chapter].title;chapterTitle.title=chapterTitle.textContent;
  document.getElementById('reading-position').textContent=(labels.position||'').replace(/\{(chapter|chapters|page|pages)\}/g,(_,key)=>new Intl.NumberFormat(labels.locale).format({chapter:chapter+1,chapters:book.chapters.length,page:page+1,pages}[key]));
  document.getElementById('previous-page').disabled=chapter===0&&page===0;
  document.getElementById('next-page').disabled=chapter===book.chapters.length-1&&page===pages-1;
@@ -192,6 +202,7 @@ function key(e){
  }
  if(/INPUT|TEXTAREA|SELECT|BUTTON/.test(e.target.tagName)||e.target.isContentEditable||e.ctrlKey||e.metaKey||e.altKey)return;
  if(e.key==='Escape'){e.preventDefault();if(!controls){chrome(true)}else event('close');return}
+ if((e.key==='Home'||e.key==='End')&&ready&&!animating){e.preventDefault();rememberPosition();scrollPage(e.key==='Home'?0:pages-1,true);return}
  let delta=0;if(e.key==='ArrowRight')delta=book?.rtl?-1:1;if(e.key==='ArrowLeft')delta=book?.rtl?1:-1;
  if(e.key==='PageDown'||e.key===' ')delta=e.shiftKey?-1:1;if(e.key==='PageUp')delta=-1;
  if(delta){e.preventDefault();turn(delta)}
@@ -272,7 +283,12 @@ document.getElementById('return-position').onclick=()=>{if(!previousPosition||!r
 document.getElementById('previous-page').onclick=()=>turn(-1);
 document.getElementById('next-page').onclick=()=>turn(1);
 window.stanza={load(data,options,position,translations,savedBookmarks=[]){++serial;cancelMotion();releaseResources(frame);readerLabels(translations);chrome(true);book=data;bookmarks=savedBookmarks;previousPosition=null;document.getElementById("return-position").hidden=true;renderBookmarks();prefs=options;renderContents();show(position?.chapter||0,position?.progress||0);return true},goToChapter(index){show(index)},next(){return turn(1)},previous(){return turn(-1)},configure(options){prefs=options;show(chapter,pages>1?page/(pages-1):0)},bookmarks(rows){bookmarks=rows;renderBookmarks()},jump(index){if(!ready||animating)return;const c=book.toc[index], [file,frag]=c.path.split('#');const i=book.chapters.findIndex(c=>c.path===file);if(i>=0){rememberPosition();show(i,0,frag||'')}},state(){return{ready,animating,controls,chapter,page,pages,width:frame.clientWidth,height:frame.clientHeight,title:book?.title,text:frame.contentDocument?.body?.innerText?.slice(0,100)}}};
-let resizing;window.addEventListener('resize',()=>{clearTimeout(resizing);resizing=setTimeout(()=>{if(book)show(chapter,pages>1?page/(pages-1):0)},150)});
+let resizing;
+function reflow(){clearTimeout(resizing);resizing=setTimeout(()=>{if(book)show(chapter,pages>1?page/(pages-1):0)},150)}
+window.addEventListener('resize',reflow);
+// Safe-area changes and text wrapping can resize chrome without a window resize.
+const chromeObserver=new ResizeObserver(()=>{if(book&&chromeSize().join(',')!==measuredChrome)reflow()});
+for(const id of ['toolbar','footer'])chromeObserver.observe(document.getElementById(id),{box:'border-box'});
 // The host's navigation delegate (or browser load hook) must be installed first.
 let tries=0;const start=setInterval(()=>{if(book||++tries>50){clearInterval(start);return}event('ready')},150);
 })();

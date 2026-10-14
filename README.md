@@ -63,6 +63,33 @@ to exercise cold/warm OS delivery, reader reuse, closing, and reopening.
 `tests/documents.mjs <local-web-url>` exercises the browser picker
 and simulated launchQueue delivery; it does not test installation of a PWA file handler.
 
+## Catalog discovery
+
+Catalog sources show a favicon and hostname. Icons come from each catalog's own origin
+(no third-party favicon service), share the bounded cover cache, and fall back to bundled
+artwork when unavailable (distinct motifs for the built-in sources, a globe for custom catalogs).
+The built-in sources currently deny cross-origin favicon fetches, so web uses this fallback. Feed pages honor Atom/OPDS 2 icon links and show the published
+summary, result counts, and navigation descriptions. Empty catalogs offer guidance;
+**Refresh** and **Try again** replace the current destination, so Back still returns to its parent.
+The root offers Add when the saved catalog list is empty.
+
+New libraries use Project Gutenberg's documented public entry point,
+`https://www.gutenberg.org/ebooks/search.opds/`. Existing saved subscriptions remain intact.
+On 2026-10-13, the live catalog and acquisition-detail feeds parsed successfully and returned
+`Access-Control-Allow-Origin: *`. Gutenberg's [feed documentation](https://www.gutenberg.org/ebooks/offline_catalogs.html)
+says the new JSON OPDS2 service requires testing access and the XML service is expected to
+retire in 2027. No unverified test endpoint is shipped. Stanza already accepts public OPDS2
+catalogs through Add. Native requests include the contact URL required by Gutenberg's
+[OPDS terms](https://www.gutenberg.org/policy/terms_of_use.html#opds-feed); browsing and pagination
+remain user initiated. Web access still depends on each resource's CORS policy.
+
+Reader chrome respects safe-area insets and dynamic viewport height, shows the current chapter,
+and follows the interface locale's direction. Pagination measures the toolbar and footer
+(including their safe areas) so text and images stay clear of controls, even after rotation
+or a change in control height. Hiding/showing controls preserves pagination. Home/End seek to the beginning/end of the current
+chapter and preserve **Return to previous position**. Text-entry and control keys retain their
+normal behavior.
+
 ## Catalog covers
 
 Catalog rows load covers asynchronously through `day-part-http`, with at most four requests
@@ -158,8 +185,8 @@ selecting a catalog pushes its feed, selecting a subcatalog or facet pushes anot
 and selecting a book pushes its details. Native Back buttons/gestures pop one level, all the
 way back to the catalog list. Each page owns its feed snapshot; returning
 to a parent does not refetch it or replace it with the child's content. Search results and
-pagination are stack destinations too. Failed requests leave the stack intact and show a
-dismissible native alert.
+pagination are stack destinations too. Failed requests leave the stack intact and show an
+inline error with **Try again**.
 
 On mobile the stack fills the Catalogs tab: the native header supplies Back and the page title,
 and lists extend behind iOS’s floating tab bar or down to Android’s bottom navigation bar.
@@ -198,8 +225,7 @@ The CSS comes from the local Readium Swift toolkit assets, with its BSD license 
 `resource/assets/reader/READIUM-LICENSE.txt`; bundled fonts retain their licenses.
 `tools/prepare_reader_css.py` regenerates the embedded styles after CSS changes.
 
-Catalogs, covers and acquisitions use `day-part-http`. Native requests send the legacy
-`Stanza-Redux/1.4.4` User-Agent. The browser controls request headers and may replace that value.
+Catalogs, covers and acquisitions use `day-part-http`. Native requests send `Stanza-Redux/<package version>` with the project contact URL in their User-Agent. The browser controls request headers and may replace that value.
 The reader starts with a metadata-only manifest (identity, title, spine and contents).
 `day-piece-webview::ResourceProvider` serves each requested XHTML section, stylesheet, image
 and font directly from the EPUB archive. The engine resolves relative URLs, CSS imports and

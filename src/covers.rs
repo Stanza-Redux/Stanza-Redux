@@ -100,6 +100,40 @@ fn thumbnail(bytes: Vec<u8>) -> Result<Vec<u8>, String> {
 /// requested URL is checked while rendering as well as on completion: bindings may
 /// run before the URL watcher when a native cell is rebound to a different book.
 pub fn view(url: impl Fn() -> String + 'static, width: f64, height: f64) -> impl Piece {
+    image_view(url, width, height, || {
+        day::ImageSource::from(res::vectors::book_placeholder)
+    })
+}
+
+/// Favicons use the same bounded, cancellable cache as covers, with a square fallback.
+pub fn favicon(url: impl Fn() -> String + 'static) -> impl Piece {
+    let url = Rc::new(url);
+    let fallback_url = url.clone();
+    image_view(
+        move || url(),
+        32.,
+        32.,
+        move || {
+            // Original source-specific artwork also works offline and when web CORS denies icons.
+            let fallback = match opds::catalog_host(&fallback_url()).as_str() {
+                "gutenberg.org" | "www.gutenberg.org" => res::vectors::catalog_gutenberg,
+                "standardebooks.org" | "www.standardebooks.org" => res::vectors::catalog_standard,
+                "ebooksgratuits.com" | "www.ebooksgratuits.com" => res::vectors::catalog_gratuits,
+                _ => res::vectors::catalog_source,
+            };
+            day::ImageSource::from(fallback)
+        },
+    )
+    .padding(10.)
+    .background(Color::hex(0xeee8da))
+    .corner_radius(14.)
+}
+fn image_view(
+    url: impl Fn() -> String + 'static,
+    width: f64,
+    height: f64,
+    fallback: impl Fn() -> day::ImageSource + 'static,
+) -> impl Piece {
     let url = Rc::new(url);
     let shown = Signal::new((String::new(), None::<Arc<Vec<u8>>>));
     let generation = Rc::new(std::cell::Cell::new(0_u64));
@@ -138,7 +172,7 @@ pub fn view(url: impl Fn() -> String + 'static, width: f64, height: f64) -> impl
         }
     });
     let source_url = url.clone();
-    image(move || cover_source(&source_url(), &shown.get()))
+    image(move || cover_source(&source_url(), &shown.get(), &fallback()))
         .fit()
         .decorative()
         .id_of(move || {
@@ -153,13 +187,17 @@ pub fn view(url: impl Fn() -> String + 'static, width: f64, height: f64) -> impl
         })
         .frame(width, height)
 }
-fn cover_source(requested: &str, loaded: &(String, Cover)) -> day::ImageSource {
+fn cover_source(
+    requested: &str,
+    loaded: &(String, Cover),
+    fallback: &day::ImageSource,
+) -> day::ImageSource {
     if loaded.0 == requested {
         if let Some(bytes) = &loaded.1 {
             return day::ImageSource::from(bytes.clone());
         }
     }
-    day::ImageSource::from(res::vectors::book_placeholder)
+    fallback.clone()
 }
 #[cfg(all(test, not(target_arch = "wasm32")))]
 mod tests {
@@ -168,15 +206,15 @@ mod tests {
     fn recycled_rows_never_show_a_cover_for_another_url() {
         let bytes = Arc::new(vec![1, 2, 3]);
         let loaded = ("book-a".into(), Some(bytes.clone()));
+        let placeholder = day::ImageSource::from(res::vectors::book_placeholder);
         assert_eq!(
-            cover_source("book-a", &loaded),
+            cover_source("book-a", &loaded, &placeholder),
             day::ImageSource::from(bytes)
         );
-        let placeholder = day::ImageSource::from(res::vectors::book_placeholder);
-        assert_eq!(cover_source("book-b", &loaded), placeholder);
-        assert_eq!(cover_source("", &loaded), placeholder);
+        assert_eq!(cover_source("book-b", &loaded, &placeholder), placeholder);
+        assert_eq!(cover_source("", &loaded, &placeholder), placeholder);
         assert_eq!(
-            cover_source("book-a", &("book-a".into(), None)),
+            cover_source("book-a", &("book-a".into(), None), &placeholder),
             placeholder
         );
     }
@@ -191,5 +229,10 @@ mod tests {
         let decoded = image::load_from_memory(&bytes).unwrap();
         assert!(decoded.width() <= 320 && decoded.height() <= 440);
         assert!(thumbnail(b"not an image".to_vec()).is_err());
+        let icon = image::DynamicImage::new_rgba8(32, 32);
+        let mut encoded = std::io::Cursor::new(Vec::new());
+        icon.write_to(&mut encoded, image::ImageFormat::Ico)
+            .unwrap();
+        assert!(thumbnail(encoded.into_inner()).is_ok());
     }
 }

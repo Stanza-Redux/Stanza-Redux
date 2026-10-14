@@ -174,3 +174,11 @@ language_ko = 한국어
 language_pt_br = Português (Brasil)
 language_ru = Русский
 language_zh_cn = 简体中文
+
+# Catalog discovery and recovery.
+catalog_heading = اكتشف كتابك القادم
+catalog_hint = تصفح الفهارس المستقلة وأضف قصة جديدة إلى مكتبتك.
+catalog_empty = أضف فهرسًا لبدء الاستكشاف.
+catalog_no_results = لا توجد نتائج هنا. جرّب بحثًا آخر أو ارجع للتصفح.
+retry = حاول مجددًا
+refresh = تحديث

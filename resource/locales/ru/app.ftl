@@ -174,3 +174,11 @@ language_ko = 한국어
 language_pt_br = Português (Brasil)
 language_ru = Русский
 language_zh_cn = 简体中文
+
+# Catalog discovery and recovery.
+catalog_heading = Найдите свою следующую книгу
+catalog_hint = Просматривайте независимые каталоги и добавляйте новые истории в библиотеку.
+catalog_empty = Добавьте каталог, чтобы начать поиск книг.
+catalog_no_results = Результатов нет. Попробуйте другой запрос или вернитесь к каталогу.
+retry = Повторить
+refresh = Обновить

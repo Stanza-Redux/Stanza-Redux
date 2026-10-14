@@ -47,8 +47,10 @@ def test_cover(index):
     return b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', width, height, 8, 2, 0, 0, 0)) + chunk(b'IDAT', zlib.compress(b''.join(rows))) + chunk(b'IEND', b'')
 CANCELLED = {'feed': 0, 'cover': 0}
 COUNTS_LOCK = threading.Lock()
+RETRY_ATTEMPTS = 0
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
+        global RETRY_ATTEMPTS
         if __name__ == '__main__':
             faulthandler.cancel_dump_traceback_later()
         path = urlparse(self.path).path
@@ -75,6 +77,27 @@ class Handler(BaseHTTPRequestHandler):
             data, mime = showcase
         elif path == '/health':
             data, mime = os.environ.get('STANZA_FIXTURE_TOKEN', 'stanza-catalog-fixture').encode(), 'text/plain'
+        elif path == '/favicon.ico':
+            data, mime = test_cover(2), 'image/png'
+        elif path == '/retry-fixture':
+            with COUNTS_LOCK: RETRY_ATTEMPTS = 0
+            mime = 'application/opds+json'
+            data = json.dumps({'metadata': {'title': 'Recovery fixture', 'description': 'Synthetic catalog for refresh and retry.'}, 'navigation': [
+                {'title': 'Recoverable catalog', 'description': 'A synthetic temporary failure', 'href': '/recover'},
+                {'title': 'Empty catalog', 'href': '/empty'},
+            ]}).encode()
+        elif path == '/recover':
+            with COUNTS_LOCK:
+                RETRY_ATTEMPTS += 1
+                attempt = RETRY_ATTEMPTS
+            if attempt == 1:
+                status, data = 503, b'Temporary fixture failure'
+            else:
+                mime = 'application/opds+json'
+                data = json.dumps({'metadata': {'title': 'Recovered catalog'}, 'navigation': []}).encode()
+        elif path == '/empty':
+            mime = 'application/opds+json'
+            data = json.dumps({'metadata': {'title': 'Empty catalog'}, 'navigation': []}).encode()
         elif path == '/loading-fixture':
             mime = 'application/opds+json'
             data = json.dumps({'metadata': {'title': 'Loading fixture'}, 'navigation': [
