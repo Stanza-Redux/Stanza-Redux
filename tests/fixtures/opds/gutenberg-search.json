@@ -1,0 +1,231 @@
+{
+ "metadata": {
+  "title": "Project Gutenberg",
+  "numberOfItems": 277,
+  "itemsPerPage": 25,
+  "currentPage": 1
+ },
+ "links": [
+  {
+   "rel": "self",
+   "href": "https://opds-test.pglaf.org/opds/search?limit=25&query=dickens&page=1",
+   "type": "application/opds+json"
+  },
+  {
+   "rel": "start",
+   "href": "https://opds-test.pglaf.org/opds/",
+   "type": "application/opds+json"
+  },
+  {
+   "rel": "up",
+   "href": "https://opds-test.pglaf.org/opds/",
+   "type": "application/opds+json"
+  },
+  {
+   "rel": "search",
+   "href": "https://opds-test.pglaf.org/opds/search{?query,title,author}",
+   "type": "application/opds+json",
+   "templated": true
+  },
+  {
+   "rel": "next",
+   "href": "https://opds-test.pglaf.org/opds/search?limit=25&query=dickens&page=2",
+   "type": "application/opds+json"
+  },
+  {
+   "rel": "last",
+   "href": "https://opds-test.pglaf.org/opds/search?limit=25&query=dickens&page=12",
+   "type": "application/opds+json"
+  }
+ ],
+ "publications": [
+  {
+   "metadata": {
+    "@type": "http://schema.org/Book",
+    "identifier": "https://www.gutenberg.org/ebooks/98",
+    "title": "A Tale of Two Cities",
+    "language": "en",
+    "author": {
+     "name": "Dickens, Charles",
+     "sortAs": "Dickens, Charles"
+    }
+   },
+   "links": [
+    {
+     "rel": "self",
+     "href": "https://opds-test.pglaf.org/opds/publications?id=98",
+     "type": "application/opds-publication+json"
+    },
+    {
+     "rel": "http://opds-spec.org/acquisition/open-access",
+     "href": "https://www.gutenberg.org/cache/epub/98/pg98-images-3.epub",
+     "type": "application/epub+zip",
+     "length": 7923060,
+     "title": "EPUB3 (E-readers incl. Send-to-Kindle)"
+    }
+   ],
+   "images": [
+    {
+     "href": "https://www.gutenberg.org/cache/epub/98/pg98.cover.medium.jpg",
+     "type": "image/jpeg",
+     "width": 200,
+     "height": 288,
+     "rel": "http://opds-spec.org/image"
+    },
+    {
+     "href": "https://www.gutenberg.org/cache/epub/98/pg98.cover.small.jpg",
+     "type": "image/jpeg",
+     "width": 66,
+     "height": 95,
+     "rel": "http://opds-spec.org/image/thumbnail"
+    }
+   ]
+  },
+  {
+   "metadata": {
+    "@type": "http://schema.org/Book",
+    "identifier": "https://www.gutenberg.org/ebooks/1400",
+    "title": "Great Expectations",
+    "language": "en",
+    "author": {
+     "name": "Dickens, Charles",
+     "sortAs": "Dickens, Charles"
+    }
+   },
+   "links": [
+    {
+     "rel": "self",
+     "href": "https://opds-test.pglaf.org/opds/publications?id=1400",
+     "type": "application/opds-publication+json"
+    },
+    {
+     "rel": "http://opds-spec.org/acquisition/open-access",
+     "href": "https://www.gutenberg.org/cache/epub/1400/pg1400-images-3.epub",
+     "type": "application/epub+zip",
+     "length": 14385491,
+     "title": "EPUB3 (E-readers incl. Send-to-Kindle)"
+    }
+   ],
+   "images": [
+    {
+     "href": "https://www.gutenberg.org/cache/epub/1400/pg1400.cover.medium.jpg",
+     "type": "image/jpeg",
+     "width": 200,
+     "height": 288,
+     "rel": "http://opds-spec.org/image"
+    },
+    {
+     "href": "https://www.gutenberg.org/cache/epub/1400/pg1400.cover.small.jpg",
+     "type": "image/jpeg",
+     "width": 66,
+     "height": 95,
+     "rel": "http://opds-spec.org/image/thumbnail"
+    }
+   ]
+  }
+ ],
+ "facets": [
+  {
+   "metadata": {
+    "title": "Sort By"
+   },
+   "links": [
+    {
+     "href": "https://opds-test.pglaf.org/opds/search?limit=25&sort=downloads&sort_order=desc&query=dickens&page=1",
+     "type": "application/opds+json",
+     "title": "Most Popular",
+     "rel": "self"
+    },
+    {
+     "href": "https://opds-test.pglaf.org/opds/search?limit=25&sort=release_date&sort_order=desc&query=dickens&page=1",
+     "type": "application/opds+json",
+     "title": "Newest"
+    },
+    {
+     "href": "https://opds-test.pglaf.org/opds/search?limit=25&sort=relevance&query=dickens&page=1",
+     "type": "application/opds+json",
+     "title": "Relevance"
+    },
+    {
+     "href": "https://opds-test.pglaf.org/opds/search?limit=25&sort=title&sort_order=asc&query=dickens&page=1",
+     "type": "application/opds+json",
+     "title": "Title (A-Z)"
+    }
+   ]
+  },
+  {
+   "metadata": {
+    "title": "Top Subjects in Results"
+   },
+   "links": [
+    {
+     "href": "https://opds-test.pglaf.org/opds/search?query=dickens",
+     "type": "application/opds+json",
+     "title": "Any",
+     "rel": "self"
+    },
+    {
+     "href": "https://opds-test.pglaf.org/opds/search?query=dickens&subject_id=16529",
+     "type": "application/opds+json",
+     "title": "English literature -- Periodicals",
+     "properties": {
+      "numberOfItems": 30
+     }
+    },
+    {
+     "href": "https://opds-test.pglaf.org/opds/search?query=dickens&subject_id=1702",
+     "type": "application/opds+json",
+     "title": "England -- Fiction",
+     "properties": {
+      "numberOfItems": 27
+     }
+    },
+    {
+     "href": "https://opds-test.pglaf.org/opds/search?query=dickens&subject_id=1282",
+     "type": "application/opds+json",
+     "title": "London (England) -- Fiction",
+     "properties": {
+      "numberOfItems": 25
+     }
+    }
+   ]
+  },
+  {
+   "metadata": {
+    "title": "Language"
+   },
+   "links": [
+    {
+     "href": "https://opds-test.pglaf.org/opds/search?limit=25&query=dickens&page=1",
+     "type": "application/opds+json",
+     "title": "Any",
+     "rel": "self"
+    },
+    {
+     "href": "https://opds-test.pglaf.org/opds/search?limit=25&lang=en&query=dickens&page=1",
+     "type": "application/opds+json",
+     "title": "English",
+     "properties": {
+      "numberOfItems": 227
+     }
+    },
+    {
+     "href": "https://opds-test.pglaf.org/opds/search?limit=25&lang=fi&query=dickens&page=1",
+     "type": "application/opds+json",
+     "title": "Finnish",
+     "properties": {
+      "numberOfItems": 16
+     }
+    },
+    {
+     "href": "https://opds-test.pglaf.org/opds/search?limit=25&lang=fr&query=dickens&page=1",
+     "type": "application/opds+json",
+     "title": "French",
+     "properties": {
+      "numberOfItems": 16
+     }
+    }
+   ]
+  }
+ ]
+}

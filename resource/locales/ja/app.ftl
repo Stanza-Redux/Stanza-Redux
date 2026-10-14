@@ -182,3 +182,18 @@ catalog_empty = カタログを追加して本を探しましょう。
 catalog_no_results = 結果がありません。別の検索を試すか、戻ってカタログを閲覧してください。
 retry = 再試行
 refresh = 更新
+
+# Catalog shelves, facets and book availability.
+see_all = すべて表示
+catalog_total = { $count } 冊
+search_results = 「{ $query }」の検索結果
+sort_filter = 並べ替えと絞り込み
+facet_count = { $facet }（{ $count }）
+facet_choice = { $group }：{ $facet }
+more_by = { $author } の他の作品
+epub_checking = EPUB 版を確認しています…
+unavailable_account = このカタログでは、この本はアカウントを使った貸し出しまたは販売のみです。Stanza Redux がダウンロードできるのはオープンな EPUB の本だけです。
+unavailable_pdf = このカタログでは、この本は PDF でのみ提供されています。
+unavailable_audio = このカタログでは、この本はオーディオブックでのみ提供されています。
+unavailable_other = このカタログには、この本の EPUB 版がありません。
+view_on_web = Web サイトで見る

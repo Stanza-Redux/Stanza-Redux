@@ -34,16 +34,22 @@ fn main() {
             };
             let feed = dayapp::opds::parse(&response.body, base).expect("OPDS feed");
             println!(
-                "{}: HTTP {} — {} books, {} navigation links ({url})",
+                "{}: HTTP {} — {} books, {} shelves, {} navigation links, {} facet groups ({url})",
                 feed.title,
                 response.status,
-                feed.entries.len(),
-                feed.navigation.len()
+                feed.book_count(),
+                feed.groups.len(),
+                feed.navigation.len(),
+                feed.facets.len()
             );
             if !acquire {
                 break;
             }
-            if let Some(link) = feed.entries.iter().find_map(|p| p.epub()) {
+            let books = feed
+                .entries
+                .iter()
+                .chain(feed.groups.iter().flat_map(|g| &g.entries));
+            if let Some(link) = books.filter_map(|p| p.epub()).next() {
                 let response = get(&link.url);
                 let book = dayapp::epub::parse(&response.body).expect("Acquired EPUB");
                 println!(
@@ -57,6 +63,7 @@ fn main() {
                 break;
             }
             queue.extend(feed.navigation.into_iter().map(|l| l.url));
+            queue.extend(feed.groups.into_iter().filter_map(|g| g.more));
         }
         assert!(
             !acquire || downloaded,

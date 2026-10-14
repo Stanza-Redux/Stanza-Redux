@@ -32,6 +32,8 @@ pub struct CatalogPage {
     depth: usize,
     manager: bool,
     pub feed: Rc<opds::Feed>,
+    /// The name of the link that opened this page. Catalogs often give every feed one title.
+    label: String,
     pub publication: Option<opds::Publication>,
     loading: bool,
     failure: Option<AppError>,
@@ -55,10 +57,11 @@ impl Route for CatalogPage {
         if self.manager {
             return res::str::manage_catalogs().format();
         }
-        self.publication
-            .as_ref()
-            .map(|p| p.title.clone())
-            .unwrap_or_else(|| self.feed.title.clone())
+        match &self.publication {
+            Some(p) => p.title.clone(),
+            None if self.label.is_empty() => self.feed.title.clone(),
+            None => self.label.clone(),
+        }
     }
 }
 impl App {
@@ -102,9 +105,10 @@ impl App {
             depth,
             manager: false,
             feed: Rc::new(opds::Feed {
-                title,
+                title: title.clone(),
                 ..Default::default()
             }),
+            label: title,
             publication: None,
             loading: true,
             failure: None,
@@ -174,7 +178,7 @@ impl App {
             });
         }
     }
-    pub fn select_publication(self, feed: Rc<opds::Feed>, publication: opds::Publication) {
+    pub fn select_publication(self, publication: opds::Publication) {
         let id = self.catalog_serial.get_untracked() + 1;
         self.catalog_serial.set(id);
         self.catalog_forward.set(Vec::new());
@@ -182,7 +186,8 @@ impl App {
             p.push(CatalogPage {
                 id,
                 depth: p.len() + 1,
-                feed,
+                feed: Rc::new(opds::Feed::default()),
+                label: String::new(),
                 publication: Some(publication),
                 manager: false,
                 loading: false,
@@ -190,6 +195,37 @@ impl App {
                 request: None,
                 retry: None,
             })
+        });
+    }
+    /// A facet refines the current destination instead of stacking another page above it.
+    fn apply_facet(self, page_id: u64, url: String) {
+        let Some(page) = self
+            .catalog_path
+            .get_untracked()
+            .last()
+            .cloned()
+            .filter(|p| p.id == page_id && !p.loading)
+        else {
+            return;
+        };
+        let title = page.title();
+        self.load_catalog(
+            false,
+            true,
+            title,
+            CatalogRequest::Feed(url.clone()),
+            async move { load_feed(url).await },
+        );
+    }
+    /// Appends the next page of results to a loaded destination, keeping its cached feed in step.
+    fn append_results(self, page_id: u64, feed: opds::Feed) {
+        self.catalog_path.update(|path| {
+            if let Some(page) = path.iter_mut().find(|p| p.id == page_id) {
+                let mut merged = (*page.feed).clone();
+                merged.entries.extend(feed.entries);
+                merged.next = feed.next;
+                page.feed = Rc::new(merged);
+            }
         });
     }
     pub fn manage_catalogs(self) {
@@ -201,6 +237,7 @@ impl App {
                 depth: p.len() + 1,
                 manager: true,
                 feed: Rc::new(opds::Feed::default()),
+                label: String::new(),
                 publication: None,
                 loading: false,
                 failure: None,
@@ -308,52 +345,48 @@ pub fn view(a: App) -> impl Piece {
                     })
                     .any()
             } else {
-                // Unmount hidden row scopes to abort their thumbnail tasks. Route data stays
-                // cached, so Back reconstructs the preceding list without fetching its feed.
+                // A page stays built while pages are pushed above it, so Back shows the same
+                // list, at the same scroll position, without rebuilding it.
                 when(
-                    move || a.catalog_path.get().last().is_some_and(|p| p.id == page_id),
+                    move || current(a, page_id).is_some_and(|p| p.loading),
                     move || {
-                        when(
-                            move || current(a, page_id).is_some_and(|p| p.loading),
-                            move || {
-                                column((
-                                    spacer(),
-                                    row((spacer(), loading_indicator(), spacer())),
-                                    spacer(),
-                                ))
-                                .grow()
-                            },
-                        )
-                        .otherwise(move || {
-                            let Some(page) = current(a, page_id) else {
-                                return spacer().any();
-                            };
-                            if let Some(error) = &page.failure {
-                                return column((
-                                    spacer(),
-                                    label(error.localized())
-                                        .secondary()
-                                        .padding(24.)
-                                        .id("catalog-error"),
-                                    button(res::str::retry())
-                                        .prominent()
-                                        .action(move || a.reload_catalog(page_id))
-                                        .id("catalog-retry"),
-                                    spacer(),
-                                ))
-                                .grow()
-                                .any();
-                            }
-                            if let Some(publication) = page.publication {
-                                scroll(crate::details(a, publication))
-                                    .overlay(loading(a, depth))
-                                    .any()
-                            } else {
-                                results(a, page.feed, depth).any()
-                            }
-                        })
+                        column((
+                            spacer(),
+                            row((spacer(), loading_indicator(), spacer())),
+                            spacer(),
+                        ))
+                        .grow()
                     },
                 )
+                .otherwise(move || {
+                    let Some(page) = current(a, page_id) else {
+                        return spacer().any();
+                    };
+                    if let Some(error) = &page.failure {
+                        return column((
+                            spacer(),
+                            label(error.localized())
+                                .secondary()
+                                .padding(24.)
+                                .id("catalog-error"),
+                            button(res::str::retry())
+                                .prominent()
+                                .action(move || a.reload_catalog(page_id))
+                                .id("catalog-retry"),
+                            spacer(),
+                        ))
+                        .grow()
+                        .any();
+                    }
+                    if let Some(publication) = page.publication {
+                        scroll(crate::details(a, publication))
+                            .overlay(loading(a, depth))
+                            .any()
+                    } else {
+                        let title = page.title();
+                        results(a, page_id, page.feed, title, depth).any()
+                    }
+                })
                 .toolbar(move || {
                     let Some(page) = current(a, page_id).filter(|_| {
                         a.catalog_path.get().last().is_some_and(|p| p.id == page_id)
@@ -380,6 +413,9 @@ pub fn view(a: App) -> impl Piece {
                             None
                         };
                         let mut actions = catalog_actions(a, false, search, title);
+                        if page.publication.is_none() && !page.feed.facets.is_empty() {
+                            actions.push(facet_menu(a, page_id, &page.feed.facets));
+                        }
                         if page.retry.is_some() && page.publication.is_none() {
                             actions.push(
                                 toolbar_button("catalog-refresh", res::str::refresh())
@@ -468,12 +504,15 @@ fn catalog_actions(
             })
             .action(move || a.manage_catalogs()),
     );
-    if cfg!(any(
-        target_os = "ios",
-        target_os = "android",
-        target_env = "ohos",
-        target_arch = "wasm32"
-    )) {
+    // Adding a catalog belongs to the catalog list, not to the pages of one catalog.
+    if root
+        && cfg!(any(
+            target_os = "ios",
+            target_os = "android",
+            target_env = "ohos",
+            target_arch = "wasm32"
+        ))
+    {
         actions.push(
             toolbar_button("add-opds-catalog", res::str::add_catalog())
                 .icon(Symbol::Add)
@@ -491,6 +530,43 @@ fn catalog_actions(
         );
     }
     actions
+}
+/// Facets are refinements of the current results, so they live in one pull-down rather than
+/// in the list: each group is a submenu, and the facet that produced this feed is checked.
+fn facet_menu(a: App, page_id: u64, facets: &[opds::FacetGroup]) -> ToolbarEntry {
+    let item = |group: usize, index: usize, l: &opds::Link| {
+        let url = l.url.clone();
+        let label = match l.count {
+            Some(n) => {
+                res::str::facet_count(l.title.clone(), day::format_decimal(n as f64, 0)).format()
+            }
+            None => l.title.clone(),
+        };
+        menu_item(label)
+            .id(format!("catalog-facet-{group}-{index}"))
+            .checked(l.active)
+            .action(move || a.apply_facet(page_id, url.clone()))
+    };
+    let entries = match facets {
+        [only] if only.title.is_empty() => {
+            let links = only.links.iter().enumerate();
+            links.map(|(i, l)| item(0, i, l)).collect()
+        }
+        _ => facets
+            .iter()
+            .enumerate()
+            .map(|(g, group)| {
+                let links = group.links.iter().enumerate();
+                sub_menu(
+                    group.title.clone(),
+                    links.map(|(i, l)| item(g, i, l)).collect(),
+                )
+            })
+            .collect(),
+    };
+    toolbar_menu("catalog-facets", res::str::sort_filter(), entries)
+        .icon(Symbol::Filter)
+        .placement(ToolbarPlacement::Primary)
 }
 fn catalog_key(a: App, key: &str) {
     match key {
@@ -593,8 +669,9 @@ fn sources(a: App) -> impl Piece {
 #[derive(Clone)]
 enum CatalogRow {
     Link(opds::Link),
-    Book(opds::Publication),
-    Next(String),
+    Shelf(opds::Group),
+    Book(Box<opds::Publication>),
+    More,
 }
 impl CatalogRow {
     fn genre(&self) -> String {
@@ -613,7 +690,8 @@ impl CatalogRow {
         match self {
             Self::Link(l) => l.title.clone(),
             Self::Book(p) => p.title.clone(),
-            Self::Next(_) => res::str::next_results().format(),
+            Self::Shelf(g) => g.title.clone(),
+            Self::More => res::str::next_results().format(),
         }
     }
     fn subtitle(&self) -> String {
@@ -623,35 +701,147 @@ impl CatalogRow {
             _ => String::new(),
         }
     }
+    fn count(&self) -> String {
+        match self {
+            Self::Link(opds::Link { count: Some(n), .. }) => day::format_decimal(*n as f64, 0),
+            _ => String::new(),
+        }
+    }
 }
-fn results(a: App, feed: Rc<opds::Feed>, depth: usize) -> impl Piece {
-    let list_id = format!("catalog-list-{depth}-{}", feed.title);
-    let detail_feed = feed.clone();
+/// A grouped feed is a page of shelves. Its navigation links sit above them as buttons, and
+/// any loose publications form one more shelf, so every row keeps the shelf height.
+fn feed_rows(feed: &opds::Feed) -> Vec<CatalogRow> {
+    if !feed.groups.is_empty() {
+        let mut rows: Vec<CatalogRow> =
+            feed.groups.iter().cloned().map(CatalogRow::Shelf).collect();
+        if !feed.entries.is_empty() {
+            rows.push(CatalogRow::Shelf(opds::Group {
+                title: feed.title.clone(),
+                total: None,
+                more: feed.next.clone(),
+                entries: feed.entries.clone(),
+            }));
+        }
+        return rows;
+    }
     let mut rows: Vec<CatalogRow> = feed
         .navigation
         .iter()
-        .chain(&feed.facets)
         .cloned()
         .map(CatalogRow::Link)
         .collect();
-    rows.extend(feed.entries.iter().cloned().map(CatalogRow::Book));
-    if let Some(next) = &feed.next {
-        rows.push(CatalogRow::Next(next.clone()));
-    }
-    let summary = res::str::catalog_counts(
-        feed.entries.len() as i64,
-        (feed.navigation.len() + feed.facets.len()) as i64,
+    rows.extend(
+        feed.entries
+            .iter()
+            .cloned()
+            .map(|p| CatalogRow::Book(Box::new(p))),
     );
-    let no_results = rows.is_empty();
+    if feed.next.is_some() {
+        rows.push(CatalogRow::More);
+    }
+    rows
+}
+/// The feed's size and any refinement already applied, such as "Sort By: Newest".
+fn feed_summary(feed: &opds::Feed) -> String {
+    let count = match feed.total {
+        Some(n) => res::str::catalog_total(day::format_decimal(n as f64, 0)).format(),
+        // Shelves hold samples; each shelf states its own size.
+        None if !feed.groups.is_empty() => String::new(),
+        None => {
+            res::str::catalog_counts(feed.book_count() as i64, feed.link_count() as i64).format()
+        }
+    };
+    // The first facet of a group is its default (Any, or the catalog's usual order).
+    let refinements: Vec<String> = feed
+        .facets
+        .iter()
+        .filter_map(|g| {
+            let i = g.links.iter().position(|l| l.active)?;
+            (i > 0)
+                .then(|| res::str::facet_choice(g.title.clone(), g.links[i].title.clone()).format())
+        })
+        .collect();
+    std::iter::once(count)
+        .chain(refinements)
+        .filter(|s| !s.is_empty())
+        .collect::<Vec<_>>()
+        .join(" · ")
+}
+fn results(a: App, page_id: u64, feed: Rc<opds::Feed>, title: String, depth: usize) -> impl Piece {
+    let list_id = format!("catalog-list-{depth}-{}", feed.title);
+    let shelves = !feed.groups.is_empty();
+    let navigation = if shelves {
+        feed.navigation.clone()
+    } else {
+        Vec::new()
+    };
+    let rows = Signal::new(feed_rows(&feed));
+    let next = Signal::new(feed.next.clone());
+    // Signals are disposed before cleanups run; keep the handle outside the reactive graph.
+    let more = Rc::new(RefCell::new(None::<day::TaskHandle>));
+    let more_loading = Signal::new(false);
+    Scope::current().on_cleanup({
+        let more = more.clone();
+        move || {
+            if let Some(task) = more.borrow_mut().take() {
+                task.abort()
+            }
+        }
+    });
+    // Further results join this page, so a long search remains one scrolling list.
+    let load_more = move || {
+        let Some(url) = next.get_untracked() else {
+            return;
+        };
+        if more_loading.get_untracked() {
+            return;
+        }
+        more_loading.set(true);
+        let task = day::task(async move {
+            match load_feed(url).await {
+                Ok(page) => {
+                    next.set(page.next.clone());
+                    rows.update(|rows| {
+                        rows.retain(|r| !matches!(r, CatalogRow::More));
+                        rows.extend(
+                            page.entries
+                                .iter()
+                                .cloned()
+                                .map(|p| CatalogRow::Book(Box::new(p))),
+                        );
+                        if page.next.is_some() {
+                            rows.push(CatalogRow::More);
+                        }
+                    });
+                    a.append_results(page_id, page);
+                }
+                Err(error) => a.error(error),
+            }
+            more_loading.set(false);
+        });
+        *more.borrow_mut() = Some(task);
+    };
+    let first_visible = Signal::new(0usize);
+    watch(move || first_visible.get(), {
+        let load_more = load_more.clone();
+        move |first, _| {
+            if rows.get_untracked().len().saturating_sub(*first) < 12 {
+                load_more()
+            }
+        }
+    });
+    let summary = feed_summary(&feed);
+    let no_results = rows.get_untracked().is_empty();
     let icon = feed.icon.clone();
-    let rows = Rc::new(rows);
-    let source = rows.clone();
     column((
         row((
             covers::favicon(move || icon.clone()),
             column((
-                label(feed.title.clone()).font(Font::Headline).single_line(),
-                label(summary).font(Font::Caption).secondary(),
+                label(title).font(Font::Headline).single_line(),
+                label(summary)
+                    .font(Font::Caption)
+                    .secondary()
+                    .id("catalog-summary"),
                 when(
                     {
                         let description = feed.description.clone();
@@ -675,6 +865,37 @@ fn results(a: App, feed: Rc<opds::Feed>, depth: usize) -> impl Piece {
         .spacing(12.)
         .padding(16.),
         when(
+            {
+                let has_navigation = !navigation.is_empty();
+                move || has_navigation
+            },
+            move || {
+                let links = navigation
+                    .clone()
+                    .into_iter()
+                    .enumerate()
+                    .collect::<Vec<_>>();
+                scroll(
+                    row((each(
+                        items(move || links.clone(), |(i, _): &(usize, opds::Link)| *i),
+                        move |link| {
+                            button(move || link.get().1.title)
+                                .bordered()
+                                .action(move || {
+                                    let l = link.get().1;
+                                    a.browse_named(l.url, false, l.title)
+                                })
+                                .id(format!("catalog-nav-{}", link.key()))
+                        },
+                    ),))
+                    .spacing(8.)
+                    .padding(Insets::symmetric(16., 0.)),
+                )
+                .horizontal()
+                .height(44.)
+            },
+        ),
+        when(
             move || no_results,
             || {
                 label(res::str::catalog_no_results())
@@ -685,68 +906,169 @@ fn results(a: App, feed: Rc<opds::Feed>, depth: usize) -> impl Piece {
         ),
         list(
             items(
-                move || source.iter().cloned().enumerate().collect::<Vec<_>>(),
+                move || rows.get().into_iter().enumerate().collect::<Vec<_>>(),
                 |(i, _): &(usize, CatalogRow)| *i,
             ),
             move |slot| {
-                row((
-                    when(
-                        move || matches!(slot.get().1, CatalogRow::Book(_)),
-                        move || covers::view(move || slot.get().1.cover(), 46., 64.),
-                    )
-                    .otherwise(move || {
-                        vector(res::vectors::catalog_folder)
-                            .frame(28., 28.)
-                            .padding(9.)
-                            .background(Color::hex(0xeee8da))
-                            .corner_radius(12.)
-                            .decorative()
-                    }),
-                    column((
-                        label(move || slot.get().1.title())
-                            .font(Font::Headline)
-                            .single_line(),
-                        when(
-                            move || !slot.get().1.subtitle().is_empty(),
-                            move || {
-                                label(move || slot.get().1.subtitle())
-                                    .font(Font::Footnote)
-                                    .secondary()
-                                    .single_line()
-                            },
-                        ),
-                        when(
-                            move || !slot.get().1.genre().is_empty(),
-                            move || {
-                                label(move || slot.get().1.genre())
-                                    .font(Font::Caption)
-                                    .secondary()
-                                    .single_line()
-                            },
-                        ),
-                    ))
-                    .spacing(4.)
-                    .align(HAlign::Leading)
-                    .grow(),
-                    vector(res::vectors::chevron_forward)
-                        .frame(12., 24.)
-                        .decorative(),
-                ))
-                .spacing(12.)
-                .padding(16.)
+                when(
+                    move || matches!(slot.get().1, CatalogRow::Shelf(_)),
+                    move || {
+                        shelf(a, move || match slot.get().1 {
+                            CatalogRow::Shelf(g) => g,
+                            _ => opds::Group::default(),
+                        })
+                    },
+                )
+                .otherwise(move || catalog_row(slot, more_loading))
             },
         )
-        .row_height(RowHeight::Uniform(96.))
-        .on_select(move |i| match &rows[i] {
-            CatalogRow::Link(l) => a.browse_named(l.url.clone(), false, l.title.clone()),
-            CatalogRow::Next(u) => a.browse(u.clone(), false),
-            CatalogRow::Book(p) => a.select_publication(detail_feed.clone(), p.clone()),
+        .on_select(move |i| match rows.get_untracked().get(i) {
+            Some(CatalogRow::Link(l)) => a.browse_named(l.url.clone(), false, l.title.clone()),
+            Some(CatalogRow::More) => load_more(),
+            Some(CatalogRow::Book(p)) => a.select_publication((**p).clone()),
+            // A shelf's books and its See All button handle their own taps.
+            Some(CatalogRow::Shelf(_)) | None => {}
         })
+        .row_height(RowHeight::Uniform(if shelves { 250. } else { 96. }))
+        .first_visible_row(first_visible)
         .id(list_id)
         .grow(),
     ))
     .grow()
     .overlay(loading(a, depth))
+}
+fn catalog_row(
+    slot: ItemSlot<(usize, CatalogRow), usize>,
+    more_loading: Signal<bool>,
+) -> impl Piece {
+    row((
+        when(
+            move || matches!(slot.get().1, CatalogRow::Book(_)),
+            move || covers::view(move || slot.get().1.cover(), 46., 64.),
+        )
+        .otherwise(move || {
+            vector(res::vectors::catalog_folder)
+                .frame(28., 28.)
+                .padding(9.)
+                .background(Color::hex(0xeee8da))
+                .corner_radius(12.)
+                .decorative()
+        }),
+        column((
+            label(move || {
+                if matches!(slot.get().1, CatalogRow::More) && more_loading.get() {
+                    res::str::loading().format()
+                } else {
+                    slot.get().1.title()
+                }
+            })
+            .font(Font::Headline)
+            .single_line(),
+            when(
+                move || !slot.get().1.subtitle().is_empty(),
+                move || {
+                    label(move || slot.get().1.subtitle())
+                        .font(Font::Footnote)
+                        .secondary()
+                        .single_line()
+                },
+            ),
+            when(
+                move || !slot.get().1.genre().is_empty(),
+                move || {
+                    label(move || slot.get().1.genre())
+                        .font(Font::Caption)
+                        .secondary()
+                        .single_line()
+                },
+            ),
+        ))
+        .spacing(4.)
+        .align(HAlign::Leading)
+        .grow(),
+        label(move || slot.get().1.count())
+            .font(Font::Footnote)
+            .secondary(),
+        vector(res::vectors::chevron_forward)
+            .frame(12., 24.)
+            .decorative(),
+    ))
+    .spacing(12.)
+    .padding(16.)
+    .height(96.)
+}
+/// One group of a grouped feed: a heading with the shelf's size and See All, above a
+/// horizontally scrolling row of covers.
+fn shelf(a: App, group: impl Fn() -> opds::Group + Copy + 'static) -> impl Piece {
+    column((
+        row((
+            column((
+                label(move || group().title)
+                    .font(Font::Title3)
+                    .bold()
+                    .single_line(),
+                label(move || {
+                    group()
+                        .total
+                        .map(|n| res::str::catalog_total(day::format_decimal(n as f64, 0)).format())
+                        .unwrap_or_default()
+                })
+                .font(Font::Caption)
+                .secondary(),
+            ))
+            .align(HAlign::Leading)
+            .spacing(2.)
+            .grow(),
+            when(
+                move || group().more.is_some(),
+                move || {
+                    button(res::str::see_all())
+                        .action(move || {
+                            let g = group();
+                            if let Some(url) = g.more {
+                                a.browse_named(url, false, g.title)
+                            }
+                        })
+                        .id_of(move || format!("shelf-see-all-{}", group().title))
+                },
+            ),
+        ))
+        .spacing(12.)
+        .padding(Insets::symmetric(16., 0.)),
+        scroll(
+            row((each(
+                items(
+                    move || group().entries.into_iter().enumerate().collect::<Vec<_>>(),
+                    |(i, p): &(usize, opds::Publication)| format!("{i}:{}", p.title),
+                ),
+                move |book| {
+                    column((
+                        covers::view(move || book.get().1.cover, 96., 138.),
+                        label(move || book.get().1.title)
+                            .font(Font::Footnote)
+                            .single_line(),
+                        label(move || book.get().1.author)
+                            .font(Font::Caption)
+                            .secondary()
+                            .single_line(),
+                    ))
+                    .spacing(4.)
+                    .align(HAlign::Leading)
+                    .width(96.)
+                    .on_tap(move || a.select_publication(book.get().1))
+                    .id_of(move || format!("shelf-book-{}-{}", group().title, book.get().0))
+                },
+            ),))
+            .spacing(12.)
+            .align(VAlign::Top)
+            .padding(Insets::symmetric(16., 0.)),
+        )
+        .horizontal()
+        .height(186.),
+    ))
+    .spacing(8.)
+    .padding(Insets::symmetric(0., 12.))
+    .height(250.)
 }
 pub(crate) async fn load_feed(url: String) -> Result<opds::Feed, AppError> {
     let (bytes, final_url) = fetch_bytes(&url, 8 * 1024 * 1024, None).await?;
@@ -755,11 +1077,12 @@ pub(crate) async fn load_feed(url: String) -> Result<opds::Feed, AppError> {
         .map_err(AppError::from)?
 }
 fn search(a: App, link: opds::Link, query: String) {
-    let request = CatalogRequest::Search(link, query.trim().to_owned());
+    let query = query.trim().to_owned();
+    let request = CatalogRequest::Search(link, query.clone());
     a.load_catalog(
         false,
         false,
-        res::str::search().format(),
+        res::str::search_results(query).format(),
         request.clone(),
         request.load(),
     );

@@ -1,0 +1,214 @@
+{
+ "@context": "https://readium.org/webpub-manifest/context.jsonld",
+ "metadata": {
+  "title": "Results for query '858'",
+  "numberOfItems": 858,
+  "itemsPerPage": 25,
+  "currentPage": 1
+ },
+ "links": [
+  {
+   "href": "https://archive.org/services/opds/catalog{?query}&type=search",
+   "type": "application/opds+json",
+   "rel": "search",
+   "templated": true
+  },
+  {
+   "href": "https://archive.org/services/loans/loan/?action=user_bookshelf&opds=1",
+   "type": "application/opds+json",
+   "rel": "http://opds-spec.org/shelf"
+  },
+  {
+   "href": "https://archive.org/services/loans/loan/?action=user_profile&opds=1",
+   "type": "application/opds-profile+json",
+   "rel": "profile"
+  },
+  {
+   "href": "https://archive.org/services/opds/catalog?type=search&query=pride+and+prejudice+austen",
+   "type": "application/opds+json",
+   "rel": "self"
+  },
+  {
+   "href": "https://archive.org/services/opds/catalog?type=search&query=pride+and+prejudice+austen&page=1",
+   "type": "application/opds+json",
+   "rel": "first"
+  },
+  {
+   "href": "https://archive.org/services/opds/catalog?type=search&query=pride+and+prejudice+austen&page=1",
+   "type": "application/opds+json",
+   "rel": "previous"
+  },
+  {
+   "href": "https://archive.org/services/opds/catalog?type=search&query=pride+and+prejudice+austen&page=2",
+   "type": "application/opds+json",
+   "rel": "next"
+  },
+  {
+   "href": "https://archive.org/services/opds/catalog?type=search&query=pride+and+prejudice+austen&page=34",
+   "type": "application/opds+json",
+   "rel": "last"
+  }
+ ],
+ "publications": [
+  {
+   "metadata": {
+    "title": "Pride and prejudice",
+    "identifier": "https://archive.org/details/prideprejudiceba00jane",
+    "type": "http://schema.org/Book",
+    "published": "2012-01-19T17:42:35Z",
+    "language": [
+     "en"
+    ],
+    "description": "Includes bibliographical references (p. 293-295)<br><br>Human foibles and early nineteenth century manners are satirized in this romantic tale of English family life",
+    "author": [
+     {
+      "name": "Austen, Jane, 1775-1817"
+     }
+    ],
+    "numberOfPages": 310
+   },
+   "links": [
+    {
+     "href": "https://archive.org/details/prideprejudiceba00jane&view=theater",
+     "type": "text/html",
+     "rel": "http://opds-spec.org/acquisition/sample"
+    },
+    {
+     "href": "https://archive.org/services/loans/loan/?action=webpub&opds=1&identifier=prideprejudiceba00jane",
+     "type": "application/opds-publication+json",
+     "rel": "self",
+     "title": "Internet Archive"
+    },
+    {
+     "href": "",
+     "type": "application/opds-publication+json",
+     "rel": "http://opds-spec.org/acquisition/borrow",
+     "title": "Internet Archive",
+     "properties": {
+      "availability": {
+       "state": "unavailable"
+      }
+     }
+    }
+   ],
+   "images": [
+    {
+     "href": "https://archive.org/download/prideprejudiceba00jane/__ia_thumb.jpg",
+     "type": "image/jpeg",
+     "rel": "cover",
+     "height": 1400,
+     "width": 800
+    },
+    {
+     "href": "https://archive.org/download/prideprejudiceba00jane/__ia_thumb.jpg",
+     "type": "image/jpeg",
+     "height": 700,
+     "width": 400
+    }
+   ]
+  },
+  {
+   "metadata": {
+    "title": "Pride and prejudice",
+    "identifier": "https://archive.org/details/prideprejudiceby0000jane",
+    "type": "http://schema.org/Book",
+    "published": "2024-01-24T13:14:36Z",
+    "language": [
+     "en"
+    ],
+    "description": "372 p. ; 19 cm",
+    "author": [
+     {
+      "name": "Austen, Jane, 1775-1817"
+     }
+    ],
+    "numberOfPages": 386
+   },
+   "links": [
+    {
+     "href": "https://archive.org/details/prideprejudiceby0000jane&view=theater",
+     "type": "text/html",
+     "rel": "http://opds-spec.org/acquisition/sample"
+    },
+    {
+     "href": "https://archive.org/services/loans/loan/?action=webpub&opds=1&identifier=prideprejudiceby0000jane",
+     "type": "application/opds-publication+json",
+     "rel": "self",
+     "title": "Internet Archive"
+    },
+    {
+     "href": "https://archive.org/services/opds/book/prideprejudiceby0000jane?glob_pattern=*pdf",
+     "type": "application/pdf",
+     "rel": "http://opds-spec.org/acquisition/open-access",
+     "title": "Internet Archive",
+     "properties": {
+      "availability": {
+       "state": "available"
+      }
+     }
+    }
+   ],
+   "images": [
+    {
+     "href": "https://archive.org/download/prideprejudiceby0000jane/__ia_thumb.jpg",
+     "type": "image/jpeg",
+     "rel": "cover",
+     "height": 1400,
+     "width": 800
+    },
+    {
+     "href": "https://archive.org/download/prideprejudiceby0000jane/__ia_thumb.jpg",
+     "type": "image/jpeg",
+     "height": 700,
+     "width": 400
+    }
+   ]
+  }
+ ],
+ "facets": [
+  {
+   "metadata": {
+    "title": "Browse by Language"
+   },
+   "links": [
+    {
+     "title": "English",
+     "href": "https://archive.org/services/opds/catalog?type=search&query=pride+and+prejudice+austen&facet_section=languages&facet_item=english",
+     "type": "application/opds+json"
+    },
+    {
+     "title": "French",
+     "href": "https://archive.org/services/opds/catalog?type=search&query=pride+and+prejudice+austen&facet_section=languages&facet_item=french",
+     "type": "application/opds+json"
+    },
+    {
+     "title": "German",
+     "href": "https://archive.org/services/opds/catalog?type=search&query=pride+and+prejudice+austen&facet_section=languages&facet_item=german",
+     "type": "application/opds+json"
+    }
+   ]
+  },
+  {
+   "metadata": {
+    "title": "Browse by Category"
+   },
+   "links": [
+    {
+     "title": "Children / Young Adult",
+     "href": "https://archive.org/services/opds/catalog?type=search&query=pride+and+prejudice+austen&facet_section=categories&facet_item=children",
+     "type": "application/opds+json"
+    },
+    {
+     "title": "Textbooks",
+     "href": "https://archive.org/services/opds/catalog?type=search&query=pride+and+prejudice+austen&facet_section=categories&facet_item=textbooks",
+     "type": "application/opds+json"
+    },
+    {
+     "title": "LGBTQ",
+     "href": "https://archive.org/services/opds/catalog?type=search&query=pride+and+prejudice+austen&facet_section=categories&facet_item=lgbtq",
+     "type": "application/opds+json"
+    }
+   ]
+  }
+ ]
+}

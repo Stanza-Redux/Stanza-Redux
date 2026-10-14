@@ -182,3 +182,18 @@ catalog_empty = 카탈로그를 추가하고 책을 찾아보세요.
 catalog_no_results = 결과가 없습니다. 다른 검색어를 입력하거나 돌아가서 둘러보세요.
 retry = 다시 시도
 refresh = 새로 고침
+
+# Catalog shelves, facets and book availability.
+see_all = 모두 보기
+catalog_total = 책 { $count }권
+search_results = “{ $query }” 검색 결과
+sort_filter = 정렬 및 필터
+facet_count = { $facet } ({ $count })
+facet_choice = { $group }: { $facet }
+more_by = { $author }의 다른 책
+epub_checking = EPUB 판을 확인하는 중…
+unavailable_account = 이 카탈로그는 계정을 통해 이 책을 대출하거나 판매합니다. Stanza Redux는 공개된 EPUB 책만 다운로드합니다.
+unavailable_pdf = 이 카탈로그는 이 책을 PDF로만 제공합니다.
+unavailable_audio = 이 카탈로그는 이 책을 오디오북으로만 제공합니다.
+unavailable_other = 이 카탈로그에는 이 책의 EPUB 판이 없습니다.
+view_on_web = 웹사이트에서 보기

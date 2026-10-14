@@ -75,13 +75,20 @@ The root offers Add when the saved catalog list is empty.
 
 New libraries use Project Gutenberg's documented public entry point,
 `https://www.gutenberg.org/ebooks/search.opds/`. Existing saved subscriptions remain intact.
-On 2026-10-13, the live catalog and acquisition-detail feeds parsed successfully and returned
-`Access-Control-Allow-Origin: *`. Gutenberg's [feed documentation](https://www.gutenberg.org/ebooks/offline_catalogs.html)
-says the new JSON OPDS2 service requires testing access and the XML service is expected to
-retire in 2027. No unverified test endpoint is shipped. Stanza already accepts public OPDS2
-catalogs through Add. Native requests include the contact URL required by Gutenberg's
-[OPDS terms](https://www.gutenberg.org/policy/terms_of_use.html#opds-feed); browsing and pagination
-remain user initiated. Web access still depends on each resource's CORS policy.
+Gutenberg's [feed documentation](https://www.gutenberg.org/ebooks/offline_catalogs.html)
+says the XML service is expected to retire in 2027 in favor of a JSON OPDS 2 service. Its
+preview, `https://opds-test.pglaf.org/opds/`, was exercised on 2026-10-14 (shelves, bookshelves,
+subjects, search, facets, paging, publication detail and acquisition) and can be added through
+**Add**; it is not a default until Gutenberg publishes it. Native requests include the contact
+URL required by Gutenberg's [OPDS terms](https://www.gutenberg.org/policy/terms_of_use.html#opds-feed);
+browsing and pagination remain user initiated. Web access still depends on each resource's
+CORS policy.
+
+The Internet Archive's OPDS 2 catalog, `https://archive.org/services/opds`, browses and searches
+the same way. Most of its books are loans, PDFs or audiobooks, which Stanza explains on the
+book page and links to the archive's web page. For an open-access scan, the feed lists only a
+PDF; Stanza looks up the item's files through the archive's metadata API and offers the scan's
+EPUB when there is one. The older `bookserver.archive.org` catalog did not respond on 2026-10-14.
 
 Reader chrome respects safe-area insets and dynamic viewport height, shows the current chapter,
 and follows the interface locale's direction. Pagination measures the toolbar and footer
@@ -101,9 +108,10 @@ A cached cover is displayed synchronously. The same loader serves local covers a
 
 Catalog links push the destination immediately. Its content is empty while a centered loading
 indicator is visible; the native Back button remains available. The destination owns the request,
-including OpenSearch discovery. Popping it aborts the HTTP future/body. Hidden lists dispose their
-row scopes and cancel cover requests; completed covers remain cached. Back restores the cached feed
-without fetching it again. Late worker results cannot put a popped destination back on the stack.
+including OpenSearch discovery. Popping it aborts the HTTP future/body and its cover requests;
+completed covers remain cached. A page stays built while pages are pushed above it, so Back
+shows the same list at the same scroll position, without fetching or rebuilding it. Late worker
+results cannot put a popped destination back on the stack.
 Failures appear in the destination instead of a modal alert.
 
 ## Local storage and upgrades
@@ -181,16 +189,31 @@ in the old store but are not imported by this adapter.
 ## Catalog navigation
 
 Catalogs use Day's `nav_stack` on every platform. The root is a native catalog list;
-selecting a catalog pushes its feed, selecting a subcatalog or facet pushes another feed,
+selecting a catalog pushes its feed, selecting a subcatalog pushes another feed,
 and selecting a book pushes its details. Native Back buttons/gestures pop one level, all the
 way back to the catalog list. Each page owns its feed snapshot; returning
-to a parent does not refetch it or replace it with the child's content. Search results and
-pagination are stack destinations too. Failed requests leave the stack intact and show an
+to a parent does not refetch it or replace it with the child's content. Search results are
+stack destinations too; further result pages join the current list. Failed requests leave the stack intact and show an
 inline error with **Try again**.
 
 On mobile the stack fills the Catalogs tab: the native header supplies Back and the page title,
 and lists extend behind iOS’s floating tab bar or down to Android’s bottom navigation bar.
-Manage and Search are native toolbar actions. Add OPDS Catalog lives in the mobile overflow menu and the desktop Catalogs menu (also a web toolbar action). The shared add/edit form validates the feed asynchronously, shows its metadata, and prefills an editable title. Editing is available from the source row context menu and Manage. Management is a pushed page with native Back/Done.
+Manage and Search are native toolbar actions. Add OPDS Catalog lives in the desktop Catalogs menu and, on mobile and web, in the catalog list's toolbar; pages inside a catalog do not offer it. The shared add/edit form validates the feed asynchronously, shows its metadata, and prefills an editable title. Editing is available from the source row context menu and Manage. Management is a pushed page with native Back/Done.
+
+A grouped OPDS 2 feed, such as Gutenberg's front page, is a page of shelves: each group shows
+its title, size and a horizontally scrolling row of covers, and **See all** opens the group's
+own feed. The feed's navigation links sit above the shelves as buttons. Other feeds are lists
+with item counts beside navigation links. Facets (sort order, language, subject) live in the
+**Sort and filter** toolbar pull-down, one submenu per facet group with the current choice
+checked; choosing one replaces the current page, so Back still returns to its parent. The page
+header names any non-default choice. Pages are named after the link that opened them, since
+catalogs often title every feed alike. Search accepts OpenSearch descriptions and templates
+as well as the RFC 6570 templates OPDS 2 catalogs publish (`{?query,title,author}`); results
+are titled with the query. Further result pages load into the same list as it nears its end.
+
+A book page fetches the catalog's complete entry when the feed lists only a summary, adding
+the description, subjects and publisher. Its author, subject and "readers also downloaded"
+links open their feeds.
 
 Forward restores popped pages; following a new link clears that forward history. Cached
 stack pages live only for the current session and cannot be opened through arbitrary deep links.
@@ -212,7 +235,7 @@ keys continue working across chapter boundaries, including inside the web app’
 | `src/storage.rs` | Current SQLite schema, explicit saves and EPUB asset storage |
 | `src/legacy.rs` | Read-only v1 discovery and import adapter |
 | `src/browser.rs` | Native catalog stack, feed lists and catalog management |
-| `src/opds.rs` | OPDS 1 Atom, OPDS 2 JSON, categories, groups, facets, pagination and search |
+| `src/opds.rs` | OPDS 1 Atom, OPDS 2 JSON, categories, groups, facets, pagination, search templates and archive.org EPUB lookup |
 | `src/epub.rs` | EPUB ZIP/package/spine/contents parsing and embedded resources |
 | `resource/assets/reader/reader.js` | Reflow, pagination, links, gestures and reading-position reports |
 | `resource/assets/reader/readium-css/` | Vendored Readium CSS and its font resources |

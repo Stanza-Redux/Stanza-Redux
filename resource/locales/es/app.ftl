@@ -182,3 +182,18 @@ catalog_empty = Añade un catálogo para empezar a explorar.
 catalog_no_results = No hay resultados. Prueba otra búsqueda o vuelve atrás para explorar.
 retry = Reintentar
 refresh = Actualizar
+
+# Catalog shelves, facets and book availability.
+see_all = Ver todo
+catalog_total = { $count } libros
+search_results = Resultados de «{ $query }»
+sort_filter = Ordenar y filtrar
+facet_count = { $facet } ({ $count })
+facet_choice = { $group }: { $facet }
+more_by = Más de { $author }
+epub_checking = Buscando una edición EPUB…
+unavailable_account = Este catálogo presta o vende este libro mediante una cuenta. Stanza Redux solo descarga libros EPUB abiertos.
+unavailable_pdf = Este catálogo ofrece este libro solo en PDF.
+unavailable_audio = Este catálogo ofrece este libro solo como audiolibro.
+unavailable_other = Este catálogo no ofrece una edición EPUB de este libro.
+view_on_web = Ver en el sitio web

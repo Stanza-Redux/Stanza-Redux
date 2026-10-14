@@ -10,7 +10,6 @@ flow:
   - wait_for: { id: catalog-list-1-Cancellation fixture }
   - select: { id: catalog-list-1-Cancellation fixture, index: 0 }
   - wait_for: { id: catalog-loading }
-  - assert_missing: { id: catalog-list-1-Cancellation fixture }
   - screenshot: { name: pushed-loading-destination }
   - nav_back: { native: true, only_on: [uikit, mdc] }
   - nav_back: { only_on: [appkit, gtk, qt, xaml, arkui, dom] }

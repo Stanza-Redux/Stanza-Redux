@@ -17,12 +17,13 @@ flow:
   - wait_for: { id: catalog-list-1-Subjects }
   - select: { id: catalog-list-1-Subjects, index: 0 }
   - wait_for: { id: catalog-list-2-Authors }
-  - select: { id: catalog-list-2-Authors, index: 1 }
+  # Facets are a toolbar pull-down now, which the dayscript `menu` step does not reach.
+  - select: { id: catalog-list-2-Authors, index: 0 }
   - wait_for: { id: catalog-list-3-Facet }
   - nav_back: { native: true, only_on: [uikit, mdc] }
   - nav_back: { only_on: [appkit, gtk, qt, xaml, arkui, dom] }
   - wait_for: { id: catalog-list-2-Authors }
-  - select: { id: catalog-list-2-Authors, index: 1 }
+  - select: { id: catalog-list-2-Authors, index: 0 }
   - wait_for: { id: catalog-list-3-Facet }
   - key: { id: catalog-browser, key: ArrowLeft }
   - wait_for: { id: catalog-list-2-Authors }

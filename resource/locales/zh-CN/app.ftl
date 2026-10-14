@@ -182,3 +182,18 @@ catalog_empty = 添加书目，开始探索。
 catalog_no_results = 没有结果。请尝试其他搜索，或返回继续浏览。
 retry = 重试
 refresh = 刷新
+
+# Catalog shelves, facets and book availability.
+see_all = 查看全部
+catalog_total = { $count } 本书
+search_results = “{ $query }”的搜索结果
+sort_filter = 排序和筛选
+facet_count = { $facet }（{ $count }）
+facet_choice = { $group }：{ $facet }
+more_by = { $author } 的更多作品
+epub_checking = 正在查找 EPUB 版本…
+unavailable_account = 此目录通过账户借阅或出售这本书。Stanza Redux 只下载开放的 EPUB 图书。
+unavailable_pdf = 此目录仅提供这本书的 PDF 版本。
+unavailable_audio = 此目录仅提供这本书的有声书版本。
+unavailable_other = 此目录不提供这本书的 EPUB 版本。
+view_on_web = 在网站上查看

@@ -182,3 +182,18 @@ catalog_empty = Füge einen Katalog hinzu, um loszulegen.
 catalog_no_results = Keine Ergebnisse. Versuche eine andere Suche oder gehe zum Stöbern zurück.
 retry = Erneut versuchen
 refresh = Aktualisieren
+
+# Catalog shelves, facets and book availability.
+see_all = Alle anzeigen
+catalog_total = { $count } Bücher
+search_results = Ergebnisse für „{ $query }“
+sort_filter = Sortieren und filtern
+facet_count = { $facet } ({ $count })
+facet_choice = { $group }: { $facet }
+more_by = Mehr von { $author }
+epub_checking = Suche nach einer EPUB-Ausgabe…
+unavailable_account = Dieser Katalog verleiht oder verkauft dieses Buch über ein Konto. Stanza Redux lädt nur offene EPUB-Bücher herunter.
+unavailable_pdf = Dieser Katalog bietet dieses Buch nur als PDF an.
+unavailable_audio = Dieser Katalog bietet dieses Buch nur als Hörbuch an.
+unavailable_other = Dieser Katalog bietet keine EPUB-Ausgabe dieses Buchs an.
+view_on_web = Auf der Website ansehen

@@ -1,0 +1,189 @@
+{
+ "@context": "https://readium.org/webpub-manifest/context.jsonld",
+ "metadata": {
+  "title": "Archive.org"
+ },
+ "links": [
+  {
+   "href": "https://archive.org/services/opds/catalog{?query}&type=search",
+   "type": "application/opds+json",
+   "rel": "search",
+   "templated": true
+  },
+  {
+   "href": "https://archive.org/services/loans/loan/?action=user_bookshelf&opds=1",
+   "type": "application/opds+json",
+   "rel": "http://opds-spec.org/shelf"
+  },
+  {
+   "href": "https://archive.org/services/loans/loan/?action=user_profile&opds=1",
+   "type": "application/opds-profile+json",
+   "rel": "profile"
+  },
+  {
+   "href": "https://archive.org/services/opds/catalog?type=navigation&nav_key=main",
+   "type": "application/opds+json",
+   "rel": "self"
+  }
+ ],
+ "navigation": [
+  {
+   "href": "https://archive.org/services/opds/catalog?type=navigation&nav_key=page_ebooks",
+   "title": "eBooks",
+   "type": "application/opds+json",
+   "rel": "collection"
+  },
+  {
+   "href": "https://archive.org/services/opds/catalog?type=navigation&nav_key=page_audiobooks",
+   "title": "Audiobooks",
+   "type": "application/opds+json",
+   "rel": "collection"
+  }
+ ],
+ "groups": [
+  {
+   "metadata": {
+    "title": "eBooks Open Access & Public Domain",
+    "numberOfItems": 3666721
+   },
+   "links": [
+    {
+     "href": "https://archive.org/services/opds/catalog?type=browse&section=ebooks&item=open-access",
+     "type": "application/opds+json",
+     "rel": "self"
+    }
+   ],
+   "publications": [
+    {
+     "metadata": {
+      "title": "A reply to Mr. Maxwell's Answer to Mr. Kirkland's Essay on fevers; wherein the utility of the practice of suppressing them, is further exemplified, vindicated, and enforced",
+      "identifier": "https://archive.org/details/b30547234_0001",
+      "type": "http://schema.org/Book",
+      "published": "2018-12-06T16:18:57Z",
+      "language": [
+       "en"
+      ],
+      "description": "2 unnumbered leaves, viii, 107 pages ; (8vo)",
+      "author": [
+       {
+        "name": "Kirkland, Thomas, 1722-1798"
+       }
+      ],
+      "numberOfPages": 122
+     },
+     "links": [
+      {
+       "href": "https://archive.org/details/b30547234_0001&view=theater",
+       "type": "text/html",
+       "rel": "http://opds-spec.org/acquisition/sample"
+      },
+      {
+       "href": "https://archive.org/services/loans/loan/?action=webpub&opds=1&identifier=b30547234_0001",
+       "type": "application/opds-publication+json",
+       "rel": "self",
+       "title": "Internet Archive"
+      },
+      {
+       "href": "https://archive.org/services/opds/book/b30547234_0001?glob_pattern=*pdf",
+       "type": "application/pdf",
+       "rel": "http://opds-spec.org/acquisition/open-access",
+       "title": "Internet Archive",
+       "properties": {
+        "availability": {
+         "state": "available"
+        }
+       }
+      }
+     ],
+     "images": [
+      {
+       "href": "https://archive.org/download/b30547234_0001/__ia_thumb.jpg",
+       "type": "image/jpeg",
+       "rel": "cover",
+       "height": 1400,
+       "width": 800
+      },
+      {
+       "href": "https://archive.org/download/b30547234_0001/__ia_thumb.jpg",
+       "type": "image/jpeg",
+       "height": 700,
+       "width": 400
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "metadata": {
+    "title": "Audiobooks Open Access & Public Domain",
+    "numberOfItems": 21865
+   },
+   "links": [
+    {
+     "href": "https://archive.org/services/opds/catalog?type=browse&section=audiobooks&item=open-access",
+     "type": "application/opds+json",
+     "rel": "self"
+    }
+   ],
+   "publications": [
+    {
+     "metadata": {
+      "title": "Bliss, and Other Stories",
+      "identifier": "https://archive.org/details/bliss_and_other_stories_2307_librivox",
+      "type": "http://schema.org/Audiobook",
+      "published": "2023-07-06T08:51:17Z",
+      "language": [
+       "en"
+      ],
+      "description": "LibriVox recording of Bliss, and Other Stories by Katherine Mansfield. Read in English by Peter Dann. \"(N)ot to say that they are cheerful stories; they are anything but that; they have not, however, that element of trivial discomfort so dominant in modern fiction\", a critic wrote in the Spectator on the publication of this, the second of Mansfield's collections of short stories in book form. There is a wide range of forms and subjects here. Some of these stories are bold, early forays into literary territory that Mansfield's frenemy Virginia Woolf would later triumphantly stake out as her own. The adult male characters tend to be perversely wooden, the central female characters often verge on states of ecstasy or frank neuroticism, while ever present in the background are children, whose experiences are nearly always treated with great tenderness and sympathy. (Summary by Peter Dann) For further information, including links to online text, reader information, RSS feeds, CD cover or other formats (if available), please go to the LibriVox catalog page for this recording. For more free audio books or to become a volunteer reader, visit librivox.org . M4B Audiobook (180MB)",
+      "author": [
+       {
+        "name": "Katherine Mansfield"
+       }
+      ],
+      "duration": 23493.0
+     },
+     "links": [
+      {
+       "href": "https://archive.org/details/bliss_and_other_stories_2307_librivox&view=theater",
+       "type": "text/html",
+       "rel": "http://opds-spec.org/acquisition/sample"
+      },
+      {
+       "href": "https://archive.org/services/loans/loan/?action=webpub&opds=1&identifier=bliss_and_other_stories_2307_librivox",
+       "type": "application/opds-publication+json",
+       "rel": "self",
+       "title": "Internet Archive"
+      },
+      {
+       "href": "https://archive.org/services/opds/audiobooks/bliss_and_other_stories_2307_librivox",
+       "type": "application/audiobook+json",
+       "rel": "http://opds-spec.org/acquisition/open-access",
+       "title": "Internet Archive",
+       "properties": {
+        "availability": {
+         "state": "available"
+        }
+       }
+      }
+     ],
+     "images": [
+      {
+       "href": "https://archive.org/download/bliss_and_other_stories_2307_librivox/__ia_thumb.jpg",
+       "type": "image/jpeg",
+       "rel": "cover",
+       "height": 1400,
+       "width": 800
+      },
+      {
+       "href": "https://archive.org/download/bliss_and_other_stories_2307_librivox/__ia_thumb.jpg",
+       "type": "image/jpeg",
+       "height": 700,
+       "width": 400
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

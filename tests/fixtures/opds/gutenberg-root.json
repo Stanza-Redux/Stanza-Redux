@@ -1,0 +1,247 @@
+{
+ "metadata": {
+  "title": "Project Gutenberg"
+ },
+ "links": [
+  {
+   "rel": "self",
+   "href": "https://opds-test.pglaf.org/opds/",
+   "type": "application/opds+json"
+  },
+  {
+   "rel": "start",
+   "href": "https://opds-test.pglaf.org/opds/",
+   "type": "application/opds+json"
+  },
+  {
+   "rel": "search",
+   "href": "https://opds-test.pglaf.org/opds/search{?query,title,author}",
+   "type": "application/opds+json",
+   "templated": true
+  }
+ ],
+ "groups": [
+  {
+   "metadata": {
+    "title": "Navigation",
+    "numberOfItems": 2
+   },
+   "navigation": [
+    {
+     "href": "https://opds-test.pglaf.org/opds/bookshelves",
+     "title": "Browse Bookshelves",
+     "type": "application/opds+json",
+     "rel": "subsection"
+    },
+    {
+     "href": "https://opds-test.pglaf.org/opds/loccs",
+     "title": "Browse Subjects",
+     "type": "application/opds+json",
+     "rel": "subsection"
+    }
+   ]
+  },
+  {
+   "metadata": {
+    "title": "Recently Added",
+    "numberOfItems": 78648
+   },
+   "links": [
+    {
+     "rel": "self",
+     "href": "https://opds-test.pglaf.org/opds/search?sort=release_date&sort_order=desc",
+     "type": "application/opds+json"
+    }
+   ],
+   "publications": [
+    {
+     "metadata": {
+      "@type": "http://schema.org/Book",
+      "identifier": "https://www.gutenberg.org/ebooks/79774",
+      "title": "The flaw",
+      "language": "en",
+      "author": {
+       "name": "Hull, Helen R. (Helen Rose)",
+       "sortAs": "Hull, Helen R. (Helen Rose)"
+      },
+      "illustrator": {
+       "name": "Biggs, Walter",
+       "sortAs": "Biggs, Walter"
+      }
+     },
+     "links": [
+      {
+       "rel": "self",
+       "href": "https://opds-test.pglaf.org/opds/publications?id=79774",
+       "type": "application/opds-publication+json"
+      },
+      {
+       "rel": "http://opds-spec.org/acquisition/open-access",
+       "href": "https://www.gutenberg.org/cache/epub/79774/pg79774-images-3.epub",
+       "type": "application/epub+zip",
+       "length": 255801,
+       "title": "EPUB3 (E-readers incl. Send-to-Kindle)"
+      }
+     ],
+     "images": [
+      {
+       "href": "https://www.gutenberg.org/cache/epub/79774/pg79774.cover.medium.jpg",
+       "type": "image/jpeg",
+       "width": 200,
+       "height": 288,
+       "rel": "http://opds-spec.org/image"
+      },
+      {
+       "href": "https://www.gutenberg.org/cache/epub/79774/pg79774.cover.small.jpg",
+       "type": "image/jpeg",
+       "width": 66,
+       "height": 95,
+       "rel": "http://opds-spec.org/image/thumbnail"
+      }
+     ]
+    },
+    {
+     "metadata": {
+      "@type": "http://schema.org/Book",
+      "identifier": "https://www.gutenberg.org/ebooks/79775",
+      "title": "Picture logic: An attempt to popularise the science of reasoning by the combination of humorous pictures with examples of reasoning taken from daily life",
+      "language": "en",
+      "author": {
+       "name": "Swinburne, Alfred James",
+       "sortAs": "Swinburne, Alfred James"
+      }
+     },
+     "links": [
+      {
+       "rel": "self",
+       "href": "https://opds-test.pglaf.org/opds/publications?id=79775",
+       "type": "application/opds-publication+json"
+      },
+      {
+       "rel": "http://opds-spec.org/acquisition/open-access",
+       "href": "https://www.gutenberg.org/cache/epub/79775/pg79775-images-3.epub",
+       "type": "application/epub+zip",
+       "length": 3513659,
+       "title": "EPUB3 (E-readers incl. Send-to-Kindle)"
+      }
+     ],
+     "images": [
+      {
+       "href": "https://www.gutenberg.org/cache/epub/79775/pg79775.cover.medium.jpg",
+       "type": "image/jpeg",
+       "width": 200,
+       "height": 288,
+       "rel": "http://opds-spec.org/image"
+      },
+      {
+       "href": "https://www.gutenberg.org/cache/epub/79775/pg79775.cover.small.jpg",
+       "type": "image/jpeg",
+       "width": 66,
+       "height": 95,
+       "rel": "http://opds-spec.org/image/thumbnail"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "metadata": {
+    "title": "Most Popular",
+    "numberOfItems": 78648
+   },
+   "links": [
+    {
+     "rel": "self",
+     "href": "https://opds-test.pglaf.org/opds/search?sort=downloads&sort_order=desc",
+     "type": "application/opds+json"
+    }
+   ],
+   "publications": [
+    {
+     "metadata": {
+      "@type": "http://schema.org/Book",
+      "identifier": "https://www.gutenberg.org/ebooks/1342",
+      "title": "Pride and Prejudice",
+      "language": "en",
+      "author": {
+       "name": "Austen, Jane",
+       "sortAs": "Austen, Jane"
+      }
+     },
+     "links": [
+      {
+       "rel": "self",
+       "href": "https://opds-test.pglaf.org/opds/publications?id=1342",
+       "type": "application/opds-publication+json"
+      },
+      {
+       "rel": "http://opds-spec.org/acquisition/open-access",
+       "href": "https://www.gutenberg.org/cache/epub/1342/pg1342-images-3.epub",
+       "type": "application/epub+zip",
+       "length": 24836548,
+       "title": "EPUB3 (E-readers incl. Send-to-Kindle)"
+      }
+     ],
+     "images": [
+      {
+       "href": "https://www.gutenberg.org/cache/epub/1342/pg1342.cover.medium.jpg",
+       "type": "image/jpeg",
+       "width": 200,
+       "height": 288,
+       "rel": "http://opds-spec.org/image"
+      },
+      {
+       "href": "https://www.gutenberg.org/cache/epub/1342/pg1342.cover.small.jpg",
+       "type": "image/jpeg",
+       "width": 66,
+       "height": 95,
+       "rel": "http://opds-spec.org/image/thumbnail"
+      }
+     ]
+    },
+    {
+     "metadata": {
+      "@type": "http://schema.org/Book",
+      "identifier": "https://www.gutenberg.org/ebooks/2701",
+      "title": "Moby Dick: Or, The Whale",
+      "language": "en",
+      "author": {
+       "name": "Melville, Herman",
+       "sortAs": "Melville, Herman"
+      }
+     },
+     "links": [
+      {
+       "rel": "self",
+       "href": "https://opds-test.pglaf.org/opds/publications?id=2701",
+       "type": "application/opds-publication+json"
+      },
+      {
+       "rel": "http://opds-spec.org/acquisition/open-access",
+       "href": "https://www.gutenberg.org/cache/epub/2701/pg2701-images-3.epub",
+       "type": "application/epub+zip",
+       "length": 814023,
+       "title": "EPUB3 (E-readers incl. Send-to-Kindle)"
+      }
+     ],
+     "images": [
+      {
+       "href": "https://www.gutenberg.org/cache/epub/2701/pg2701.cover.medium.jpg",
+       "type": "image/jpeg",
+       "width": 200,
+       "height": 288,
+       "rel": "http://opds-spec.org/image"
+      },
+      {
+       "href": "https://www.gutenberg.org/cache/epub/2701/pg2701.cover.small.jpg",
+       "type": "image/jpeg",
+       "width": 66,
+       "height": 95,
+       "rel": "http://opds-spec.org/image/thumbnail"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

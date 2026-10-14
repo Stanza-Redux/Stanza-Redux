@@ -255,9 +255,6 @@ impl App {
             }
         });
     }
-    fn browse(self, url: String, root: bool) {
-        self.browse_named(url, root, res::str::loading().format());
-    }
     fn acquire(self, url: String, metadata: metadata::Metadata) {
         self.cancel();
         self.busy.set(true);
@@ -487,6 +484,12 @@ impl App {
         LinkPolicy::Ignore
     }
 }
+fn http_client() -> day_part_http::Client {
+    day_part_http::Client::builder()
+        .user_agent(USER_AGENT)
+        .timeout_total(std::time::Duration::from_secs(90))
+        .build()
+}
 async fn fetch(url: &str, limit: usize, app: App) -> Result<(Vec<u8>, String), AppError> {
     fetch_bytes(url, limit, Some(app)).await
 }
@@ -496,11 +499,7 @@ async fn fetch_bytes(
     app: Option<App>,
 ) -> Result<(Vec<u8>, String), AppError> {
     let url = opds::resolve(url, "")?;
-    let client = day_part_http::Client::builder()
-        .user_agent(USER_AGENT)
-        .timeout_total(std::time::Duration::from_secs(90))
-        .build();
-    let r = client
+    let r = http_client()
         .send_future(day_part_http::Request::get(url).header(
             "Accept",
             "application/atom+xml, application/opds+json, application/epub+zip, */*",
@@ -916,13 +915,42 @@ fn book_overview(
     .padding(24.)
 }
 fn details(a: App, publication: opds::Publication) -> impl Piece {
+    let summary = |p: &opds::Publication| {
+        let mut metadata = p.metadata.clone();
+        metadata.description = p.description.clone();
+        metadata
+    };
+    let initial = summary(&publication);
+    // Feeds often list summaries; the complete entry adds the description, subjects and links.
+    let shown = Signal::new(publication.detail.is_empty().then(|| initial.clone()));
+    let current = Signal::new(publication.clone());
+    let epub = Signal::new(publication.epub().cloned());
+    let checking = Signal::new(false);
+    let task = day::task(async move {
+        let detail = current.get_untracked().detail;
+        if !detail.is_empty() {
+            if let Ok(feed) = browser::load_feed(detail).await {
+                if let Some(full) = feed.entries.into_iter().next() {
+                    current.update(|p| p.supplement(full));
+                }
+            }
+            shown.set(Some(summary(&current.get_untracked())));
+        }
+        let p = current.get_untracked();
+        if let Some(link) = p.epub() {
+            epub.set(Some(link.clone()));
+        } else if let Some(item) = p.archive_item() {
+            checking.set(true);
+            if let Ok((files, _)) =
+                fetch_bytes(&opds::archive_files_url(&item), 1 << 20, None).await
+            {
+                epub.set(opds::archive_epub(&item, &files));
+            }
+            checking.set(false);
+        }
+    });
+    Scope::current().on_cleanup(move || task.abort());
     let cover_url = publication.cover.clone();
-    let mut metadata = publication.metadata.clone();
-    metadata.description = publication.description.clone();
-    let download_url = publication.epub().map(|l| l.url.clone());
-    metadata.acquisition = download_url.clone().unwrap_or_default();
-    let available = download_url.is_some();
-    let shown = Signal::new(Some(metadata.clone()));
     book_overview(
         publication.title,
         publication.author,
@@ -932,18 +960,86 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
         column((
             button(res::str::download())
                 .prominent()
-                .enabled(move || available && !a.busy.get())
+                .enabled(move || epub.get().is_some() && !a.busy.get())
                 .action(move || {
-                    if let Some(url) = &download_url {
-                        a.acquire(url.clone(), metadata.clone());
+                    if let Some(link) = epub.get_untracked() {
+                        let mut metadata = shown.get_untracked().unwrap_or_else(|| initial.clone());
+                        metadata.acquisition = link.url.clone();
+                        a.acquire(link.url, metadata);
                     }
                 })
                 .id("download-book")
                 .height(50.)
                 .grow_w(),
-            label(res::str::epub_only())
-                .font(Font::Footnote)
-                .secondary(),
+            label(move || {
+                if epub.get().is_some() {
+                    res::str::epub_only().format()
+                } else if checking.get() || shown.get().is_none() {
+                    res::str::epub_checking().format()
+                } else {
+                    match current.get().unavailable() {
+                        opds::Unavailable::Account => res::str::unavailable_account(),
+                        opds::Unavailable::Pdf => res::str::unavailable_pdf(),
+                        opds::Unavailable::Audio => res::str::unavailable_audio(),
+                        opds::Unavailable::Other => res::str::unavailable_other(),
+                    }
+                    .format()
+                }
+            })
+            .font(Font::Footnote)
+            .secondary()
+            .id("publication-availability"),
+            when(
+                move || {
+                    epub.get().is_none()
+                        && !checking.get()
+                        && shown.get().is_some()
+                        && !current.get().web.is_empty()
+                },
+                move || {
+                    button(res::str::view_on_web())
+                        .bordered()
+                        .action(move || open_link(&current.get_untracked().web))
+                        .id("publication-web")
+                },
+            ),
+            column((each(
+                items(
+                    move || {
+                        current
+                            .get()
+                            .browse
+                            .into_iter()
+                            .enumerate()
+                            .collect::<Vec<_>>()
+                    },
+                    |(i, l): &(usize, opds::Link)| format!("{i}:{}", l.url),
+                ),
+                move |link| {
+                    let title = move || {
+                        let l = link.get().1;
+                        if l.rel == "author" {
+                            res::str::more_by(l.title).format()
+                        } else {
+                            l.title
+                        }
+                    };
+                    row((
+                        label(title).grow(),
+                        vector(res::vectors::chevron_forward)
+                            .frame(12., 24.)
+                            .decorative(),
+                    ))
+                    .spacing(12.)
+                    .padding(Insets::symmetric(0., 10.))
+                    .on_tap(move || {
+                        let l = link.get().1;
+                        a.browse_named(l.url, false, title())
+                    })
+                    .id_of(move || format!("publication-browse-{}", link.get().0))
+                },
+            ),))
+            .align(HAlign::Leading),
         ))
         .spacing(8.),
     )

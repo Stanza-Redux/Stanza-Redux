@@ -182,3 +182,18 @@ catalog_empty = أضف فهرسًا لبدء الاستكشاف.
 catalog_no_results = لا توجد نتائج هنا. جرّب بحثًا آخر أو ارجع للتصفح.
 retry = حاول مجددًا
 refresh = تحديث
+
+# Catalog shelves, facets and book availability.
+see_all = عرض الكل
+catalog_total = عدد الكتب: { $count }
+search_results = نتائج البحث عن «{ $query }»
+sort_filter = الترتيب والتصفية
+facet_count = { $facet } ({ $count })
+facet_choice = { $group }: { $facet }
+more_by = المزيد من { $author }
+epub_checking = جارٍ البحث عن إصدار EPUB…
+unavailable_account = يعير هذا الفهرس هذا الكتاب أو يبيعه عبر حساب. يُنزّل Stanza Redux كتب EPUB المفتوحة فقط.
+unavailable_pdf = يقدّم هذا الفهرس هذا الكتاب بصيغة PDF فقط.
+unavailable_audio = يقدّم هذا الفهرس هذا الكتاب ككتاب صوتي فقط.
+unavailable_other = لا يقدّم هذا الفهرس إصدار EPUB من هذا الكتاب.
+view_on_web = عرض على الموقع

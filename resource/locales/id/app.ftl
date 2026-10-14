@@ -182,3 +182,18 @@ catalog_empty = Tambahkan katalog untuk mulai menjelajah.
 catalog_no_results = Tidak ada hasil. Coba pencarian lain atau kembali untuk menjelajah.
 retry = Coba lagi
 refresh = Muat ulang
+
+# Catalog shelves, facets and book availability.
+see_all = Lihat semua
+catalog_total = { $count } buku
+search_results = Hasil untuk “{ $query }”
+sort_filter = Urutkan dan filter
+facet_count = { $facet } ({ $count })
+facet_choice = { $group }: { $facet }
+more_by = Lainnya dari { $author }
+epub_checking = Mencari edisi EPUB…
+unavailable_account = Katalog ini meminjamkan atau menjual buku ini melalui akun. Stanza Redux hanya mengunduh buku EPUB terbuka.
+unavailable_pdf = Katalog ini hanya menyediakan buku ini dalam format PDF.
+unavailable_audio = Katalog ini hanya menyediakan buku ini sebagai buku audio.
+unavailable_other = Katalog ini tidak menyediakan edisi EPUB untuk buku ini.
+view_on_web = Lihat di situs web

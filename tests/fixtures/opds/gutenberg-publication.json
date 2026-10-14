@@ -1,0 +1,144 @@
+{
+ "metadata": {
+  "@type": "http://schema.org/Book",
+  "identifier": "https://www.gutenberg.org/ebooks/79774",
+  "title": "The flaw",
+  "language": "en",
+  "accessibility": {
+   "hazard": [
+    "none"
+   ],
+   "accessMode": [
+    "textual"
+   ],
+   "accessModeSufficient": [
+    [
+     "textual"
+    ]
+   ],
+   "feature": [
+    "displayTransformability",
+    "unlocked"
+   ]
+  },
+  "author": {
+   "name": "Hull, Helen R. (Helen Rose)",
+   "sortAs": "Hull, Helen R. (Helen Rose)",
+   "identifier": "https://www.gutenberg.org/ebooks/author/52995",
+   "links": [
+    {
+     "href": "https://opds-test.pglaf.org/opds/search?author_id=52995",
+     "type": "application/opds+json"
+    }
+   ]
+  },
+  "illustrator": {
+   "name": "Biggs, Walter",
+   "sortAs": "Biggs, Walter",
+   "identifier": "https://www.gutenberg.org/ebooks/author/39488",
+   "links": [
+    {
+     "href": "https://opds-test.pglaf.org/opds/search?author_id=39488",
+     "type": "application/opds+json"
+    }
+   ]
+  },
+  "published": "2026-10-13",
+  "description": "Creators: Helen R. Hull (1888-1971) and Walter Biggs (1886-1968) [Illustrator]\n\nRights: Public domain in the USA.\n\nDownloads: 0",
+  "subject": [
+   {
+    "name": "Courtship -- Fiction",
+    "scheme": "https://www.gutenberg.org/ebooks/subject/",
+    "code": "2578",
+    "links": [
+     {
+      "href": "https://opds-test.pglaf.org/opds/subjects?id=2578",
+      "type": "application/opds+json"
+     }
+    ]
+   },
+   {
+    "name": "Families -- Fiction",
+    "scheme": "https://www.gutenberg.org/ebooks/subject/",
+    "code": "11115",
+    "links": [
+     {
+      "href": "https://opds-test.pglaf.org/opds/subjects?id=11115",
+      "type": "application/opds+json"
+     }
+    ]
+   },
+   {
+    "name": "Short stories",
+    "scheme": "https://www.gutenberg.org/ebooks/subject/",
+    "code": "94",
+    "links": [
+     {
+      "href": "https://opds-test.pglaf.org/opds/subjects?id=94",
+      "type": "application/opds+json"
+     }
+    ]
+   },
+   {
+    "name": "Young women -- Fiction",
+    "scheme": "https://www.gutenberg.org/ebooks/subject/",
+    "code": "2481",
+    "links": [
+     {
+      "href": "https://opds-test.pglaf.org/opds/subjects?id=2481",
+      "type": "application/opds+json"
+     }
+    ]
+   },
+   {
+    "name": "Language and Literatures: PS",
+    "sortAs": "PS",
+    "scheme": "http://purl.org/dc/terms/LCC",
+    "code": "PS",
+    "links": [
+     {
+      "href": "https://opds-test.pglaf.org/opds/search?locc=PS",
+      "type": "application/opds+json"
+     }
+    ]
+   }
+  ],
+  "publisher": "New York: Harper & Brothers, 1919."
+ },
+ "links": [
+  {
+   "rel": "self",
+   "href": "https://opds-test.pglaf.org/opds/publications?id=79774",
+   "type": "application/opds-publication+json"
+  },
+  {
+   "rel": "http://opds-spec.org/acquisition/open-access",
+   "href": "https://www.gutenberg.org/cache/epub/79774/pg79774-images-3.epub",
+   "type": "application/epub+zip",
+   "length": 255801,
+   "title": "EPUB3 (E-readers incl. Send-to-Kindle)"
+  },
+  {
+   "rel": "related",
+   "href": "https://opds-test.pglaf.org/opds/also?id=79774",
+   "type": "application/opds+json",
+   "title": "Readers also downloaded"
+  }
+ ],
+ "images": [
+  {
+   "href": "https://www.gutenberg.org/cache/epub/79774/pg79774.cover.medium.jpg",
+   "type": "image/jpeg",
+   "width": 200,
+   "height": 288,
+   "rel": "http://opds-spec.org/image"
+  },
+  {
+   "href": "https://www.gutenberg.org/cache/epub/79774/pg79774.cover.small.jpg",
+   "type": "image/jpeg",
+   "width": 66,
+   "height": 95,
+   "rel": "http://opds-spec.org/image/thumbnail"
+  }
+ ]
+}

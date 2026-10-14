@@ -1,5 +1,52 @@
 # Local validation
 
+## Catalog search, Add placement and Back navigation — 2026-10-14
+
+- Search did nothing on the simulator app handed over earlier because it was launched with
+  `--script … --keep-alive`: script launches default to scripted dialogs, so the prompt waited
+  for a `respond` step. An interactive launch showed the native prompt. Day's CLI now switches a
+  kept-alive app back to native dialogs after its scripts unless `--dialogs` was given; a
+  scripted `--keep-alive` launch then showed the native Search prompt.
+- Add OPDS Catalog now appears only in the catalog list's toolbar.
+- Catalog pages were wrapped in a gate that unmounted every page below the top one, so Back
+  rebuilt the parent list. Without it, lldb showed the same `UITableView` before and after a
+  push and pop, with its `contentOffset` (0, 1200) preserved.
+- Keeping parents built exposed a day-uikit race: a button Back was reported to Day only when
+  its slide ended, so a row tapped on the revealed page during the slide pushed onto a model
+  that still held the outgoing page, and the late report popped the new page. Day now reports
+  non-interactive pops on the next run-loop turn, and title patches target the queued top.
+- iPhone 17 Pro simulator: 466/466 steps across `browser`, `catalog`, `catalog-loading`,
+  `catalog-cancellation`, `catalog-thumbnails`, `catalog-polish`, `book-info`,
+  `catalog-persistence`, `library`, `persistence`, `navigation-settle` and `demo` (6 skipped
+  by platform). `catalog-cancellation.yaml` no longer asserts that the parent list is gone.
+
+## OPDS 2 catalogs: Gutenberg preview and Internet Archive — 2026-10-14
+
+- Live feeds from `https://opds-test.pglaf.org/opds/` parse: the grouped root (2 navigation
+  links, 11 shelves), bookshelves, bookshelf groups, LoC subject classes, subjects, author and
+  LoCC searches, query search with 3 facet groups and paging, publication detail and "readers
+  also downloaded". `probe_catalog --acquire` downloaded and parsed *The flaw* from the root.
+- Before this change, searching either catalog failed: only OpenSearch `{searchTerms}`
+  templates were expanded, not RFC 6570 `{?query,…}`. Groups and facets were flattened into
+  one list (about 165 books and up to 87 facet rows, with shelf links titled "Recently Added · ").
+- 35 Rust unit tests pass, including trimmed live responses in `tests/fixtures/opds/`. The 14
+  Python tests, `cargo fmt --check` and `git diff --check` pass. Clippy reports no new warnings;
+  existing `collapsible_if` and `items_after_test_module` warnings remain in untouched code.
+- iPhone 17 Pro simulator (iOS 26.5): `browser.yaml`, `catalog.yaml`, `catalog-loading.yaml`,
+  `catalog-thumbnails.yaml`, `catalog-polish.yaml` and `book-info.yaml` pass (240 steps pass,
+  5 skipped by platform). Walkthroughs of both live catalogs covered shelves, a shelf
+  book, its author feed, See all, search, bookshelves, archive.org search, a loan-only
+  book, a PDF-only book, and downloading and opening an archive.org scan's EPUB found
+  through the metadata API. macOS AppKit showed the same shelves and search with a temporary
+  `DAY_DATA_DIR`.
+- The facet pull-down was checked visually on both targets. Choosing a facet was not automated:
+  the dayscript `menu` step reaches app-menu items, not toolbar pull-down entries.
+  `browser.yaml` now follows the fixture's navigation row where it used the old facet row.
+- UIKit's automatic list row heights collapsed mixed shelf and book rows to about 44 points,
+  so shelf pages and list pages each use a uniform row height.
+- `archive.org/services/opds/book/<id>?glob_pattern=*epub` sometimes returns its redirect as a
+  JSON body instead of an HTTP redirect, so the EPUB is located with the metadata API.
+
 ## iOS reader clipping — 2026-10-14
 
 - Reproduced in the iPhone 18 Pro simulator (iOS 27): the 874-point reader viewport

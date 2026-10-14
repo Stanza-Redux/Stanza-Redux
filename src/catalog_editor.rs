@@ -247,15 +247,16 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
                         let feed = validated.get_untracked().unwrap().1;
                         let has_description = !feed.description.is_empty();
                         let has_updated = !feed.updated.is_empty();
+                        let counts = res::str::catalog_counts(
+                            feed.book_count() as i64,
+                            feed.link_count() as i64,
+                        );
                         section((
                             label(res::str::catalog_validated())
                                 .font(Font::Headline)
                                 .id("catalog-editor-valid"),
                             labeled(res::str::catalog_title(), label(feed.title)),
-                            label(res::str::catalog_counts(
-                                feed.entries.len() as i64,
-                                (feed.navigation.len() + feed.facets.len()) as i64,
-                            )),
+                            label(counts),
                             when(
                                 move || has_description,
                                 move || label(feed.description.clone()),

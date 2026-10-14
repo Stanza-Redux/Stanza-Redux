@@ -182,3 +182,18 @@ catalog_empty = Добавьте каталог, чтобы начать пои�
 catalog_no_results = Результатов нет. Попробуйте другой запрос или вернитесь к каталогу.
 retry = Повторить
 refresh = Обновить
+
+# Catalog shelves, facets and book availability.
+see_all = Показать все
+catalog_total = Книг: { $count }
+search_results = Результаты по запросу «{ $query }»
+sort_filter = Сортировка и фильтры
+facet_count = { $facet } ({ $count })
+facet_choice = { $group }: { $facet }
+more_by = Другие книги автора: { $author }
+epub_checking = Поиск издания EPUB…
+unavailable_account = Этот каталог выдаёт или продаёт эту книгу через учётную запись. Stanza Redux загружает только открытые книги EPUB.
+unavailable_pdf = Этот каталог предлагает эту книгу только в формате PDF.
+unavailable_audio = Этот каталог предлагает эту книгу только как аудиокнигу.
+unavailable_other = Этот каталог не предлагает издание этой книги в формате EPUB.
+view_on_web = Открыть на сайте

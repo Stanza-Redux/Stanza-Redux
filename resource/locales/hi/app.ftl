@@ -182,3 +182,18 @@ catalog_empty = खोजना शुरू करने के लिए क�
 catalog_no_results = कोई परिणाम नहीं मिला। दूसरी खोज करें या ब्राउज़ करने के लिए वापस जाएँ।
 retry = फिर कोशिश करें
 refresh = रीफ़्रेश करें
+
+# Catalog shelves, facets and book availability.
+see_all = सभी देखें
+catalog_total = { $count } पुस्तकें
+search_results = “{ $query }” के परिणाम
+sort_filter = क्रमबद्ध करें और फ़िल्टर करें
+facet_count = { $facet } ({ $count })
+facet_choice = { $group }: { $facet }
+more_by = { $author } की और पुस्तकें
+epub_checking = EPUB संस्करण खोजा जा रहा है…
+unavailable_account = यह कैटलॉग इस पुस्तक को खाते के ज़रिए उधार देता या बेचता है। Stanza Redux केवल खुली EPUB पुस्तकें डाउनलोड करता है।
+unavailable_pdf = यह कैटलॉग यह पुस्तक केवल PDF के रूप में देता है।
+unavailable_audio = यह कैटलॉग यह पुस्तक केवल ऑडियोबुक के रूप में देता है।
+unavailable_other = यह कैटलॉग इस पुस्तक का EPUB संस्करण नहीं देता।
+view_on_web = वेबसाइट पर देखें
