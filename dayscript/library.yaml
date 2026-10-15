@@ -57,11 +57,14 @@ flow:
   - screenshot: { name: library-title-search }
   - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
   - nav_back: {}
-  - navigate: { route: settings }
-  - select: { id: language, index: 1 }
+  - navigate: { route: settings/general }
+  - wait_for: { id: language-picker }
+  - select: { id: language-picker, index: 5 }
   - navigate: { route: library }
   - assert_visible: { id: library-folders }
   - screenshot: { name: library-french }
-  - navigate: { route: settings }
-  - select: { id: language, index: 0 }
+  - navigate: { route: settings/general }
+  - wait_for: { id: language-picker }
+  - select: { id: language-picker, index: 0 }
+  - close_window: { window: day.preferences }
   - navigate: { route: library }

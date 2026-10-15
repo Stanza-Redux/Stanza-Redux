@@ -5,12 +5,93 @@ use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::rc::Rc;
 
-static REQUESTS: std::sync::LazyLock<async_lock::Semaphore> =
-    std::sync::LazyLock::new(|| async_lock::Semaphore::new(4));
 type Cover = Option<Arc<Vec<u8>>>;
 thread_local! {
     // Cache successes and misses for this session; never persist remote images in the library DB.
     static CACHE: RefCell<VecDeque<(String, Cover)>> = const { RefCell::new(VecDeque::new()) };
+    static SLOTS: RefCell<Slots> = const { RefCell::new(Slots { free: 4, queue: VecDeque::new() }) };
+}
+/// At most four cover requests at once, granted strictly in request order. A native list may
+/// bind far more rows than it shows (GtkListView binds a whole 120-book page), so the queue
+/// can be long. A semaphore whose woken waiter can lose the freed slot to a newcomer, and
+/// rejoin at the back, starves the first rows behind all the others.
+struct Slots {
+    free: usize,
+    queue: VecDeque<Rc<RefCell<Turn>>>,
+}
+#[derive(Default)]
+struct Turn {
+    granted: bool,
+    waker: Option<std::task::Waker>,
+}
+/// A held request slot; dropping it hands the slot to the next waiter.
+struct Slot;
+impl Drop for Slot {
+    fn drop(&mut self) {
+        release();
+    }
+}
+fn release() {
+    // Wake after the borrow ends: a waker may poll its task right away.
+    let waker = SLOTS.with(|s| {
+        let mut s = s.borrow_mut();
+        // The queue's reference is the only one left once a waiter's request was cancelled.
+        while let Some(turn) = s.queue.pop_front() {
+            if Rc::strong_count(&turn) > 1 {
+                let mut turn = turn.borrow_mut();
+                turn.granted = true;
+                return turn.waker.take();
+            }
+        }
+        s.free += 1;
+        None
+    });
+    if let Some(waker) = waker {
+        waker.wake();
+    }
+}
+async fn slot() -> Slot {
+    let turn = SLOTS.with(|s| {
+        let mut s = s.borrow_mut();
+        if s.free > 0 {
+            s.free -= 1;
+            return None;
+        }
+        let turn = Rc::new(RefCell::new(Turn::default()));
+        s.queue.push_back(turn.clone());
+        Some(turn)
+    });
+    if let Some(turn) = turn {
+        Wait(Some(turn)).await;
+    }
+    Slot
+}
+/// Waits for a granted turn. Dropped after the grant but before it was taken, it passes the
+/// slot on; dropped before, it simply leaves the queue.
+struct Wait(Option<Rc<RefCell<Turn>>>);
+impl std::future::Future for Wait {
+    type Output = ();
+    fn poll(
+        mut self: std::pin::Pin<&mut Self>,
+        cx: &mut std::task::Context<'_>,
+    ) -> std::task::Poll<()> {
+        let Some(turn) = &self.0 else {
+            return std::task::Poll::Ready(());
+        };
+        if turn.borrow().granted {
+            self.0 = None;
+            return std::task::Poll::Ready(());
+        }
+        turn.borrow_mut().waker = Some(cx.waker().clone());
+        std::task::Poll::Pending
+    }
+}
+impl Drop for Wait {
+    fn drop(&mut self) {
+        if self.0.take().is_some_and(|turn| turn.borrow().granted) {
+            release();
+        }
+    }
 }
 fn cached(url: &str) -> Option<Cover> {
     CACHE.with(|c| {
@@ -26,7 +107,7 @@ async fn load(url: String) -> Cover {
     if let Some(bytes) = cached(&url) {
         return bytes;
     }
-    let _permit = REQUESTS.acquire().await;
+    let _slot = slot().await;
     if let Some(bytes) = cached(&url) {
         return bytes;
     }
@@ -164,7 +245,16 @@ fn image_view(
     };
     start(url());
     let watched_url = url.clone();
-    watch(move || watched_url(), move |url, _| start(url.clone()));
+    // A list rebind can hand the row the URL it already shows or is loading. Keep that load:
+    // restarting drops the cover and queues the request behind every other row's.
+    watch(
+        move || watched_url(),
+        move |url, previous| {
+            if previous != Some(url) {
+                start(url.clone())
+            }
+        },
+    );
     Scope::current().on_cleanup(move || {
         generation.set(generation.get().wrapping_add(1));
         if let Some(task) = task.borrow_mut().take() {
@@ -202,6 +292,36 @@ fn cover_source(
 #[cfg(all(test, not(target_arch = "wasm32")))]
 mod tests {
     use super::*;
+    #[test]
+    fn request_slots_are_granted_in_order_and_cancelled_turns_pass_them_on() {
+        use std::future::Future;
+        type Pending = std::pin::Pin<Box<dyn Future<Output = Slot>>>;
+        let mut cx = std::task::Context::from_waker(std::task::Waker::noop());
+        let mut poll = |f: &mut Pending| match f.as_mut().poll(&mut cx) {
+            std::task::Poll::Ready(slot) => Some(slot),
+            std::task::Poll::Pending => None,
+        };
+        let mut held = Vec::new();
+        for _ in 0..4 {
+            let mut f: Pending = Box::pin(slot());
+            held.push(poll(&mut f).expect("a free slot is granted at once"));
+        }
+        let mut first: Pending = Box::pin(slot());
+        let mut second: Pending = Box::pin(slot());
+        let mut third: Pending = Box::pin(slot());
+        assert!(poll(&mut first).is_none() && poll(&mut second).is_none());
+        assert!(poll(&mut third).is_none());
+        // The freed slot goes to the oldest waiter, never to a newer one.
+        held.pop();
+        assert!(poll(&mut third).is_none() && poll(&mut second).is_none());
+        let first_slot = poll(&mut first).expect("the oldest waiter is granted");
+        // A waiter cancelled after its grant hands the slot on to the next one.
+        held.pop();
+        drop(second);
+        assert!(poll(&mut third).is_some());
+        drop((first_slot, held));
+        SLOTS.with(|s| assert_eq!(s.borrow().free, 4));
+    }
     #[test]
     fn recycled_rows_never_show_a_cover_for_another_url() {
         let bytes = Arc::new(vec![1, 2, 3]);

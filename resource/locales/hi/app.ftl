@@ -1,4 +1,5 @@
 app_title = Stanza Redux
+language_name = हिन्दी
 library = पुस्तकालय
 catalogs = कैटलॉग
 reader = पढ़ें
@@ -27,7 +28,7 @@ reader_empty = अपने पुस्तकालय से पुस्त�
 font_size = अक्षर का आकार
 margins = पृष्ठ के हाशिए
 line_height = पंक्तियों के बीच दूरी
-theme = काग़ज़
+theme = थीम
 light = हल्का
 sepia = सेपिया
 dark = गहरा
@@ -45,7 +46,7 @@ font_noto_serif = Noto Serif
 custom = कस्टम
 paper_color = काग़ज़ का कस्टम रंग
 ink_color = अक्षरों का कस्टम रंग
-custom_hint = इन रंगों के लिए कस्टम काग़ज़ चुनें।
+custom_hint = इन रंगों के लिए कस्टम थीम चुनें।
 back_library = पुस्तकालय
 contents = विषय-सूची
 done = पूर्ण
@@ -89,7 +90,9 @@ left_tap_advances = बाईं ओर टैप करने पर आगे 
 paragraph_spacing = अनुच्छेदों के बीच दूरी
 typography = अक्षर विन्यास
 page_layout = पृष्ठ विन्यास
-appearance = रूप
+settings_reading = पठन
+settings_reader_theme = रीडर थीम
+settings_controls = नियंत्रण
 error_status = पूरा नहीं हो सका: { $message }
 operation_failed = कार्य पूरा नहीं हो सका। फिर से प्रयास करें।
 network_failed = कनेक्ट नहीं हो सका। अपना कनेक्शन जाँचें और फिर से प्रयास करें।
@@ -129,6 +132,26 @@ library_recents = हाल में पढ़ी गई
 library_titles = शीर्षक
 library_authors = लेखक
 library_genres = शैलियाँ
+library_recents_summary = { $n ->
+    [0] अभी तक कोई किताब नहीं खोली गई
+    [one] हाल में खोली गई { $n } किताब
+   *[other] हाल में खोली गई { $n } किताबें
+}
+library_titles_summary = { $n ->
+    [0] अभी तक कोई किताब नहीं
+    [one] { $n } किताब
+   *[other] { $n } किताबें
+}
+library_authors_summary = { $n ->
+    [0] अभी तक कोई लेखक नहीं
+    [one] { $n } लेखक
+   *[other] { $n } लेखक
+}
+library_genres_summary = { $n ->
+    [0] अभी तक कोई शैली नहीं
+    [one] { $n } शैली
+   *[other] { $n } शैलियाँ
+}
 unknown_author = अज्ञात लेखक
 unknown_genre = अवर्गीकृत
 library_no_results = यहाँ अभी कोई पुस्तक नहीं है।
@@ -159,21 +182,6 @@ return_position = पिछले स्थान पर लौटें
 contents_search = अध्याय खोजें
 contents_empty = कोई मिलते अध्याय नहीं हैं।
 chapter_percent = अध्याय का { $percent }
-
-# Native language names in the language picker.
-language_ar = العربية
-language_de = Deutsch
-language_en = English
-language_es = Español
-language_fr = Français
-language_hi = हिन्दी
-language_id = Bahasa Indonesia
-language_it = Italiano
-language_ja = 日本語
-language_ko = 한국어
-language_pt_br = Português (Brasil)
-language_ru = Русский
-language_zh_cn = 简体中文
 
 # Catalog discovery and recovery.
 catalog_heading = अपनी अगली किताब खोजें

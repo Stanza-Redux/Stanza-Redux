@@ -1,4 +1,5 @@
 app_title = Stanza Redux
+language_name = 日本語
 library = ライブラリ
 catalogs = カタログ
 reader = 読む
@@ -27,7 +28,7 @@ reader_empty = ライブラリから本を選ぶか、カタログからダウ�
 font_size = 文字サイズ
 margins = ページ余白
 line_height = 行間
-theme = 用紙
+theme = テーマ
 light = ライト
 sepia = セピア
 dark = ダーク
@@ -45,7 +46,7 @@ font_noto_serif = Noto Serif
 custom = カスタム
 paper_color = 用紙のカスタム色
 ink_color = 文字のカスタム色
-custom_hint = これらの色を使用するには、用紙をカスタムに設定してください。
+custom_hint = これらの色を使用するには、テーマをカスタムに設定してください。
 back_library = ライブラリ
 contents = 目次
 done = 完了
@@ -89,7 +90,9 @@ left_tap_advances = 左側のタップで次のページへ
 paragraph_spacing = 段落間隔
 typography = 文字設定
 page_layout = ページレイアウト
-appearance = 外観
+settings_reading = 読書
+settings_reader_theme = リーダーのテーマ
+settings_controls = 操作
 error_status = 完了できませんでした：{ $message }
 operation_failed = 操作を完了できませんでした。もう一度お試しください。
 network_failed = 接続できません。接続を確認して、もう一度お試しください。
@@ -129,6 +132,22 @@ library_recents = 最近読んだ本
 library_titles = タイトル
 library_authors = 著者
 library_genres = ジャンル
+library_recents_summary = { $n ->
+    [0] まだ開いた本はありません
+   *[other] 最近開いた本 { $n } 冊
+}
+library_titles_summary = { $n ->
+    [0] まだ本はありません
+   *[other] { $n } 冊
+}
+library_authors_summary = { $n ->
+    [0] まだ著者はいません
+   *[other] 著者 { $n } 人
+}
+library_genres_summary = { $n ->
+    [0] まだジャンルはありません
+   *[other] { $n } ジャンル
+}
 unknown_author = 著者不明
 unknown_genre = 未分類
 library_no_results = まだ本がありません。
@@ -159,21 +178,6 @@ return_position = 以前の位置に戻る
 contents_search = 章を検索
 contents_empty = 一致する章がありません。
 chapter_percent = 章の{ $percent }
-
-# Native language names in the language picker.
-language_ar = العربية
-language_de = Deutsch
-language_en = English
-language_es = Español
-language_fr = Français
-language_hi = हिन्दी
-language_id = Bahasa Indonesia
-language_it = Italiano
-language_ja = 日本語
-language_ko = 한국어
-language_pt_br = Português (Brasil)
-language_ru = Русский
-language_zh_cn = 简体中文
 
 # Catalog discovery and recovery.
 catalog_heading = 次に読む本を見つけよう

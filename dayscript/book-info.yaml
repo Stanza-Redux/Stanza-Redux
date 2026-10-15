@@ -49,7 +49,11 @@ flow:
   - nav_back: {}
   - wait_for: { id: library-folders }
   - navigate: { route: settings }
+  - wait_for: { id: settings-root }
   - screenshot: { name: settings-page }
+  - navigate: { route: settings/general }
+  - wait_for: { id: language-picker }
+  - close_window: { window: day.preferences }
   - navigate: { route: catalogs }
   - menu: { id: manage-catalogs-menu }
   - scroll_to: { id: 'catalog-remove-http://127.0.0.1:18765/rich' }

@@ -1,8 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
 //! Native library navigation; queries and membership come from the persistence store.
-use crate::storage::{BookRecordFields, FolderRecordFields};
+use crate::storage::{BookRecord, BookRecordFields, FolderRecord, FolderRecordFields};
 use crate::*;
 use day::model::Source;
+use day_persistence::CountQuery;
+use std::rc::Rc;
+
+/// How many books the Recents collection lists.
+const RECENTS_LIMIT: usize = 50;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Page {
@@ -160,22 +165,56 @@ fn folders(a: App, kind: Option<&'static str>) -> impl Piece {
         .grow()
         .any();
     }
+    // Live counts for the summary under each collection's name; absent (an empty summary)
+    // while the database is still opening.
+    let counts = a.database.get_untracked().map(|db| {
+        Rc::new(Counts {
+            recents: Box::new(db.recent_count(RECENTS_LIMIT)),
+            books: db.book_count(),
+            authors: db.folder_count("author"),
+            genres: db.folder_count("genre"),
+        })
+    });
     list(
         items(
             || vec![Page::Recents, Page::Titles, Page::Authors, Page::Genres],
             |p: &Page| p.key(),
         ),
         move |slot| {
+            // One glyph per collection; the rows recycle, so each follows the slot.
+            let glyph = |page: Page, name: day::VectorName| {
+                when(
+                    move || slot.get() == page,
+                    move || vector(name.clone()).template().frame(24., 24.).decorative(),
+                )
+            };
+            let counts = counts.clone();
             row((
-                label(move || slot.get().title())
-                    .font(Font::Headline)
-                    .single_line()
-                    .grow(),
+                column((
+                    glyph(Page::Recents, res::vectors::library_recents),
+                    glyph(Page::Titles, res::vectors::library_titles),
+                    glyph(Page::Authors, res::vectors::library_authors),
+                    glyph(Page::Genres, res::vectors::library_genres),
+                ))
+                .frame(24., 24.),
+                column((
+                    label(move || slot.get().title())
+                        .font(Font::Headline)
+                        .single_line(),
+                    label(move || summary(counts.as_deref(), &slot.get()))
+                        .font(Font::Footnote)
+                        .secondary()
+                        .single_line(),
+                ))
+                .spacing(2.)
+                .align(HAlign::Leading)
+                .grow(),
                 vector(res::vectors::chevron_forward)
                     .frame(12., 24.)
                     .decorative(),
             ))
             .spacing(12.)
+            .align(VAlign::Center)
             .padding(16.)
         },
     )
@@ -192,6 +231,29 @@ fn folders(a: App, kind: Option<&'static str>) -> impl Piece {
     .grow()
     .any()
 }
+/// The live counts behind the top-level collections' summaries.
+struct Counts {
+    recents: Box<dyn Fn() -> usize>,
+    books: CountQuery<BookRecord>,
+    authors: CountQuery<FolderRecord>,
+    genres: CountQuery<FolderRecord>,
+}
+
+/// The summary line under a collection's name: how many entries the page will list. Tracked
+/// reads, so an import or a removal updates the line in place.
+fn summary(counts: Option<&Counts>, page: &Page) -> String {
+    let Some(c) = counts else {
+        return String::new();
+    };
+    match page {
+        Page::Recents => res::str::library_recents_summary((c.recents)() as i64).format(),
+        Page::Titles => res::str::library_titles_summary(c.books.get() as i64).format(),
+        Page::Authors => res::str::library_authors_summary(c.authors.get() as i64).format(),
+        Page::Genres => res::str::library_genres_summary(c.genres.get() as i64).format(),
+        _ => String::new(),
+    }
+}
+
 fn books(a: App, page: Page) -> impl Piece {
     let Some(db) = a.database.get_untracked() else {
         return label(res::str::database_unavailable()).any();
@@ -202,7 +264,9 @@ fn books(a: App, page: Page) -> impl Piece {
         Page::Genre(name) => Some(("genre".into(), name)),
         _ => None,
     };
-    let query = db.book_query(facet, recent.then_some(50), move || a.library_query.get());
+    let query = db.book_query(facet, recent.then_some(RECENTS_LIMIT), move || {
+        a.library_query.get()
+    });
     let empty = query.clone();
     column((
         text_field(a.library_query)

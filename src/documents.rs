@@ -85,19 +85,11 @@ pub fn reader_window(a: App, book: epub::Book) {
                 ..a
             };
             reader_app.open(book);
-            watch(
-                move || a.prefs.get(),
-                move |p, _| {
-                    if reader_app.ready.get_untracked()
-                        && !reader_app.reader_settings.get_untracked()
-                    {
-                        reader_app.eval(format!(
-                            "stanza.configure({})",
-                            serde_json::to_string(p).unwrap()
-                        ));
-                    }
-                },
-            );
+            watch(reader_config, move |p, _| {
+                if reader_app.ready.get_untracked() && !reader_app.reader_settings.get_untracked() {
+                    reader_app.eval(format!("stanza.configure({p})"));
+                }
+            });
             reader(reader_app)
         },
     );

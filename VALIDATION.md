@@ -1,5 +1,40 @@
 # Local validation
 
+## CI run 38571588335: web, GTK and Harmony — 2026-10-14
+
+- web-dom: `reader-safe-area.yaml` left the reader open. Web runs `catalog-polish`,
+  `reader-safe-area` and `store-walkthrough` in one page, and the Catalogs menu is disabled
+  while reading, so the walkthrough's `menu manage-catalogs-menu` failed in all 26 variants.
+  The script now closes the reader and returns to the library, as the other reader scripts
+  do. Chromium, that three-script chain locally: 202/202 steps.
+- harmony-arkui: the app died in the emulator image's Mesa `draw_flush` assertion on ArkWeb's
+  GPU thread (see "Harmony CI crash investigation"). `reader-safe-area` and `catalog-polish`
+  were not in `scripts-once`, so the reader opened in all 26 locale and theme variants. Both
+  now run once per device, like the other regression suites. Not run locally.
+- linux-gtk: `catalog-thumbnails.yaml` timed out waiting for cover 1 or 2; reproduced 6/6 in
+  a Linux VM (GTK 4.20, Xvfb 1280×864). GtkListView binds every row of the 120-book page, so
+  all 120 requests queued at once for the four cover slots. The semaphore let a newcomer take
+  a slot freed for a woken waiter, which then rejoined at the back: covers 2, 5, 7, 9 and so
+  on were never requested within the timeout. Covers now take slots in request order, and a
+  rebind that hands a row its current URL keeps its load. 4/4 passes on unchanged day, 6/6
+  with the day-gtk change below.
+- day-gtk also replaced every list item on a same-size reload, so GtkListView rebuilt all 120
+  rows as new cells while the first set kept running (240 cover requests). It now re-binds
+  the bound cells in place. With that change, `browser`, `catalog`, `catalog-loading`,
+  `catalog-cancellation`, `catalog-persistence`, `catalog-polish`, `catalog-thumbnails`,
+  `library`, `book-info`, `persistence`, `reader-safe-area` and `store-walkthrough` pass on GTK.
+- With the new cover queue: iPhone 17 Pro simulator `store-walkthrough` in `id` and `en`
+  (141/141 each), `catalog-thumbnails`, `catalog-cancellation`, `catalog-loading`, `book-info`
+  and `catalog-polish`; web Chromium, the three-script chain (202/202), `catalog-thumbnails`
+  and `catalog-cancellation`.
+- Run 38614368894 (33604bd) also failed iPhone `store-walkthrough` in one variant, `light-id`,
+  in both attempts: The Time Machine's row cover never appeared within 30 seconds, after
+  Alice and Frankenstein had. It did not reproduce locally. Real-network catalog favicons
+  share the same four slots, but four catalogs whose favicon host never answers did not
+  stall the showcase covers either, with the committed code (iPhone 17 Pro, 56/56 steps).
+- macOS, this Mac only: `reader-safe-area`'s six inset checks return false, while CI's
+  macos-appkit job passes 25/25 in every variant; the added closing steps pass here.
+
 ## Catalog search, Add placement and Back navigation — 2026-10-14
 
 - Search did nothing on the simulator app handed over earlier because it was launched with

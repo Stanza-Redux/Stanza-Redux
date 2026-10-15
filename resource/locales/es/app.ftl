@@ -1,4 +1,5 @@
 app_title = Stanza Redux
+language_name = Español
 library = Biblioteca
 catalogs = Catálogos
 reader = Leer
@@ -27,7 +28,7 @@ reader_empty = Elige un libro de tu biblioteca o descarga uno de un catálogo.
 font_size = Tamaño del texto
 margins = Márgenes
 line_height = Interlineado
-theme = Papel
+theme = Tema
 light = Claro
 sepia = Sepia
 dark = Oscuro
@@ -45,7 +46,7 @@ font_noto_serif = Noto Serif
 custom = Personalizado
 paper_color = Color del papel personalizado
 ink_color = Color del texto personalizado
-custom_hint = Elige papel personalizado para usar estos colores.
+custom_hint = Elige el tema Personalizado para usar estos colores.
 back_library = Biblioteca
 contents = Índice
 done = Listo
@@ -89,7 +90,9 @@ left_tap_advances = Tocar a la izquierda avanza
 paragraph_spacing = Espaciado entre párrafos
 typography = Tipografía
 page_layout = Diseño de página
-appearance = Apariencia
+settings_reading = Lectura
+settings_reader_theme = Tema de lectura
+settings_controls = Controles
 error_status = No se pudo completar: { $message }
 operation_failed = No se pudo completar la operación. Inténtalo de nuevo.
 network_failed = No se pudo conectar. Comprueba tu conexión e inténtalo de nuevo.
@@ -129,6 +132,26 @@ library_recents = Recientes
 library_titles = Títulos
 library_authors = Autores
 library_genres = Géneros
+library_recents_summary = { $n ->
+    [0] Aún no se ha abierto ningún libro
+    [one] { $n } libro abierto recientemente
+   *[other] { $n } libros abiertos recientemente
+}
+library_titles_summary = { $n ->
+    [0] Aún no hay libros
+    [one] { $n } libro
+   *[other] { $n } libros
+}
+library_authors_summary = { $n ->
+    [0] Aún no hay autores
+    [one] { $n } autor
+   *[other] { $n } autores
+}
+library_genres_summary = { $n ->
+    [0] Aún no hay géneros
+    [one] { $n } género
+   *[other] { $n } géneros
+}
 unknown_author = Autor desconocido
 unknown_genre = Sin clasificar
 library_no_results = Aún no hay libros aquí.
@@ -159,21 +182,6 @@ return_position = Volver a la posición anterior
 contents_search = Buscar capítulo
 contents_empty = No hay capítulos coincidentes.
 chapter_percent = { $percent } del capítulo
-
-# Native language names in the language picker.
-language_ar = العربية
-language_de = Deutsch
-language_en = English
-language_es = Español
-language_fr = Français
-language_hi = हिन्दी
-language_id = Bahasa Indonesia
-language_it = Italiano
-language_ja = 日本語
-language_ko = 한국어
-language_pt_br = Português (Brasil)
-language_ru = Русский
-language_zh_cn = 简体中文
 
 # Catalog discovery and recovery.
 catalog_heading = Descubre tu próximo libro

@@ -1,4 +1,5 @@
 app_title = Stanza Redux
+language_name = Bahasa Indonesia
 library = Perpustakaan
 catalogs = Katalog
 reader = Baca
@@ -27,7 +28,7 @@ reader_empty = Pilih buku dari perpustakaan atau unduh dari katalog.
 font_size = Ukuran teks
 margins = Margin halaman
 line_height = Jarak baris
-theme = Kertas
+theme = Tema
 light = Terang
 sepia = Sepia
 dark = Gelap
@@ -45,7 +46,7 @@ font_noto_serif = Noto Serif
 custom = Kustom
 paper_color = Warna kertas kustom
 ink_color = Warna teks kustom
-custom_hint = Pilih kertas kustom untuk menggunakan warna ini.
+custom_hint = Pilih tema Kustom untuk menggunakan warna ini.
 back_library = Perpustakaan
 contents = Daftar isi
 done = Selesai
@@ -89,7 +90,9 @@ left_tap_advances = Ketuk kiri untuk maju
 paragraph_spacing = Jarak paragraf
 typography = Tipografi
 page_layout = Tata letak halaman
-appearance = Tampilan
+settings_reading = Membaca
+settings_reader_theme = Tema pembaca
+settings_controls = Kontrol
 error_status = Tidak dapat menyelesaikan: { $message }
 operation_failed = Operasi tidak dapat diselesaikan. Silakan coba lagi.
 network_failed = Tidak dapat terhubung. Periksa koneksi Anda dan coba lagi.
@@ -129,6 +132,22 @@ library_recents = Terakhir dibaca
 library_titles = Judul
 library_authors = Penulis
 library_genres = Genre
+library_recents_summary = { $n ->
+    [0] Belum ada buku yang dibuka
+   *[other] { $n } buku yang baru dibuka
+}
+library_titles_summary = { $n ->
+    [0] Belum ada buku
+   *[other] { $n } buku
+}
+library_authors_summary = { $n ->
+    [0] Belum ada penulis
+   *[other] { $n } penulis
+}
+library_genres_summary = { $n ->
+    [0] Belum ada genre
+   *[other] { $n } genre
+}
 unknown_author = Penulis tidak diketahui
 unknown_genre = Tanpa kategori
 library_no_results = Belum ada buku di sini.
@@ -159,21 +178,6 @@ return_position = Kembali ke posisi sebelumnya
 contents_search = Cari bab
 contents_empty = Tidak ada bab yang cocok.
 chapter_percent = { $percent } dari bab
-
-# Native language names in the language picker.
-language_ar = العربية
-language_de = Deutsch
-language_en = English
-language_es = Español
-language_fr = Français
-language_hi = हिन्दी
-language_id = Bahasa Indonesia
-language_it = Italiano
-language_ja = 日本語
-language_ko = 한국어
-language_pt_br = Português (Brasil)
-language_ru = Русский
-language_zh_cn = 简体中文
 
 # Catalog discovery and recovery.
 catalog_heading = Temukan buku berikutnya

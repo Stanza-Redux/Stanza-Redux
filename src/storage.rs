@@ -3,7 +3,7 @@
 use crate::{Saved, opds};
 use day::prelude::*;
 use day_persistence::prelude::*;
-use day_persistence::{DbError, DbErrorKind, Fetch, Query};
+use day_persistence::{CountQuery, DbError, DbErrorKind, Fetch, Query};
 
 pub const SEARCH_INDEX_VERSION: u32 = 2;
 /// Searchable chapter text as (content id, text) pairs, built off the UI thread.
@@ -273,6 +273,26 @@ impl Library {
                     .sort(BookRecord::title().asc())
                     .sort(BookRecord::id().asc())
             }
+        })
+    }
+    /// How many books the library holds, live.
+    pub fn book_count(&self) -> CountQuery<BookRecord> {
+        self.db.count_fn(Fetch::new)
+    }
+    /// How many books have been opened (the Recents list's source), live. The list shows at
+    /// most `limit` of them; the count is clamped to match.
+    pub fn recent_count(&self, limit: usize) -> impl Fn() -> usize + 'static {
+        let q: CountQuery<BookRecord> = self
+            .db
+            .count_fn(|| Fetch::new().filter(BookRecord::opened().gt(0_i64)));
+        move || q.get().min(limit)
+    }
+    /// How many non-empty folders of `kind` (author, genre) the library has, live.
+    pub fn folder_count(&self, kind: &'static str) -> CountQuery<FolderRecord> {
+        self.db.count_fn(move || {
+            Fetch::new().filter(
+                FolderRecord::kind().eq(kind.to_owned()) & !FolderRecord::books().is_empty(),
+            )
         })
     }
     pub fn catalog_query(&self) -> Query<CatalogRecord> {

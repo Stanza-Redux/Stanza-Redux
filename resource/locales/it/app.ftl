@@ -1,4 +1,5 @@
 app_title = Stanza Redux
+language_name = Italiano
 library = Biblioteca
 catalogs = Cataloghi
 reader = Leggi
@@ -27,7 +28,7 @@ reader_empty = Scegli un libro dalla biblioteca o scaricane uno da un catalogo.
 font_size = Dimensione del testo
 margins = Margini
 line_height = Interlinea
-theme = Carta
+theme = Tema
 light = Chiara
 sepia = Seppia
 dark = Scura
@@ -42,10 +43,10 @@ mono = Monospazio
 font_montserrat = Montserrat
 font_noto_sans = Noto Sans
 font_noto_serif = Noto Serif
-custom = Personalizzata
+custom = Personalizzato
 paper_color = Colore carta personalizzato
 ink_color = Colore testo personalizzato
-custom_hint = Scegli la carta personalizzata per usare questi colori.
+custom_hint = Scegli il tema Personalizzato per usare questi colori.
 back_library = Biblioteca
 contents = Indice
 done = Fine
@@ -89,7 +90,9 @@ left_tap_advances = Tocco a sinistra avanza
 paragraph_spacing = Spaziatura paragrafi
 typography = Tipografia
 page_layout = Impaginazione
-appearance = Aspetto
+settings_reading = Lettura
+settings_reader_theme = Tema di lettura
+settings_controls = Controlli
 error_status = Impossibile completare: { $message }
 operation_failed = Impossibile completare l’operazione. Riprova.
 network_failed = Impossibile connettersi. Controlla la connessione e riprova.
@@ -129,6 +132,26 @@ library_recents = Recenti
 library_titles = Titoli
 library_authors = Autori
 library_genres = Generi
+library_recents_summary = { $n ->
+    [0] Nessun libro aperto finora
+    [one] { $n } libro aperto di recente
+   *[other] { $n } libri aperti di recente
+}
+library_titles_summary = { $n ->
+    [0] Nessun libro finora
+    [one] { $n } libro
+   *[other] { $n } libri
+}
+library_authors_summary = { $n ->
+    [0] Nessun autore finora
+    [one] { $n } autore
+   *[other] { $n } autori
+}
+library_genres_summary = { $n ->
+    [0] Nessun genere finora
+    [one] { $n } genere
+   *[other] { $n } generi
+}
 unknown_author = Autore sconosciuto
 unknown_genre = Non classificato
 library_no_results = Non ci sono ancora libri.
@@ -159,21 +182,6 @@ return_position = Torna alla posizione precedente
 contents_search = Cerca un capitolo
 contents_empty = Nessun capitolo corrispondente.
 chapter_percent = { $percent } del capitolo
-
-# Native language names in the language picker.
-language_ar = العربية
-language_de = Deutsch
-language_en = English
-language_es = Español
-language_fr = Français
-language_hi = हिन्दी
-language_id = Bahasa Indonesia
-language_it = Italiano
-language_ja = 日本語
-language_ko = 한국어
-language_pt_br = Português (Brasil)
-language_ru = Русский
-language_zh_cn = 简体中文
 
 # Catalog discovery and recovery.
 catalog_heading = Scopri il tuo prossimo libro

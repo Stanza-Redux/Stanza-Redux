@@ -1,4 +1,5 @@
 app_title = Stanza Redux
+language_name = English
 library = Library
 catalogs = Catalogs
 reader = Read
@@ -27,7 +28,7 @@ reader_empty = Choose a book from your library or download one from a catalog.
 font_size = Text size
 margins = Page margins
 line_height = Line spacing
-theme = Paper
+theme = Theme
 light = Light
 sepia = Sepia
 dark = Dark
@@ -45,7 +46,7 @@ font_noto_serif = Noto Serif
 custom = Custom
 paper_color = Custom paper color
 ink_color = Custom text color
-custom_hint = Choose Custom paper to use these colors.
+custom_hint = Choose the Custom theme to use these colors.
 back_library = Library
 contents = Contents
 done = Done
@@ -92,7 +93,9 @@ left_tap_advances = Left tap advances
 paragraph_spacing = Paragraph spacing
 typography = Typography
 page_layout = Page layout
-appearance = Appearance
+settings_reading = Reading
+settings_reader_theme = Reader theme
+settings_controls = Controls
 
 # App-owned text, including reader chrome and error messages.
 error_status = Unable to complete: { $message }
@@ -135,6 +138,26 @@ library_recents = Recents
 library_titles = Titles
 library_authors = Authors
 library_genres = Genres
+library_recents_summary = { $n ->
+    [0] No books opened yet
+    [one] { $n } recently opened book
+   *[other] { $n } recently opened books
+}
+library_titles_summary = { $n ->
+    [0] No books yet
+    [one] { $n } book
+   *[other] { $n } books
+}
+library_authors_summary = { $n ->
+    [0] No authors yet
+    [one] { $n } author
+   *[other] { $n } authors
+}
+library_genres_summary = { $n ->
+    [0] No genres yet
+    [one] { $n } genre
+   *[other] { $n } genres
+}
 unknown_author = Unknown author
 unknown_genre = Unclassified
 library_no_results = No books here yet.
@@ -168,21 +191,6 @@ return_position = Return to previous position
 contents_search = Find a chapter
 contents_empty = No matching chapters.
 chapter_percent = { $percent } through chapter
-
-# Native language names in the language picker.
-language_ar = العربية
-language_de = Deutsch
-language_en = English
-language_es = Español
-language_fr = Français
-language_hi = हिन्दी
-language_id = Bahasa Indonesia
-language_it = Italiano
-language_ja = 日本語
-language_ko = 한국어
-language_pt_br = Português (Brasil)
-language_ru = Русский
-language_zh_cn = 简体中文
 
 # Catalog discovery and recovery.
 catalog_heading = Discover your next book

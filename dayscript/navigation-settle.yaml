@@ -6,8 +6,8 @@ flow:
   - wait_for: { id: library-list, only_on: [uikit] }
   - nav_back: { native: true, only_on: [uikit] }
   - navigate: { route: catalogs, only_on: [uikit] }
-  - navigate: { route: settings, only_on: [uikit] }
-  - wait_for: { id: language, only_on: [uikit] }
+  - navigate: { route: settings/general, only_on: [uikit] }
+  - wait_for: { id: language-picker, only_on: [uikit] }
   - screenshot: { name: navigation-latest-tab, only_on: [uikit] }
   - navigate: { route: library, only_on: [uikit] }
   - select: { id: library-folders, index: 0, only_on: [uikit] }

@@ -1,4 +1,5 @@
 app_title = Stanza Redux
+language_name = العربية
 library = المكتبة
 catalogs = الفهارس
 reader = قراءة
@@ -27,7 +28,7 @@ reader_empty = اختر كتابًا من مكتبتك أو نزّل كتابً�
 font_size = حجم النص
 margins = هوامش الصفحة
 line_height = تباعد الأسطر
-theme = الورق
+theme = السمة
 light = فاتح
 sepia = بني داكن
 dark = داكن
@@ -45,7 +46,7 @@ font_noto_serif = Noto Serif
 custom = مخصّص
 paper_color = لون ورق مخصّص
 ink_color = لون نص مخصّص
-custom_hint = اختر الورق المخصّص لاستخدام هذه الألوان.
+custom_hint = اختر السمة «مخصّص» لاستخدام هذه الألوان.
 back_library = المكتبة
 contents = المحتويات
 done = تم
@@ -89,7 +90,9 @@ left_tap_advances = النقر على اليسار يتقدّم صفحة
 paragraph_spacing = تباعد الفقرات
 typography = الخطوط
 page_layout = تخطيط الصفحة
-appearance = المظهر
+settings_reading = القراءة
+settings_reader_theme = سمة القراءة
+settings_controls = عناصر التحكم
 error_status = تعذّر الإكمال: { $message }
 operation_failed = تعذّر إكمال العملية. حاول مجددًا.
 network_failed = تعذّر الاتصال. تحقّق من اتصالك وحاول مجددًا.
@@ -129,6 +132,34 @@ library_recents = الأخيرة
 library_titles = العناوين
 library_authors = المؤلفون
 library_genres = الأنواع
+library_recents_summary = { $n ->
+    [0] لم يُفتح أي كتاب بعد
+    [one] كتاب واحد فُتح مؤخرًا
+    [two] كتابان فُتحا مؤخرًا
+    [few] { $n } كتب فُتحت مؤخرًا
+   *[other] { $n } كتابًا فُتحت مؤخرًا
+}
+library_titles_summary = { $n ->
+    [0] لا كتب بعد
+    [one] كتاب واحد
+    [two] كتابان
+    [few] { $n } كتب
+   *[other] { $n } كتابًا
+}
+library_authors_summary = { $n ->
+    [0] لا مؤلفين بعد
+    [one] مؤلف واحد
+    [two] مؤلفان
+    [few] { $n } مؤلفين
+   *[other] { $n } مؤلفًا
+}
+library_genres_summary = { $n ->
+    [0] لا أنواع بعد
+    [one] نوع واحد
+    [two] نوعان
+    [few] { $n } أنواع
+   *[other] { $n } نوعًا
+}
 unknown_author = مؤلف غير معروف
 unknown_genre = غير مصنّف
 library_no_results = لا توجد كتب هنا بعد.
@@ -159,21 +190,6 @@ return_position = العودة إلى الموضع السابق
 contents_search = البحث عن فصل
 contents_empty = لا توجد فصول مطابقة.
 chapter_percent = { $percent } من الفصل
-
-# Native language names in the language picker.
-language_ar = العربية
-language_de = Deutsch
-language_en = English
-language_es = Español
-language_fr = Français
-language_hi = हिन्दी
-language_id = Bahasa Indonesia
-language_it = Italiano
-language_ja = 日本語
-language_ko = 한국어
-language_pt_br = Português (Brasil)
-language_ru = Русский
-language_zh_cn = 简体中文
 
 # Catalog discovery and recovery.
 catalog_heading = اكتشف كتابك القادم

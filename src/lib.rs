@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
 //! Stanza Redux: native OPDS browsing and offline EPUB reading with Readium CSS.
 use day::prelude::*;
+use day_piece_settings::prelude::*;
 use day_piece_webview::{JsHandle, LinkPolicy};
 use serde::{Deserialize, Serialize};
+use std::cell::RefCell;
 use std::sync::Arc;
 mod browser;
 mod covers;
@@ -86,44 +88,302 @@ struct Saved {
     #[serde(default)]
     cover: Option<String>,
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
-#[serde(default)]
-struct Preferences {
-    size: f64,
-    line: f64,
-    margin: f64,
-    theme: usize,
-    font: usize,
-    columns: usize,
-    paper: u32,
-    ink: u32,
-    justified: bool,
-    hyphenation: bool,
-    paragraph_spacing: f64,
-    /// Hide the system status bar while a book is open (phones and tablets).
-    hide_status_bar: bool,
-    /// A tap on the left edge turns forward, like the right edge, instead of back.
-    left_tap_advances: bool,
-}
-impl Default for Preferences {
-    fn default() -> Self {
-        Self {
-            size: 20.,
-            line: 1.6,
-            margin: 24.,
-            theme: 1,
-            font: 0,
-            columns: 1,
-            paper: 0xf4ead6,
-            ink: 0x30343b,
-            justified: false,
-            hyphenation: true,
-            paragraph_spacing: 0.6,
-            hide_status_bar: false,
-            left_tap_advances: false,
-        }
+pref_enum! {
+    /// The reader typeface. The bridge takes its position in `ALL` (reader.js `FONTS`).
+    enum ReaderFont {
+        Serif = "serif",
+        Sans = "sans",
+        Mono = "mono",
+        Montserrat = "montserrat",
+        NotoSans = "noto-sans",
+        NotoSerif = "noto-serif",
     }
 }
+pref_enum! {
+    /// The reader's colors: three presets, or the custom paper and ink below.
+    enum ReaderTheme {
+        Light = "light",
+        Sepia = "sepia",
+        Dark = "dark",
+        Custom = "custom",
+    }
+}
+pref_enum! {
+    /// Text columns on a wide window.
+    enum Columns {
+        One = "1",
+        Two = "2",
+    }
+}
+const DEFAULT_PAPER: &str = "#f4ead6";
+const DEFAULT_INK: &str = "#30343b";
+// The reader settings, one persisted value each (docs/settings.md in day). Every write lands in
+// the platform store and in the signal the rows and the reader bridge read.
+static FONT_SIZE: Pref<f64> = Pref::new("stanza.size", || 20.);
+static LINE_HEIGHT: Pref<f64> = Pref::new("stanza.line", || 1.6);
+static MARGINS: Pref<f64> = Pref::new("stanza.margin", || 24.);
+static PARAGRAPH_SPACING: Pref<f64> = Pref::new("stanza.paragraph_spacing", || 0.6);
+static FONT: Pref<ReaderFont> = Pref::new("stanza.font", || ReaderFont::Serif);
+static THEME: Pref<ReaderTheme> = Pref::new("stanza.theme", || ReaderTheme::Sepia);
+static COLUMNS: Pref<Columns> = Pref::new("stanza.columns", || Columns::One);
+static PAPER: Pref<String> = Pref::new("stanza.paper", || DEFAULT_PAPER.into());
+static INK: Pref<String> = Pref::new("stanza.ink", || DEFAULT_INK.into());
+static JUSTIFIED: Pref<bool> = Pref::new("stanza.justified", || false);
+static HYPHENATION: Pref<bool> = Pref::new("stanza.hyphenation", || true);
+/// Hide the system status bar while a book is open (phones and tablets).
+static HIDE_STATUS_BAR: Pref<bool> = Pref::new("stanza.hide_status_bar", || false);
+/// A tap on the left edge turns forward, like the right edge, instead of back.
+static LEFT_TAP_ADVANCES: Pref<bool> = Pref::new("stanza.left_tap_advances", || false);
+
+thread_local! {
+    /// The installed settings handle, for the reader's sheet (`App` stays `Copy`).
+    static PREFS: RefCell<Option<Prefs>> = const { RefCell::new(None) };
+}
+
+fn position<T: PartialEq>(all: &[T], value: &T) -> usize {
+    all.iter().position(|v| v == value).unwrap_or(0)
+}
+
+/// A `#rrggbb` setting as the packed integer the bridge's stylesheet takes.
+fn rgb_u32(hex: &str, fallback: &str) -> u32 {
+    let c = Color::parse(hex)
+        .or_else(|| Color::parse(fallback))
+        .unwrap_or(Color::BLACK);
+    let q = |v: f64| (v.clamp(0., 1.) * 255.).round() as u32;
+    q(c.r) << 16 | q(c.g) << 8 | q(c.b)
+}
+
+/// The preferences object the reader bridge takes (`stanza.load`, `stanza.configure`). Every
+/// read is tracked, so a watcher over it runs again when any setting changes.
+fn reader_config() -> serde_json::Value {
+    serde_json::json!({
+        "size": FONT_SIZE.get(),
+        "line": LINE_HEIGHT.get(),
+        "margin": MARGINS.get(),
+        "paragraph_spacing": PARAGRAPH_SPACING.get(),
+        "font": position(ReaderFont::ALL, &FONT.get()),
+        "theme": position(ReaderTheme::ALL, &THEME.get()),
+        "columns": position(Columns::ALL, &COLUMNS.get()) + 1,
+        "paper": rgb_u32(&PAPER.get(), DEFAULT_PAPER),
+        "ink": rgb_u32(&INK.get(), DEFAULT_INK),
+        "justified": JUSTIFIED.get(),
+        "hyphenation": HYPHENATION.get(),
+        "hide_status_bar": HIDE_STATUS_BAR.get(),
+        "left_tap_advances": LEFT_TAP_ADVANCES.get(),
+    })
+}
+
+/// Settings and About (docs/settings.md in day): Appearance and Language from Day's catalog, the
+/// reader settings as three groups, the app's name and version from Day.toml. On the desktops
+/// this adds the Settings… and About menu items and their windows; the Settings section shows
+/// the same pages everywhere, and the reader's sheet two of them.
+fn install_preferences() -> Prefs {
+    let custom = Signal::global(THEME.get_untracked() == ReaderTheme::Custom);
+    watch(
+        move || THEME.get(),
+        move |t, _| custom.set_if_changed(*t == ReaderTheme::Custom),
+    );
+    let decimal = |v: f64| day::format_decimal(v, 1);
+    let whole = |v: f64| day::format_decimal(v, 0);
+    let prefs = Preferences::new()
+        // Wide enough for a slider, its value and a translated title on one line.
+        .window_size(640., 760.)
+        .about(
+            About::from_manifest()
+                .link(day::tr("day-about-website"), "https://stanza-redux.app")
+                .link(
+                    day::tr("day-about-source"),
+                    "https://github.com/Stanza-Redux/Stanza-Redux",
+                ),
+        )
+        .group(general_group(res::locales::ALL))
+        .group(
+            // `reader`, not `reading`: that segment is the reader cover's route (`ReaderRoute`).
+            Group::new("reader", res::str::settings_reading())
+                .icon(res::vectors::prefs_reading)
+                .section(
+                    Section::new()
+                        .title(res::str::typography())
+                        .row(
+                            rows::choice(
+                                &FONT,
+                                res::str::font(),
+                                [
+                                    (ReaderFont::Serif, res::str::serif()),
+                                    (ReaderFont::Sans, res::str::sans()),
+                                    (ReaderFont::Mono, res::str::mono()),
+                                    (ReaderFont::Montserrat, res::str::font_montserrat()),
+                                    (ReaderFont::NotoSans, res::str::font_noto_sans()),
+                                    (ReaderFont::NotoSerif, res::str::font_noto_serif()),
+                                ],
+                            )
+                            .id("reader-font"),
+                        )
+                        .row(
+                            rows::slider(&FONT_SIZE, res::str::font_size(), 12.0..=40.0)
+                                .step(1.)
+                                .value_text(whole)
+                                .id("font-size"),
+                        )
+                        .row(
+                            rows::slider(&LINE_HEIGHT, res::str::line_height(), 1.0..=2.4)
+                                .step(0.1)
+                                .value_text(decimal)
+                                .id("line-height"),
+                        )
+                        .row(rows::toggle(&JUSTIFIED, res::str::justified()).id("reader-justified"))
+                        .row(
+                            rows::toggle(&HYPHENATION, res::str::hyphenation())
+                                .id("reader-hyphenation"),
+                        ),
+                )
+                .section(
+                    Section::new()
+                        .title(res::str::page_layout())
+                        .row(
+                            rows::slider(&MARGINS, res::str::margins(), 8.0..=64.0)
+                                .step(2.)
+                                .value_text(whole)
+                                .id("margins"),
+                        )
+                        .row(
+                            rows::slider(
+                                &PARAGRAPH_SPACING,
+                                res::str::paragraph_spacing(),
+                                0.0..=2.0,
+                            )
+                            .step(0.1)
+                            .value_text(decimal)
+                            .id("paragraph-spacing"),
+                        )
+                        .row(
+                            rows::choice(
+                                &COLUMNS,
+                                res::str::columns(),
+                                [
+                                    (Columns::One, res::str::column_one()),
+                                    (Columns::Two, res::str::column_two()),
+                                ],
+                            )
+                            .segmented()
+                            .id("reader-columns"),
+                        )
+                        .footer(res::str::columns_hint()),
+                ),
+        )
+        .group(
+            Group::new("theme", res::str::settings_reader_theme())
+                .icon(res::vectors::prefs_theme)
+                .row(theme_row())
+                .section(
+                    Section::new()
+                        .row(color_row(
+                            &PAPER,
+                            || res::str::paper_color().format(),
+                            "paper-color",
+                            custom,
+                        ))
+                        .row(color_row(
+                            &INK,
+                            || res::str::ink_color().format(),
+                            "ink-color",
+                            custom,
+                        ))
+                        .footer(res::str::custom_hint()),
+                ),
+        )
+        .group(
+            Group::new("controls", res::str::settings_controls())
+                .icon(res::vectors::prefs_controls)
+                // Only where the platform has a status bar to hide (phones and tablets).
+                .row(
+                    rows::toggle(&HIDE_STATUS_BAR, res::str::hide_status_bar())
+                        .id("reader-hide-status-bar")
+                        .requires(Cap::StatusBarHidden),
+                )
+                .row(
+                    rows::toggle(&LEFT_TAP_ADVANCES, res::str::left_tap_advances())
+                        .id("reader-left-tap-advances"),
+                ),
+        )
+        .install();
+    PREFS.with(|p| *p.borrow_mut() = Some(prefs.clone()));
+    prefs
+}
+
+fn theme_row() -> Row {
+    // A menu, like Typeface: four segments crowd a phone's row and wrap the title.
+    rows::choice(
+        &THEME,
+        res::str::theme(),
+        [
+            (ReaderTheme::Light, res::str::light()),
+            (ReaderTheme::Sepia, res::str::sepia()),
+            (ReaderTheme::Dark, res::str::dark()),
+            (ReaderTheme::Custom, res::str::custom()),
+        ],
+    )
+    .id("reader-theme")
+}
+
+/// A color well bound to a `#rrggbb` setting. The well is offered under the Custom theme; a
+/// dimmed swatch stands in otherwise.
+fn color_row(
+    pref: &'static Pref<String>,
+    title: fn() -> String,
+    id: &'static str,
+    custom: Signal<bool>,
+) -> Row {
+    rows::custom(move || {
+        let parse = |hex: &str| Color::parse(hex).map(|c| Color::rgb(c.r, c.g, c.b));
+        let fallback = parse(&pref.default()).unwrap_or(Color::BLACK);
+        let color = Signal::new(parse(&pref.get_untracked()).unwrap_or(fallback));
+        // Two-way: a pick writes the setting; a write from elsewhere (a reset) moves the well.
+        watch(
+            move || color.get(),
+            move |c, _| {
+                let hex = Color::rgb(c.r, c.g, c.b).to_hex_string();
+                if pref.get_untracked() != hex {
+                    pref.set(hex);
+                }
+            },
+        );
+        watch(
+            move || pref.get(),
+            move |hex, _| {
+                if let Some(c) = parse(hex) {
+                    color.set_if_changed(c);
+                }
+            },
+        );
+        row((
+            label(title).grow_w(),
+            when(
+                move || custom.get(),
+                move || day_piece_colorpicker::color_picker(color).id(id),
+            )
+            .otherwise(move || {
+                column(())
+                    .frame(28., 20.)
+                    .background(move || color.get())
+                    .corner_radius(6.)
+                    .opacity(0.4)
+            }),
+        ))
+        .spacing(12.)
+        .height(48.)
+    })
+    .enabled(custom)
+}
+
+/// The reader's settings sheet: the Reading page and the Reader theme page, one above the other.
+fn reader_settings_sheet() -> AnyPiece {
+    PREFS.with(|p| match &*p.borrow() {
+        Some(prefs) => column((prefs.group_page("reader").grow(), prefs.group_page("theme"))).any(),
+        None => column(()).any(),
+    })
+}
+
 // Mark nonempty libraries too: deleting the last book must not recreate the sample.
 async fn seed_library(db: &storage::Library) -> Result<(), AppError> {
     if db
@@ -164,7 +424,6 @@ struct App {
     section: Signal<String>,
     reader_open: Signal<Option<ReaderRoute>>,
     reader_settings: Signal<bool>,
-    language: Signal<usize>,
     library_query: Signal<String>,
     url: Signal<String>,
     catalog_path: Signal<Vec<browser::CatalogPage>>,
@@ -181,18 +440,14 @@ struct App {
     js: JsHandle,
     ready: Signal<bool>,
     position: Signal<String>,
-    prefs: Signal<Preferences>,
     toc: Signal<usize>,
 }
+/// A JSON value the earlier Day prototype left in `day::prefs`, for the one-time library import
+/// (`storage::Library::import_preferences`).
 fn saved<T: serde::de::DeserializeOwned + Default>(key: &str) -> T {
     day::prefs::get(key)
         .and_then(|s| serde_json::from_str(&s).ok())
         .unwrap_or_default()
-}
-fn persist<T: Serialize>(key: &str, value: &T) {
-    if let Ok(s) = serde_json::to_string(value) {
-        day::prefs::set(key, &s);
-    }
 }
 fn defaults() -> Vec<opds::Link> {
     [
@@ -366,7 +621,7 @@ impl App {
             Some("ready") => {
                 if !self.ready.get_untracked() {
                     if let Some(b) = self.book.get_untracked() {
-                        let prefs = serde_json::to_string(&self.prefs.get_untracked()).unwrap();
+                        let prefs = reader_config();
                         let pos = self
                             .database
                             .get_untracked()
@@ -539,34 +794,8 @@ async fn fetch_bytes(
     }
     Ok((bytes, final_url))
 }
-// Protocol locale tags, paired with the generated endonyms in the settings picker.
-const LANGUAGE_TAGS: &[&str] = &[
-    "en", "ar", "de", "es", "fr", "hi", "id", "it", "ja", "ko", "pt-BR", "ru", "zh-CN",
-];
-
-fn language_index(locale: &str) -> usize {
-    LANGUAGE_TAGS
-        .iter()
-        .position(|tag| tag.eq_ignore_ascii_case(locale))
-        .or_else(|| {
-            LANGUAGE_TAGS
-                .iter()
-                .position(|tag| tag.split('-').next() == locale.split(['-', '_']).next())
-        })
-        .unwrap_or(0)
-}
-
 pub fn root() -> impl Piece {
-    let lang = Signal::new(language_index(&day::locale().get_untracked()));
-    watch(
-        move || lang.get(),
-        move |i, _| {
-            if let Some(locale) = LANGUAGE_TAGS.get(*i) {
-                set_locale(locale);
-            }
-        },
-    );
-    let prefs: Preferences = saved("stanza.preferences");
+    let prefs = install_preferences();
     let database = storage::Library::open().and_then(|db| {
         db.import_preferences()?;
         Ok(db)
@@ -586,7 +815,6 @@ pub fn root() -> impl Piece {
         section: Signal::new("library".into()),
         reader_open: Signal::new(None),
         reader_settings: Signal::new(false),
-        language: lang,
         library_query: Signal::new(String::new()),
         url: Signal::new(String::new()),
         catalog_path: Signal::new(Vec::new()),
@@ -603,7 +831,6 @@ pub fn root() -> impl Piece {
         js: JsHandle::new(),
         ready: Signal::new(false),
         position: Signal::new(String::new()),
-        prefs: Signal::new(prefs),
         toc: Signal::new(0),
     };
     if let Some(db) = a.database.get_untracked() {
@@ -672,31 +899,16 @@ pub fn root() -> impl Piece {
             }
         });
     }
-    watch(
-        move || a.prefs.get(),
-        move |p, _| {
-            persist("stanza.preferences", p);
-            if a.ready.get_untracked()
-                && a.reader_open.get_untracked().is_some()
-                && !a.reader_settings.get_untracked()
-            {
-                a.eval(format!(
-                    "stanza.configure({})",
-                    serde_json::to_string(p).unwrap()
-                ))
-            }
-        },
-    );
-    // The Settings window (docs/windows.md in day): Settings… with ⌘, on macOS and Preferences on
-    // the other desktops. The Settings section keeps working too: one set of rows, two ways in.
-    day::register_preferences_with(
-        day::WindowOptions {
-            title: res::str::settings().format(),
-            size: Size::new(560., 720.),
-            ..Default::default()
-        },
-        move || preferences_window(a),
-    );
+    // The sheet unmounts the web view while it is open; closing it reloads the book with the
+    // current settings, so only a change made elsewhere (a menu command) is pushed live.
+    watch(reader_config, move |p, _| {
+        if a.ready.get_untracked()
+            && a.reader_open.get_untracked().is_some()
+            && !a.reader_settings.get_untracked()
+        {
+            a.eval(format!("stanza.configure({p})"))
+        }
+    });
     let open_book = documents::open_command(a);
     app_menu_reactive(move || {
         vec![
@@ -735,13 +947,13 @@ pub fn root() -> impl Piece {
                     menu_item(res::str::increase_font().format())
                         .id("increase-font")
                         .key("+")
-                        .enabled(a.prefs.get().size < 40.)
-                        .action(move || a.prefs.update(|p| p.size = (p.size + 1.).min(40.))),
+                        .enabled(FONT_SIZE.get() < 40.)
+                        .action(|| FONT_SIZE.set((FONT_SIZE.get_untracked() + 1.).min(40.))),
                     menu_item(res::str::decrease_font().format())
                         .id("decrease-font")
                         .key("-")
-                        .enabled(a.prefs.get().size > 12.)
-                        .action(move || a.prefs.update(|p| p.size = (p.size - 1.).max(12.))),
+                        .enabled(FONT_SIZE.get() > 12.)
+                        .action(|| FONT_SIZE.set((FONT_SIZE.get_untracked() - 1.).max(12.))),
                     menu_separator(),
                     menu_role(MenuRole::Fullscreen),
                 ],
@@ -784,12 +996,13 @@ pub fn root() -> impl Piece {
             res::vectors::tab_catalogs,
             move || browser::view(a),
         )
-        .item_icon(
-            "settings",
-            res::str::settings(),
-            res::vectors::tab_settings,
-            move || page(a, settings_page(a)),
-        );
+        // Settings is a section on every platform; on the desktops the Settings… window is a
+        // second way to the same pages.
+        .items(
+            || vec![String::from("settings")],
+            |key: &String| item(key.clone(), res::str::settings()).icon(res::vectors::tab_settings),
+        )
+        .destination(move |_: &String| prefs.page());
     #[cfg(feature = "appkit")]
     let navigation = navigation
         .content_list(move || library::view(a))
@@ -805,88 +1018,6 @@ pub fn root() -> impl Piece {
         .unrouted(),
     ))
 }
-fn page(a: App, body: impl Piece) -> impl Piece {
-    column((
-        body.grow(),
-        when(
-            move || !a.status.get().is_empty() || a.busy.get(),
-            move || {
-                row((
-                    label(move || a.status.get())
-                        .font(Font::Footnote)
-                        .id("status"),
-                    when(
-                        move || a.busy.get(),
-                        move || {
-                            button(res::str::cancel())
-                                .action(move || a.cancel())
-                                .id("cancel")
-                        },
-                    ),
-                ))
-                .spacing(8.)
-            },
-        ),
-    ))
-    .spacing(12.)
-    .padding(20.)
-}
-fn settings_page(a: App) -> impl Piece {
-    when(
-        move || a.reader_open.get().is_none(),
-        move || {
-            column((
-                label(res::str::settings()).font(Font::LargeTitle).bold(),
-                settings_body(a, false),
-            ))
-            .spacing(16.)
-            .align(HAlign::Leading)
-        },
-    )
-}
-
-/// The desktop Settings window (Settings… / ⌘, on macOS, Preferences on the other desktops):
-/// the same rows as the Settings section, under the window's own title.
-fn preferences_window(a: App) -> impl Piece {
-    settings_body(a, true).padding(20.)
-}
-
-/// The interface language and the reader settings. `fill` lets the reader settings scroll in
-/// the rest of a window instead of sizing to their content.
-fn settings_body(a: App, fill: bool) -> impl Piece {
-    column((
-        labeled(
-            res::str::language(),
-            picker(
-                [
-                    res::str::language_en().format(),
-                    res::str::language_ar().format(),
-                    res::str::language_de().format(),
-                    res::str::language_es().format(),
-                    res::str::language_fr().format(),
-                    res::str::language_hi().format(),
-                    res::str::language_id().format(),
-                    res::str::language_it().format(),
-                    res::str::language_ja().format(),
-                    res::str::language_ko().format(),
-                    res::str::language_pt_br().format(),
-                    res::str::language_ru().format(),
-                    res::str::language_zh_cn().format(),
-                ],
-                a.language,
-            )
-            .id("language"),
-        ),
-        if fill {
-            settings(a).grow().any()
-        } else {
-            settings(a).any()
-        },
-    ))
-    .spacing(16.)
-    .align(HAlign::Leading)
-}
-
 /// Remote and downloaded books share the same presentation. The caller supplies
 /// the available metadata, cover source and primary action.
 fn book_overview(
@@ -1101,7 +1232,7 @@ fn reader(a: App) -> impl Piece {
                         .action(move || a.reader_settings.set(false))
                         .id("reader-settings-done"),
                 )),
-                settings(a).grow(),
+                reader_settings_sheet(),
             ))
             .spacing(16.)
             .padding(Insets {
@@ -1116,334 +1247,33 @@ fn reader(a: App) -> impl Piece {
         a.ready.set(false);
         reader_resources::view(a).js(a.js).id("book-webview")
     })
-    .status_bar_hidden(move || a.prefs.get().hide_status_bar)
-}
-
-fn setting_slider(
-    title: String,
-    value: Signal<f64>,
-    range: std::ops::RangeInclusive<f64>,
-    step: f64,
-    id: &'static str,
-) -> impl Piece {
-    column((
-        row((
-            label(title),
-            spacer(),
-            label(move || day::format_decimal(value.get(), 1))
-                .font(Font::Footnote)
-                .secondary()
-                .tabular(),
-        )),
-        slider(value)
-            .range(range)
-            .step(step)
-            .id(id)
-            .grow_w()
-            .height(32.),
-    ))
-    .spacing(6.)
-    .padding(2.)
-}
-fn settings(a: App) -> impl Piece {
-    let p = a.prefs.get_untracked();
-    let size = Signal::new(p.size);
-    let margin = Signal::new(p.margin);
-    let line = Signal::new(p.line);
-    let theme = Signal::new(p.theme);
-    let font = Signal::new(p.font);
-    let columns = Signal::new(p.columns.saturating_sub(1));
-    let paper = Signal::new(Color::hex(p.paper));
-    let ink = Signal::new(Color::hex(p.ink));
-    let justified = Signal::new(p.justified);
-    let hyphenation = Signal::new(p.hyphenation);
-    let paragraph = Signal::new(p.paragraph_spacing);
-    let hide_status_bar = Signal::new(p.hide_status_bar);
-    let left_tap_advances = Signal::new(p.left_tap_advances);
-    watch(
-        move || {
-            (
-                size.get(),
-                margin.get(),
-                line.get(),
-                theme.get(),
-                font.get(),
-                columns.get(),
-                paper.get(),
-                ink.get(),
-                justified.get(),
-                hyphenation.get(),
-                paragraph.get(),
-                hide_status_bar.get(),
-                left_tap_advances.get(),
-            )
-        },
-        move |&(
-            size,
-            margin,
-            line,
-            theme,
-            font,
-            columns,
-            paper,
-            ink,
-            justified,
-            hyphenation,
-            paragraph_spacing,
-            hide_status_bar,
-            left_tap_advances,
-        ),
-              _| {
-            let rgb = |c: Color| {
-                let q = |v: f64| (v.clamp(0., 1.) * 255.).round() as u32;
-                q(c.r) << 16 | q(c.g) << 8 | q(c.b)
-            };
-            a.prefs.set(Preferences {
-                size,
-                margin,
-                line,
-                theme,
-                font,
-                columns: columns + 1,
-                paper: rgb(paper),
-                ink: rgb(ink),
-                justified,
-                hyphenation,
-                paragraph_spacing,
-                hide_status_bar,
-                left_tap_advances,
-            });
-        },
-    );
-    // Menu commands and other reader windows share preferences. Keep the visible form in
-    // sync without writing an unchanged value back into the preferences watcher.
-    watch(
-        move || a.prefs.get(),
-        move |p, _| {
-            macro_rules! sync {
-                ($signal:ident, $value:expr) => {
-                    if $signal.get_untracked() != $value {
-                        $signal.set($value);
-                    }
-                };
-            }
-            sync!(size, p.size);
-            sync!(margin, p.margin);
-            sync!(line, p.line);
-            sync!(theme, p.theme);
-            sync!(font, p.font);
-            sync!(columns, p.columns.saturating_sub(1));
-            sync!(paper, Color::hex(p.paper));
-            sync!(ink, Color::hex(p.ink));
-            sync!(justified, p.justified);
-            sync!(hyphenation, p.hyphenation);
-            sync!(paragraph, p.paragraph_spacing);
-            sync!(hide_status_bar, p.hide_status_bar);
-            sync!(left_tap_advances, p.left_tap_advances);
-        },
-    );
-    scroll(
-        form((
-            section((
-                column((
-                    label(res::str::font()),
-                    picker(
-                        [
-                            res::str::serif().format(),
-                            res::str::sans().format(),
-                            res::str::mono().format(),
-                            res::str::font_montserrat().format(),
-                            res::str::font_noto_sans().format(),
-                            res::str::font_noto_serif().format(),
-                        ],
-                        font,
-                    )
-                    .options_reactive(|| {
-                        vec![
-                            res::str::serif().format(),
-                            res::str::sans().format(),
-                            res::str::mono().format(),
-                            res::str::font_montserrat().format(),
-                            res::str::font_noto_sans().format(),
-                            res::str::font_noto_serif().format(),
-                        ]
-                    })
-                    .id("reader-font")
-                    .grow_w(),
-                ))
-                .spacing(8.)
-                .align(HAlign::Leading),
-                setting_slider(
-                    res::str::font_size().format(),
-                    size,
-                    12.0..=40.0,
-                    1.,
-                    "font-size",
-                ),
-                setting_slider(
-                    res::str::line_height().format(),
-                    line,
-                    1.0..=2.4,
-                    0.1,
-                    "line-height",
-                ),
-                row((
-                    label(res::str::justified()).grow_w(),
-                    toggle(justified).id("reader-justified"),
-                ))
-                .spacing(12.)
-                .height(48.),
-                row((
-                    label(res::str::hyphenation()).grow_w(),
-                    toggle(hyphenation).id("reader-hyphenation"),
-                ))
-                .spacing(12.)
-                .height(48.),
-            ))
-            .title(res::str::typography()),
-            section((
-                column((
-                    label(res::str::theme()),
-                    picker(
-                        [
-                            res::str::light().format(),
-                            res::str::sepia().format(),
-                            res::str::dark().format(),
-                            res::str::custom().format(),
-                        ],
-                        theme,
-                    )
-                    .options_reactive(|| {
-                        vec![
-                            res::str::light().format(),
-                            res::str::sepia().format(),
-                            res::str::dark().format(),
-                            res::str::custom().format(),
-                        ]
-                    })
-                    .style(if cfg!(feature = "mdc") {
-                        PickerStyle::Menu
-                    } else {
-                        PickerStyle::Segmented
-                    })
-                    .id("reader-theme")
-                    .grow_w(),
-                ))
-                .spacing(10.)
-                .align(HAlign::Leading),
-                when(
-                    move || theme.get() == 3,
-                    move || {
-                        column((
-                            row((
-                                label(res::str::paper_color()).grow_w(),
-                                day_piece_colorpicker::color_picker(paper).id("paper-color"),
-                            ))
-                            .spacing(12.)
-                            .height(48.),
-                            row((
-                                label(res::str::ink_color()).grow_w(),
-                                day_piece_colorpicker::color_picker(ink).id("ink-color"),
-                            ))
-                            .spacing(12.)
-                            .height(48.),
-                        ))
-                        .spacing(10.)
-                    },
-                ),
-                // Only where the platform has a status bar to hide (phones and tablets).
-                when(
-                    || capability(Cap::StatusBarHidden) != Support::Unsupported,
-                    move || {
-                        row((
-                            label(res::str::hide_status_bar()).grow_w(),
-                            toggle(hide_status_bar).id("reader-hide-status-bar"),
-                        ))
-                        .spacing(12.)
-                        .height(48.)
-                    },
-                ),
-            ))
-            .title(res::str::appearance()),
-            section((
-                setting_slider(
-                    res::str::margins().format(),
-                    margin,
-                    8.0..=64.0,
-                    2.,
-                    "margins",
-                ),
-                setting_slider(
-                    res::str::paragraph_spacing().format(),
-                    paragraph,
-                    0.0..=2.0,
-                    0.1,
-                    "paragraph-spacing",
-                ),
-                row((
-                    label(res::str::columns()).grow_w(),
-                    picker(
-                        [
-                            res::str::column_one().format(),
-                            res::str::column_two().format(),
-                        ],
-                        columns,
-                    )
-                    .segmented()
-                    .id("reader-columns"),
-                ))
-                .spacing(12.)
-                .height(44.),
-                label(res::str::columns_hint())
-                    .font(Font::Footnote)
-                    .secondary(),
-                row((
-                    label(res::str::left_tap_advances()).grow_w(),
-                    toggle(left_tap_advances).id("reader-left-tap-advances"),
-                ))
-                .spacing(12.)
-                .height(48.),
-            ))
-            .title(res::str::page_layout()),
-        ))
-        .padding(2.),
-    )
-    .id("reader-preferences")
+    .status_bar_hidden(|| HIDE_STATUS_BAR.get())
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     #[test]
-    fn supported_languages_keep_their_startup_selection() {
-        let catalog_tags: std::collections::BTreeSet<_> =
-            res::locales::CATALOG.iter().map(|(tag, _)| *tag).collect();
-        assert_eq!(catalog_tags, LANGUAGE_TAGS.iter().copied().collect());
-        for (index, tag) in LANGUAGE_TAGS.iter().enumerate() {
-            assert_eq!(language_index(tag), index);
-        }
-        for (requested, expected) in [
-            ("de-DE", "de"),
-            ("fr-CA", "fr"),
-            ("zh-Hans", "zh-CN"),
-            ("pt", "pt-BR"),
-            ("ja-JP", "ja"),
-            ("ar-SA", "ar"),
-            ("unknown", "en"),
-        ] {
-            assert_eq!(LANGUAGE_TAGS[language_index(requested)], expected);
-        }
-    }
-
-    #[test]
-    fn existing_library_and_reader_preferences_migrate() {
+    fn saved_books_without_covers_deserialize() {
         let book: Saved =
             serde_json::from_str(r#"{"id":"sample","title":"A","author":"B"}"#).unwrap();
         assert!(book.cover.is_none());
-        let prefs: Preferences = serde_json::from_str(r#"{"size":24,"theme":2}"#).unwrap();
-        assert_eq!(prefs.size, 24.);
-        assert_eq!(prefs.columns, 1);
-        assert_eq!(prefs.paper, Preferences::default().paper);
+    }
+
+    #[test]
+    fn reader_colors_pack_as_the_bridge_reads_them() {
+        assert_eq!(rgb_u32(DEFAULT_PAPER, DEFAULT_INK), 0xf4ead6);
+        assert_eq!(rgb_u32("not a color", DEFAULT_INK), 0x30343b);
+        assert_eq!(rgb_u32("", ""), 0);
+    }
+
+    #[test]
+    fn every_bundled_locale_is_offered() {
+        let tags: Vec<&str> = res::locales::ALL.iter().map(|(tag, _)| *tag).collect();
+        assert_eq!(tags.len(), 13);
+        for tag in ["en", "ar", "pt-BR", "zh-CN"] {
+            assert!(tags.contains(&tag), "{tag} missing from res::locales::ALL");
+        }
     }
 }
 

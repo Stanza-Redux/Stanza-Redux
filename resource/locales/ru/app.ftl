@@ -1,4 +1,5 @@
 app_title = Stanza Redux
+language_name = Русский
 library = Библиотека
 catalogs = Каталоги
 reader = Читать
@@ -27,7 +28,7 @@ reader_empty = Выберите книгу в библиотеке или ска
 font_size = Размер текста
 margins = Поля страницы
 line_height = Межстрочный интервал
-theme = Бумага
+theme = Тема
 light = Светлая
 sepia = Сепия
 dark = Тёмная
@@ -45,7 +46,7 @@ font_noto_serif = Noto Serif
 custom = Своя
 paper_color = Свой цвет бумаги
 ink_color = Свой цвет текста
-custom_hint = Выберите свою бумагу, чтобы использовать эти цвета.
+custom_hint = Выберите свою тему, чтобы использовать эти цвета.
 back_library = Библиотека
 contents = Содержание
 done = Готово
@@ -89,7 +90,9 @@ left_tap_advances = Касание слева листает вперёд
 paragraph_spacing = Интервал между абзацами
 typography = Типографика
 page_layout = Макет страницы
-appearance = Оформление
+settings_reading = Чтение
+settings_reader_theme = Тема чтения
+settings_controls = Управление
 error_status = Не удалось завершить: { $message }
 operation_failed = Не удалось завершить операцию. Повторите попытку.
 network_failed = Не удалось подключиться. Проверьте соединение и повторите попытку.
@@ -129,6 +132,30 @@ library_recents = Недавние
 library_titles = Названия
 library_authors = Авторы
 library_genres = Жанры
+library_recents_summary = { $n ->
+    [0] Пока ни одна книга не открыта
+    [one] { $n } недавно открытая книга
+    [few] { $n } недавно открытые книги
+   *[many] { $n } недавно открытых книг
+}
+library_titles_summary = { $n ->
+    [0] Книг пока нет
+    [one] { $n } книга
+    [few] { $n } книги
+   *[many] { $n } книг
+}
+library_authors_summary = { $n ->
+    [0] Авторов пока нет
+    [one] { $n } автор
+    [few] { $n } автора
+   *[many] { $n } авторов
+}
+library_genres_summary = { $n ->
+    [0] Жанров пока нет
+    [one] { $n } жанр
+    [few] { $n } жанра
+   *[many] { $n } жанров
+}
 unknown_author = Неизвестный автор
 unknown_genre = Без категории
 library_no_results = Здесь пока нет книг.
@@ -159,21 +186,6 @@ return_position = Вернуться к прежней позиции
 contents_search = Найти главу
 contents_empty = Подходящих глав нет.
 chapter_percent = { $percent } главы
-
-# Native language names in the language picker.
-language_ar = العربية
-language_de = Deutsch
-language_en = English
-language_es = Español
-language_fr = Français
-language_hi = हिन्दी
-language_id = Bahasa Indonesia
-language_it = Italiano
-language_ja = 日本語
-language_ko = 한국어
-language_pt_br = Português (Brasil)
-language_ru = Русский
-language_zh_cn = 简体中文
 
 # Catalog discovery and recovery.
 catalog_heading = Найдите свою следующую книгу

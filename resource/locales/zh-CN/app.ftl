@@ -1,4 +1,5 @@
 app_title = Stanza Redux
+language_name = 简体中文
 library = 书库
 catalogs = 目录
 reader = 阅读
@@ -27,7 +28,7 @@ reader_empty = 从书库中选择一本书，或从目录下载。
 font_size = 字号
 margins = 页边距
 line_height = 行距
-theme = 纸张
+theme = 主题
 light = 浅色
 sepia = 褐色
 dark = 深色
@@ -45,7 +46,7 @@ font_noto_serif = Noto Serif
 custom = 自定义
 paper_color = 自定义纸张颜色
 ink_color = 自定义文字颜色
-custom_hint = 选择自定义纸张以使用这些颜色。
+custom_hint = 选择自定义主题以使用这些颜色。
 back_library = 书库
 contents = 目录
 done = 完成
@@ -89,7 +90,9 @@ left_tap_advances = 点按左侧前进
 paragraph_spacing = 段间距
 typography = 排版
 page_layout = 页面布局
-appearance = 外观
+settings_reading = 阅读
+settings_reader_theme = 阅读主题
+settings_controls = 控制
 error_status = 无法完成：{ $message }
 operation_failed = 无法完成操作，请重试。
 network_failed = 无法连接。请检查网络连接后重试。
@@ -129,6 +132,22 @@ library_recents = 最近阅读
 library_titles = 书名
 library_authors = 作者
 library_genres = 类别
+library_recents_summary = { $n ->
+    [0] 尚未打开任何图书
+   *[other] 最近打开 { $n } 本
+}
+library_titles_summary = { $n ->
+    [0] 尚无图书
+   *[other] { $n } 本图书
+}
+library_authors_summary = { $n ->
+    [0] 尚无作者
+   *[other] { $n } 位作者
+}
+library_genres_summary = { $n ->
+    [0] 尚无类别
+   *[other] { $n } 个类别
+}
 unknown_author = 未知作者
 unknown_genre = 未分类
 library_no_results = 这里还没有图书。
@@ -159,21 +178,6 @@ return_position = 返回之前的位置
 contents_search = 查找章节
 contents_empty = 没有匹配的章节。
 chapter_percent = 本章进度{ $percent }
-
-# Native language names in the language picker.
-language_ar = العربية
-language_de = Deutsch
-language_en = English
-language_es = Español
-language_fr = Français
-language_hi = हिन्दी
-language_id = Bahasa Indonesia
-language_it = Italiano
-language_ja = 日本語
-language_ko = 한국어
-language_pt_br = Português (Brasil)
-language_ru = Русский
-language_zh_cn = 简体中文
 
 # Catalog discovery and recovery.
 catalog_heading = 发现下一本好书

@@ -1,4 +1,5 @@
 app_title = Stanza Redux
+language_name = Français
 library = Bibliothèque
 catalogs = Catalogues
 reader = Lecture
@@ -27,7 +28,7 @@ reader_empty = Choisissez un livre dans votre bibliothèque ou téléchargez-en 
 font_size = Taille du texte
 margins = Marges
 line_height = Interligne
-theme = Papier
+theme = Thème
 light = Clair
 sepia = Sépia
 dark = Sombre
@@ -92,7 +93,9 @@ left_tap_advances = Toucher à gauche avance
 paragraph_spacing = Espacement des paragraphes
 typography = Typographie
 page_layout = Mise en page
-appearance = Apparence
+settings_reading = Lecture
+settings_reader_theme = Thème de lecture
+settings_controls = Commandes
 
 # App-owned text, including reader chrome and error messages.
 error_status = Impossible de terminer : { $message }
@@ -135,6 +138,26 @@ library_recents = Lectures récentes
 library_titles = Titres
 library_authors = Auteurs
 library_genres = Genres
+library_recents_summary = { $n ->
+    [0] Aucun livre ouvert pour l’instant
+    [one] { $n } livre ouvert récemment
+   *[other] { $n } livres ouverts récemment
+}
+library_titles_summary = { $n ->
+    [0] Aucun livre pour l’instant
+    [one] { $n } livre
+   *[other] { $n } livres
+}
+library_authors_summary = { $n ->
+    [0] Aucun auteur pour l’instant
+    [one] { $n } auteur
+   *[other] { $n } auteurs
+}
+library_genres_summary = { $n ->
+    [0] Aucun genre pour l’instant
+    [one] { $n } genre
+   *[other] { $n } genres
+}
 unknown_author = Auteur inconnu
 unknown_genre = Non classé
 library_no_results = Aucun livre pour le moment.
@@ -168,21 +191,6 @@ return_position = Revenir à la position précédente
 contents_search = Rechercher un chapitre
 contents_empty = Aucun chapitre correspondant.
 chapter_percent = { $percent } du chapitre
-
-# Native language names in the language picker.
-language_ar = العربية
-language_de = Deutsch
-language_en = English
-language_es = Español
-language_fr = Français
-language_hi = हिन्दी
-language_id = Bahasa Indonesia
-language_it = Italiano
-language_ja = 日本語
-language_ko = 한국어
-language_pt_br = Português (Brasil)
-language_ru = Русский
-language_zh_cn = 简体中文
 
 # Catalog discovery and recovery.
 catalog_heading = Découvrez votre prochain livre

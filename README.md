@@ -16,9 +16,12 @@ day launch -p web-dom
 ```
 
 Open **Library** to import an EPUB. An empty library receives *Alice in Wonderland* once on first launch; deleting it does not restore it. In **Catalogs**, open a catalog, search or follow its categories, select a book, and download its EPUB.
-Downloaded books and reading positions remain available offline. **Settings** controls typeface,
-font size, line height, paragraph spacing, justification, hyphenation, margins, preset themes,
-custom paper/text colors, and one or two columns.
+Downloaded books and reading positions remain available offline. **Settings** has four groups:
+General (appearance, language), Reading (typeface, text size, line spacing, justification,
+hyphenation, margins, paragraph spacing, columns), Reader theme (Light, Sepia, Dark, or custom
+paper and text colors) and Controls (status bar, left-edge tap). On the desktops it is the app
+menu's Settings… window; every platform also lists it as a section. The reader's Aa sheet shows
+the Reading and Reader theme pages. **About** shows the version and build from `Day.toml`.
 The library has native folders for Recents, Titles, Authors and Genres. Author and genre folders
 contain searchable book lists. Recents shows the 50 most recently opened books, ordered by the
 last successful open; importing alone does not add a book to this list. Phones use push navigation
@@ -141,7 +144,8 @@ files after interruption. Preferences and the isolated v1 importer retain their 
 Save errors retain pending edits for retry; imports and catalog commands use checked reads so
 storage failure cannot be mistaken for an empty database. Library/catalog navigation checks
 for commits from other processes. Reader windows in one process share the same container.
-Appearance preferences remain in `day::prefs`.
+Settings are typed preferences (`day-piece-settings`), one key per setting in the platform's
+own store; the reader reads them as signals.
 
 Native databases live in `Sqlite::app_data_dir()` under `day-db/`. When the host sets
 `DAY_DATA_DIR`, the database is `$DAY_DATA_DIR/day-db/stanza-library.sqlite`; otherwise Day uses

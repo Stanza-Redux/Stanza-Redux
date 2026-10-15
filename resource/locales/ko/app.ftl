@@ -1,4 +1,5 @@
 app_title = Stanza Redux
+language_name = 한국어
 library = 보관함
 catalogs = 카탈로그
 reader = 읽기
@@ -27,7 +28,7 @@ reader_empty = 보관함에서 책을 선택하거나 카탈로그에서 다운�
 font_size = 글자 크기
 margins = 페이지 여백
 line_height = 줄 간격
-theme = 종이
+theme = 테마
 light = 밝게
 sepia = 세피아
 dark = 어둡게
@@ -45,7 +46,7 @@ font_noto_serif = Noto Serif
 custom = 사용자 지정
 paper_color = 사용자 지정 종이 색상
 ink_color = 사용자 지정 글자 색상
-custom_hint = 이 색상을 사용하려면 사용자 지정 종이를 선택하세요.
+custom_hint = 이 색상을 사용하려면 사용자 지정 테마를 선택하세요.
 back_library = 보관함
 contents = 목차
 done = 완료
@@ -89,7 +90,9 @@ left_tap_advances = 왼쪽 탭으로 다음 페이지
 paragraph_spacing = 문단 간격
 typography = 글자 설정
 page_layout = 페이지 레이아웃
-appearance = 모양
+settings_reading = 읽기
+settings_reader_theme = 리더 테마
+settings_controls = 조작
 error_status = 완료할 수 없음: { $message }
 operation_failed = 작업을 완료할 수 없습니다. 다시 시도하세요.
 network_failed = 연결할 수 없습니다. 연결 상태를 확인하고 다시 시도하세요.
@@ -129,6 +132,22 @@ library_recents = 최근 읽은 책
 library_titles = 제목
 library_authors = 저자
 library_genres = 장르
+library_recents_summary = { $n ->
+    [0] 아직 연 책이 없습니다
+   *[other] 최근에 연 책 { $n }권
+}
+library_titles_summary = { $n ->
+    [0] 아직 책이 없습니다
+   *[other] 책 { $n }권
+}
+library_authors_summary = { $n ->
+    [0] 아직 저자가 없습니다
+   *[other] 저자 { $n }명
+}
+library_genres_summary = { $n ->
+    [0] 아직 장르가 없습니다
+   *[other] 장르 { $n }개
+}
 unknown_author = 저자 미상
 unknown_genre = 미분류
 library_no_results = 아직 책이 없습니다.
@@ -159,21 +178,6 @@ return_position = 이전 위치로 돌아가기
 contents_search = 장 찾기
 contents_empty = 일치하는 장이 없습니다.
 chapter_percent = 장 진행률 { $percent }
-
-# Native language names in the language picker.
-language_ar = العربية
-language_de = Deutsch
-language_en = English
-language_es = Español
-language_fr = Français
-language_hi = हिन्दी
-language_id = Bahasa Indonesia
-language_it = Italiano
-language_ja = 日本語
-language_ko = 한국어
-language_pt_br = Português (Brasil)
-language_ru = Русский
-language_zh_cn = 简体中文
 
 # Catalog discovery and recovery.
 catalog_heading = 다음에 읽을 책을 찾아보세요

@@ -81,6 +81,7 @@ jobs:
         dayscript/catalog-cancellation.yaml
         dayscript/catalog-loading.yaml
         dayscript/catalog-persistence.yaml
+        dayscript/catalog-polish.yaml
         dayscript/catalog-thumbnails.yaml
         dayscript/catalog.yaml
         dayscript/demo.yaml
@@ -89,6 +90,7 @@ jobs:
         dayscript/persistence.yaml
         dayscript/reader-affordances.yaml
         dayscript/reader-margins.yaml
+        dayscript/reader-safe-area.yaml
         dayscript/reader-sections.yaml
       # Every language the app ships, read from resource/locales/, so a language added to the app
       # is walked through without editing this file. Each locale captures its own screenshots.
