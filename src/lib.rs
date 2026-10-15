@@ -376,10 +376,17 @@ fn color_row(
     .enabled(custom)
 }
 
-/// The reader's settings sheet: the Reading page and the Reader theme page, one above the other.
+/// The reader's settings sheet: the Reading and Reader theme groups, one above the other in one
+/// scroll.
 fn reader_settings_sheet() -> AnyPiece {
     PREFS.with(|p| match &*p.borrow() {
-        Some(prefs) => column((prefs.group_page("reader").grow(), prefs.group_page("theme"))).any(),
+        Some(prefs) => scroll(
+            column((prefs.group_body("reader"), prefs.group_body("theme")))
+                .spacing(0.)
+                .grow_w(),
+        )
+        .grow()
+        .any(),
         None => column(()).any(),
     })
 }

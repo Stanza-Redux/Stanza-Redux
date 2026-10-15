@@ -1,5 +1,36 @@
 # Local validation
 
+## CI run 38774891025: reader settings sheet, web Settings, Windows — 2026-10-15
+
+- ios-uikit (iPhone, iPad) and harmony-arkui: `store-walkthrough` failed at
+  `scroll_to reader-theme` ("no enclosing scroll") in every variant. The reader's settings
+  sheet stacked two `group_page`s, and on the phones each is a native page that scrolls itself
+  (UIKit's inset grouped table, ArkUI's `List`), so no Day scroll enclosed the rows. It was
+  also broken to look at: on iPhone the Reading group had no height and only Reader theme
+  showed, the Harmony sheet was blank, and Android cut the Reading group off after two rows.
+  The sheet is now one `scroll` around two `group_body`s. Day's `group_body` (day-piece-settings)
+  returned the desktop page wrapped in its own scroll; it now returns the group with no scroll,
+  native on the phones: the UIKit table and the ArkUI list size themselves to their rows
+  instead of growing (two growing tables split the column's height in half), and the
+  Android rows lose their scroll.
+- web-dom: `demo.yaml`'s `wait_for settings-root` failed. Web runs the once-per-device scripts
+  in one page, and `book-info.yaml` left Settings on its General page; a bare
+  `navigate: settings` selects the section and keeps its stack, as Day documents. The scripts
+  that open `settings/general` now go back to the Settings root on the platforms where General
+  is pushed onto the section's stack (phones and web).
+- windows-winui: day-piece-settings' XAML shim did not compile against be8a8956 (missing
+  `Windows.Foundation.Collections.h`). Day fixed it in 91b953e9, after this run started;
+  preflight's `cargo update -p day` picks it up.
+- Against day 35126a99 plus the day-piece-settings change: iPhone 17 Pro simulator
+  `store-walkthrough` (`it`, 141/141) and every once-per-device script in one launch
+  (588/588); web Chromium `store-walkthrough` (141/141) and the once-per-device chain
+  (572/572; 568/569 before the script change, the `settings-root` failure reproduced);
+  Android emulator `store-walkthrough` plus a sheet probe (168/168); macOS sheet probe
+  (26/26). ArkUI compiles (`cargo ohos clippy`) but was not run.
+- `scroll_to` a row inside a native table (iOS) reveals the table's position, not the row's:
+  Day knows where the table is but not where UIKit placed the cell, so the scroll lands near
+  the row. The walkthrough's steps still pass, and no screenshot follows them.
+
 ## CI run 38571588335: web, GTK and Harmony — 2026-10-14
 
 - web-dom: `reader-safe-area.yaml` left the reader open. Web runs `catalog-polish`,

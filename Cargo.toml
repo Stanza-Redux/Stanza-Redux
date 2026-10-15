@@ -44,7 +44,7 @@ sha2 = "0.10"
 sha1 = "0.10"
 percent-encoding = "2"
 day = { git = "https://github.com/daybrite/day.git", features = ["model"] }
-day-persistence = { git = "https://github.com/daybrite/day.git" }
+day-persistence = { git = "https://github.com/daybrite/day-persistence.git", version = "0.1" }
 
 [build-dependencies]
 day-build = { git = "https://github.com/daybrite/day.git" }
