@@ -53,6 +53,15 @@ for (const engine of [chromium, webkit]) test(`${engine.name()}: cover, paginati
     await page.waitForFunction(()=>stanza.state().ready);
     assert.equal(await page.evaluate(()=>getComputedStyle(document.querySelector('#book').contentDocument.documentElement).backgroundColor),'rgb(16, 32, 48)');
     assert.equal(await page.evaluate(()=>getComputedStyle(document.querySelector('#book').contentDocument.body).color),'rgb(239, 222, 207)');
+    // A change while a chapter is on show restyles that chapter in place, and a burst of them
+    // (a slider drag under the settings sheet) settles on the last one.
+    await page.evaluate(()=>{document.querySelector('#book').contentDocument.stanzaMark=1});
+    const restyled=await page.evaluate(()=>stanza.state().chapter);
+    await page.evaluate(()=>{for(const size of [26,27,28])stanza.configure({size,line:1.7,margin:32,theme:3,paper:0x102030,ink:0xefdecf,columns:1,font:1})});
+    await page.waitForFunction(()=>stanza.state().ready);
+    assert.equal(await page.evaluate(()=>document.querySelector('#book').contentDocument.stanzaMark),1);
+    assert.equal(await page.evaluate(()=>getComputedStyle(document.querySelector('#book').contentDocument.body).fontSize),'28px');
+    assert.equal(await page.evaluate(()=>stanza.state().chapter),restyled);
 
     const stable=await page.evaluate(()=>stanza.state());
     await page.mouse.click(195,350);

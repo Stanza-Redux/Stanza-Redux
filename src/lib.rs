@@ -906,12 +906,13 @@ pub fn root() -> impl Piece {
             }
         });
     }
-    // The sheet unmounts the web view while it is open; closing it reloads the book with the
-    // current settings, so only a change made elsewhere (a menu command) is pushed live.
+    // A change is pushed to the book live, from the half sheet or a menu command. A wide window's
+    // settings unmount the web view instead, and closing them reloads the book with the current
+    // settings.
     watch(reader_config, move |p, _| {
         if a.ready.get_untracked()
             && a.reader_open.get_untracked().is_some()
-            && !a.reader_settings.get_untracked()
+            && !(a.reader_settings.get_untracked() && !settings_over_book(a))
         {
             a.eval(format!("stanza.configure({p})"))
         }
@@ -1227,33 +1228,73 @@ fn local_details(a: App, book: Saved) -> impl Piece {
             .grow_w(),
     )
 }
-fn reader(a: App) -> impl Piece {
-    when(
-        move || a.reader_settings.get(),
-        move || {
-            column((
-                row((
-                    label(res::str::settings()).font(Font::Title),
-                    spacer(),
-                    button(res::str::done())
-                        .action(move || a.reader_settings.set(false))
-                        .id("reader-settings-done"),
-                )),
-                reader_settings_sheet(),
-            ))
-            .spacing(16.)
-            .padding(Insets {
-                top: day::safe_area().top + 16.,
-                bottom: day::safe_area().bottom + 16.,
-                leading: 20.,
-                trailing: 20.,
-            })
-        },
-    )
-    .otherwise(move || {
-        a.ready.set(false);
-        reader_resources::view(a).js(a.js).id("book-webview")
+/// Whether the reader's settings open as a half sheet over the book, so each change shows on the
+/// page as it is made: in a compact (phone-width) main window. A wider window gives them the
+/// whole reader instead, as does a desktop reader window.
+fn settings_over_book(a: App) -> bool {
+    !a.document_window && day::size_class().is_some_and(|c| c.width == WidthClass::Compact)
+}
+
+/// The half sheet's open state: open while the reader's settings are and the window is compact.
+/// Pulling the sheet down (or Back) closes the settings.
+#[derive(Clone, Copy)]
+struct SettingsSheet(App);
+
+impl Binding<Option<String>> for SettingsSheet {
+    fn read(&self) -> Option<String> {
+        (self.0.reader_settings.get() && settings_over_book(self.0)).then(|| "settings".into())
+    }
+    fn peek(&self) -> Option<String> {
+        (self.0.reader_settings.get_untracked() && untrack(|| settings_over_book(self.0)))
+            .then(|| "settings".into())
+    }
+    fn write(&self, v: Option<String>) {
+        self.0.reader_settings.set(v.is_some());
+    }
+}
+
+/// The reader's settings under their title and Done button, `top` and `bottom` points from the
+/// edges. Only the title row takes side padding: each platform's groups bring their own margins.
+fn reader_settings_panel(a: App, top: f64, bottom: f64) -> impl Piece {
+    column((
+        row((
+            label(res::str::settings()).font(Font::Title),
+            spacer(),
+            button(res::str::done())
+                .action(move || a.reader_settings.set(false))
+                .id("reader-settings-done"),
+        ))
+        .padding(Insets::symmetric(20., 0.)),
+        reader_settings_sheet(),
+    ))
+    .spacing(16.)
+    .padding(Insets {
+        top,
+        bottom,
+        ..Insets::default()
     })
+}
+
+fn reader(a: App) -> impl Piece {
+    zstack((
+        // In a wide window the settings take the reader's place, and closing them reloads the
+        // book; under the half sheet the web view stays, and changes reach it live.
+        when(
+            move || a.reader_settings.get() && !settings_over_book(a),
+            move || {
+                reader_settings_panel(a, day::safe_area().top + 16., day::safe_area().bottom + 16.)
+            },
+        )
+        .otherwise(move || {
+            a.ready.set(false);
+            reader_resources::view(a).js(a.js).id("book-webview")
+        }),
+        cover(SettingsSheet(a), move |_: &String| {
+            reader_settings_panel(a, 20., day::safe_area().bottom)
+        })
+        .half_sheet()
+        .unrouted(),
+    ))
     .status_bar_hidden(|| HIDE_STATUS_BAR.get())
 }
 

@@ -1,5 +1,29 @@
 # Local validation
 
+## Reader settings as a half sheet — 2026-10-16
+
+- On a compact (phone-width) main window, the reader's Aa button now opens the settings as a
+  half sheet over the book (`cover(..).half_sheet()`), and every change reaches the open
+  chapter as it is made. Wider windows and desktop reader windows keep the full settings page,
+  which reloads the book on Done.
+- `stanza.configure` restyles the chapter on show in place (same document, same position)
+  instead of reloading it, so a slider drag doesn't blank the page at each step; a chapter still
+  loading falls back to a reload. `tests/reader.mjs` checks that a burst of changes keeps the
+  chapter document and settles on the last value (fails on the old reader, passes now,
+  Chromium and WebKit).
+- Half-sheet probe (open, 20 → 30 pt, light → dark, Done, reopen and dismiss), checking the
+  chapter document survives every change: iPhone 17 Pro simulator, Android emulator (system
+  Back dismisses only the sheet) and web Chromium at 390×844, all passing. `store-walkthrough`
+  (`it`, 141/141): iPhone (the reading-settings shot now shows the book above the sheet),
+  iPad Air (full page, as before), Android emulator, web Chromium at the default size.
+- Web debug builds came up with "Database unavailable" in Safari and WebKit: the SQL worker
+  overflowed WebKit's stack preparing the library schema, because day-persistence compiled
+  SQLite at -O0 in debug builds. Chromium and release builds were fine. day-persistence now
+  always optimizes SQLite. With it, a debug build opens the library and the Catalog manager in
+  both Playwright WebKit and Safari.
+- Not covered: the iOS pull-down (dayscript has no step for it; it goes through the same binding
+  as Done). ArkUI was not run.
+
 ## CI run 38774891025: reader settings sheet, web Settings, Windows — 2026-10-15
 
 - ios-uikit (iPhone, iPad) and harmony-arkui: `store-walkthrough` failed at

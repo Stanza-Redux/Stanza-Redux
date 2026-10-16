@@ -6,7 +6,7 @@
 // resolved against this page, and the private family names never match an installed font.
 const FONTS=['Georgia,serif','system-ui,sans-serif','ui-monospace,monospace',"'Stanza Montserrat',system-ui,sans-serif","'Stanza Noto Sans',system-ui,sans-serif","'Stanza Noto Serif',Georgia,serif"];
 const FONT_FACES=[['Stanza Montserrat','Montserrat-Regular.ttf','400'],['Stanza Noto Sans','NotoSans.ttf','100 900'],['Stanza Noto Serif','NotoSerif.ttf','100 900']].map(([family,file,weight])=>`@font-face{font-family:'${family}';src:url('${new URL('fonts/'+file,document.baseURI).href}') format('truetype');font-weight:${weight};font-style:normal;font-display:block}`).join('');
-let frame=document.getElementById('book');let book=null,prefs={},chapter=0,page=0,pages=1,ready=false,serial=0;
+let frame=document.getElementById('book');let book=null,prefs={},chapter=0,page=0,pages=1,ready=false,serial=0,loaded=null;
 let measuredChrome='';
 function chromeSize(){return [document.getElementById('toolbar').offsetHeight,document.getElementById('footer').offsetHeight]}
 function event(type,data={}){const a=document.getElementById('event');a.href='stanza://'+type+'?data='+encodeURIComponent(JSON.stringify(data));a.click()}
@@ -21,7 +21,7 @@ function releaseResources(el){el.onload=null;el.removeAttribute('srcdoc');el.src
 function reserveLastSpread(doc,width,count,rtl){
  const end=doc.createElement('div');end.setAttribute('aria-hidden','true');
  end.style.cssText=`position:absolute!important;left:${rtl?width-count*width:count*width-1}px!important;top:0!important;width:1px!important;height:1px!important;margin:0!important;padding:0!important;border:0!important;pointer-events:none!important;`;
- doc.documentElement.append(end);
+ doc.stanzaEnd=end;doc.documentElement.append(end);
 }
 function report(){positionChrome();event('position',{chapter,page,pages,title:book.chapters[chapter].title,progress:pages>1?page/(pages-1):0})}
 function settings(){if(prefs.theme===3){const hex=n=>'#'+((n>>>0)&0xffffff).toString(16).padStart(6,'0');return{bg:hex(prefs.paper??0xf4ead6),fg:hex(prefs.ink??0x30343b)}}const dark=prefs.theme===2,sepia=prefs.theme===1;return {bg:dark?'#202326':sepia?'#f1e6cf':'#fafafa',fg:dark?'#e6e3dd':sepia?'#493f30':'#25272b'}}
@@ -32,8 +32,42 @@ function settings(){if(prefs.theme===3){const hex=n=>'#'+((n>>>0)&0xffffff).toSt
 function releaseChapterFocus(el){
  if(document.hasFocus()&&document.activeElement===el)document.body.focus({preventScroll:true});
 }
+// The reading preferences as the chapter's own styles: written when a chapter loads, and again
+// in place when they change, so a change shows on the page without reloading the chapter.
+function applyPrefs(doc){
+ const colors=settings();document.documentElement.style.setProperty('--paper',colors.bg);document.documentElement.style.setProperty('--ink',colors.fg);document.body.style.background=colors.bg;
+ const cols=prefs.columns===2&&frame.clientWidth>=640?2:1,gap=Math.max(12,prefs.margin||24),font=FONTS[prefs.font||0]||FONTS[0];
+ // An explicit column width: iOS 18's WebKit lays out no columns at all for a column-count of 1
+ // with an auto width, so a chapter ran down past the page instead of across pages.
+ const colWidth=Math.max(1,Math.floor((frame.clientWidth-gap*2-(cols-1)*gap*2)/cols));
+ // Fixed control-height guesses miss iOS safe areas and wrapped/localized chrome.
+ // Measure even while controls are hidden: opacity/transform leave their layout size
+ // intact, so revealing them never covers text or changes the current page.
+ const [toolbarHeight,footerHeight]=chromeSize();measuredChrome=`${toolbarHeight},${footerHeight}`;
+ const topInset=gap+toolbarHeight,bottomInset=gap+footerHeight;
+ doc.documentElement.style.cssText=`--USER__fontSize:${prefs.size||20}px;--USER__fontFamily:${font};--USER__fontOverride:readium-font-on;--USER__advancedSettings:readium-advanced-on;--USER__lineHeight:${prefs.line||1.6};--USER__colCount:${cols};--USER__textAlign:${prefs.justified?"justify":"start"};--USER__bodyHyphens:${prefs.hyphenation===false?"none":"auto"};--USER__backgroundColor:${colors.bg};--USER__textColor:${colors.fg};`;
+ if(!doc.stanzaPrefs){doc.stanzaPrefs=doc.createElement('style');doc.head.append(doc.stanzaPrefs)}
+ doc.stanzaPrefs.textContent=`html:root{height:${frame.clientHeight}px!important;min-height:${frame.clientHeight}px!important;max-height:${frame.clientHeight}px!important;width:${frame.clientWidth}px!important;min-width:${frame.clientWidth}px!important;max-width:${frame.clientWidth}px!important;box-sizing:border-box!important;padding:${topInset}px ${gap}px ${bottomInset}px!important;margin:0!important;column-count:${cols}!important;column-gap:${gap*2}px!important;column-width:${colWidth}px!important;column-fill:auto!important;overflow:hidden!important;background:${colors.bg}!important;color:${colors.fg}!important}body{margin:0!important;padding:0!important;max-width:none!important;min-width:0!important;font-family:${font}!important;font-size:${prefs.size||20}px!important;line-height:${prefs.line||1.6}!important;background:transparent!important;color:inherit!important}p{line-height:inherit!important;text-align:${prefs.justified?"justify":"start"}!important;hyphens:${prefs.hyphenation===false?"none":"auto"}!important;-webkit-hyphens:${prefs.hyphenation===false?"none":"auto"}!important;margin-block-end:${prefs.paragraph_spacing??0.6}em!important}img,svg{max-width:100%!important;max-height:${Math.max(1,frame.clientHeight-topInset-bottomInset-(prefs.size||20)*(prefs.line||1.6))}px!important;object-fit:contain}a{color:inherit}*{animation:none!important;transition:none!important}`;
+}
+// Count the chapter's pages at the current styles and turn to the one at `progress` (or the
+// fragment's). A restyle measures again, so the previous last-spread marker goes first.
+function paginate(n,progress,fragment='',outgoing=null,direction=0){
+ if(n!==serial)return;const d=frame.contentDocument,w=frame.contentWindow,width=frame.clientWidth;d.stanzaEnd?.remove();pages=Math.max(1,Math.ceil((d.documentElement.scrollWidth-1)/width));reserveLastSpread(d,width,pages,book.rtl);page=Math.max(0,Math.min(pages-1,Math.round(progress*(pages-1))));if(fragment){const el=d.getElementById(decodeURIComponent(fragment));if(el)page=Math.floor((el.getBoundingClientRect().left+Math.abs(w.scrollX))/width)}w.scrollTo({left:(book.rtl?-1:1)*page*width,behavior:'instant'});if(outgoing){slideChapters(outgoing,direction,report)}else{ready=true;report()}
+}
+// Lay out once the chapter's fonts and images are in (or after a bounded wait).
+function settled(d,f){
+ Promise.all([Promise.race([d.fonts?.ready,new Promise(r=>setTimeout(r,1500))]),...[...d.images].map(i=>i.complete?Promise.resolve():new Promise(r=>{i.onload=r;i.onerror=r;setTimeout(r,1500)}))]).then(()=>{let done=false;const once=()=>{if(!done){done=true;f()}};requestAnimationFrame(once);setTimeout(once,100)});
+}
+// Restyle the chapter on show in place, keeping the reading position. False while there is
+// none to restyle (no book, or a chapter still loading), so the caller loads it afresh.
+function restyle(){
+ const d=frame.contentDocument;if(!book||!loaded||d!==loaded)return false;
+ const progress=pages>1?page/(pages-1):0;cancelMotion();ready=false;const n=++serial;
+ frame.style.height=Math.max(1,innerHeight)+'px';frame.style.width=Math.max(1,innerWidth)+'px';document.body.style.height=Math.max(1,innerHeight)+'px';
+ applyPrefs(d);settled(d,()=>paginate(n,progress));return true;
+}
 async function show(index,progress=0,fragment='',direction=0){
- if(!book)return;releaseChapterFocus(frame);cancelMotion();ready=false;document.getElementById('bookmark').disabled=true;document.getElementById('chapter-progress').disabled=true;
+ if(!book)return;releaseChapterFocus(frame);cancelMotion();ready=false;loaded=null;document.getElementById('bookmark').disabled=true;document.getElementById('chapter-progress').disabled=true;
  let outgoing=null;
  if(direction){outgoing=frame;outgoing.id='book-outgoing';outgoing.style.pointerEvents='none';frame=outgoing.cloneNode(false);frame.removeAttribute('src');frame.id='book';frame.style.pointerEvents='';frame.hidden=true;outgoing.after(frame)}else releaseResources(frame)
  // Some Android WebViews retain a zero initial vh while their native view grows.
@@ -45,25 +79,12 @@ async function show(index,progress=0,fragment='',direction=0){
  try {
  const doc=frame.contentDocument;if(!doc?.body||doc.URL!==target)return;
  doc.documentElement.lang=book.language||'';
- const colors=settings();document.documentElement.style.setProperty('--paper',colors.bg);document.documentElement.style.setProperty('--ink',colors.fg);document.body.style.background=colors.bg;
  const head=doc.head;
  const add=(content,first=false)=>{const el=doc.createElement('style');el.textContent=content;first?head.prepend(el):head.append(el)};
  add(FONT_FACES,true); add(window.stanzaCSS.before,true); if(!doc.querySelector('link[rel=stylesheet]'))add(window.stanzaCSS.default); add(window.stanzaCSS.after);
- const cols=prefs.columns===2&&frame.clientWidth>=640?2:1,gap=Math.max(12,prefs.margin||24),font=FONTS[prefs.font||0]||FONTS[0];
- // An explicit column width: iOS 18's WebKit lays out no columns at all for a column-count of 1
- // with an auto width, so a chapter ran down past the page instead of across pages.
- const colWidth=Math.max(1,Math.floor((frame.clientWidth-gap*2-(cols-1)*gap*2)/cols));
- // Fixed control-height guesses miss iOS safe areas and wrapped/localized chrome.
- // Measure even while controls are hidden: opacity/transform leave their layout size
- // intact, so revealing them never covers text or changes the current page.
- const [toolbarHeight,footerHeight]=chromeSize();measuredChrome=`${toolbarHeight},${footerHeight}`;
- const topInset=gap+toolbarHeight,bottomInset=gap+footerHeight;
- doc.documentElement.style.cssText=`--USER__fontSize:${prefs.size||20}px;--USER__fontFamily:${font};--USER__fontOverride:readium-font-on;--USER__advancedSettings:readium-advanced-on;--USER__lineHeight:${prefs.line||1.6};--USER__colCount:${cols};--USER__textAlign:${prefs.justified?"justify":"start"};--USER__bodyHyphens:${prefs.hyphenation===false?"none":"auto"};--USER__backgroundColor:${colors.bg};--USER__textColor:${colors.fg};`;
- add(`html:root{height:${frame.clientHeight}px!important;min-height:${frame.clientHeight}px!important;max-height:${frame.clientHeight}px!important;width:${frame.clientWidth}px!important;min-width:${frame.clientWidth}px!important;max-width:${frame.clientWidth}px!important;box-sizing:border-box!important;padding:${topInset}px ${gap}px ${bottomInset}px!important;margin:0!important;column-count:${cols}!important;column-gap:${gap*2}px!important;column-width:${colWidth}px!important;column-fill:auto!important;overflow:hidden!important;background:${colors.bg}!important;color:${colors.fg}!important}body{margin:0!important;padding:0!important;max-width:none!important;min-width:0!important;font-family:${font}!important;font-size:${prefs.size||20}px!important;line-height:${prefs.line||1.6}!important;background:transparent!important;color:inherit!important}p{line-height:inherit!important;text-align:${prefs.justified?"justify":"start"}!important;hyphens:${prefs.hyphenation===false?"none":"auto"}!important;-webkit-hyphens:${prefs.hyphenation===false?"none":"auto"}!important;margin-block-end:${prefs.paragraph_spacing??0.6}em!important}img,svg{max-width:100%!important;max-height:${Math.max(1,frame.clientHeight-topInset-bottomInset-(prefs.size||20)*(prefs.line||1.6))}px!important;object-fit:contain}a{color:inherit}*{animation:none!important;transition:none!important}`);
- const d=doc,w=frame.contentWindow;
- const layout=()=>{if(n!==serial)return;const width=frame.clientWidth;pages=Math.max(1,Math.ceil((d.documentElement.scrollWidth-1)/width));reserveLastSpread(d,width,pages,book.rtl);page=Math.max(0,Math.min(pages-1,Math.round(progress*(pages-1))));if(fragment){const el=d.getElementById(decodeURIComponent(fragment));if(el)page=Math.floor((el.getBoundingClientRect().left+Math.abs(w.scrollX))/width)}w.scrollTo({left:(book.rtl?-1:1)*page*width,behavior:'instant'});if(outgoing){slideChapters(outgoing,direction,report)}else{ready=true;report()}};
- gestures(d,entry);
- Promise.all([Promise.race([d.fonts?.ready,new Promise(r=>setTimeout(r,1500))]),...[...d.images].map(i=>i.complete?Promise.resolve():new Promise(r=>{i.onload=r;i.onerror=r;setTimeout(r,1500)}))]).then(()=>{let done=false;const once=()=>{if(!done){done=true;layout()}};requestAnimationFrame(once);setTimeout(once,100)});
+ applyPrefs(doc);loaded=doc;
+ gestures(doc,entry);
+ settled(doc,()=>paginate(n,progress,fragment,outgoing,direction));
  }catch(error){if(n===serial)event('error',{path:entry.path,message:error.message||''});}
  };frame.hidden=false;document.getElementById('hint').hidden=true;frame.src=target;
 }
@@ -282,7 +303,7 @@ document.getElementById('chapter-progress').onchange=e=>{if(!ready||animating)re
 document.getElementById('return-position').onclick=()=>{if(!previousPosition||!ready||animating)return;const target=previousPosition;previousPosition=null;document.getElementById('return-position').hidden=true;document.body.focus({preventScroll:true});show(target.chapter,target.progress)};
 document.getElementById('previous-page').onclick=()=>turn(-1);
 document.getElementById('next-page').onclick=()=>turn(1);
-window.stanza={load(data,options,position,translations,savedBookmarks=[]){++serial;cancelMotion();releaseResources(frame);readerLabels(translations);chrome(true);book=data;bookmarks=savedBookmarks;previousPosition=null;document.getElementById("return-position").hidden=true;renderBookmarks();prefs=options;renderContents();show(position?.chapter||0,position?.progress||0);return true},goToChapter(index){show(index)},next(){return turn(1)},previous(){return turn(-1)},configure(options){prefs=options;show(chapter,pages>1?page/(pages-1):0)},bookmarks(rows){bookmarks=rows;renderBookmarks()},jump(index){if(!ready||animating)return;const c=book.toc[index], [file,frag]=c.path.split('#');const i=book.chapters.findIndex(c=>c.path===file);if(i>=0){rememberPosition();show(i,0,frag||'')}},state(){return{ready,animating,controls,chapter,page,pages,width:frame.clientWidth,height:frame.clientHeight,title:book?.title,text:frame.contentDocument?.body?.innerText?.slice(0,100)}}};
+window.stanza={load(data,options,position,translations,savedBookmarks=[]){++serial;cancelMotion();releaseResources(frame);readerLabels(translations);chrome(true);book=data;bookmarks=savedBookmarks;previousPosition=null;document.getElementById("return-position").hidden=true;renderBookmarks();prefs=options;renderContents();show(position?.chapter||0,position?.progress||0);return true},goToChapter(index){show(index)},next(){return turn(1)},previous(){return turn(-1)},configure(options){prefs=options;if(!restyle())show(chapter,pages>1?page/(pages-1):0)},bookmarks(rows){bookmarks=rows;renderBookmarks()},jump(index){if(!ready||animating)return;const c=book.toc[index], [file,frag]=c.path.split('#');const i=book.chapters.findIndex(c=>c.path===file);if(i>=0){rememberPosition();show(i,0,frag||'')}},state(){return{ready,animating,controls,chapter,page,pages,width:frame.clientWidth,height:frame.clientHeight,title:book?.title,text:frame.contentDocument?.body?.innerText?.slice(0,100)}}};
 let resizing;
 function reflow(){clearTimeout(resizing);resizing=setTimeout(()=>{if(book)show(chapter,pages>1?page/(pages-1):0)},150)}
 window.addEventListener('resize',reflow);
