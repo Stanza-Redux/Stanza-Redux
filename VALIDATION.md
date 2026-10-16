@@ -1,5 +1,30 @@
 # Local validation
 
+## Reader settings over the book on wide windows, and chapter headings — 2026-10-16
+
+- On a window wider than compact the Aa button now opens the settings as a modal sheet over the
+  book (`cover(..).sheet()`) instead of in its place, and changes reach the chapter live as they
+  do under the phone's half sheet. macOS attaches its window sheet, iPad its page sheet, and the
+  other toolkits a card centered over the dimmed book that Day now composes (day:
+  `Cap::CoverSheet`, `SurfaceRole::Window`, docs/cover.md "Modal sheet"). Only a desktop reader
+  window keeps the full settings page, which reloads the book on Done: the macOS sheet belongs
+  to the main window.
+- Multi-line chapter titles had their lines packed together. Chapters are served as text/html,
+  and Gutenberg's XHTML has no doctype, so browsers laid them out in quirks mode; its empty
+  `<a id="chap01"/>` also parsed as an open link around the whole title. The sanitizer now
+  puts `<!DOCTYPE html>` before a chapter without one and gives empty non-void elements an end
+  tag (unit test `xhtml_parses_as_written_in_standards_mode`). iPhone: the chapter reports
+  `CSS1Compat` and the title lines are spaced at the book's 1.5.
+- Sheet probe (open, 20 → 30 pt, light → dark, Done, reopen and dismiss), checking the chapter
+  document survives every change: web Chromium at 1280×800 (centered card) and at 390×844 (half
+  sheet), macOS (window sheet), iPad Air (page sheet), linux-gtk in the Lima VM (centered card),
+  iPhone 17 Pro simulator and Android emulator (half sheet). Qt in the VM has no WebEngine, so it
+  ran Day's `cover-sheet-composes-a-card-on-wide` case instead, with a capture showing the page
+  through the dimmed fill. One of four iPhone runs stalled the web view after the theme pick and
+  reloaded the chapter; the other three passed. `store-walkthrough` (`it`) on web Chromium:
+  141/141. Reader scripts on iPhone: 108/108.
+- Not covered: Windows (no local build), HarmonyOS and Android tablets.
+
 ## Reader settings as a half sheet — 2026-10-16
 
 - On a compact (phone-width) main window, the reader's Aa button now opens the settings as a

@@ -66,8 +66,19 @@ pub fn view(a: App) -> day_piece_webview::WebView {
     web_view_resources(provider, "__day_assets/index.html")
         .on_external_link(move |url| a.on_link(url))
 }
+/// The HTML elements with no end tag, which keep their `<br/>` form. Any other XHTML element
+/// written self-closed (`<a id="x"/>`, `<div/>`) would be read by the HTML parser as an open
+/// tag that swallows what follows it.
+const VOID_ELEMENTS: [&str; 13] = [
+    "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track",
+    "wbr",
+];
+const XHTML_NAMESPACE: &str = "http://www.w3.org/1999/xhtml";
 // EPUB content is XHTML. Strip active elements before the browser sees it; CSP independently
 // denies scripts and remote requests. Keep image/CSS/font URLs exactly as the publisher wrote them.
+// Chapters are served as text/html, so the XHTML is also made to parse as written there: a
+// doctype keeps the browser out of quirks mode (whose line layout packed a multi-line heading's
+// lines together), and empty non-void elements get an end tag.
 fn sanitize(bytes: &[u8]) -> Option<String> {
     let source = std::str::from_utf8(bytes).ok()?;
     let doc = roxmltree::Document::parse_with_options(
@@ -118,6 +129,20 @@ fn sanitize(bytes: &[u8]) -> Option<String> {
                 edits.push((attr.range(), String::new()));
             }
         }
+        let range = node.range();
+        if node.tag_name().namespace() == Some(XHTML_NAMESPACE)
+            && !node.has_children()
+            && source[range.clone()].ends_with("/>")
+            && !VOID_ELEMENTS.contains(&name.as_str())
+        {
+            // The name as the publisher wrote it, prefix included.
+            let written = &source[range.start + 1..range.end];
+            let qualified = written
+                .split(|c: char| c.is_ascii_whitespace() || c == '/' || c == '>')
+                .next()
+                .unwrap_or_default();
+            edits.push((range.end - 2..range.end, format!("></{qualified}>")));
+        }
     }
     // Qt before 6.6 cannot attach response headers. Put the same policy first in the
     // document head as well, before the parser can encounter publisher resources.
@@ -133,6 +158,12 @@ fn sanitize(bytes: &[u8]) -> Option<String> {
             insertion..insertion,
             format!(r#"<meta http-equiv="Content-Security-Policy" content="{CONTENT_POLICY}">"#),
         ));
+        let prolog = &source[..root.range().start];
+        if !prolog.to_ascii_lowercase().contains("<!doctype") {
+            // After a byte-order mark, which the HTML decoder strips only at the very start.
+            let start = if source.starts_with('\u{feff}') { 3 } else { 0 };
+            edits.push((start..start, String::from("<!DOCTYPE html>\n")));
+        }
     }
     edits.sort_by_key(|(range, _)| (range.start, range.end));
     let mut result = String::with_capacity(source.len());
@@ -167,5 +198,24 @@ mod tests {
         assert!(out.contains("../styles/a.css"));
         assert!(out.contains("srcset="));
         assert!(out.contains(CONTENT_POLICY));
+    }
+    #[test]
+    fn xhtml_parses_as_written_in_standards_mode() {
+        // Project Gutenberg's chapter shape: an XML declaration, no doctype, an empty anchor.
+        let source = "<?xml version='1.0' encoding='utf-8'?>\n<html xmlns=\"http://www.w3.org/1999/xhtml\"><head><title>T</title></head><body><h2><a id=\"chap01\"/>CHAPTER I.<br/>\nDown the Rabbit-Hole</h2><div class=\"x\"/><p>After</p><svg xmlns=\"http://www.w3.org/2000/svg\"><rect/></svg></body></html>";
+        let out = sanitize(source.as_bytes()).unwrap();
+        assert!(out.starts_with("<!DOCTYPE html>\n<?xml"));
+        assert!(out.contains(r#"<a id="chap01"></a>CHAPTER I.<br/>"#));
+        assert!(out.contains(r#"<div class="x"></div><p>After</p>"#));
+        // Void elements and foreign content keep their self-closed form.
+        assert!(out.contains("<rect/>"));
+        // A publisher's own doctype stays the only one.
+        let declared =
+            "<!DOCTYPE html>\n<html xmlns=\"http://www.w3.org/1999/xhtml\"><head/><body/></html>";
+        let out = sanitize(declared.as_bytes()).unwrap();
+        assert_eq!(out.matches("<!DOCTYPE").count(), 1);
+        // SVG documents are served as SVG, with no doctype added.
+        let svg = sanitize(br#"<svg xmlns="http://www.w3.org/2000/svg"><g/></svg>"#).unwrap();
+        assert!(!svg.contains("DOCTYPE"));
     }
 }
