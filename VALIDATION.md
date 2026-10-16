@@ -254,12 +254,73 @@ app's hands avoids it, so `.github/workflows/ci.yml` now runs HarmonyOS on the p
 only (`harmony-devices`), with the tablet row kept in a comment to restore once the image's
 GPU stack is fixed.
 
+Update (2026-10-16): phone-only did not eliminate this failure; see the
+GPU-process workaround below.
+
 Also from this run: `store-walkthrough` died once with a `THREAD_BLOCK_6S` app freeze
 (the main thread stuck in ArkWeb's `webViewTask` after a reader re-render); `day` now
 recognizes `appfreeze-*` faultlogger reports in its post-mortem, which looked only for
 crashes. An ArkWeb renderer exited (code 0) once on the first book open after a fresh
 install; the next launch was fine. Under dayscript the status bar no longer animates
 when the reader hides it.
+
+## Harmony CI GPU-process workaround — 2026-10-16
+
+[Run 38973239248, job 117216558664](https://github.com/Stanza-Redux/Stanza-Redux/actions/runs/38973239248/job/117216558664)
+built successfully, completed the localized store tours and eight regression scripts,
+then aborted opening Alice in `demo.yaml` on the **phone** panel. The script's engine EOF
+was a consequence of the native crash: `SIGABRT` on `Chrome_InProcGp`, through
+`__assert_fail` to `kms_swrast_dri.so(draw_flush+54)`. The local image has the same Mesa
+build ID (`7837348533bfc67f2f3d8001f688eb90f24da965`). Disassembly identifies the failed
+assertion as `!draw->flushing`: a draw context was flushed while already flushing.
+The crash report does not establish who reentered that context.
+
+`tests/ci-fixture.sh` now runs `tests/harmony_gpu.py` after emulator setup and before
+launching the app. On OpenHarmony 7.0.0.39 x86_64 it sets `web.oop.gpu=true` and verifies
+readback, moving ArkWeb's GPU work into a separate process. This is an emulator
+workaround, not a Mesa fix: it separates ArkWeb GPU work from the app's native renderer
+and contains GPU-process failures. It neither disables assertions nor skips reader
+coverage. The property is nonpersistent and must be reapplied after boot. Other images
+and architectures are unchanged; transport failures, failed readback, and the product
+model that ignores the property fail setup. OpenHarmony's
+[system properties adapter](https://github.com/openharmony/web_webview/blob/OpenHarmony-5.0.1-Release/ohos_adapter/system_properties_adapter/src/system_properties_adapter_impl.cpp)
+implements the option and the `emulator` model override.
+
+Initial local validation used the existing October 7 x86_64 HAP, not the CI binary.
+The unchanged demo completed 57/59 steps both before and after the setting; its two
+failures are missing newer Settings IDs in that older binary. The original crash did
+not reproduce in that baseline run. With the setting enabled, process inspection
+confirmed `org.appfair.app.StanzaRedux:gpu`, and screenshots showed rendered book text,
+with the dark reader theme. All 19 Python fixture tests passed, including
+the configuration guards; shell syntax and diff checks passed.
+
+A ten-cycle stress script repeated the reader portion of `demo.yaml` in one app
+process, excluding the obsolete Settings IDs. Seven cycles completed; on the eighth
+the app was killed for `THREAD_BLOCK_6S`, after 373 successful steps. There was no new
+Mesa crash report. Visual review also found a blank `night` capture despite successful
+JavaScript assertions; a successful step count alone does not validate rendering.
+The freeze report identifies a pending
+`ArkUIUpdateOriginAvoidAreaAndExecuteKeyboardAvoid` task, but stack sampling failed,
+so it does not establish the deadlock's cause or whether GPU isolation contributed.
+The runner then stalled and was terminated. Logs, the stress script, and screenshots
+are retained locally under `build/day/harmony-gpu-investigation/`. The emulator's
+original `web.oop.gpu=None` setting was restored.
+
+The current app (`4411cc2`, with Day `0de8ebaa`) was subsequently rebuilt and signed
+successfully. This required temporary corrections to the machine-local Cargo patch
+paths and setting `OHOS_BASE_SDK_HOME` to the installed API 18 SDK root. The original
+Cargo configuration was restored. With GPU isolation enabled, the current app passed
+all **59/59 demo steps**, and both normal and night-theme captures showed book text.
+The current build then passed **520/520 steps** in the ten-cycle reader stress run
+(159.865 seconds, 60 captures), with no skipped or aborted steps and no new faultlogger
+report. The same separate GPU process survived the run. Final visual review found
+a blank `reader` capture while `night` rendered correctly, so screenshot timing remains
+imperfect even when the script passes. The current build and stress logs and captures
+are saved alongside the earlier evidence. The original guest GPU setting was restored
+again after testing.
+
+The full CI suite still needs to validate this workaround against the intermittent
+fault. Keep the phone-only matrix until that validation succeeds.
 
 ## Harmony Settings scroll bounds — 2026-10-05
 

@@ -29,6 +29,7 @@ case "${DAY_SCRIPT_TARGET:-}" in
         "$STANZA_ADB" ${ANDROID_SERIAL:+-s "$ANDROID_SERIAL"} reverse "tcp:$STANZA_FIXTURE_PORT" "tcp:$STANZA_FIXTURE_PORT"
         ;;
     harmony-arkui)
+        "$STANZA_PYTHON" tests/harmony_gpu.py
         STANZA_FORWARD=$(hdc ${DAY_OHOS_TARGET:+-t "$DAY_OHOS_TARGET"} rport "tcp:$STANZA_FIXTURE_PORT" "tcp:$STANZA_FIXTURE_PORT")
         echo "$STANZA_FORWARD"
         # hdc can report failure on stdout with exit status zero.
