@@ -29,5 +29,5 @@ flow:
   - nav_back: {}
   - assert_visible: { id: catalog-sources }
   - toolbar: { item: manage-catalogs }
-  - tap: { id: 'catalog-remove-http://127.0.0.1:18765/retry-fixture' }
-  - toolbar: { item: catalog-manager-done }
+  - context_menu: { id: 'catalog-row-http://127.0.0.1:18765/retry-fixture', item_id: catalog-remove }
+  - nav_back: {}

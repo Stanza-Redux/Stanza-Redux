@@ -1,5 +1,40 @@
 # Local validation
 
+## Library rows clipped on Android — 2026-10-17
+
+The Library's Recents/Titles/Authors/Genres rows were 64 high with 16 of padding all round, which
+left 32 for a Headline name and its Footnote summary; Android's larger type scale clipped the
+summary to its top pixels. Rows are now 72 with 16 × 10 padding. Checked on android-mdc (1.0 and
+1.3 font scale), iOS and macOS; `dayscript/library.yaml` 74/74 on Android. At Android's 2.0 font
+scale the summary still clips: Day list rows are a fixed height on every backend.
+
+## Catalog manager as an editable list — 2026-10-17
+
+Manage catalogs is now one native list, with each platform's own way of editing it, in place of
+rows of Edit/Move up/Move down/Remove buttons:
+
+- Rows show the catalog's icon, name and address, like the catalog list itself. Every row has a
+  context menu (Edit catalog, Remove), and the editor has a Remove catalog button, so every
+  platform has a visible way to remove one.
+- iOS: the list opens in editing mode (day: `List::editing`, `Cap::ListEditing`): red delete
+  controls, reorder grips, a tap opens the editor; + and Done in the navigation bar.
+- Android and HarmonyOS: touch and hold to drag, tap to edit, swipe to remove on Android; a line
+  under the list says so, a floating + button adds a catalog, and the back arrow closes the page
+  (no Done: Android's bar would only fold it into the overflow menu).
+- Android showed no Manage button on the Catalogs tab at all, nor any toolbar item on a page
+  pushed in that tab: Day drew the window toolbar on the first tab's navigation host, which is
+  hidden while another tab shows. Day's Android tabs now move the bar to the selected tab's host.
+- macOS, Linux, Windows and the web: select a row and use +, − and the pencil under the list;
+  drag to reorder, double-click to edit; on macOS a two-finger swipe offers Remove too.
+- Reordering showed the wrong order until the page was reopened: day-persistence's query row
+  source ignored the native move, so Day replayed the query's own move on rows the drag had
+  already moved. Fixed there (`commit_move`), and Day's list now reloads whenever an app answers
+  a move with a different order.
+- Dayscripts address rows as `catalog-row-<url>` and act through the row menu
+  (`context_menu: { item_id: catalog-remove }`, `if_present` for the walkthrough's cleanup) and
+  `reorder:`; `scroll_to` cannot reach list rows, so those steps are `wait_for` now. They leave
+  the manager with `nav_back`, which every platform has.
+
 ## CI run 38989511361: reader-margins on the phone legs — 2026-10-17
 
 Runs 38980002757 and 38989511361 (`4411cc2c`, `d52ded51`) failed `dayscript/reader-margins.yaml`

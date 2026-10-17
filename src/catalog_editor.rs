@@ -75,6 +75,9 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
             .unwrap_or_default(),
     );
     let url = Signal::new(existing.as_ref().map(|c| c.url.clone()).unwrap_or_default());
+    // Removal belongs with the catalog it removes; the manager's swipes and menus are faster
+    // routes to the same thing.
+    let removable = original.clone();
     let validated = Signal::new(None::<(String, opds::Feed)>);
     let busy = Signal::new(false);
     let error = Signal::new(String::new());
@@ -272,6 +275,21 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
                             ),
                         ))
                         .title(res::str::catalog_validation())
+                    },
+                ),
+                when(
+                    {
+                        let removable = removable.clone();
+                        move || removable.is_some()
+                    },
+                    move || {
+                        let url = removable.clone().unwrap_or_default();
+                        section((button(res::str::remove_catalog())
+                            .action(move || {
+                                crate::browser::remove_catalog(a, &url);
+                                a.catalog_editor.set(None);
+                            })
+                            .id("catalog-editor-remove"),))
                     },
                 ),
             ))

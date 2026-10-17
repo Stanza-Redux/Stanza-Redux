@@ -13,13 +13,13 @@ flow:
     id: manage-catalogs-menu
 - wait_for:
     id: catalog-manager-list
-- tap:
-    id: catalog-remove-http://127.0.0.1:18765/showcase
+- context_menu:
+    id: catalog-row-http://127.0.0.1:18765/showcase
+    item_id: catalog-remove
     if_present: true
 - assert_missing:
-    id: catalog-remove-http://127.0.0.1:18765/showcase
-- toolbar:
-    item: catalog-manager-done
+    id: catalog-row-http://127.0.0.1:18765/showcase
+- nav_back: {}
 - menu:
     id: add-opds-catalog
 - wait_for:
@@ -480,12 +480,12 @@ flow:
     timeout_secs: 30
 - menu:
     id: manage-catalogs-menu
-- scroll_to:
-    id: catalog-remove-http://127.0.0.1:18765/showcase
-- tap:
-    id: catalog-remove-http://127.0.0.1:18765/showcase
-- toolbar:
-    item: catalog-manager-done
+- wait_for:
+    id: catalog-row-http://127.0.0.1:18765/showcase
+- context_menu:
+    id: catalog-row-http://127.0.0.1:18765/showcase
+    item_id: catalog-remove
+- nav_back: {}
 - nav_back: {}
 - wait_for:
     id: catalog-sources

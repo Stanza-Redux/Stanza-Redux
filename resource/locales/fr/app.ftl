@@ -67,8 +67,9 @@ manage_catalogs = Gérer les catalogues
 catalog_name = Nom du catalogue
 add_catalog = Ajouter un catalogue OPDS
 catalog_exists = Ce catalogue figure déjà dans votre liste.
-move_up = Monter
-move_down = Descendre
+remove_catalog = Supprimer le catalogue
+catalog_manager_touch_hint = Maintenez le doigt sur un catalogue pour le déplacer. Touchez-le pour le modifier ou le supprimer.
+catalog_manager_desktop_hint = Faites glisser les catalogues pour les réordonner. Double-cliquez sur l’un d’eux pour le modifier.
 choose_publication = Sélectionnez un livre pour afficher ses détails.
 
 genre = Genre

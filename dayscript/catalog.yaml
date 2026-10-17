@@ -34,12 +34,12 @@ flow:
   - wait_for: { id: catalog-list-1-OPDS 2 fixture, timeout_secs: 30 }
   - screenshot: { name: opds2 }
   - menu: { id: manage-catalogs-menu }
-  - scroll_to: { id: 'catalog-remove-http://127.0.0.1:18765/catalog' }
-  - tap: { id: 'catalog-remove-http://127.0.0.1:18765/catalog' }
-  - toolbar: { item: catalog-manager-done }
+  - wait_for: { id: 'catalog-row-http://127.0.0.1:18765/catalog' }
+  - context_menu: { id: 'catalog-row-http://127.0.0.1:18765/catalog', item_id: catalog-remove }
+  - nav_back: {}
   - menu: { id: manage-catalogs-menu }
-  - scroll_to: { id: 'catalog-remove-http://127.0.0.1:18765/json' }
-  - tap: { id: 'catalog-remove-http://127.0.0.1:18765/json' }
-  - toolbar: { item: catalog-manager-done }
+  - wait_for: { id: 'catalog-row-http://127.0.0.1:18765/json' }
+  - context_menu: { id: 'catalog-row-http://127.0.0.1:18765/json', item_id: catalog-remove }
+  - nav_back: {}
   - nav_back: {}
   - wait_for: { id: catalog-sources }

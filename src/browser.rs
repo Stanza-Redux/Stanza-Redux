@@ -335,12 +335,29 @@ pub fn view(a: App) -> impl Piece {
             if page.manager {
                 manager(a)
                     .toolbar(move || {
+                        let style = ManagerStyle::current();
                         let mut actions = title_action(res::str::manage_catalogs().format());
-                        actions.push(
-                            toolbar_button("catalog-manager-done", res::str::done())
-                                .placement(ToolbarPlacement::Primary)
-                                .action(move || a.catalog_step(false)),
-                        );
+                        // Android's back arrow already closes the page; a Done there would
+                        // only fold into the overflow menu.
+                        if style != ManagerStyle::Touch {
+                            actions.push(
+                                toolbar_button("catalog-manager-done", res::str::done())
+                                    .placement(ToolbarPlacement::Primary)
+                                    .action(move || a.catalog_step(false)),
+                            );
+                        }
+                        // The desktops add from the bar under the list, the other phones
+                        // from a floating button over it.
+                        if style == ManagerStyle::Editing {
+                            actions.push(
+                                toolbar_button("catalog-manager-add", res::str::add_catalog())
+                                    .icon(Symbol::Add)
+                                    .placement(ToolbarPlacement::Primary)
+                                    .action(move || {
+                                        a.catalog_editor.set(Some(catalog_editor::EditorRoute::Add))
+                                    }),
+                            );
+                        }
                         actions
                     })
                     .any()
@@ -1087,104 +1104,224 @@ fn search(a: App, link: opds::Link, query: String) {
         request.load(),
     );
 }
+/// How the catalog manager edits on this platform. iOS has the list editing mode (delete
+/// controls, reorder grips); the other phones drag on a long press and, on Android, delete with a
+/// swipe; the desktops and the web select a row and act on it from the bar under the list.
+#[derive(Clone, Copy, PartialEq)]
+enum ManagerStyle {
+    Editing,
+    Touch,
+    Desktop,
+}
+impl ManagerStyle {
+    fn current() -> Self {
+        if capability(Cap::ListEditing) == Support::Native {
+            Self::Editing
+        } else if cfg!(any(target_os = "android", target_env = "ohos")) {
+            Self::Touch
+        } else {
+            Self::Desktop
+        }
+    }
+}
 fn manager(a: App) -> impl Piece {
     let Some(db) = a.database.get_untracked() else {
         return label(res::str::database_unavailable()).any();
     };
-    // One live query for the rows and for every move button's enabled state. A query built
-    // inside the binding is dropped as soon as it answers, so a reorder never re-ran the
-    // binding and the old first and last rows kept their disabled buttons.
+    let style = ManagerStyle::current();
     let catalogs = db.catalog_query();
-    let rows = catalogs.clone();
-    column((scroll(
-        column((each(rows, move |item| {
-            let c = opds::Link {
-                title: item.title().read(),
-                url: item.url().read(),
-                ..Default::default()
-            };
-            let up = c.url.clone();
-            let down = c.url.clone();
-            let remove = c.url.clone();
-            column((
-                label(move || item.title().read()).font(Font::Headline),
-                label(c.url.clone()).font(Font::Footnote),
-                row((
-                    button(res::str::edit_catalog())
-                        .action({
-                            let url = c.url.clone();
-                            move || {
-                                a.catalog_editor
-                                    .set(Some(catalog_editor::EditorRoute::Edit(url.clone())))
-                            }
-                        })
-                        .id(format!("catalog-edit-{}", c.url)),
-                    button(res::str::move_up())
-                        .enabled({
-                            let u = up.clone();
-                            let catalogs = catalogs.clone();
-                            move || {
-                                catalogs
-                                    .try_collect()
-                                    .is_ok_and(|c| c.first().is_some_and(|c| c.url != u))
-                            }
-                        })
-                        .action(move || reorder(a, &up, -1))
-                        .id(format!("catalog-up-{}", c.url)),
-                    button(res::str::move_down())
-                        .enabled({
-                            let u = down.clone();
-                            let catalogs = catalogs.clone();
-                            move || {
-                                catalogs
-                                    .try_collect()
-                                    .is_ok_and(|c| c.last().is_some_and(|c| c.url != u))
-                            }
-                        })
-                        .action(move || reorder(a, &down, 1))
-                        .id(format!("catalog-down-{}", c.url)),
-                    button(res::str::delete())
-                        .action(move || {
-                            let mut c = match a.catalogs() {
-                                Ok(c) => c,
-                                Err(e) => {
-                                    a.error(e);
-                                    return;
-                                }
-                            };
-                            c.retain(|c| c.url != remove);
-                            a.save_catalogs(c)
-                        })
-                        .id(format!("catalog-remove-{}", c.url)),
-                ))
-                .spacing(8.),
-            ))
-            .spacing(6.)
-            .padding(10.)
-        }),))
-        .spacing(10.),
-    )
-    .grow()
-    .id("catalog-manager-list"),))
-    .spacing(12.)
-    .padding(16.)
-    .any()
-}
-fn reorder(a: App, url: &str, delta: isize) {
-    let mut c = match a.catalogs() {
-        Ok(c) => c,
-        Err(e) => {
-            a.error(e);
-            return;
-        }
+    // The desktop bar acts on the selected catalog, by URL so a reorder cannot retarget it.
+    let selected = Signal::new(None::<String>);
+    let present = catalogs.clone();
+    let chosen = move || {
+        let url = selected.get()?;
+        present
+            .try_collect()
+            .ok()?
+            .iter()
+            .any(|c| c.url == url)
+            .then_some(url)
     };
-    if let Some(i) = c.iter().position(|c| c.url == url) {
-        let j = i as isize + delta;
-        if j >= 0 && (j as usize) < c.len() {
-            c.swap(i, j as usize);
-            a.save_catalogs(c)
+    let rows = list(catalogs, move |slot| {
+        row((
+            covers::favicon(move || opds::favicon_url(&slot.url().read())),
+            column((
+                label(move || slot.title().read())
+                    .font(Font::Headline)
+                    .single_line(),
+                label(move || slot.url().read())
+                    .font(Font::Footnote)
+                    .secondary()
+                    .single_line(),
+            ))
+            .spacing(3.)
+            .align(HAlign::Leading)
+            .grow_w(),
+            when(
+                move || style != ManagerStyle::Desktop,
+                move || {
+                    vector(res::vectors::chevron_forward)
+                        .frame(12., 24.)
+                        .decorative()
+                },
+            ),
+        ))
+        .spacing(12.)
+        .padding(Insets::symmetric(16., 10.))
+        .context_menu_fn(move |_| {
+            let edit = slot.url().read();
+            let remove = edit.clone();
+            vec![
+                menu_item(res::str::edit_catalog().format())
+                    .icon(Symbol::Edit)
+                    .id("catalog-edit")
+                    .action(move || edit_catalog(a, edit.clone())),
+                menu_item(res::str::delete().format())
+                    .icon(Symbol::Delete)
+                    .id("catalog-remove")
+                    .action(move || remove_catalog(a, &remove)),
+            ]
+        })
+        // Recycled cells rebind to other catalogs, so the id follows the slot.
+        .id_of(move || format!("catalog-row-{}", slot.url().read()))
+    })
+    .row_height(RowHeight::Uniform(72.))
+    // A desktop table draws its grid through the empty space below the rows as well.
+    .separators(style != ManagerStyle::Desktop)
+    .reorderable(true)
+    .on_reorder(move |from, to| {
+        let mut c = match a.catalogs() {
+            Ok(c) => c,
+            Err(e) => return a.error(e),
+        };
+        if from < c.len() && to < c.len() {
+            let moved = c.remove(from);
+            c.insert(to, moved);
+            a.save_catalogs(c);
+        }
+    })
+    .deletable(true)
+    .delete_label(res::str::delete().format())
+    .on_delete(move |index| {
+        let mut c = match a.catalogs() {
+            Ok(c) => c,
+            Err(e) => return a.error(e),
+        };
+        if index < c.len() {
+            c.remove(index);
+            a.save_catalogs(c);
+        }
+    })
+    .editing(style == ManagerStyle::Editing)
+    .on_selection(move |rows| selected.set(rows.first().map(|c| c.url().read())))
+    .on_activate(move |c| edit_catalog(a, c.url().read()));
+    // macOS has no delete swipe but does have the two-finger row actions Mail uses.
+    let rows = if capability(Cap::ListDelete) != Support::Native
+        && capability(Cap::ListSwipeActions) == Support::Native
+    {
+        rows.swipe_trailing(move |index| {
+            vec![
+                swipe_action(res::str::delete().format())
+                    .destructive(true)
+                    .symbol(Symbol::Delete)
+                    .action(move || {
+                        if let Some(c) = a.catalogs().ok().and_then(|c| c.get(index).cloned()) {
+                            remove_catalog(a, &c.url);
+                        }
+                    }),
+            ]
+        })
+    } else {
+        rows
+    };
+    let rows = rows.id("catalog-manager-list").grow();
+    match style {
+        ManagerStyle::Editing => rows.any(),
+        // Material's add control for a list screen is the floating action button.
+        ManagerStyle::Touch => column((
+            rows.overlay_aligned(
+                Alignment::BottomTrailing,
+                button(res::str::add_catalog())
+                    .icon(Symbol::Add)
+                    .icon_only()
+                    .prominent()
+                    .action(move || a.catalog_editor.set(Some(catalog_editor::EditorRoute::Add)))
+                    .id("catalog-manager-add")
+                    .frame(56., 56.)
+                    .padding(16.),
+            )
+            .grow(),
+            label(res::str::catalog_manager_touch_hint())
+                .font(Font::Footnote)
+                .secondary()
+                .padding(16.),
+        ))
+        .grow()
+        .any(),
+        ManagerStyle::Desktop => {
+            let chosen = Rc::new(chosen);
+            let can_remove = chosen.clone();
+            let can_edit = chosen.clone();
+            let remove = chosen.clone();
+            column((
+                rows,
+                divider(),
+                row((
+                    button(res::str::add_catalog())
+                        .icon(Symbol::Add)
+                        .icon_only()
+                        .plain()
+                        .action(move || {
+                            a.catalog_editor.set(Some(catalog_editor::EditorRoute::Add))
+                        })
+                        .id("catalog-manager-add"),
+                    button(res::str::delete())
+                        .icon(Symbol::Remove)
+                        .icon_only()
+                        .plain()
+                        .enabled(move || can_remove().is_some())
+                        .action(move || {
+                            if let Some(url) = remove() {
+                                remove_catalog(a, &url);
+                            }
+                        })
+                        .id("catalog-manager-remove"),
+                    button(res::str::edit_catalog())
+                        .icon(Symbol::Edit)
+                        .icon_only()
+                        .plain()
+                        .enabled(move || can_edit().is_some())
+                        .action(move || {
+                            if let Some(url) = chosen() {
+                                edit_catalog(a, url);
+                            }
+                        })
+                        .id("catalog-manager-edit"),
+                    label(res::str::catalog_manager_desktop_hint())
+                        .font(Font::Footnote)
+                        .secondary()
+                        .single_line()
+                        .grow_w(),
+                ))
+                .spacing(6.)
+                .padding(Insets::symmetric(12., 8.)),
+            ))
+            .grow()
+            .any()
         }
     }
+}
+fn edit_catalog(a: App, url: String) {
+    a.catalog_editor
+        .set(Some(catalog_editor::EditorRoute::Edit(url)));
+}
+pub fn remove_catalog(a: App, url: &str) {
+    let mut c = match a.catalogs() {
+        Ok(c) => c,
+        Err(e) => return a.error(e),
+    };
+    c.retain(|c| c.url != url);
+    a.save_catalogs(c)
 }
 
 #[cfg(test)]

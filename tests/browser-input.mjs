@@ -29,7 +29,8 @@ for(const engine of [chromium,webkit].filter(e=>!process.env.STANZA_BROWSER||e.n
   await page.mouse.wheel(-160,0);await list('1-Subjects').waitFor();await page.waitForTimeout(300);
   await page.mouse.wheel(160,0);await list('2-Authors').waitFor();
   await page.getByRole('button',{name:'Manage',exact:true}).click();
-  await page.locator(`[id="catalog-edit-${catalogUrl}"]`).click();
+  const managed=()=>page.locator('#catalog-manager-list').getByText(catalogUrl,{exact:true});
+  await managed().dblclick();
   await input('catalog-editor-url').fill('http://127.0.0.1:18765/missing');
   await input('catalog-editor-url').focus();await page.keyboard.press('ArrowLeft');
   assert.equal(await input('catalog-editor-url').isVisible(),true);
@@ -42,8 +43,9 @@ for(const engine of [chromium,webkit].filter(e=>!process.env.STANZA_BROWSER||e.n
   await page.reload();await page.locator('#navigation').waitFor();await page.evaluate(()=>location.hash='#catalogs');
   await page.locator('#catalog-sources').getByText('Persistent catalog',{exact:true}).waitFor();
   await page.getByRole('button',{name:'Manage',exact:true}).click();
-  await page.locator(`[id="catalog-remove-${catalogUrl}"]`).click();
+  assert.equal(await page.locator('#catalog-manager-remove').isEnabled(),false);
+  await managed().click();await page.locator('#catalog-manager-remove').click();await managed().waitFor({state:'hidden'});
   await page.screenshot({path:`/private/tmp/stanza-catalog-editor-${engine.name()}.png`});
-  console.log(`${engine.name()}: PASS catalog validation/editing, keyboard, horizontal wheel, text-editing isolation and persistence`);
+  console.log(`${engine.name()}: PASS catalog validation/editing, manager double-click and remove, keyboard, horizontal wheel, text-editing isolation and persistence`);
  }finally{await context.close();await rm(profile,{recursive:true,force:true});}
 }

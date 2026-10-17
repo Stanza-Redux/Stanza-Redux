@@ -28,6 +28,6 @@ flow:
   - nav_back: {}
   - assert_visible: { id: catalog-sources }
   - menu: { id: manage-catalogs-menu }
-  - scroll_to: { id: 'catalog-remove-http://127.0.0.1:18765/cancellation' }
-  - tap: { id: 'catalog-remove-http://127.0.0.1:18765/cancellation' }
-  - toolbar: { item: catalog-manager-done }
+  - wait_for: { id: 'catalog-row-http://127.0.0.1:18765/cancellation' }
+  - context_menu: { id: 'catalog-row-http://127.0.0.1:18765/cancellation', item_id: catalog-remove }
+  - nav_back: {}

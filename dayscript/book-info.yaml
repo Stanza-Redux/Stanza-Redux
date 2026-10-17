@@ -58,6 +58,6 @@ flow:
   - close_window: { window: day.preferences }
   - navigate: { route: catalogs }
   - menu: { id: manage-catalogs-menu }
-  - scroll_to: { id: 'catalog-remove-http://127.0.0.1:18765/rich' }
-  - tap: { id: 'catalog-remove-http://127.0.0.1:18765/rich' }
-  - toolbar: { item: catalog-manager-done }
+  - wait_for: { id: 'catalog-row-http://127.0.0.1:18765/rich' }
+  - context_menu: { id: 'catalog-row-http://127.0.0.1:18765/rich', item_id: catalog-remove }
+  - nav_back: {}

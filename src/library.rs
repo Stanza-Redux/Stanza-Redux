@@ -215,10 +215,12 @@ fn folders(a: App, kind: Option<&'static str>) -> impl Piece {
             ))
             .spacing(12.)
             .align(VAlign::Center)
-            .padding(16.)
+            .padding(Insets::symmetric(16., 10.))
         },
     )
-    .row_height(RowHeight::Uniform(64.))
+    // Room for a name and its summary at every platform's type scale: Android's are larger
+    // than iOS's, and 64 with 16 all round clipped the summary there.
+    .row_height(RowHeight::Uniform(72.))
     .on_select(move |key| {
         if let Some(page) = [Page::Recents, Page::Titles, Page::Authors, Page::Genres]
             .into_iter()

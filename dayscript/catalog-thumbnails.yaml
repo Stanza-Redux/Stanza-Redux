@@ -16,6 +16,6 @@ flow:
   - wait_for: { id: 'catalog-cover-46-http://127.0.0.1:18765/covers/2.png' }
   - screenshot: { name: thumbnails-loaded }
   - menu: { id: manage-catalogs-menu }
-  - scroll_to: { id: 'catalog-remove-http://127.0.0.1:18765/many' }
-  - tap: { id: 'catalog-remove-http://127.0.0.1:18765/many' }
-  - toolbar: { item: catalog-manager-done }
+  - wait_for: { id: 'catalog-row-http://127.0.0.1:18765/many' }
+  - context_menu: { id: 'catalog-row-http://127.0.0.1:18765/many', item_id: catalog-remove }
+  - nav_back: {}

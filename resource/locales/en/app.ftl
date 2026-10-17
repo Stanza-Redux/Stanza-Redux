@@ -67,8 +67,9 @@ manage_catalogs = Manage catalogs
 catalog_name = Catalog name
 add_catalog = Add OPDS catalog
 catalog_exists = This catalog is already in your list.
-move_up = Move up
-move_down = Move down
+remove_catalog = Remove catalog
+catalog_manager_touch_hint = Touch and hold a catalog to move it. Tap it to edit or remove it.
+catalog_manager_desktop_hint = Drag catalogs to reorder them. Double-click one to edit it.
 choose_publication = Select a book to see its details.
 
 genre = Genre
