@@ -1,5 +1,46 @@
 # Local validation
 
+## CI run 38989511361: reader-margins on the phone legs — 2026-10-17
+
+Runs 38980002757 and 38989511361 (`4411cc2c`, `d52ded51`) failed `dayscript/reader-margins.yaml`
+at step 17, `String(stanza.state().ready && stanza.state().page===stanza.state().pages-1)`, on
+the android-mdc pixel_7 and harmony-arkui phone legs, first attempt and retry alike, while the
+Android tablet, the iPad, Windows and the desktops passed all 27 steps. The reported error,
+`web_eval "book-webview": awaiting the engine`, is only the wording of whichever poll came last
+and carries no information: a mismatched result reports the same text (checked on the WinUI
+build, where six evals with a deliberately wrong expectation all reported it). Steps 18–27
+passed in the same run, so the engine was answering.
+
+Evidence:
+
+- The step waited out the default 5 s. The screenshot taken 120 ms later shows the last page
+  (34/34, the slider at 100 %, the return-position button visible), so the page reached the
+  asserted state at about the deadline, where the green run 38812562604 (day `cc8a4648`) took
+  100 ms.
+- `reader-safe-area.yaml` scrubs the same slider to the last page on the same phones and passes,
+  so the slider path itself works. `reader-margins` is the only script that restyles to size 22
+  and margin 36 first; `goToChapter(2)` then loads a 34-page chapter.
+- In the Harmony log the slider step is followed within a second by an ArkUI layout line and an
+  ArkCompiler serialize (the resource-provider worker receiving a request); neither appears in
+  the green run's window. That is the signature of a chapter reload after the slider step: the
+  reader reloaded a chapter from `reflow()` on any `resize` event or chrome size change, and
+  under the emulators' software GL a reload with fonts and pagination takes seconds.
+- The framework the red runs resolved moved from `cc8a4648` to `d46ecad6`, which includes the
+  half-sheet cover presentation and per-window toolbar hosts on Android (`343bcd4b`,
+  `0de8ebaa`), the changes the compact reader layout exercises. What raises the resize on the
+  phones after the position report is not identified: the native side logs nothing there, and
+  no phone emulator is available on this host.
+
+Change: `reflow()` no longer reloads the chapter. A resize that leaves the window and chrome
+measuring as at the last pagination is ignored, so a page turn in flight is not cancelled, and
+otherwise the loaded chapter is restyled in place (`restyle()`, the path a settings change
+already takes); only a chapter still loading loads afresh. The WinUI build at 560 px wide ran
+the step sequence in 3.6 s before the change and passes it after it. The browser suites under
+`tests/*.mjs` need Playwright, which this host lacks; the phones are CI's to confirm. A real window
+resize could not be exercised on WinUI: the pushed reader page keeps its 544 px frame when the
+window grows from 560 to 760 px (the detail page shows beside it), which is a WinUI layout
+matter of its own.
+
 ## Reader settings over the book on wide windows, and chapter headings — 2026-10-16
 
 - On a window wider than compact the Aa button now opens the settings as a modal sheet over the

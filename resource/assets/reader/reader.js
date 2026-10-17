@@ -305,7 +305,15 @@ document.getElementById('previous-page').onclick=()=>turn(-1);
 document.getElementById('next-page').onclick=()=>turn(1);
 window.stanza={load(data,options,position,translations,savedBookmarks=[]){++serial;cancelMotion();releaseResources(frame);readerLabels(translations);chrome(true);book=data;bookmarks=savedBookmarks;previousPosition=null;document.getElementById("return-position").hidden=true;renderBookmarks();prefs=options;renderContents();show(position?.chapter||0,position?.progress||0);return true},goToChapter(index){show(index)},next(){return turn(1)},previous(){return turn(-1)},configure(options){prefs=options;if(!restyle())show(chapter,pages>1?page/(pages-1):0)},bookmarks(rows){bookmarks=rows;renderBookmarks()},jump(index){if(!ready||animating)return;const c=book.toc[index], [file,frag]=c.path.split('#');const i=book.chapters.findIndex(c=>c.path===file);if(i>=0){rememberPosition();show(i,0,frag||'')}},state(){return{ready,animating,controls,chapter,page,pages,width:frame.clientWidth,height:frame.clientHeight,title:book?.title,text:frame.contentDocument?.body?.innerText?.slice(0,100)}}};
 let resizing;
-function reflow(){clearTimeout(resizing);resizing=setTimeout(()=>{if(book)show(chapter,pages>1?page/(pages-1):0)},150)}
+// A native re-layout can raise resize with nothing changed (the window and chrome still measure as at
+// the last pagination): skip, so a page turn in flight is not cancelled. Otherwise restyle the loaded
+// chapter in place, as a settings change does; only a chapter still loading loads afresh.
+function reflow(){clearTimeout(resizing);resizing=setTimeout(()=>{
+ if(!book)return;
+ const w=Math.max(1,innerWidth)+'px',h=Math.max(1,innerHeight)+'px';
+ if(frame.style.width===w&&frame.style.height===h&&chromeSize().join(',')===measuredChrome)return;
+ if(!restyle())show(chapter,pages>1?page/(pages-1):0)
+},150)}
 window.addEventListener('resize',reflow);
 // Safe-area changes and text wrapping can resize chrome without a window resize.
 const chromeObserver=new ResizeObserver(()=>{if(book&&chromeSize().join(',')!==measuredChrome)reflow()});
