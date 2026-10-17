@@ -1,5 +1,28 @@
 # Local validation
 
+## CI run 39058075568: phone reader margins, iPad catalog rows, lint — 2026-10-17
+
+Three legs failed: android-mdc pixel and harmony-arkui phone (`reader-margins.yaml` step 17, as in
+every run since `2a3dc8f`), and the iPad (`browser.yaml`, and `book-info.yaml` in the run before).
+
+- Phones: reproduced on the local Android emulator. The step's line boxes were empty on the last
+  page: Alice's chapter I ends in `<p class="asterism">`, stars joined by non-breaking spaces, 396
+  wide in a 255 box at a phone's width. The line ran past its column, across the gap, onto a 24th
+  page of its own (outside the margins, where the check looks only at the box of the paragraph
+  on page 23), and the scroll width counted that page. The reader now sets
+  `overflow-wrap:anywhere` on the chapter body: the stars wrap inside the column, the chapter ends
+  on page 23 with text and stars inside the margins. Android `reader-margins`, `reader-safe-area`
+  and `reader-affordances` 85/85; macOS 82/82; web 55/55; iPad 165/165 with the catalog scripts.
+  HarmonyOS is CI's to confirm.
+- iPad: the manager opened just after a catalog was added, and the new row was on screen (the CI
+  capture shows it) but had no element id. UIKit can dequeue the cell it is ending, bind it, and
+  only then report the old display ended; Day recycled the cell there and parked the visible row's
+  ids. day-uikit now defers that recycle and skips a cell the table still shows, as AppKit does.
+  Not reproducible locally (passes in portrait and landscape on an iPad Pro 13-inch simulator).
+- Lint: `catalog-manager-add` was used for both the touch layout's floating button and the desktop
+  bar's; the floating one is `catalog-manager-fab`. The `unknown-route` errors for `settings` were
+  Day's lint not reading `.items(|| vec![String::from("settings")], …)`; it does now.
+
 ## Content-sized list rows — 2026-10-17
 
 Every list (catalogs, a catalog's entries and shelves, the catalog manager, the library's

@@ -1246,7 +1246,7 @@ fn manager(a: App) -> impl Piece {
                     .icon_only()
                     .prominent()
                     .action(move || a.catalog_editor.set(Some(catalog_editor::EditorRoute::Add)))
-                    .id("catalog-manager-add")
+                    .id("catalog-manager-fab")
                     .frame(56., 56.)
                     .padding(16.),
             )
