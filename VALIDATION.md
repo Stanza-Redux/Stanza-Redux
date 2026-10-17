@@ -1,5 +1,22 @@
 # Local validation
 
+## Content-sized list rows — 2026-10-17
+
+Every list (catalogs, a catalog's entries and shelves, the catalog manager, the library's
+collections, authors, genres and books) is `RowHeight::Automatic` now, so each row is as tall as
+its content at the reader's text size. Day had sized every such row at a fixed height; it now
+sizes them on every toolkit and re-measures when the system text size changes while the app runs.
+
+- iOS (iPhone 17 Pro): Library and Catalogs captured at the default size, then again after
+  switching the simulator to Accessibility Large mid-run (`xcrun simctl ui … content_size`):
+  rows grow with their text, and the Catalogs tab, hidden when the size changed, wraps its heading
+  and rows when shown. Reset to Large afterwards.
+- Android: the same probe switching `font_scale` from 1.0 to 2.0 mid-run: the activity is
+  re-mounted at the new scale and both tabs' rows fit their two lines. Reset to 1.0 afterwards.
+- macOS: the catalog and library scripts, 370/370.
+- The Library entry below said the summary still clipped at Android's 2.0 font scale; it no
+  longer does.
+
 ## Library rows clipped on Android — 2026-10-17
 
 The Library's Recents/Titles/Authors/Genres rows were 64 high with 16 of padding all round, which

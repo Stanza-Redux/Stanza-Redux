@@ -672,7 +672,7 @@ fn sources(a: App) -> impl Piece {
                 ]
             })
         })
-        .row_height(RowHeight::Uniform(88.))
+        .row_height(RowHeight::Automatic)
         .on_select(move |catalog| {
             a.browse_named(catalog.url().read(), true, catalog.title().read());
         })
@@ -946,7 +946,7 @@ fn results(a: App, page_id: u64, feed: Rc<opds::Feed>, title: String, depth: usi
             // A shelf's books and its See All button handle their own taps.
             Some(CatalogRow::Shelf(_)) | None => {}
         })
-        .row_height(RowHeight::Uniform(if shelves { 250. } else { 96. }))
+        .row_height(RowHeight::Automatic)
         .first_visible_row(first_visible)
         .id(list_id)
         .grow(),
@@ -1185,7 +1185,7 @@ fn manager(a: App) -> impl Piece {
         // Recycled cells rebind to other catalogs, so the id follows the slot.
         .id_of(move || format!("catalog-row-{}", slot.url().read()))
     })
-    .row_height(RowHeight::Uniform(72.))
+    .row_height(RowHeight::Automatic)
     // A desktop table draws its grid through the empty space below the rows as well.
     .separators(style != ManagerStyle::Desktop)
     .reorderable(true)

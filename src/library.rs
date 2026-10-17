@@ -145,7 +145,7 @@ fn folders(a: App, kind: Option<&'static str>) -> impl Piece {
             .spacing(12.)
             .padding(16.)
         })
-        .row_height(RowHeight::Uniform(64.))
+        .row_height(RowHeight::Automatic)
         .on_select(move |folder| {
             let name = folder.name().read();
             push(
@@ -218,9 +218,9 @@ fn folders(a: App, kind: Option<&'static str>) -> impl Piece {
             .padding(Insets::symmetric(16., 10.))
         },
     )
-    // Room for a name and its summary at every platform's type scale: Android's are larger
-    // than iOS's, and 64 with 16 all round clipped the summary there.
-    .row_height(RowHeight::Uniform(72.))
+    // As tall as a name and its summary at the platform's text size, which the reader may
+    // have made larger (Android's type scale starts larger than iOS's, too).
+    .row_height(RowHeight::Automatic)
     .on_select(move |key| {
         if let Some(page) = [Page::Recents, Page::Titles, Page::Authors, Page::Genres]
             .into_iter()
@@ -323,7 +323,7 @@ fn books(a: App, page: Page) -> impl Piece {
             .spacing(12.)
             .padding(16.)
         })
-        .row_height(RowHeight::Uniform(96.))
+        .row_height(RowHeight::Automatic)
         .on_select(move |row| {
             if let Some(book) = row.with_value_untracked(|b| b.cloned()).map(Saved::from) {
                 if cfg!(feature = "appkit") {
