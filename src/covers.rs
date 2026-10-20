@@ -272,12 +272,12 @@ fn image_view(
         .id_of(move || {
             let requested = url();
             let (loaded, bytes) = shown.get();
-            let state = if requested == loaded && bytes.is_some() {
-                "cover"
+            let key = format!("{width}-{requested}");
+            if requested == loaded && bytes.is_some() {
+                id!(catalog_cover, key)
             } else {
-                "placeholder"
-            };
-            format!("catalog-{state}-{width}-{requested}")
+                id!(catalog_placeholder, key)
+            }
         })
         .frame(width, height)
 }

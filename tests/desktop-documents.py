@@ -37,8 +37,8 @@ def drive(label, steps):
     assert result.returncode == 0 and not failures
 
 ready = [
-    {'wait_for': {'id': 'book-webview', 'timeout_secs': 30}},
-    {'web_eval': {'id': 'book-webview', 'script': "String(stanza.state().ready && stanza.state().title.includes('Alice'))",
+    {'wait_for': {'id': 'book_webview', 'timeout_secs': 30}},
+    {'web_eval': {'id': 'book_webview', 'script': "String(stanza.state().ready && stanza.state().title.includes('Alice'))",
                   'text': 'true', 'timeout_secs': 30}},
 ]
 drive('cold Launch Services delivery', ready)
@@ -48,7 +48,7 @@ drive('warm delivery', ready)
 # Closing the one stable window must leave no duplicate reader behind.
 drive('single reader after repeated open', [
     {'close_window': {'window': key}},
-    {'assert_missing': {'id': 'book-webview'}},
+    {'assert_missing': {'id': 'book_webview'}},
 ])
 subprocess.run(['open', '-a', str(app), str(book)], check=True)
 drive('reopen saved library book', ready)

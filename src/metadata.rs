@@ -180,5 +180,5 @@ pub fn panel(m: Metadata) -> impl Piece {
     ))
     .align(HAlign::Leading)
     .spacing(Space::XL)
-    .id("book-metadata")
+    .id(id!(book_metadata))
 }

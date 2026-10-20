@@ -1,33 +1,33 @@
 flow:
   - navigate: { route: catalogs }
-  - menu: { id: add-opds-catalog }
-  - wait_for: { id: catalog-editor-url }
-  - input: { id: catalog-editor-url, text: 'http://127.0.0.1:18765/cancellation' }
-  - tap: { id: catalog-editor-validate }
-  - wait_for: { id: catalog-editor-valid, timeout_secs: 30 }
-  - tap: { id: catalog-editor-save }
-  - assert_missing: { id: catalog-editor }
-  - wait_for: { id: catalog-list-1-Cancellation fixture }
-  - select: { id: catalog-list-1-Cancellation fixture, index: 0 }
-  - wait_for: { id: catalog-loading }
+  - menu: { id: add_opds_catalog }
+  - wait_for: { id: catalog_editor_url }
+  - input: { id: catalog_editor_url, text: 'http://127.0.0.1:18765/cancellation' }
+  - tap: { id: catalog_editor_validate }
+  - wait_for: { id: catalog_editor_valid, timeout_secs: 30 }
+  - tap: { id: catalog_editor_save }
+  - assert_missing: { id: catalog_editor }
+  - wait_for: { id: catalog_list:1-Cancellation%20fixture }
+  - select: { id: catalog_list:1-Cancellation%20fixture, index: 0 }
+  - wait_for: { id: catalog_loading }
   - screenshot: { name: pushed-loading-destination }
   - nav_back: { native: true, only_on: [uikit, mdc] }
   - nav_back: { only_on: [appkit, gtk, qt, xaml, arkui, dom] }
-  - wait_for: { id: catalog-list-1-Cancellation fixture }
-  - assert_missing: { id: catalog-loading }
-  - select: { id: catalog-list-1-Cancellation fixture, index: 1 }
-  - wait_for: { id: catalog-list-2-Slow thumbnails }
-  - wait_for: { id: 'catalog-placeholder-46-http://127.0.0.1:18765/cancel-cover' }
+  - wait_for: { id: catalog_list:1-Cancellation%20fixture }
+  - assert_missing: { id: catalog_loading }
+  - select: { id: catalog_list:1-Cancellation%20fixture, index: 1 }
+  - wait_for: { id: catalog_list:2-Slow%20thumbnails }
+  - wait_for: { id: 'catalog_placeholder:46-http%3A%2F%2F127.0.0.1%3A18765%2Fcancel-cover' }
   - screenshot: { name: pending-thumbnail }
   - nav_back: {}
-  - wait_for: { id: catalog-list-1-Cancellation fixture }
-  - select: { id: catalog-list-1-Cancellation fixture, index: 2 }
-  - wait_for: { id: catalog-list-2-Requests cancelled, timeout_secs: 10 }
-  - assert_missing: { id: catalog-loading }
+  - wait_for: { id: catalog_list:1-Cancellation%20fixture }
+  - select: { id: catalog_list:1-Cancellation%20fixture, index: 2 }
+  - wait_for: { id: catalog_list:2-Requests%20cancelled, timeout_secs: 10 }
+  - assert_missing: { id: catalog_loading }
   - nav_back: {}
   - nav_back: {}
-  - assert_visible: { id: catalog-sources }
-  - menu: { id: manage-catalogs-menu }
-  - wait_for: { id: 'catalog-row-http://127.0.0.1:18765/cancellation' }
-  - context_menu: { id: 'catalog-row-http://127.0.0.1:18765/cancellation', item_id: catalog-remove }
+  - assert_visible: { id: catalog_sources }
+  - menu: { id: manage_catalogs_menu }
+  - wait_for: { id: 'catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fcancellation' }
+  - context_menu: { id: 'catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fcancellation', item_id: catalog_remove }
   - nav_back: {}

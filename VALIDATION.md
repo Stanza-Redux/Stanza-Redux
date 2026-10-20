@@ -1,5 +1,21 @@
 # Local validation
 
+## Declared element IDs — 2026-10-20
+
+- Every element ID is declared with Day's `id!`. Fixed names become snake case
+  (`add-opds-catalog` → `add_opds_catalog`). Per-item names become keyed families, and scripts
+  write the key percent-encoded, as `id!` does: `catalog_list:1-Search%20results`,
+  `catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fsubjects`, `catalog_cover:46-<url>`. The same
+  applies to `catalog_placeholder`, `catalog_nav`, `catalog_facet`, `shelf_see_all`,
+  `shelf_book`, `publication_browse` and `publication_browse_heading`. Day's own names follow:
+  `day::search`, `settings_root`, `language_picker`. The Playwright and desktop tests use the
+  new DOM ids.
+- iOS 18.6 simulator (iPhone 13 mini), all 17 scripts in one launch: 725/731. The 6 failures
+  were `reader-safe-area.yaml`'s inset checks, caused by a vertical margin of 12% stored on that
+  simulator from earlier hand testing; the script expects the 15% default. With that setting
+  cleared, the script passed 30/30. Every script's references resolved against the compiled ID
+  catalog before the first step. `cargo test` passes 42/42; `day lint` reports no ID findings.
+
 ## Catalog search field, catalog details, home-screen name, reopening a book — 2026-10-20
 
 - Search: each catalog page has its own native search field (Day's new page `.searchable`):

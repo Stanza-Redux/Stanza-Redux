@@ -1,53 +1,53 @@
 flow:
   - navigate: { route: catalogs }
-  - menu: { id: add-opds-catalog }
-  - wait_for: { id: catalog-editor-url }
-  - input: { id: catalog-editor-url, text: 'http://127.0.0.1:18765/subjects' }
-  - input: { id: catalog-editor-title, text: My test catalog }
-  - tap: { id: catalog-editor-validate }
-  - wait_for: { id: catalog-editor-valid, timeout_secs: 30 }
-  - tap: { id: catalog-editor-save }
-  - assert_missing: { id: catalog-editor }
-  - toolbar: { item: manage-catalogs }
-  - wait_for: { id: 'catalog-row-http://127.0.0.1:18765/subjects' }
-  - reorder: { id: catalog-manager-list, from: 0, to: 1 }
-  - reorder: { id: catalog-manager-list, from: 1, to: 0 }
+  - menu: { id: add_opds_catalog }
+  - wait_for: { id: catalog_editor_url }
+  - input: { id: catalog_editor_url, text: 'http://127.0.0.1:18765/subjects' }
+  - input: { id: catalog_editor_title, text: My test catalog }
+  - tap: { id: catalog_editor_validate }
+  - wait_for: { id: catalog_editor_valid, timeout_secs: 30 }
+  - tap: { id: catalog_editor_save }
+  - assert_missing: { id: catalog_editor }
+  - toolbar: { item: manage_catalogs }
+  - wait_for: { id: 'catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fsubjects' }
+  - reorder: { id: catalog_manager_list, from: 0, to: 1 }
+  - reorder: { id: catalog_manager_list, from: 1, to: 0 }
   - screenshot: { name: catalog-management }
   - nav_back: {}
-  - wait_for: { id: catalog-list-1-Subjects }
-  - select: { id: catalog-list-1-Subjects, index: 0 }
-  - wait_for: { id: catalog-list-2-Authors }
+  - wait_for: { id: catalog_list:1-Subjects }
+  - select: { id: catalog_list:1-Subjects, index: 0 }
+  - wait_for: { id: catalog_list:2-Authors }
   # Facets are a toolbar pull-down now, which the dayscript `menu` step does not reach.
-  - select: { id: catalog-list-2-Authors, index: 0 }
-  - wait_for: { id: catalog-list-3-Facet }
+  - select: { id: catalog_list:2-Authors, index: 0 }
+  - wait_for: { id: catalog_list:3-Facet }
   - nav_back: { native: true, only_on: [uikit, mdc] }
   - nav_back: { only_on: [appkit, gtk, qt, xaml, arkui, dom] }
-  - wait_for: { id: catalog-list-2-Authors }
-  - select: { id: catalog-list-2-Authors, index: 0 }
-  - wait_for: { id: catalog-list-3-Facet }
-  - key: { id: catalog-browser, key: ArrowLeft }
-  - wait_for: { id: catalog-list-2-Authors }
-  - key: { id: catalog-browser, key: ArrowRight }
-  - wait_for: { id: catalog-list-3-Facet }
-  - select: { id: catalog-list-3-Facet, index: 0 }
-  - wait_for: { id: catalog-list-4-OPDS 2 fixture }
-  - select: { id: catalog-list-4-OPDS 2 fixture, index: 0 }
-  - assert_text: { id: publication-title, text: Alice in Wonderland }
+  - wait_for: { id: catalog_list:2-Authors }
+  - select: { id: catalog_list:2-Authors, index: 0 }
+  - wait_for: { id: catalog_list:3-Facet }
+  - key: { id: catalog_browser, key: ArrowLeft }
+  - wait_for: { id: catalog_list:2-Authors }
+  - key: { id: catalog_browser, key: ArrowRight }
+  - wait_for: { id: catalog_list:3-Facet }
+  - select: { id: catalog_list:3-Facet, index: 0 }
+  - wait_for: { id: catalog_list:4-OPDS%202%20fixture }
+  - select: { id: catalog_list:4-OPDS%202%20fixture, index: 0 }
+  - assert_text: { id: publication_title, text: Alice in Wonderland }
   - nav_back: {}
-  - wait_for: { id: catalog-list-4-OPDS 2 fixture }
+  - wait_for: { id: catalog_list:4-OPDS%202%20fixture }
   - nav_back: {}
-  - wait_for: { id: catalog-list-3-Facet }
+  - wait_for: { id: catalog_list:3-Facet }
   - screenshot: { name: catalog-facets }
-  - toolbar: { item: manage-catalogs }
-  - wait_for: { id: 'catalog-row-http://127.0.0.1:18765/subjects' }
-  - context_menu: { id: 'catalog-row-http://127.0.0.1:18765/subjects', item_id: catalog-remove }
-  - assert_missing: { id: 'catalog-row-http://127.0.0.1:18765/subjects' }
+  - toolbar: { item: manage_catalogs }
+  - wait_for: { id: 'catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fsubjects' }
+  - context_menu: { id: 'catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fsubjects', item_id: catalog_remove }
+  - assert_missing: { id: 'catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fsubjects' }
   - nav_back: {}
   - nav_back: {}
-  - wait_for: { id: catalog-list-2-Authors }
+  - wait_for: { id: catalog_list:2-Authors }
   - nav_back: {}
-  - wait_for: { id: catalog-list-1-Subjects }
+  - wait_for: { id: catalog_list:1-Subjects }
   - nav_back: {}
   - assert_route: { route: catalogs }
-  - assert_visible: { id: catalog-sources }
+  - assert_visible: { id: catalog_sources }
   - screenshot: { name: catalog-root }

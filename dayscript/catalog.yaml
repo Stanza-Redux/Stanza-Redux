@@ -1,45 +1,45 @@
 flow:
   - navigate: { route: catalogs }
-  - menu: { id: add-opds-catalog }
-  - wait_for: { id: catalog-editor-url }
-  - input: { id: catalog-editor-url, text: 'http://127.0.0.1:18765/catalog' }
-  - tap: { id: catalog-editor-validate }
-  - wait_for: { id: catalog-editor-valid, timeout_secs: 30 }
-  - tap: { id: catalog-editor-save }
-  - assert_missing: { id: catalog-editor }
-  - wait_for: { id: catalog-list-1-Stanza test catalog, timeout_secs: 30 }
+  - menu: { id: add_opds_catalog }
+  - wait_for: { id: catalog_editor_url }
+  - input: { id: catalog_editor_url, text: 'http://127.0.0.1:18765/catalog' }
+  - tap: { id: catalog_editor_validate }
+  - wait_for: { id: catalog_editor_valid, timeout_secs: 30 }
+  - tap: { id: catalog_editor_save }
+  - assert_missing: { id: catalog_editor }
+  - wait_for: { id: catalog_list:1-Stanza%20test%20catalog, timeout_secs: 30 }
   # The page's own search field: the results take the list's place.
-  - toolbar: { item: day.search, text: 'Alice', submit: true }
-  - wait_for: { id: catalog-search-results }
+  - toolbar: { item: day::search, text: 'Alice', submit: true }
+  - wait_for: { id: catalog_search_results }
   - screenshot: { name: catalog-search-results }
-  - select: { id: catalog-list-1-Search results, index: 0 }
-  - scroll_to: { id: download-book }
-  - tap: { id: download-book }
-  - wait_for: { id: book-webview, timeout_secs: 30 }
-  - web_eval: { id: book-webview, script: 'String(stanza.state().ready && stanza.state().height > 100 && stanza.state().pages < 1000)', text: 'true', timeout_secs: 40 }
-  - web_eval: { id: book-webview, script: "String(stanza.state().title.includes('Alice'))", text: 'true' }
-  - web_eval: { id: book-webview, script: "stanza.next();true", text: "true" }
-  - web_eval: { id: book-webview, script: "String(stanza.state().ready&&!stanza.state().animating)", text: "true" }
+  - select: { id: catalog_list:1-Search%20results, index: 0 }
+  - scroll_to: { id: download_book }
+  - tap: { id: download_book }
+  - wait_for: { id: book_webview, timeout_secs: 30 }
+  - web_eval: { id: book_webview, script: 'String(stanza.state().ready && stanza.state().height > 100 && stanza.state().pages < 1000)', text: 'true', timeout_secs: 40 }
+  - web_eval: { id: book_webview, script: "String(stanza.state().title.includes('Alice'))", text: 'true' }
+  - web_eval: { id: book_webview, script: "stanza.next();true", text: "true" }
+  - web_eval: { id: book_webview, script: "String(stanza.state().ready&&!stanza.state().animating)", text: "true" }
   - screenshot: { name: acquired-reader }
-  - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),1000);true", text: "true" }
-  - assert_missing: { id: book-webview }
+  - web_eval: { id: book_webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),1000);true", text: "true" }
+  - assert_missing: { id: book_webview }
   - navigate: { route: catalogs }
-  - menu: { id: add-opds-catalog }
-  - wait_for: { id: catalog-editor-url }
-  - input: { id: catalog-editor-url, text: 'http://127.0.0.1:18765/json' }
-  - tap: { id: catalog-editor-validate }
-  - wait_for: { id: catalog-editor-valid, timeout_secs: 30 }
-  - tap: { id: catalog-editor-save }
-  - assert_missing: { id: catalog-editor }
-  - wait_for: { id: catalog-list-1-OPDS 2 fixture, timeout_secs: 30 }
+  - menu: { id: add_opds_catalog }
+  - wait_for: { id: catalog_editor_url }
+  - input: { id: catalog_editor_url, text: 'http://127.0.0.1:18765/json' }
+  - tap: { id: catalog_editor_validate }
+  - wait_for: { id: catalog_editor_valid, timeout_secs: 30 }
+  - tap: { id: catalog_editor_save }
+  - assert_missing: { id: catalog_editor }
+  - wait_for: { id: catalog_list:1-OPDS%202%20fixture, timeout_secs: 30 }
   - screenshot: { name: opds2 }
-  - menu: { id: manage-catalogs-menu }
-  - wait_for: { id: 'catalog-row-http://127.0.0.1:18765/catalog' }
-  - context_menu: { id: 'catalog-row-http://127.0.0.1:18765/catalog', item_id: catalog-remove }
+  - menu: { id: manage_catalogs_menu }
+  - wait_for: { id: 'catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fcatalog' }
+  - context_menu: { id: 'catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fcatalog', item_id: catalog_remove }
   - nav_back: {}
-  - menu: { id: manage-catalogs-menu }
-  - wait_for: { id: 'catalog-row-http://127.0.0.1:18765/json' }
-  - context_menu: { id: 'catalog-row-http://127.0.0.1:18765/json', item_id: catalog-remove }
+  - menu: { id: manage_catalogs_menu }
+  - wait_for: { id: 'catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fjson' }
+  - context_menu: { id: 'catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fjson', item_id: catalog_remove }
   - nav_back: {}
   - nav_back: {}
-  - wait_for: { id: catalog-sources }
+  - wait_for: { id: catalog_sources }

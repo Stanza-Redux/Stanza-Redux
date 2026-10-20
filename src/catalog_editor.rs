@@ -196,7 +196,7 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
         row((
             button(res::str::cancel())
                 .action(move || a.catalog_editor.set(None))
-                .id("catalog-editor-cancel"),
+                .id(id!(catalog_editor_cancel)),
             spacer(),
             button(res::str::save())
                 .action(save)
@@ -204,7 +204,7 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
                     !busy.get() && validated.get().is_some() && !title.get().trim().is_empty()
                 })
                 .prominent()
-                .id("catalog-editor-save"),
+                .id(id!(catalog_editor_save)),
         ))
         .spacing(Space::M)
         .padding(Space::L),
@@ -222,12 +222,12 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
                             .submit_label(SubmitLabel::Go)
                             .on_submit(submit)
                             .grow_w()
-                            .id("catalog-editor-url"),
+                            .id(id!(catalog_editor_url)),
                         row((
                             button(res::str::validate_catalog())
                                 .action(validate)
                                 .enabled(move || !busy.get() && !url.get().trim().is_empty())
-                                .id("catalog-editor-validate"),
+                                .id(id!(catalog_editor_validate)),
                             when(
                                 move || busy.get(),
                                 move || {
@@ -247,7 +247,7 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
                             move || {
                                 label(move || error.get())
                                     .font(Font::Footnote)
-                                    .id("catalog-editor-error")
+                                    .id(id!(catalog_editor_error))
                             },
                         ),
                     ))
@@ -255,7 +255,7 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
                     section((text_field(title)
                         .submit_label(SubmitLabel::Done)
                         .grow_w()
-                        .id("catalog-editor-title"),))
+                        .id(id!(catalog_editor_title)),))
                     .title(res::str::catalog_name())
                     .footer(res::str::catalog_title_hint()),
                     when(
@@ -269,7 +269,7 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
                             section((
                                 label(res::str::catalog_validated())
                                     .font(Font::Headline)
-                                    .id("catalog-editor-valid"),
+                                    .id(id!(catalog_editor_valid)),
                                 detail(res::str::catalog_title(), feed.title.clone()),
                                 label(counts).font(Font::Subheadline).secondary(),
                                 (!feed.description.is_empty())
@@ -287,7 +287,7 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
                                 crate::browser::remove_catalog(a, &url);
                                 a.catalog_editor.set(None);
                             })
-                            .id("catalog-editor-remove"),))
+                            .id(id!(catalog_editor_remove)),))
                     }),
                 )),
             ))
@@ -304,7 +304,7 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
     ))
     .max_width(640.)
     .grow_h()
-    .id("catalog-editor")
+    .id(id!(catalog_editor))
 }
 
 /// A caption over its value, the way a detail sheet lists facts.

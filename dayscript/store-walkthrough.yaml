@@ -10,44 +10,44 @@ flow:
 # An interrupted locale run may have saved the fixture without reaching teardown.
 # Remove only that catalog; retain the user's other catalogs and downloaded books.
 - menu:
-    id: manage-catalogs-menu
+    id: manage_catalogs_menu
 - wait_for:
-    id: catalog-manager-list
+    id: catalog_manager_list
 - context_menu:
-    id: catalog-row-http://127.0.0.1:18765/showcase
-    item_id: catalog-remove
+    id: catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fshowcase
+    item_id: catalog_remove
     if_present: true
 - assert_missing:
-    id: catalog-row-http://127.0.0.1:18765/showcase
+    id: catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fshowcase
 - nav_back: {}
 - menu:
-    id: add-opds-catalog
+    id: add_opds_catalog
 - wait_for:
-    id: catalog-editor-url
+    id: catalog_editor_url
     timeout_secs: 30
 - input:
-    id: catalog-editor-url
+    id: catalog_editor_url
     text: http://127.0.0.1:18765/showcase
 - tap:
-    id: catalog-editor-validate
+    id: catalog_editor_validate
 - wait_for:
-    id: catalog-editor-valid
+    id: catalog_editor_valid
     timeout_secs: 30
 - tap:
-    id: catalog-editor-save
+    id: catalog_editor_save
 - assert_missing:
-    id: catalog-editor
+    id: catalog_editor
 - wait_for:
-    id: catalog-list-1-Public-domain classics
+    id: catalog_list:1-Public-domain%20classics
     timeout_secs: 30
 - wait_for:
-    id: catalog-cover-46-http://127.0.0.1:18765/showcase/cover/alice
+    id: catalog_cover:46-http%3A%2F%2F127.0.0.1%3A18765%2Fshowcase%2Fcover%2Falice
     timeout_secs: 30
 - wait_for:
-    id: catalog-cover-46-http://127.0.0.1:18765/showcase/cover/frankenstein
+    id: catalog_cover:46-http%3A%2F%2F127.0.0.1%3A18765%2Fshowcase%2Fcover%2Ffrankenstein
     timeout_secs: 30
 - wait_for:
-    id: catalog-cover-46-http://127.0.0.1:18765/showcase/cover/the-time-machine
+    id: catalog_cover:46-http%3A%2F%2F127.0.0.1%3A18765%2Fshowcase%2Fcover%2Fthe-time-machine
     timeout_secs: 30
 - screenshot:
     name: discover
@@ -66,45 +66,45 @@ flow:
       ru: Каталоги
       zh-CN: 目录
 - select:
-    id: catalog-list-1-Public-domain classics
+    id: catalog_list:1-Public-domain%20classics
     index: 0
 - wait_for:
-    id: publication-title
+    id: publication_title
     timeout_secs: 30
 - wait_for:
-    id: catalog-cover-160-http://127.0.0.1:18765/showcase/cover/alice
+    id: catalog_cover:160-http%3A%2F%2F127.0.0.1%3A18765%2Fshowcase%2Fcover%2Falice
     timeout_secs: 30
 - scroll_to:
-    id: download-book
+    id: download_book
 - tap:
-    id: download-book
+    id: download_book
 - wait_for:
-    id: book-webview
+    id: book_webview
     timeout_secs: 60
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: String(stanza.state().ready && !stanza.state().animating && stanza.state().height>100)
     text: 'true'
     timeout_secs: 40
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: setTimeout(()=>document.getElementById('appearance').click(),300);true
     text: 'true'
     timeout_secs: 40
 - wait_for:
-    id: font-size
+    id: font_size
     timeout_secs: 30
 - set_value:
-    id: font-size
+    id: font_size
     value: 20
 - set_value:
-    id: line-height
+    id: line_height
     value: 1.5
 - toggle:
-    id: reader-justified
+    id: reader_justified
     value: false
 - toggle:
-    id: reader-hyphenation
+    id: reader_hyphenation
     value: true
 - screenshot:
     name: reading-settings
@@ -123,9 +123,9 @@ flow:
       ru: Настройки
       zh-CN: 设置
 - scroll_to:
-    id: reader-theme
+    id: reader_theme
 - select:
-    id: reader-theme
+    id: reader_theme
     index: 0
 - scroll_to:
     id: margins
@@ -133,35 +133,35 @@ flow:
     id: margins
     value: 24
 - set_value:
-    id: paragraph-spacing
+    id: paragraph_spacing
     value: 0.6
 - scroll_to:
-    id: reader-columns
+    id: reader_columns
 - select:
-    id: reader-columns
+    id: reader_columns
     index: 1
 - tap:
-    id: reader-settings-done
+    id: reader_settings_done
 - wait_for:
-    id: book-webview
+    id: book_webview
     timeout_secs: 30
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: String(stanza.state().ready && !stanza.state().animating && stanza.state().height>100)
     text: 'true'
     timeout_secs: 40
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: stanza.goToChapter(2);true
     text: 'true'
     timeout_secs: 40
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: String(stanza.state().ready && stanza.state().chapter===2 && stanza.state().page===0)
     text: 'true'
     timeout_secs: 40
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: String([...document.querySelector('#book').contentDocument.images].every(i=>i.complete) && document.querySelector('#book').contentDocument.fonts.status==='loaded')
     text: 'true'
     timeout_secs: 40
@@ -184,7 +184,7 @@ flow:
       ru: Alice’s Adventures in Wonderland · Читать
       zh-CN: Alice’s Adventures in Wonderland · 阅读
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: document.getElementById('contents').click();true
     text: 'true'
     timeout_secs: 40
@@ -205,41 +205,41 @@ flow:
       ru: Содержание
       zh-CN: 目录
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: document.getElementById('contents-done').click();true
     text: 'true'
     timeout_secs: 40
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: stanza.next();true
     text: 'true'
     timeout_secs: 40
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: String(stanza.state().ready && !stanza.state().animating && stanza.state().page>0)
     text: 'true'
     timeout_secs: 40
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: setTimeout(()=>document.getElementById('close-reader').click(),300);true
     text: 'true'
     timeout_secs: 40
 - assert_missing:
-    id: book-webview
+    id: book_webview
 - navigate:
     route: catalogs
 - nav_back: {}
 - wait_for:
-    id: catalog-list-1-Public-domain classics
+    id: catalog_list:1-Public-domain%20classics
     timeout_secs: 30
 - select:
-    id: catalog-list-1-Public-domain classics
+    id: catalog_list:1-Public-domain%20classics
     index: 1
 - wait_for:
-    id: publication-title
+    id: publication_title
     timeout_secs: 30
 - wait_for:
-    id: catalog-cover-160-http://127.0.0.1:18765/showcase/cover/frankenstein
+    id: catalog_cover:160-http%3A%2F%2F127.0.0.1%3A18765%2Fshowcase%2Fcover%2Ffrankenstein
     timeout_secs: 30
 - screenshot:
     name: book-details
@@ -258,41 +258,41 @@ flow:
       ru: О книге
       zh-CN: 图书详情
 - scroll_to:
-    id: download-book
+    id: download_book
 - tap:
-    id: download-book
+    id: download_book
 - wait_for:
-    id: book-webview
+    id: book_webview
     timeout_secs: 60
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: String(stanza.state().ready && !stanza.state().animating && stanza.state().height>100)
     text: 'true'
     timeout_secs: 40
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: setTimeout(()=>document.getElementById('appearance').click(),300);true
     text: 'true'
     timeout_secs: 40
 - wait_for:
-    id: font-size
+    id: font_size
     timeout_secs: 30
 - set_value:
-    id: font-size
+    id: font_size
     value: 20
 - set_value:
-    id: line-height
+    id: line_height
     value: 1.5
 - toggle:
-    id: reader-justified
+    id: reader_justified
     value: false
 - toggle:
-    id: reader-hyphenation
+    id: reader_hyphenation
     value: true
 - scroll_to:
-    id: reader-theme
+    id: reader_theme
 - select:
-    id: reader-theme
+    id: reader_theme
     index: 2
 - scroll_to:
     id: margins
@@ -300,35 +300,35 @@ flow:
     id: margins
     value: 24
 - set_value:
-    id: paragraph-spacing
+    id: paragraph_spacing
     value: 0.6
 - scroll_to:
-    id: reader-columns
+    id: reader_columns
 - select:
-    id: reader-columns
+    id: reader_columns
     index: 1
 - tap:
-    id: reader-settings-done
+    id: reader_settings_done
 - wait_for:
-    id: book-webview
+    id: book_webview
     timeout_secs: 30
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: String(stanza.state().ready && !stanza.state().animating && stanza.state().height>100)
     text: 'true'
     timeout_secs: 40
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: stanza.goToChapter(6);true
     text: 'true'
     timeout_secs: 40
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: String(stanza.state().ready && stanza.state().chapter===6 && stanza.state().page===0)
     text: 'true'
     timeout_secs: 40
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: String([...document.querySelector('#book').contentDocument.images].every(i=>i.complete) && document.querySelector('#book').contentDocument.fonts.status==='loaded')
     text: 'true'
     timeout_secs: 40
@@ -351,63 +351,63 @@ flow:
       ru: Frankenstein · Читать
       zh-CN: Frankenstein · 阅读
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: setTimeout(()=>document.getElementById('close-reader').click(),300);true
     text: 'true'
     timeout_secs: 40
 - assert_missing:
-    id: book-webview
+    id: book_webview
 - navigate:
     route: catalogs
 - nav_back: {}
 - wait_for:
-    id: catalog-list-1-Public-domain classics
+    id: catalog_list:1-Public-domain%20classics
     timeout_secs: 30
 - select:
-    id: catalog-list-1-Public-domain classics
+    id: catalog_list:1-Public-domain%20classics
     index: 2
 - wait_for:
-    id: publication-title
+    id: publication_title
     timeout_secs: 30
 - wait_for:
-    id: catalog-cover-160-http://127.0.0.1:18765/showcase/cover/the-time-machine
+    id: catalog_cover:160-http%3A%2F%2F127.0.0.1%3A18765%2Fshowcase%2Fcover%2Fthe-time-machine
     timeout_secs: 30
 - scroll_to:
-    id: download-book
+    id: download_book
 - tap:
-    id: download-book
+    id: download_book
 - wait_for:
-    id: book-webview
+    id: book_webview
     timeout_secs: 60
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: String(stanza.state().ready && !stanza.state().animating && stanza.state().height>100)
     text: 'true'
     timeout_secs: 40
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: setTimeout(()=>document.getElementById('appearance').click(),300);true
     text: 'true'
     timeout_secs: 40
 - wait_for:
-    id: font-size
+    id: font_size
     timeout_secs: 30
 - set_value:
-    id: font-size
+    id: font_size
     value: 20
 - set_value:
-    id: line-height
+    id: line_height
     value: 1.5
 - toggle:
-    id: reader-justified
+    id: reader_justified
     value: false
 - toggle:
-    id: reader-hyphenation
+    id: reader_hyphenation
     value: true
 - scroll_to:
-    id: reader-theme
+    id: reader_theme
 - select:
-    id: reader-theme
+    id: reader_theme
     index: 1
 - scroll_to:
     id: margins
@@ -415,35 +415,35 @@ flow:
     id: margins
     value: 24
 - set_value:
-    id: paragraph-spacing
+    id: paragraph_spacing
     value: 0.6
 - scroll_to:
-    id: reader-columns
+    id: reader_columns
 - select:
-    id: reader-columns
+    id: reader_columns
     index: 1
 - tap:
-    id: reader-settings-done
+    id: reader_settings_done
 - wait_for:
-    id: book-webview
+    id: book_webview
     timeout_secs: 30
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: String(stanza.state().ready && !stanza.state().animating && stanza.state().height>100)
     text: 'true'
     timeout_secs: 40
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: stanza.goToChapter(2);true
     text: 'true'
     timeout_secs: 40
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: String(stanza.state().ready && stanza.state().chapter===2 && stanza.state().page===0)
     text: 'true'
     timeout_secs: 40
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: String([...document.querySelector('#book').contentDocument.images].every(i=>i.complete) && document.querySelector('#book').contentDocument.fonts.status==='loaded')
     text: 'true'
     timeout_secs: 40
@@ -466,57 +466,57 @@ flow:
       ru: The Time Machine · Читать
       zh-CN: The Time Machine · 阅读
 - web_eval:
-    id: book-webview
+    id: book_webview
     script: setTimeout(()=>document.getElementById('close-reader').click(),300);true
     text: 'true'
     timeout_secs: 40
 - assert_missing:
-    id: book-webview
+    id: book_webview
 - navigate:
     route: catalogs
 - nav_back: {}
 - wait_for:
-    id: catalog-list-1-Public-domain classics
+    id: catalog_list:1-Public-domain%20classics
     timeout_secs: 30
 - menu:
-    id: manage-catalogs-menu
+    id: manage_catalogs_menu
 - wait_for:
-    id: catalog-row-http://127.0.0.1:18765/showcase
+    id: catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fshowcase
 - context_menu:
-    id: catalog-row-http://127.0.0.1:18765/showcase
-    item_id: catalog-remove
+    id: catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fshowcase
+    item_id: catalog_remove
 - nav_back: {}
 - nav_back: {}
 - wait_for:
-    id: catalog-sources
+    id: catalog_sources
     timeout_secs: 30
 - navigate:
     route: library
 - wait_for:
-    id: library-folders
+    id: library_folders
     timeout_secs: 30
 - select:
-    id: library-folders
+    id: library_folders
     index: 1
 - wait_for:
-    id: library-list
+    id: library_list
     timeout_secs: 30
 - input:
-    id: library-search
+    id: library_search
     text: ''
 - select:
-    id: library-list
+    id: library_list
     index: 0
     only_on:
     - appkit
 - wait_for:
-    id: catalog-cover-46-library:books/84c5f495b42b2d8d25cfdfd3ebf468516c962ecab45812dd9052ccdab8b0485f.cover
+    id: catalog_cover:46-library%3Abooks%2F84c5f495b42b2d8d25cfdfd3ebf468516c962ecab45812dd9052ccdab8b0485f.cover
     timeout_secs: 60
 - wait_for:
-    id: catalog-cover-46-library:books/b82b1ad5cdd15439ab99e864741a0343f107adc796ce4326e44235a3f6f558a7.cover
+    id: catalog_cover:46-library%3Abooks%2Fb82b1ad5cdd15439ab99e864741a0343f107adc796ce4326e44235a3f6f558a7.cover
     timeout_secs: 60
 - wait_for:
-    id: catalog-cover-46-library:books/f52cfd0c629d87db3ef91ced77ef5fd7e8fc8f3a997c73aede05e67091d14eec.cover
+    id: catalog_cover:46-library%3Abooks%2Ff52cfd0c629d87db3ef91ced77ef5fd7e8fc8f3a997c73aede05e67091d14eec.cover
     timeout_secs: 60
 - screenshot:
     name: bookshelf
@@ -536,5 +536,5 @@ flow:
       zh-CN: 书库
 - nav_back: {}
 - wait_for:
-    id: library-folders
+    id: library_folders
     timeout_secs: 30

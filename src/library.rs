@@ -45,7 +45,7 @@ fn push(a: App, page: Page) {
 }
 fn heading(title: String) -> Vec<ToolbarEntry> {
     if cfg!(feature = "uikit") {
-        vec![toolbar_label("library-heading", title).placement(ToolbarPlacement::Principal)]
+        vec![toolbar_label(id!(library_heading), title).placement(ToolbarPlacement::Principal)]
     } else {
         vec![]
     }
@@ -92,7 +92,7 @@ pub fn view(a: App) -> impl Piece {
                 if let Page::Book(book) = &current {
                     let book = book.clone();
                     entries.push(
-                        toolbar_button("delete-book", res::str::delete())
+                        toolbar_button(id!(delete_book), res::str::delete())
                             .icon(Symbol::Delete)
                             .placement(ToolbarPlacement::Secondary)
                             .action(move || remove(a, book.clone())),
@@ -102,7 +102,7 @@ pub fn view(a: App) -> impl Piece {
             })
             .any()
         })
-        .id("library-stack")
+        .id(id!(library_stack))
         .grow()
         .overlay(when(
             move || a.busy.get(),
@@ -110,7 +110,7 @@ pub fn view(a: App) -> impl Piece {
                 column((spinner().frame(28., 28.), label(res::str::loading())))
                     .spacing(Space::S)
                     .card()
-                    .id("library-loading")
+                    .id(id!(library_loading))
             },
         ))
 }
@@ -156,9 +156,9 @@ fn folders(a: App, kind: Option<&'static str>) -> impl Piece {
             );
         })
         .id(if kind == "author" {
-            "library-authors"
+            id!(library_authors)
         } else {
-            "library-genres"
+            id!(library_genres)
         })
         .grow()
         .any();
@@ -227,7 +227,7 @@ fn folders(a: App, kind: Option<&'static str>) -> impl Piece {
             push(a, page);
         }
     })
-    .id("library-folders")
+    .id(id!(library_folders))
     .grow()
     .any()
 }
@@ -271,7 +271,7 @@ fn books(a: App, page: Page) -> impl Piece {
     column((
         text_field(a.library_query)
             .placeholder(res::str::search_library())
-            .id("library-search")
+            .id(id!(library_search))
             .padding(Space::M),
         when(
             move || empty.count() == 0,
@@ -283,7 +283,7 @@ fn books(a: App, page: Page) -> impl Piece {
                 })
                 .secondary()
                 .padding(20.)
-                .id("library-empty")
+                .id(id!(library_empty))
             },
         ),
         list(query, move |slot| {
@@ -331,7 +331,7 @@ fn books(a: App, page: Page) -> impl Piece {
                 }
             }
         })
-        .id("library-list")
+        .id(id!(library_list))
         .grow(),
     ))
     .grow()
@@ -348,7 +348,7 @@ pub fn desktop_detail(a: App) -> impl Piece {
                 scroll(local_details(a, book.clone()))
                     .toolbar(move || {
                         vec![
-                            toolbar_button("delete-book", res::str::delete())
+                            toolbar_button(id!(delete_book), res::str::delete())
                                 .icon(Symbol::Delete)
                                 .placement(ToolbarPlacement::Secondary)
                                 .action({

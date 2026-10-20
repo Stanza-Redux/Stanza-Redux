@@ -66,16 +66,16 @@ rmSync(temp, { recursive: true });
       await page.unroute(origin + '/');
       await page.reload();
       for (let pass = 0; pass < 2; pass++) {
-        await page.locator('#library-folders').waitFor();
+        await page.locator('#library_folders').waitFor();
         if (process.env.DEBUG) console.log('Before recents', pass, await page.locator('body').innerText());
-        await page.locator('#library-folders [role=option]').nth(0).click();
+        await page.locator('#library_folders [role=option]').nth(0).click();
         if (process.env.DEBUG) console.log('After recents', pass, await page.locator('body').innerText());
-        await page.locator('#library-list [role=option]').filter({ hasText: 'Preserved title' }).waitFor();
-        await page.locator('#library-search').fill('Astronomy');
-        await page.locator('#library-list [role=option]').filter({ hasText: 'Preserved title' }).click();
+        await page.locator('#library_list [role=option]').filter({ hasText: 'Preserved title' }).waitFor();
+        await page.locator('#library_search').fill('Astronomy');
+        await page.locator('#library_list [role=option]').filter({ hasText: 'Preserved title' }).click();
         await page.locator('#local-book-title').waitFor();
         assert.equal(await page.locator('#local-book-title').innerText(), 'Preserved title');
-        assert.match(await page.locator('#book-metadata').innerText(), /Astronomy/);
+        assert.match(await page.locator('#book_metadata').innerText(), /Astronomy/);
         if (pass === 0) await page.goto(origin + '/');
       }
       assert.deepEqual(errors, []);

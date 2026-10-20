@@ -2,30 +2,30 @@
 # the catalog editor.
 flow:
   - navigate: { route: catalogs }
-  - menu: { id: add-opds-catalog }
-  - wait_for: { id: catalog-editor-url }
-  - input: { id: catalog-editor-url, text: 'http://127.0.0.1:18765/subjects?persistence-fixture=1' }
-  - input: { id: catalog-editor-title, text: Persistence fixture }
-  - tap: { id: catalog-editor-validate }
-  - wait_for: { id: catalog-editor-valid, timeout_secs: 30 }
-  - tap: { id: catalog-editor-save }
-  - assert_missing: { id: catalog-editor }
-  - menu: { id: manage-catalogs-menu }
-  - wait_for: { id: 'catalog-row-http://127.0.0.1:18765/subjects?persistence-fixture=1' }
-  - reorder: { id: catalog-manager-list, from: 0, to: 1 }
-  - reorder: { id: catalog-manager-list, from: 1, to: 0 }
-  - context_menu: { id: 'catalog-row-http://127.0.0.1:18765/subjects?persistence-fixture=1', item_id: catalog-edit }
-  - wait_for: { id: catalog-editor-title }
-  - input: { id: catalog-editor-title, text: Renamed fixture }
-  - tap: { id: catalog-editor-validate }
-  - wait_for: { id: catalog-editor-valid, timeout_secs: 30 }
-  - tap: { id: catalog-editor-save }
-  - assert_missing: { id: catalog-editor }
+  - menu: { id: add_opds_catalog }
+  - wait_for: { id: catalog_editor_url }
+  - input: { id: catalog_editor_url, text: 'http://127.0.0.1:18765/subjects?persistence-fixture=1' }
+  - input: { id: catalog_editor_title, text: Persistence fixture }
+  - tap: { id: catalog_editor_validate }
+  - wait_for: { id: catalog_editor_valid, timeout_secs: 30 }
+  - tap: { id: catalog_editor_save }
+  - assert_missing: { id: catalog_editor }
+  - menu: { id: manage_catalogs_menu }
+  - wait_for: { id: 'catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fsubjects%3Fpersistence-fixture%3D1' }
+  - reorder: { id: catalog_manager_list, from: 0, to: 1 }
+  - reorder: { id: catalog_manager_list, from: 1, to: 0 }
+  - context_menu: { id: 'catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fsubjects%3Fpersistence-fixture%3D1', item_id: catalog_edit }
+  - wait_for: { id: catalog_editor_title }
+  - input: { id: catalog_editor_title, text: Renamed fixture }
+  - tap: { id: catalog_editor_validate }
+  - wait_for: { id: catalog_editor_valid, timeout_secs: 30 }
+  - tap: { id: catalog_editor_save }
+  - assert_missing: { id: catalog_editor }
   - screenshot: { name: persistence-catalog-edit }
-  - context_menu: { id: 'catalog-row-http://127.0.0.1:18765/subjects?persistence-fixture=1', item_id: catalog-edit }
-  - wait_for: { id: catalog-editor-remove }
-  - tap: { id: catalog-editor-remove }
-  - assert_missing: { id: catalog-editor }
-  - assert_missing: { id: 'catalog-row-http://127.0.0.1:18765/subjects?persistence-fixture=1' }
+  - context_menu: { id: 'catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fsubjects%3Fpersistence-fixture%3D1', item_id: catalog_edit }
+  - wait_for: { id: catalog_editor_remove }
+  - tap: { id: catalog_editor_remove }
+  - assert_missing: { id: catalog_editor }
+  - assert_missing: { id: 'catalog_row:http%3A%2F%2F127.0.0.1%3A18765%2Fsubjects%3Fpersistence-fixture%3D1' }
   - nav_back: {}
   - navigate: { route: library }

@@ -341,7 +341,7 @@ pub fn view(a: App) -> impl Piece {
                         // only fold into the overflow menu.
                         if style != ManagerStyle::Touch {
                             actions.push(
-                                toolbar_button("catalog-manager-done", res::str::done())
+                                toolbar_button(id!(catalog_manager_done), res::str::done())
                                     .placement(ToolbarPlacement::Primary)
                                     .action(move || a.catalog_step(false)),
                             );
@@ -350,7 +350,7 @@ pub fn view(a: App) -> impl Piece {
                         // from a floating button over it.
                         if style == ManagerStyle::Editing {
                             actions.push(
-                                toolbar_button("catalog-manager-add", res::str::add_catalog())
+                                toolbar_button(id!(catalog_manager_add), res::str::add_catalog())
                                     .icon(Symbol::Add)
                                     .placement(ToolbarPlacement::Primary)
                                     .action(move || {
@@ -431,11 +431,11 @@ pub fn view(a: App) -> impl Piece {
                             label(error.localized())
                                 .secondary()
                                 .padding(Space::XL)
-                                .id("catalog-error"),
+                                .id(id!(catalog_error)),
                             button(res::str::retry())
                                 .prominent()
                                 .action(move || a.reload_catalog(page_id))
-                                .id("catalog-retry"),
+                                .id(id!(catalog_retry)),
                             spacer(),
                         ))
                         .grow()
@@ -494,7 +494,7 @@ pub fn view(a: App) -> impl Piece {
                     if page.loading {
                         let mut entries = title_action(title);
                         entries.push(
-                            toolbar_button("catalog-cancel", res::str::cancel())
+                            toolbar_button(id!(catalog_cancel), res::str::cancel())
                                 .icon(Symbol::Close)
                                 .placement(ToolbarPlacement::Primary)
                                 .action(move || a.catalog_step(false)),
@@ -507,7 +507,7 @@ pub fn view(a: App) -> impl Piece {
                         }
                         if page.retry.is_some() && page.publication.is_none() {
                             actions.push(
-                                toolbar_button("catalog-refresh", res::str::refresh())
+                                toolbar_button(id!(catalog_refresh), res::str::refresh())
                                     .icon(Symbol::Refresh)
                                     .placement(ToolbarPlacement::Secondary)
                                     .action(move || a.reload_catalog(page_id)),
@@ -519,7 +519,7 @@ pub fn view(a: App) -> impl Piece {
                 .any()
             }
         })
-        .id("catalog-stack")
+        .id(id!(catalog_stack))
         .grow(),))
     .focusable()
     .focused(a.catalog_focus)
@@ -533,14 +533,14 @@ pub fn view(a: App) -> impl Piece {
             a.catalog_step(forward)
         }
     })
-    .id("catalog-browser")
+    .id(id!(catalog_browser))
 }
 fn current(a: App, id: u64) -> Option<CatalogPage> {
     a.catalog_path.get().into_iter().find(|p| p.id == id)
 }
 fn title_action(title: String) -> Vec<ToolbarEntry> {
     if cfg!(feature = "uikit") {
-        vec![toolbar_label("catalog-heading", title).placement(ToolbarPlacement::Principal)]
+        vec![toolbar_label(id!(catalog_heading), title).placement(ToolbarPlacement::Principal)]
     } else {
         vec![]
     }
@@ -555,14 +555,14 @@ fn catalog_actions(a: App, root: bool, title: String) -> Vec<ToolbarEntry> {
     let mut actions = title_action(title);
     if a.busy.get() {
         actions.push(
-            toolbar_button("catalog-cancel", res::str::cancel())
+            toolbar_button(id!(catalog_cancel), res::str::cancel())
                 .icon(Symbol::Close)
                 .placement(ToolbarPlacement::Primary)
                 .action(move || a.cancel()),
         );
     }
     actions.push(
-        toolbar_button("manage-catalogs", res::str::manage())
+        toolbar_button(id!(manage_catalogs), res::str::manage())
             .icon(Symbol::Settings)
             .placement(if root {
                 ToolbarPlacement::Primary
@@ -581,7 +581,7 @@ fn catalog_actions(a: App, root: bool, title: String) -> Vec<ToolbarEntry> {
         ))
     {
         actions.push(
-            toolbar_button("add-opds-catalog", res::str::add_catalog())
+            toolbar_button(id!(add_opds_catalog), res::str::add_catalog())
                 .icon(Symbol::Add)
                 .placement(ToolbarPlacement::Secondary)
                 .action(move || a.catalog_editor.set(Some(catalog_editor::EditorRoute::Add))),
@@ -590,7 +590,7 @@ fn catalog_actions(a: App, root: bool, title: String) -> Vec<ToolbarEntry> {
 
     if !a.catalog_forward.get().is_empty() {
         actions.push(
-            toolbar_button("catalog-forward", res::str::forward())
+            toolbar_button(id!(catalog_forward), res::str::forward())
                 .icon(Symbol::Forward)
                 .placement(ToolbarPlacement::Secondary)
                 .action(move || a.catalog_step(true)),
@@ -612,7 +612,7 @@ fn facet_menu(a: App, page_id: u64, facets: &[opds::FacetGroup]) -> ToolbarEntry
             None => l.title.clone(),
         };
         menu_item(label)
-            .id(format!("catalog-facet-{group}-{index}"))
+            .id(id!(catalog_facet, format!("{group}-{index}")))
             .checked(l.active)
             .action(move || a.apply_facet(page_id, url.clone()))
     };
@@ -633,7 +633,7 @@ fn facet_menu(a: App, page_id: u64, facets: &[opds::FacetGroup]) -> ToolbarEntry
             })
             .collect(),
     };
-    toolbar_menu("catalog-facets", res::str::sort_filter(), entries)
+    toolbar_menu(id!(catalog_facets), res::str::sort_filter(), entries)
         .icon(Symbol::Filter)
         .placement(ToolbarPlacement::Primary)
 }
@@ -647,7 +647,7 @@ fn catalog_key(a: App, key: &str) {
 fn loading_indicator() -> impl Piece {
     column((spinner().frame(28., 28.), label(res::str::loading())))
         .spacing(Space::S)
-        .id("catalog-loading")
+        .id(id!(catalog_loading))
 }
 fn loading(a: App, depth: usize) -> impl Piece {
     when(
@@ -711,7 +711,7 @@ fn sources(a: App) -> impl Piece {
                 vec![
                     menu_item(res::str::edit_catalog())
                         .icon(Symbol::Edit)
-                        .id("edit-opds-catalog")
+                        .id(id!(edit_opds_catalog))
                         .action(move || {
                             a.catalog_editor
                                 .set(Some(catalog_editor::EditorRoute::Edit(url.clone())))
@@ -723,7 +723,7 @@ fn sources(a: App) -> impl Piece {
         .on_select(move |catalog| {
             a.browse_named(catalog.url().read(), true, catalog.title().read());
         })
-        .id("catalog-sources")
+        .id(id!(catalog_sources))
         .grow(),
     ))
     .grow()
@@ -871,18 +871,18 @@ fn found_view(
             spacer(),
         ))
         .grow()
-        .id("catalog-searching")
+        .id(id!(catalog_searching))
         .any(),
         Some(Found::Failed(error)) => column((
             spacer(),
             label(error.localized())
                 .secondary()
                 .padding(Space::XL)
-                .id("catalog-search-error"),
+                .id(id!(catalog_search_error)),
             button(res::str::retry())
                 .prominent()
                 .action(retry)
-                .id("catalog-search-retry"),
+                .id(id!(catalog_search_retry)),
             spacer(),
         ))
         .grow()
@@ -890,7 +890,7 @@ fn found_view(
         Some(Found::Results(query, feed)) => {
             let title = res::str::search_results(query).format();
             results(a, page_id, feed, title, depth, false)
-                .id("catalog-search-results")
+                .id(id!(catalog_search_results))
                 .any()
         }
     }
@@ -906,7 +906,7 @@ fn results(
     depth: usize,
     own: bool,
 ) -> impl Piece {
-    let list_id = format!("catalog-list-{depth}-{}", feed.title);
+    let list_id = id!(catalog_list, format!("{depth}-{}", feed.title));
     let shelves = !feed.groups.is_empty();
     let navigation = if shelves {
         feed.navigation.clone()
@@ -981,7 +981,7 @@ fn results(
                 label(summary)
                     .font(Font::Caption)
                     .secondary()
-                    .id("catalog-summary"),
+                    .id(id!(catalog_summary)),
                 (!feed.description.is_empty()).then(|| {
                     label(feed.description.clone())
                         .font(Font::Footnote)
@@ -1007,7 +1007,7 @@ fn results(
                                 let l = link.get().1;
                                 a.browse_named(l.url, false, l.title)
                             })
-                            .id(format!("catalog-nav-{}", link.key()))
+                            .id(id!(catalog_nav, link.key()))
                     },
                 ),))
                 .spacing(Space::S)
@@ -1020,7 +1020,7 @@ fn results(
             label(res::str::catalog_no_results())
                 .secondary()
                 .padding(Space::XL)
-                .id("catalog-empty")
+                .id(id!(catalog_empty))
         }),
         list(
             items(
@@ -1147,7 +1147,7 @@ fn shelf(a: App, group: impl Fn() -> opds::Group + Copy + 'static) -> impl Piece
                                 a.browse_named(url, false, g.title)
                             }
                         })
-                        .id_of(move || format!("shelf-see-all-{}", group().title))
+                        .id_of(move || id!(shelf_see_all, group().title))
                 },
             ),
         ))
@@ -1174,7 +1174,7 @@ fn shelf(a: App, group: impl Fn() -> opds::Group + Copy + 'static) -> impl Piece
                     .align(HAlign::Leading)
                     .width(96.)
                     .on_tap(move || a.select_publication(book.get().1))
-                    .id_of(move || format!("shelf-book-{}-{}", group().title, book.get().0))
+                    .id_of(move || id!(shelf_book, format!("{}-{}", group().title, book.get().0)))
                 },
             ),))
             .spacing(Space::M)
@@ -1264,16 +1264,16 @@ fn manager(a: App) -> impl Piece {
             vec![
                 menu_item(res::str::edit_catalog())
                     .icon(Symbol::Edit)
-                    .id("catalog-edit")
+                    .id(id!(catalog_edit))
                     .action(move || edit_catalog(a, edit.clone())),
                 menu_item(res::str::delete())
                     .icon(Symbol::Delete)
-                    .id("catalog-remove")
+                    .id(id!(catalog_remove))
                     .action(move || remove_catalog(a, &remove)),
             ]
         })
         // Recycled cells rebind to other catalogs, so the id follows the slot.
-        .id_of(move || format!("catalog-row-{}", slot.url().read()))
+        .id_of(move || id!(catalog_row, slot.url().read()))
     })
     .row_height(RowHeight::Automatic)
     .reorderable(Reorder::new(move |from, to| {
@@ -1327,7 +1327,7 @@ fn manager(a: App) -> impl Piece {
                 ]
             })
         })
-        .id("catalog-manager-list")
+        .id(id!(catalog_manager_list))
         .grow();
     match style {
         ManagerStyle::Editing => rows.any(),
@@ -1340,7 +1340,7 @@ fn manager(a: App) -> impl Piece {
                     .icon_only()
                     .prominent()
                     .action(move || a.catalog_editor.set(Some(catalog_editor::EditorRoute::Add)))
-                    .id("catalog-manager-fab")
+                    .id(id!(catalog_manager_fab))
                     .frame(56., 56.)
                     .padding(Space::L),
             )
@@ -1368,7 +1368,7 @@ fn manager(a: App) -> impl Piece {
                         .action(move || {
                             a.catalog_editor.set(Some(catalog_editor::EditorRoute::Add))
                         })
-                        .id("catalog-manager-add"),
+                        .id(id!(catalog_manager_add)),
                     button(res::str::delete())
                         .icon(Symbol::Remove)
                         .icon_only()
@@ -1379,7 +1379,7 @@ fn manager(a: App) -> impl Piece {
                                 remove_catalog(a, &url);
                             }
                         })
-                        .id("catalog-manager-remove"),
+                        .id(id!(catalog_manager_remove)),
                     button(res::str::edit_catalog())
                         .icon(Symbol::Edit)
                         .icon_only()
@@ -1390,7 +1390,7 @@ fn manager(a: App) -> impl Piece {
                                 edit_catalog(a, url);
                             }
                         })
-                        .id("catalog-manager-edit"),
+                        .id(id!(catalog_manager_edit)),
                     label(res::str::catalog_manager_desktop_hint())
                         .font(Font::Footnote)
                         .secondary()

@@ -17,14 +17,14 @@ for(const engine of [chromium,webkit].filter(e=>!process.env.STANZA_BROWSER||e.n
   const chooser=page.waitForEvent('filechooser');
   await page.getByRole('button',{name:'Open Book…',exact:true}).click();
   await (await chooser).setFiles({name:'Book with spaces.epub',mimeType:'application/epub+zip',buffer:bytes});
-  const reader=()=>page.frameLocator('#book-webview');
+  const reader=()=>page.frameLocator('#book_webview');
   await reader().locator('#close-reader').waitFor();
-  await page.waitForFunction(()=>document.querySelector('#book-webview')?.contentWindow.stanza?.state().ready);
-  await reader().locator('#close-reader').click();await page.locator('#book-webview').waitFor({state:'detached'});
+  await page.waitForFunction(()=>document.querySelector('#book_webview')?.contentWindow.stanza?.state().ready);
+  await reader().locator('#close-reader').click();await page.locator('#book_webview').waitFor({state:'detached'});
   await page.evaluate(async data=>window.documentConsumer({files:[{getFile:async()=>new File([Uint8Array.from(atob(data),c=>c.charCodeAt(0))],'Different filename.epub',{type:'application/epub+zip'})}]}),bytes.toString('base64'));
-  await page.waitForFunction(()=>document.querySelector('#book-webview')?.contentWindow.stanza?.state().ready);
-  assert.match(await page.evaluate(()=>document.querySelector('#book-webview').contentWindow.stanza.state().title),/Alice/);
-  await reader().locator('#close-reader').click();await page.locator('#book-webview').waitFor({state:'detached'});
+  await page.waitForFunction(()=>document.querySelector('#book_webview')?.contentWindow.stanza?.state().ready);
+  assert.match(await page.evaluate(()=>document.querySelector('#book_webview').contentWindow.stanza.state().title),/Alice/);
+  await reader().locator('#close-reader').click();await page.locator('#book_webview').waitFor({state:'detached'});
   console.log(`${engine.name()}: PASS file chooser and launchQueue delivery`);
  }finally{await context.close();await rm(profile,{recursive:true,force:true});}
 }

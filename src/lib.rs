@@ -222,24 +222,27 @@ fn install_preferences() -> Prefs {
                                     (ReaderFont::NotoSerif, res::str::font_noto_serif()),
                                 ],
                             )
-                            .id("reader-font"),
+                            .id(id!(reader_font)),
                         )
                         .row(
                             rows::slider(&FONT_SIZE, res::str::font_size(), 12.0..=40.0)
                                 .step(1.)
                                 .value_text(whole)
-                                .id("font-size"),
+                                .id(id!(font_size)),
                         )
                         .row(
                             rows::slider(&LINE_HEIGHT, res::str::line_height(), 1.0..=2.4)
                                 .step(0.1)
                                 .value_text(decimal)
-                                .id("line-height"),
+                                .id(id!(line_height)),
                         )
-                        .row(rows::toggle(&JUSTIFIED, res::str::justified()).id("reader-justified"))
+                        .row(
+                            rows::toggle(&JUSTIFIED, res::str::justified())
+                                .id(id!(reader_justified)),
+                        )
                         .row(
                             rows::toggle(&HYPHENATION, res::str::hyphenation())
-                                .id("reader-hyphenation"),
+                                .id(id!(reader_hyphenation)),
                         ),
                 )
                 .section(
@@ -249,13 +252,13 @@ fn install_preferences() -> Prefs {
                             rows::slider(&MARGINS, res::str::margins(), 8.0..=64.0)
                                 .step(2.)
                                 .value_text(whole)
-                                .id("margins"),
+                                .id(id!(margins)),
                         )
                         .row(
                             rows::slider(&VERTICAL_MARGIN, res::str::vertical_margin(), 0.0..=0.25)
                                 .step(0.01)
                                 .value_text(percent)
-                                .id("vertical-margin"),
+                                .id(id!(vertical_margin)),
                         )
                         .row(
                             rows::slider(
@@ -265,7 +268,7 @@ fn install_preferences() -> Prefs {
                             )
                             .step(0.1)
                             .value_text(decimal)
-                            .id("paragraph-spacing"),
+                            .id(id!(paragraph_spacing)),
                         )
                         .row(
                             rows::choice(
@@ -277,7 +280,7 @@ fn install_preferences() -> Prefs {
                                 ],
                             )
                             .segmented()
-                            .id("reader-columns"),
+                            .id(id!(reader_columns)),
                         )
                         .footer(res::str::columns_hint()),
                 ),
@@ -291,13 +294,13 @@ fn install_preferences() -> Prefs {
                         .row(color_row(
                             &PAPER,
                             || res::str::paper_color().format(),
-                            "paper-color",
+                            id!(paper_color),
                             custom,
                         ))
                         .row(color_row(
                             &INK,
                             || res::str::ink_color().format(),
-                            "ink-color",
+                            id!(ink_color),
                             custom,
                         ))
                         .footer(res::str::custom_hint()),
@@ -309,12 +312,12 @@ fn install_preferences() -> Prefs {
                 // Only where the platform has a status bar to hide (phones and tablets).
                 .row(
                     rows::toggle(&HIDE_STATUS_BAR, res::str::hide_status_bar())
-                        .id("reader-hide-status-bar")
+                        .id(id!(reader_hide_status_bar))
                         .requires(Cap::StatusBarHidden),
                 )
                 .row(
                     rows::toggle(&LEFT_TAP_ADVANCES, res::str::left_tap_advances())
-                        .id("reader-left-tap-advances"),
+                        .id(id!(reader_left_tap_advances)),
                 ),
         )
         .install();
@@ -334,7 +337,7 @@ fn theme_row() -> Row {
             (ReaderTheme::Custom, res::str::custom()),
         ],
     )
-    .id("reader-theme")
+    .id(id!(reader_theme))
 }
 
 /// A color well bound to a `#rrggbb` setting. The well is offered under the Custom theme; a
@@ -342,10 +345,11 @@ fn theme_row() -> Row {
 fn color_row(
     pref: &'static Pref<String>,
     title: fn() -> String,
-    id: &'static str,
+    id: ElementId,
     custom: Signal<bool>,
 ) -> Row {
     rows::custom(move || {
+        let id = id.clone();
         let parse = |hex: &str| Color::parse(hex).map(|c| Color::rgb(c.r, c.g, c.b));
         let fallback = parse(&pref.default()).unwrap_or(Color::BLACK);
         let color = Signal::new(parse(&pref.get_untracked()).unwrap_or(fallback));
@@ -371,7 +375,7 @@ fn color_row(
             label(title).grow_w(),
             when(
                 move || custom.get(),
-                move || day_piece_colorpicker::color_picker(color).id(id),
+                move || day_piece_colorpicker::color_picker(color).id(id.clone()),
             )
             .otherwise(move || {
                 column(())
@@ -942,14 +946,14 @@ pub fn root() -> impl Piece {
                 res::str::catalogs(),
                 vec![
                     menu_item(res::str::add_catalog())
-                        .id("add-opds-catalog")
+                        .id(id!(add_opds_catalog))
                         .icon(Symbol::Add)
                         .enabled(a.reader_open.get().is_none() && a.catalog_editor.get().is_none())
                         .action(move || {
                             a.catalog_editor.set(Some(catalog_editor::EditorRoute::Add))
                         }),
                     menu_item(res::str::manage_catalogs())
-                        .id("manage-catalogs-menu")
+                        .id(id!(manage_catalogs_menu))
                         .icon(Symbol::Settings)
                         .enabled(a.reader_open.get().is_none() && a.catalog_editor.get().is_none())
                         .action(move || {
@@ -962,12 +966,12 @@ pub fn root() -> impl Piece {
                 res::str::view_menu(),
                 vec![
                     menu_item(res::str::increase_font())
-                        .id("increase-font")
+                        .id(id!(increase_font))
                         .key("+")
                         .enabled(FONT_SIZE.get() < 40.)
                         .action(|| FONT_SIZE.set((FONT_SIZE.get_untracked() + 1.).min(40.))),
                     menu_item(res::str::decrease_font())
-                        .id("decrease-font")
+                        .id(id!(decrease_font))
                         .key("-")
                         .enabled(FONT_SIZE.get() > 12.)
                         .action(|| FONT_SIZE.set((FONT_SIZE.get_untracked() - 1.).max(12.))),
@@ -1021,7 +1025,7 @@ pub fn root() -> impl Piece {
             .only_for(|key: &String| key == "library"),
     );
     zstack((
-        navigation.id("navigation"),
+        navigation.id(id!(navigation)),
         cover(a.reader_open, move |_: &ReaderRoute| reader(a)),
         // A modal sheet over the catalogs it edits: a form sheet on an iPad, a window sheet on
         // the Mac, a card over the dimmed window on the other wide screens, and a full-window
@@ -1069,7 +1073,7 @@ fn reopen_last_book(a: App) {
 fn book_overview(
     title: String,
     author: String,
-    title_id: &'static str,
+    title_id: ElementId,
     cover: impl Piece,
     metadata: Signal<Option<metadata::Metadata>>,
     action: impl Piece,
@@ -1138,7 +1142,7 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
     book_overview(
         publication.title,
         publication.author,
-        "publication-title",
+        id!(publication_title),
         covers::view(move || cover_url.clone(), 160., 220.),
         shown,
         column((
@@ -1156,7 +1160,7 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
                     a.acquire(link.url, metadata);
                 }
             })
-            .id("download-book")
+            .id(id!(download_book))
             .height(50.)
             .grow_w(),
             // Only while there is no download to offer: still checking, or why there is none.
@@ -1178,7 +1182,7 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
                     })
                     .font(Font::Footnote)
                     .secondary()
-                    .id("publication-availability")
+                    .id(id!(publication_availability))
                 },
             ),
             when(
@@ -1192,7 +1196,7 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
                     button(res::str::view_on_web())
                         .bordered()
                         .action(move || open_link(&current.get_untracked().web))
-                        .id("publication-web")
+                        .id(id!(publication_web))
                 },
             ),
             column((each(
@@ -1219,9 +1223,7 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
                                 bottom: 4.,
                                 ..Insets::default()
                             })
-                            .id_of(move || {
-                                format!("publication-browse-heading-{}", link.get().1.rel)
-                            })
+                            .id_of(move || id!(publication_browse_heading, link.get().1.rel))
                             .any();
                     }
                     row((
@@ -1236,7 +1238,7 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
                         let l = link.get().1;
                         a.browse_named(l.url, false, title())
                     })
-                    .id_of(move || format!("publication-browse-{}", link.get().0))
+                    .id_of(move || id!(publication_browse, link.get().0))
                     .any()
                 },
             ),))
@@ -1320,14 +1322,14 @@ fn local_details(a: App, book: Saved) -> impl Piece {
     book_overview(
         book.title,
         book.author,
-        "local-book-title",
+        id!(local_book_title),
         covers::view(move || source.clone(), 160., 220.),
         metadata,
         button(res::str::open_book())
             .prominent()
             .enabled(move || !a.busy.get())
             .action(move || a.load(id.clone()))
-            .id("open-local-book")
+            .id(id!(open_local_book))
             .height(50.)
             .grow_w(),
     )
@@ -1379,7 +1381,7 @@ fn reader_settings_panel(a: App, top: f64, bottom: f64) -> impl Piece {
             spacer(),
             button(res::str::done())
                 .action(move || a.reader_settings.set(false))
-                .id("reader-settings-done"),
+                .id(id!(reader_settings_done)),
         ))
         .padding(Insets::symmetric(20., 0.)),
         reader_settings_sheet(),
@@ -1404,7 +1406,7 @@ fn reader(a: App) -> impl Piece {
         )
         .otherwise(move || {
             a.ready.set(false);
-            reader_resources::view(a).js(a.js).id("book-webview")
+            reader_resources::view(a).js(a.js).id(id!(book_webview))
         }),
         cover(SettingsSheet { app: a, half: true }, move |_: &String| {
             reader_settings_panel(a, 20., day::safe_area().bottom)

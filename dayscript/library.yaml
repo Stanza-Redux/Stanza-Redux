@@ -1,71 +1,71 @@
 flow:
   - navigate: { route: library }
-  - wait_for: { id: library-folders }
+  - wait_for: { id: library_folders }
   - screenshot: { name: library-folders }
-  - select: { id: library-folders, index: 1 }
-  - wait_for: { id: library-list }
-  - input: { id: library-search, text: Alice }
-  - assert_missing: { id: library-empty }
-  - select: { id: library-list, index: 0 }
-  - wait_for: { id: open-local-book }
-  - tap: { id: open-local-book }
-  - wait_for: { id: book-webview, timeout_secs: 30 }
-  - web_eval: { id: book-webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
-  - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),300);true", text: "true" }
-  - assert_missing: { id: book-webview }
+  - select: { id: library_folders, index: 1 }
+  - wait_for: { id: library_list }
+  - input: { id: library_search, text: Alice }
+  - assert_missing: { id: library_empty }
+  - select: { id: library_list, index: 0 }
+  - wait_for: { id: open_local_book }
+  - tap: { id: open_local_book }
+  - wait_for: { id: book_webview, timeout_secs: 30 }
+  - web_eval: { id: book_webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
+  - web_eval: { id: book_webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),300);true", text: "true" }
+  - assert_missing: { id: book_webview }
   - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
   - nav_back: {}
-  - select: { id: library-folders, index: 0 }
-  - wait_for: { id: library-list }
+  - select: { id: library_folders, index: 0 }
+  - wait_for: { id: library_list }
   - screenshot: { name: library-recents }
-  - select: { id: library-list, index: 0 }
-  - wait_for: { id: local-book-title }
-  - wait_for: { id: book-metadata }
+  - select: { id: library_list, index: 0 }
+  - wait_for: { id: local_book_title }
+  - wait_for: { id: book_metadata }
   - screenshot: { name: library-overview }
-  - tap: { id: open-local-book }
-  - wait_for: { id: book-webview }
-  - web_eval: { id: book-webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
-  - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),300);true", text: "true" }
-  - assert_missing: { id: book-webview }
+  - tap: { id: open_local_book }
+  - wait_for: { id: book_webview }
+  - web_eval: { id: book_webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
+  - web_eval: { id: book_webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),300);true", text: "true" }
+  - assert_missing: { id: book_webview }
   - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
   - nav_back: {}
-  - wait_for: { id: library-folders }
-  - select: { id: library-folders, index: 2 }
-  - wait_for: { id: library-authors }
+  - wait_for: { id: library_folders }
+  - select: { id: library_folders, index: 2 }
+  - wait_for: { id: library_authors }
   - screenshot: { name: library-authors }
-  - select: { id: library-authors, index: 0 }
-  - wait_for: { id: library-list }
+  - select: { id: library_authors, index: 0 }
+  - wait_for: { id: library_list }
   - screenshot: { name: library-author-books }
   - nav_back: {}
   - nav_back: {}
-  - select: { id: library-folders, index: 3 }
-  - wait_for: { id: library-genres }
+  - select: { id: library_folders, index: 3 }
+  - wait_for: { id: library_genres }
   - screenshot: { name: library-genres }
-  - select: { id: library-genres, index: 0 }
-  - wait_for: { id: library-list }
+  - select: { id: library_genres, index: 0 }
+  - wait_for: { id: library_list }
   - screenshot: { name: library-genre-books }
   - nav_back: {}
   - nav_back: {}
-  - select: { id: library-folders, index: 1 }
-  - wait_for: { id: library-list }
-  - input: { id: library-search, text: NoSuchFixtureBook }
+  - select: { id: library_folders, index: 1 }
+  - wait_for: { id: library_list }
+  - input: { id: library_search, text: NoSuchFixtureBook }
   - screenshot: { name: library-empty-search }
-  - input: { id: library-search, text: Alice }
-  - assert_missing: { id: library-empty }
-  - select: { id: library-list, index: 0 }
-  - wait_for: { id: open-local-book }
+  - input: { id: library_search, text: Alice }
+  - assert_missing: { id: library_empty }
+  - select: { id: library_list, index: 0 }
+  - wait_for: { id: open_local_book }
   - screenshot: { name: library-title-search }
   - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
   - nav_back: {}
   - navigate: { route: settings/general }
-  - wait_for: { id: language-picker }
-  - select: { id: language-picker, index: 5 }
+  - wait_for: { id: language_picker }
+  - select: { id: language_picker, index: 5 }
   - navigate: { route: library }
-  - assert_visible: { id: library-folders }
+  - assert_visible: { id: library_folders }
   - screenshot: { name: library-french }
   - navigate: { route: settings/general }
-  - wait_for: { id: language-picker }
-  - select: { id: language-picker, index: 0 }
+  - wait_for: { id: language_picker }
+  - select: { id: language_picker, index: 0 }
   # Leave Settings at its root: a later `navigate: settings` keeps the section's stack.
   - nav_back: { only_on: [uikit, mdc, arkui, dom] }
   - close_window: { window: day.preferences }

@@ -20,7 +20,7 @@ pub fn register(a: App) {
     });
 }
 pub fn open_command(a: App) -> Command {
-    Command::new("import-book", res::str::open_book_file(), move || {
+    Command::new(id!(import_book), res::str::open_book_file(), move || {
         day::task(async move {
             if let Some(file) = open_file()
                 .filter(res::str::format_epub().format(), &["epub"])
