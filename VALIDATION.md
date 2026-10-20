@@ -1,5 +1,29 @@
 # Local validation
 
+## Reader fills the phone, vertical margin, catalog editor — 2026-10-20
+
+- On an iPhone 13 mini (iOS 18.7) the reader stopped about 120 pt above the bottom edge. WebKit
+  sized the page while it still kept clear of the safe areas, then learned the page draws under
+  them (`viewport-fit=cover`) without sizing it again: a 728 pt page on an 812 pt screen. Fixed in
+  `day-piece-webview`. Reproduced on an iPhone 13 mini simulator with iOS 18.6; the page now
+  measures the screen's height on iOS 17, 18 and 27 (iOS 27 never had the fault, which is why CI
+  missed it).
+- The reader padded the text by the side margin (24 by default) beyond each bar. The text now runs
+  up to the bars, and "Page margins" is "Side margins". A new "Vertical margin" setting runs from
+  0 to 25% of the page's height above and below the text (25% leaves it the middle half), never
+  less than the safe areas; the default, 15%, clears the bars on a phone held upright (on an
+  iPhone 13 mini the footer is 121 of 812 pt). A landscape phone or short window is expected to overlap the
+  footer at that default. WebKit could also push the chapter's last paragraph margin, alone, into
+  a new column and end the chapter on a blank page (seen at 844×390); the last paragraph keeps no
+  margin now. `reader-safe-area.yaml` and `tests/reader-chrome-insets.mjs` check the margins at 0,
+  15 and 25% and that the default clears the bars. iOS 18 simulator: `reader-safe-area`,
+  `reader-margins` and `reader-affordances` 85/85; reader node tests 12/12 in Chromium and WebKit.
+- The catalog editor's fields span their cards, under section headers, instead of sharing a row
+  with their labels. The URL field takes the URL keyboard with no capitalization or correction, and
+  its Go key validates. The title is a large heading under Cancel and Save, the verified details
+  stack caption over value, and "Updated" is a localized date. Checked on the iOS 18 simulator and
+  the Android emulator.
+
 ## CI run 39058075568: phone reader margins, iPad catalog rows, lint — 2026-10-17
 
 Three legs failed: android-mdc pixel and harmony-arkui phone (`reader-margins.yaml` step 17, as in

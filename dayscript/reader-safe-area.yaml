@@ -1,5 +1,6 @@
-# Native safe-area chrome must be included in the chapter pagination bounds.
-# Verify complete pages, stable control toggles, and changes in control height.
+# The vertical margin (15% of the page by default, never less than the safe areas) bounds the
+# chapter's pages. Verify complete pages, stable control toggles, and that a taller footer leaves
+# the margins as they are.
 flow:
   - navigate: { route: library }
   - select: { id: library-folders, index: 1 }
@@ -12,7 +13,7 @@ flow:
   - web_eval: { id: book-webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
   - web_eval: { id: book-webview, script: "stanza.goToChapter(2);true", text: "true" }
   - web_eval: { id: book-webview, script: "String(stanza.state().ready && stanza.state().chapter===2 && !stanza.state().animating)", text: "true" }
-  - web_eval: { id: book-webview, script: "window.checkInsets=()=>{const f=document.getElementById('book'),s=getComputedStyle(f.contentDocument.documentElement);return parseFloat(s.paddingTop)>=document.getElementById('toolbar').offsetHeight+24 && parseFloat(s.paddingBottom)>=document.getElementById('footer').offsetHeight+24};String(checkInsets())", text: "true" }
+  - web_eval: { id: book-webview, script: "window.checkInsets=()=>{const f=document.getElementById('book'),s=getComputedStyle(f.contentDocument.documentElement),p=document.createElement('div');p.style.cssText='position:fixed;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)';document.body.append(p);const e=getComputedStyle(p),top=Math.round(Math.max(parseFloat(e.paddingTop)||0,0.15*f.clientHeight)),bottom=Math.round(Math.max(parseFloat(e.paddingBottom)||0,0.15*f.clientHeight));p.remove();return Math.abs(parseFloat(s.paddingTop)-top)<=1 && Math.abs(parseFloat(s.paddingBottom)-bottom)<=1};String(checkInsets())", text: "true" }
   - screenshot: { name: reader-safe-area-first-page }
   - web_eval: { id: book-webview, script: "stanza.next();true", text: "true" }
   - web_eval: { id: book-webview, script: "String(stanza.state().ready && !stanza.state().animating && stanza.state().page===1 && checkInsets())", text: "true" }
@@ -25,7 +26,7 @@ flow:
   - web_eval: { id: book-webview, script: "window.footerPadding=document.getElementById('footer').style.paddingBottom;document.getElementById('footer').style.paddingBottom=(parseFloat(getComputedStyle(document.getElementById('footer')).paddingBottom)+40)+'px';true", text: "true" }
   - web_eval: { id: book-webview, script: "String(stanza.state().ready && checkInsets())", text: "true" }
   - web_eval: { id: book-webview, script: "document.getElementById('footer').style.paddingBottom=footerPadding;true", text: "true" }
-  - web_eval: { id: book-webview, script: "String(stanza.state().ready && Math.abs(parseFloat(getComputedStyle(document.getElementById('book').contentDocument.documentElement).paddingBottom)-document.getElementById('footer').offsetHeight-24)<1)", text: "true" }
+  - web_eval: { id: book-webview, script: "String(stanza.state().ready && checkInsets())", text: "true" }
   # Leave the app where it started: web runs the next script in this same page.
   - web_eval: { id: book-webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),500);true", text: "true" }
   - assert_missing: { id: book-webview }

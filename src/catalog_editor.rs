@@ -191,97 +191,156 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
             Err(e) => error.set(e.localized()),
         }
     };
+    let submit = validate.clone();
     column((
         row((
             button(res::str::cancel())
                 .action(move || a.catalog_editor.set(None))
                 .id("catalog-editor-cancel"),
-            label(route.title()).font(Font::Headline).grow_w(),
+            spacer(),
             button(res::str::save())
                 .action(save)
                 .enabled(move || {
                     !busy.get() && validated.get().is_some() && !title.get().trim().is_empty()
                 })
+                .prominent()
                 .id("catalog-editor-save"),
         ))
         .spacing(Space::M)
         .padding(Space::L),
         scroll(
-            form((
-                section((
-                    labeled(
-                        res::str::catalog_url(),
-                        text_field(url).id("catalog-editor-url"),
-                    ),
-                    row((
-                        button(res::str::validate_catalog())
-                            .action(validate)
-                            .enabled(move || !busy.get() && !url.get().trim().is_empty())
-                            .id("catalog-editor-validate"),
+            column((
+                label(route.title())
+                    .font(Font::Title)
+                    .weight(FontWeight::Bold),
+                form((
+                    section((
+                        // An address, typed as one: the URL keyboard, never capitalized or
+                        // corrected; its Go key checks the catalog.
+                        text_field(url)
+                            .input_purpose(InputPurpose::Url)
+                            .submit_label(SubmitLabel::Go)
+                            .on_submit(submit)
+                            .grow_w()
+                            .id("catalog-editor-url"),
+                        row((
+                            button(res::str::validate_catalog())
+                                .action(validate)
+                                .enabled(move || !busy.get() && !url.get().trim().is_empty())
+                                .id("catalog-editor-validate"),
+                            when(
+                                move || busy.get(),
+                                move || {
+                                    row((
+                                        spinner().frame(20., 20.),
+                                        label(res::str::catalog_validating())
+                                            .font(Font::Footnote)
+                                            .secondary(),
+                                    ))
+                                    .spacing(Space::S)
+                                },
+                            ),
+                        ))
+                        .spacing(Space::M),
                         when(
-                            move || busy.get(),
+                            move || !error.get().is_empty(),
                             move || {
-                                row((
-                                    spinner().frame(20., 20.),
-                                    label(res::str::catalog_validating()),
-                                ))
-                                .spacing(Space::S)
+                                label(move || error.get())
+                                    .font(Font::Footnote)
+                                    .id("catalog-editor-error")
                             },
                         ),
                     ))
-                    .spacing(Space::M),
+                    .title(res::str::catalog_url()),
+                    section((text_field(title)
+                        .submit_label(SubmitLabel::Done)
+                        .grow_w()
+                        .id("catalog-editor-title"),))
+                    .title(res::str::catalog_name())
+                    .footer(res::str::catalog_title_hint()),
                     when(
-                        move || !error.get().is_empty(),
-                        move || label(move || error.get()).id("catalog-editor-error"),
+                        move || validated.get().is_some(),
+                        move || {
+                            let feed = validated.get_untracked().unwrap().1;
+                            let counts = res::str::catalog_counts(res::str::CatalogCounts {
+                                books: feed.book_count() as i64,
+                                links: feed.link_count() as i64,
+                            });
+                            section((
+                                label(res::str::catalog_validated())
+                                    .font(Font::Headline)
+                                    .id("catalog-editor-valid"),
+                                detail(res::str::catalog_title(), feed.title.clone()),
+                                label(counts).font(Font::Subheadline).secondary(),
+                                (!feed.description.is_empty())
+                                    .then(|| label(feed.description.clone())),
+                                (!feed.updated.is_empty()).then(|| {
+                                    detail(res::str::catalog_updated(), published(&feed.updated))
+                                }),
+                            ))
+                            .title(res::str::catalog_validation())
+                        },
                     ),
+                    removable.map(|url| {
+                        section((button(res::str::remove_catalog())
+                            .action(move || {
+                                crate::browser::remove_catalog(a, &url);
+                                a.catalog_editor.set(None);
+                            })
+                            .id("catalog-editor-remove"),))
+                    }),
                 )),
-                section((
-                    labeled(
-                        res::str::catalog_name(),
-                        text_field(title).id("catalog-editor-title"),
-                    ),
-                    label(res::str::catalog_title_hint())
-                        .font(Font::Footnote)
-                        .secondary(),
-                )),
-                when(
-                    move || validated.get().is_some(),
-                    move || {
-                        let feed = validated.get_untracked().unwrap().1;
-                        let counts = res::str::catalog_counts(res::str::CatalogCounts {
-                            books: feed.book_count() as i64,
-                            links: feed.link_count() as i64,
-                        });
-                        section((
-                            label(res::str::catalog_validated())
-                                .font(Font::Headline)
-                                .id("catalog-editor-valid"),
-                            labeled(res::str::catalog_title(), label(feed.title)),
-                            label(counts),
-                            (!feed.description.is_empty()).then(|| label(feed.description.clone())),
-                            (!feed.updated.is_empty()).then(|| {
-                                labeled(res::str::catalog_updated(), label(feed.updated.clone()))
-                            }),
-                        ))
-                        .title(res::str::catalog_validation())
-                    },
-                ),
-                removable.map(|url| {
-                    section((button(res::str::remove_catalog())
-                        .action(move || {
-                            crate::browser::remove_catalog(a, &url);
-                            a.catalog_editor.set(None);
-                        })
-                        .id("catalog-editor-remove"),))
-                }),
             ))
-            .padding(20.),
+            .spacing(Space::L)
+            .align(HAlign::Leading)
+            .padding(Insets {
+                top: 0.,
+                leading: 20.,
+                bottom: 20.,
+                trailing: 20.,
+            }),
         )
         .grow(),
     ))
     .max_width(640.)
     .grow_h()
     .id("catalog-editor")
+}
+
+/// A caption over its value, the way a detail sheet lists facts.
+fn detail<M>(caption: impl IntoText<M>, value: String) -> impl Piece {
+    column((
+        label(caption).font(Font::Footnote).secondary(),
+        label(value),
+    ))
+    .spacing(Space::XS)
+    .align(HAlign::Leading)
+}
+
+/// An Atom `updated` timestamp (`2026-10-20T12:07:36Z`) as the reader's own date; anything
+/// unparseable is shown as the feed wrote it.
+fn published(updated: &str) -> String {
+    let date = updated.get(..10).unwrap_or_default();
+    let mut parts = date.split('-').map(|p| p.parse::<i64>().ok());
+    let (Some(Some(y)), Some(Some(m)), Some(Some(d))) = (parts.next(), parts.next(), parts.next())
+    else {
+        return updated.into();
+    };
+    if !(1..=12).contains(&m) || !(1..=31).contains(&d) {
+        return updated.into();
+    }
+    // Days since 1970-01-01 in the proleptic Gregorian calendar (Howard Hinnant's
+    // days_from_civil), read at noon so no offset moves the day.
+    let y = if m <= 2 { y - 1 } else { y };
+    let era = y.div_euclid(400);
+    let yoe = y - era * 400;
+    let doy = (153 * (if m > 2 { m - 3 } else { m + 9 }) + 2) / 5 + d - 1;
+    let doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    let days = era * 146_097 + doe - 719_468;
+    day::format_date(
+        (days * 86_400 + 43_200) as f64,
+        day::DateFields::YearMonthDay,
+    )
 }
 
 #[cfg(test)]
@@ -292,6 +351,15 @@ mod tests {
             url: url.into(),
             title: url.into(),
             ..Default::default()
+        }
+    }
+    #[test]
+    fn updated_shows_as_a_date() {
+        let noon = |epoch: f64| day::format_date(epoch, day::DateFields::YearMonthDay);
+        assert_eq!(published("2026-10-20T12:07:36Z"), noon(1_792_497_600.));
+        assert_eq!(published("1999-02-28"), noon(920_203_200.));
+        for raw in ["soon", "2026-13-01T00:00:00Z", "2026-10"] {
+            assert_eq!(published(raw), raw);
         }
     }
     #[test]

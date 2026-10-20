@@ -119,6 +119,9 @@ const DEFAULT_INK: &str = "#30343b";
 static FONT_SIZE: Pref<f64> = Pref::new("stanza.size", || 20.);
 static LINE_HEIGHT: Pref<f64> = Pref::new("stanza.line", || 1.6);
 static MARGINS: Pref<f64> = Pref::new("stanza.margin", || 24.);
+/// Space above and below the text, each a share of the window's height: 0.25 leaves the text
+/// the middle half. The default clears the reader's bars on a phone held upright.
+static VERTICAL_MARGIN: Pref<f64> = Pref::new("stanza.vertical_margin", || 0.15);
 static PARAGRAPH_SPACING: Pref<f64> = Pref::new("stanza.paragraph_spacing", || 0.6);
 static FONT: Pref<ReaderFont> = Pref::new("stanza.font", || ReaderFont::Serif);
 static THEME: Pref<ReaderTheme> = Pref::new("stanza.theme", || ReaderTheme::Sepia);
@@ -157,6 +160,7 @@ fn reader_config() -> serde_json::Value {
         "size": FONT_SIZE.get(),
         "line": LINE_HEIGHT.get(),
         "margin": MARGINS.get(),
+        "vertical_margin": VERTICAL_MARGIN.get(),
         "paragraph_spacing": PARAGRAPH_SPACING.get(),
         "font": position(ReaderFont::ALL, &FONT.get()),
         "theme": position(ReaderTheme::ALL, &THEME.get()),
@@ -182,6 +186,7 @@ fn install_preferences() -> Prefs {
     );
     let decimal = |v: f64| day::format_decimal(v, 1);
     let whole = |v: f64| day::format_decimal(v, 0);
+    let percent = |v: f64| day::format_percent(v, 0);
     let prefs = Preferences::new()
         // Wide enough for a slider, its value and a translated title on one line.
         .window_size(640., 760.)
@@ -242,6 +247,12 @@ fn install_preferences() -> Prefs {
                                 .step(2.)
                                 .value_text(whole)
                                 .id("margins"),
+                        )
+                        .row(
+                            rows::slider(&VERTICAL_MARGIN, res::str::vertical_margin(), 0.0..=0.25)
+                                .step(0.01)
+                                .value_text(percent)
+                                .id("vertical-margin"),
                         )
                         .row(
                             rows::slider(

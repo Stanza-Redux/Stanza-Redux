@@ -8,6 +8,9 @@ const FONTS=['Georgia,serif','system-ui,sans-serif','ui-monospace,monospace',"'S
 const FONT_FACES=[['Stanza Montserrat','Montserrat-Regular.ttf','400'],['Stanza Noto Sans','NotoSans.ttf','100 900'],['Stanza Noto Serif','NotoSerif.ttf','100 900']].map(([family,file,weight])=>`@font-face{font-family:'${family}';src:url('${new URL('fonts/'+file,document.baseURI).href}') format('truetype');font-weight:${weight};font-style:normal;font-display:block}`).join('');
 let frame=document.getElementById('book');let book=null,prefs={},chapter=0,page=0,pages=1,ready=false,serial=0,loaded=null;
 let measuredChrome='';
+// The screen's safe areas (notch, home indicator), which no margin setting puts text under.
+let safeProbe=null;
+function safeArea(){if(!safeProbe){safeProbe=document.createElement('div');safeProbe.setAttribute('aria-hidden','true');safeProbe.style.cssText='position:fixed;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)';document.body.append(safeProbe)}const s=getComputedStyle(safeProbe);return [parseFloat(s.paddingTop)||0,parseFloat(s.paddingBottom)||0]}
 function chromeSize(){return [document.getElementById('toolbar').offsetHeight,document.getElementById('footer').offsetHeight]}
 function event(type,data={}){const a=document.getElementById('event');a.href='stanza://'+type+'?data='+encodeURIComponent(JSON.stringify(data));a.click()}
 const resourceRoot=new URL('../book/',location.href);
@@ -43,15 +46,20 @@ function applyPrefs(doc){
  // Fixed control-height guesses miss iOS safe areas and wrapped/localized chrome.
  // Measure even while controls are hidden: opacity/transform leave their layout size
  // intact, so revealing them never covers text or changes the current page.
- const [toolbarHeight,footerHeight]=chromeSize();measuredChrome=`${toolbarHeight},${footerHeight}`;
- const topInset=gap+toolbarHeight,bottomInset=gap+footerHeight;
+ // The vertical margin is a share of the page's height above and below the text (0.25 leaves
+ // the middle half; the bars cover what they overlap until hidden), never less than the safe areas.
+ measuredChrome=chromeSize().join(',');
+ const [safeTop,safeBottom]=safeArea(),vertical=Math.min(0.25,Math.max(0,prefs.vertical_margin??0.15)),margin=vertical*frame.clientHeight;
+ const topInset=Math.round(Math.max(safeTop,margin)),bottomInset=Math.round(Math.max(safeBottom,margin));
  doc.documentElement.style.cssText=`--USER__fontSize:${prefs.size||20}px;--USER__fontFamily:${font};--USER__fontOverride:readium-font-on;--USER__advancedSettings:readium-advanced-on;--USER__lineHeight:${prefs.line||1.6};--USER__colCount:${cols};--USER__textAlign:${prefs.justified?"justify":"start"};--USER__bodyHyphens:${prefs.hyphenation===false?"none":"auto"};--USER__backgroundColor:${colors.bg};--USER__textColor:${colors.fg};`;
  // `overflow-wrap:anywhere`: a run with no break in it (Alice's asterisms are stars joined by
  // non-breaking spaces) breaks inside its column instead of running past it. Spilled across the
  // column gap, it stood outside the margins on a page of its own, and the scroll width counted
- // that page: a phone ended the chapter on a nearly blank page.
+ // that page: a phone ended the chapter on a nearly blank page. The chapter's last paragraph
+ // keeps no space after it for the same reason: WebKit can push that margin, alone, into a new
+ // column, and the chapter ended on a blank page.
  if(!doc.stanzaPrefs){doc.stanzaPrefs=doc.createElement('style');doc.head.append(doc.stanzaPrefs)}
- doc.stanzaPrefs.textContent=`html:root{height:${frame.clientHeight}px!important;min-height:${frame.clientHeight}px!important;max-height:${frame.clientHeight}px!important;width:${frame.clientWidth}px!important;min-width:${frame.clientWidth}px!important;max-width:${frame.clientWidth}px!important;box-sizing:border-box!important;padding:${topInset}px ${gap}px ${bottomInset}px!important;margin:0!important;column-count:${cols}!important;column-gap:${gap*2}px!important;column-width:${colWidth}px!important;column-fill:auto!important;overflow:hidden!important;background:${colors.bg}!important;color:${colors.fg}!important}body{margin:0!important;padding:0!important;max-width:none!important;min-width:0!important;overflow-wrap:anywhere!important;font-family:${font}!important;font-size:${prefs.size||20}px!important;line-height:${prefs.line||1.6}!important;background:transparent!important;color:inherit!important}p{line-height:inherit!important;text-align:${prefs.justified?"justify":"start"}!important;hyphens:${prefs.hyphenation===false?"none":"auto"}!important;-webkit-hyphens:${prefs.hyphenation===false?"none":"auto"}!important;margin-block-end:${prefs.paragraph_spacing??0.6}em!important}img,svg{max-width:100%!important;max-height:${Math.max(1,frame.clientHeight-topInset-bottomInset-(prefs.size||20)*(prefs.line||1.6))}px!important;object-fit:contain}a{color:inherit}*{animation:none!important;transition:none!important}`;
+ doc.stanzaPrefs.textContent=`html:root{height:${frame.clientHeight}px!important;min-height:${frame.clientHeight}px!important;max-height:${frame.clientHeight}px!important;width:${frame.clientWidth}px!important;min-width:${frame.clientWidth}px!important;max-width:${frame.clientWidth}px!important;box-sizing:border-box!important;padding:${topInset}px ${gap}px ${bottomInset}px!important;margin:0!important;column-count:${cols}!important;column-gap:${gap*2}px!important;column-width:${colWidth}px!important;column-fill:auto!important;overflow:hidden!important;background:${colors.bg}!important;color:${colors.fg}!important}body{margin:0!important;padding:0!important;max-width:none!important;min-width:0!important;overflow-wrap:anywhere!important;font-family:${font}!important;font-size:${prefs.size||20}px!important;line-height:${prefs.line||1.6}!important;background:transparent!important;color:inherit!important}p{line-height:inherit!important;text-align:${prefs.justified?"justify":"start"}!important;hyphens:${prefs.hyphenation===false?"none":"auto"}!important;-webkit-hyphens:${prefs.hyphenation===false?"none":"auto"}!important;margin-block-end:${prefs.paragraph_spacing??0.6}em!important}body>:last-child,body>:last-child>:last-child,body>:last-child>:last-child>:last-child{margin-block-end:0!important}img,svg{max-width:100%!important;max-height:${Math.max(1,frame.clientHeight-topInset-bottomInset-(prefs.size||20)*(prefs.line||1.6))}px!important;object-fit:contain}a{color:inherit}*{animation:none!important;transition:none!important}`;
 }
 // Count the chapter's pages at the current styles and turn to the one at `progress` (or the
 // fragment's). A restyle measures again, so the previous last-spread marker goes first.
