@@ -112,17 +112,14 @@ pub fn panel(m: Metadata) -> impl Piece {
     rows.retain(|(_, v)| !v.trim().is_empty());
     let has_description = !m.description.is_empty();
     column((
-        when(
-            move || has_description,
-            move || {
-                column((
-                    label(res::str::about_book()).font(Font::Title).bold(),
-                    label(plain(&m.description)),
-                ))
-                .align(HAlign::Leading)
-                .spacing(12.)
-            },
-        ),
+        has_description.then(|| {
+            column((
+                label(res::str::about_book()).font(Font::Title).bold(),
+                label(plain(&m.description)),
+            ))
+            .align(HAlign::Leading)
+            .spacing(Space::M)
+        }),
         section((each(
             items(move || rows.clone(), |r: &(String, String)| r.0.clone()),
             |r| {
@@ -131,13 +128,13 @@ pub fn panel(m: Metadata) -> impl Piece {
                     label(move || r.get().1),
                 ))
                 .align(HAlign::Leading)
-                .spacing(4.)
-                .padding(4.)
+                .spacing(Space::XS)
+                .padding(Space::XS)
             },
         ),))
         .title(res::str::book_information()),
     ))
     .align(HAlign::Leading)
-    .spacing(24.)
+    .spacing(Space::XL)
     .id("book-metadata")
 }

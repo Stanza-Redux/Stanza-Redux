@@ -19,24 +19,19 @@ pub fn register(a: App) {
         });
     });
 }
-pub fn open_command(a: App) -> CommandHandle {
-    Command {
-        id: "import-book",
-        label: res::str::open_book_file(),
-        action: move || {
-            day::task(async move {
-                if let Some(file) = open_file()
-                    .filter(res::str::format_epub().format(), &["epub"])
-                    .await
-                {
-                    import(a, file).await;
-                }
-            });
-        },
-    }
-    .build()
+pub fn open_command(a: App) -> Command {
+    Command::new("import-book", res::str::open_book_file(), move || {
+        day::task(async move {
+            if let Some(file) = open_file()
+                .filter(res::str::format_epub().format(), &["epub"])
+                .await
+            {
+                import(a, file).await;
+            }
+        });
+    })
     .icon(Symbol::Open)
-    .shortcut(Shortcut::new("o"))
+    .shortcut(Shortcut::primary("o"))
     .enabled(move || a.database.get().is_some() && !a.busy.get())
 }
 static IMPORTS: std::sync::LazyLock<async_lock::Semaphore> =
@@ -62,13 +57,7 @@ pub fn reader_window(a: App, book: epub::Book) {
     let key = format!("reader-{}", book.id);
     let title = book.title.clone();
     day::open_window(
-        Some(&key),
-        day::WindowOptions {
-            title,
-            size: Size::new(1000., 760.),
-            ..window()
-        },
-        day::WindowKind::Normal,
+        window().title(title).size(1000., 760.).key(key),
         move || {
             let reader_app = App {
                 document_window: true,

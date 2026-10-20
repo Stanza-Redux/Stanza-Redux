@@ -822,7 +822,8 @@ Changes:
   forward its port after Android/Harmony device boot and clean it up on exit. Cancellation
   fixture responses now permit browser CORS. Four Python fixture tests run in CI.
 - Add the missing example license headers. Share the catalog loading indicator rather than
-  declaring its ID twice. Day's route lint now recognizes formatted `.item_icon(...)` entries.
+  declaring its ID twice. Day's route lint now recognizes formatted nav item entries (then
+  spelled `.item_icon(...)`, today `.items(item(..).icon(..).page(..))`).
 - Keep compilation and walkthroughs for portable GTK/Qt targets, but skip unsupported packaging
   and omit those targets from package-consumer matrices.
 - Install WebView2 explicitly for Windows XAML. GTK resource responses now include the HTTP

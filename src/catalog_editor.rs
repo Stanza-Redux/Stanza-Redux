@@ -204,8 +204,8 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
                 })
                 .id("catalog-editor-save"),
         ))
-        .spacing(12.)
-        .padding(16.),
+        .spacing(Space::M)
+        .padding(Space::L),
         scroll(
             form((
                 section((
@@ -225,11 +225,11 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
                                     spinner().frame(20., 20.),
                                     label(res::str::catalog_validating()),
                                 ))
-                                .spacing(8.)
+                                .spacing(Space::S)
                             },
                         ),
                     ))
-                    .spacing(12.),
+                    .spacing(Space::M),
                     when(
                         move || !error.get().is_empty(),
                         move || label(move || error.get()).id("catalog-editor-error"),
@@ -248,50 +248,32 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
                     move || validated.get().is_some(),
                     move || {
                         let feed = validated.get_untracked().unwrap().1;
-                        let has_description = !feed.description.is_empty();
-                        let has_updated = !feed.updated.is_empty();
-                        let counts = res::str::catalog_counts(
-                            feed.book_count() as i64,
-                            feed.link_count() as i64,
-                        );
+                        let counts = res::str::catalog_counts(res::str::CatalogCounts {
+                            books: feed.book_count() as i64,
+                            links: feed.link_count() as i64,
+                        });
                         section((
                             label(res::str::catalog_validated())
                                 .font(Font::Headline)
                                 .id("catalog-editor-valid"),
                             labeled(res::str::catalog_title(), label(feed.title)),
                             label(counts),
-                            when(
-                                move || has_description,
-                                move || label(feed.description.clone()),
-                            ),
-                            when(
-                                move || has_updated,
-                                move || {
-                                    labeled(
-                                        res::str::catalog_updated(),
-                                        label(feed.updated.clone()),
-                                    )
-                                },
-                            ),
+                            (!feed.description.is_empty()).then(|| label(feed.description.clone())),
+                            (!feed.updated.is_empty()).then(|| {
+                                labeled(res::str::catalog_updated(), label(feed.updated.clone()))
+                            }),
                         ))
                         .title(res::str::catalog_validation())
                     },
                 ),
-                when(
-                    {
-                        let removable = removable.clone();
-                        move || removable.is_some()
-                    },
-                    move || {
-                        let url = removable.clone().unwrap_or_default();
-                        section((button(res::str::remove_catalog())
-                            .action(move || {
-                                crate::browser::remove_catalog(a, &url);
-                                a.catalog_editor.set(None);
-                            })
-                            .id("catalog-editor-remove"),))
-                    },
-                ),
+                removable.map(|url| {
+                    section((button(res::str::remove_catalog())
+                        .action(move || {
+                            crate::browser::remove_catalog(a, &url);
+                            a.catalog_editor.set(None);
+                        })
+                        .id("catalog-editor-remove"),))
+                }),
             ))
             .padding(20.),
         )

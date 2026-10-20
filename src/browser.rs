@@ -384,7 +384,7 @@ pub fn view(a: App) -> impl Piece {
                             spacer(),
                             label(error.localized())
                                 .secondary()
-                                .padding(24.)
+                                .padding(Space::XL)
                                 .id("catalog-error"),
                             button(res::str::retry())
                                 .prominent()
@@ -554,9 +554,11 @@ fn facet_menu(a: App, page_id: u64, facets: &[opds::FacetGroup]) -> ToolbarEntry
     let item = |group: usize, index: usize, l: &opds::Link| {
         let url = l.url.clone();
         let label = match l.count {
-            Some(n) => {
-                res::str::facet_count(l.title.clone(), day::format_decimal(n as f64, 0)).format()
-            }
+            Some(n) => res::str::facet_count(res::str::FacetCount {
+                count: day::format_decimal(n as f64, 0),
+                facet: l.title.clone(),
+            })
+            .format(),
             None => l.title.clone(),
         };
         menu_item(label)
@@ -594,18 +596,13 @@ fn catalog_key(a: App, key: &str) {
 }
 fn loading_indicator() -> impl Piece {
     column((spinner().frame(28., 28.), label(res::str::loading())))
-        .spacing(8.)
+        .spacing(Space::S)
         .id("catalog-loading")
 }
 fn loading(a: App, depth: usize) -> impl Piece {
     when(
         move || a.busy.get() && a.catalog_path.get().len() == depth,
-        move || {
-            loading_indicator()
-                .padding(20.)
-                .background(Color::hex(0xf1f3f6))
-                .corner_radius(12.)
-        },
+        move || loading_indicator().card(),
     )
 }
 fn sources(a: App) -> impl Piece {
@@ -634,8 +631,8 @@ fn sources(a: App) -> impl Piece {
                         a.catalog_editor.set(Some(catalog_editor::EditorRoute::Add))
                     }),
                 ))
-                .spacing(16.)
-                .padding(24.)
+                .spacing(Space::L)
+                .padding(Space::XL)
             },
         ),
         list(catalogs, move |slot| {
@@ -650,19 +647,19 @@ fn sources(a: App) -> impl Piece {
                         .secondary()
                         .single_line(),
                 ))
-                .spacing(4.)
+                .spacing(Space::XS)
                 .align(HAlign::Leading)
                 .grow(),
                 vector(res::vectors::chevron_forward)
                     .frame(12., 24.)
                     .decorative(),
             ))
-            .spacing(12.)
-            .padding(16.)
-            .context_menu_fn(move |_| {
+            .spacing(Space::M)
+            .padding(Space::L)
+            .context_menu(move || {
                 let url = slot.url().read();
                 vec![
-                    menu_item(res::str::edit_catalog().format())
+                    menu_item(res::str::edit_catalog())
                         .icon(Symbol::Edit)
                         .id("edit-opds-catalog")
                         .action(move || {
@@ -764,9 +761,11 @@ fn feed_summary(feed: &opds::Feed) -> String {
         Some(n) => res::str::catalog_total(day::format_decimal(n as f64, 0)).format(),
         // Shelves hold samples; each shelf states its own size.
         None if !feed.groups.is_empty() => String::new(),
-        None => {
-            res::str::catalog_counts(feed.book_count() as i64, feed.link_count() as i64).format()
-        }
+        None => res::str::catalog_counts(res::str::CatalogCounts {
+            books: feed.book_count() as i64,
+            links: feed.link_count() as i64,
+        })
+        .format(),
     };
     // The first facet of a group is its default (Any, or the catalog's usual order).
     let refinements: Vec<String> = feed
@@ -774,8 +773,13 @@ fn feed_summary(feed: &opds::Feed) -> String {
         .iter()
         .filter_map(|g| {
             let i = g.links.iter().position(|l| l.active)?;
-            (i > 0)
-                .then(|| res::str::facet_choice(g.title.clone(), g.links[i].title.clone()).format())
+            (i > 0).then(|| {
+                res::str::facet_choice(res::str::FacetChoice {
+                    facet: g.links[i].title.clone(),
+                    group: g.title.clone(),
+                })
+                .format()
+            })
         })
         .collect();
     std::iter::once(count)
@@ -859,68 +863,46 @@ fn results(a: App, page_id: u64, feed: Rc<opds::Feed>, title: String, depth: usi
                     .font(Font::Caption)
                     .secondary()
                     .id("catalog-summary"),
-                when(
-                    {
-                        let description = feed.description.clone();
-                        move || !description.is_empty()
-                    },
-                    {
-                        let description = feed.description.clone();
-                        move || {
-                            label(description.clone())
-                                .font(Font::Footnote)
-                                .secondary()
-                                .single_line()
-                        }
-                    },
-                ),
+                (!feed.description.is_empty()).then(|| {
+                    label(feed.description.clone())
+                        .font(Font::Footnote)
+                        .secondary()
+                        .single_line()
+                }),
             ))
             .align(HAlign::Leading)
-            .spacing(4.)
+            .spacing(Space::XS)
             .grow(),
         ))
-        .spacing(12.)
-        .padding(16.),
-        when(
-            {
-                let has_navigation = !navigation.is_empty();
-                move || has_navigation
-            },
-            move || {
-                let links = navigation
-                    .clone()
-                    .into_iter()
-                    .enumerate()
-                    .collect::<Vec<_>>();
-                scroll(
-                    row((each(
-                        items(move || links.clone(), |(i, _): &(usize, opds::Link)| *i),
-                        move |link| {
-                            button(move || link.get().1.title)
-                                .bordered()
-                                .action(move || {
-                                    let l = link.get().1;
-                                    a.browse_named(l.url, false, l.title)
-                                })
-                                .id(format!("catalog-nav-{}", link.key()))
-                        },
-                    ),))
-                    .spacing(8.)
-                    .padding(Insets::symmetric(16., 0.)),
-                )
-                .horizontal()
-                .height(44.)
-            },
-        ),
-        when(
-            move || no_results,
-            || {
-                label(res::str::catalog_no_results())
-                    .secondary()
-                    .padding(24.)
-                    .id("catalog-empty")
-            },
-        ),
+        .spacing(Space::M)
+        .padding(Space::L),
+        (!navigation.is_empty()).then(|| {
+            let links = navigation.into_iter().enumerate().collect::<Vec<_>>();
+            scroll(
+                row((each(
+                    items(move || links.clone(), |(i, _): &(usize, opds::Link)| *i),
+                    move |link| {
+                        button(move || link.get().1.title)
+                            .bordered()
+                            .action(move || {
+                                let l = link.get().1;
+                                a.browse_named(l.url, false, l.title)
+                            })
+                            .id(format!("catalog-nav-{}", link.key()))
+                    },
+                ),))
+                .spacing(Space::S)
+                .padding(Insets::symmetric(16., 0.)),
+            )
+            .horizontal()
+            .height(44.)
+        }),
+        no_results.then(|| {
+            label(res::str::catalog_no_results())
+                .secondary()
+                .padding(Space::XL)
+                .id("catalog-empty")
+        }),
         list(
             items(
                 move || rows.get().into_iter().enumerate().collect::<Vec<_>>(),
@@ -1000,7 +982,7 @@ fn catalog_row(
                 },
             ),
         ))
-        .spacing(4.)
+        .spacing(Space::XS)
         .align(HAlign::Leading)
         .grow(),
         label(move || slot.get().1.count())
@@ -1010,8 +992,8 @@ fn catalog_row(
             .frame(12., 24.)
             .decorative(),
     ))
-    .spacing(12.)
-    .padding(16.)
+    .spacing(Space::M)
+    .padding(Space::L)
     .height(96.)
 }
 /// One group of a grouped feed: a heading with the shelf's size and See All, above a
@@ -1050,7 +1032,7 @@ fn shelf(a: App, group: impl Fn() -> opds::Group + Copy + 'static) -> impl Piece
                 },
             ),
         ))
-        .spacing(12.)
+        .spacing(Space::M)
         .padding(Insets::symmetric(16., 0.)),
         scroll(
             row((each(
@@ -1069,21 +1051,21 @@ fn shelf(a: App, group: impl Fn() -> opds::Group + Copy + 'static) -> impl Piece
                             .secondary()
                             .single_line(),
                     ))
-                    .spacing(4.)
+                    .spacing(Space::XS)
                     .align(HAlign::Leading)
                     .width(96.)
                     .on_tap(move || a.select_publication(book.get().1))
                     .id_of(move || format!("shelf-book-{}-{}", group().title, book.get().0))
                 },
             ),))
-            .spacing(12.)
+            .spacing(Space::M)
             .align(VAlign::Top)
             .padding(Insets::symmetric(16., 0.)),
         )
         .horizontal()
         .height(186.),
     ))
-    .spacing(8.)
+    .spacing(Space::S)
     .padding(Insets::symmetric(0., 12.))
     .height(250.)
 }
@@ -1166,17 +1148,17 @@ fn manager(a: App) -> impl Piece {
                 },
             ),
         ))
-        .spacing(12.)
+        .spacing(Space::M)
         .padding(Insets::symmetric(16., 10.))
-        .context_menu_fn(move |_| {
+        .context_menu(move || {
             let edit = slot.url().read();
             let remove = edit.clone();
             vec![
-                menu_item(res::str::edit_catalog().format())
+                menu_item(res::str::edit_catalog())
                     .icon(Symbol::Edit)
                     .id("catalog-edit")
                     .action(move || edit_catalog(a, edit.clone())),
-                menu_item(res::str::delete().format())
+                menu_item(res::str::delete())
                     .icon(Symbol::Delete)
                     .id("catalog-remove")
                     .action(move || remove_catalog(a, &remove)),
@@ -1186,10 +1168,7 @@ fn manager(a: App) -> impl Piece {
         .id_of(move || format!("catalog-row-{}", slot.url().read()))
     })
     .row_height(RowHeight::Automatic)
-    // A desktop table draws its grid through the empty space below the rows as well.
-    .separators(style != ManagerStyle::Desktop)
-    .reorderable(true)
-    .on_reorder(move |from, to| {
+    .reorderable(Reorder::new(move |from, to| {
         let mut c = match a.catalogs() {
             Ok(c) => c,
             Err(e) => return a.error(e),
@@ -1199,42 +1178,49 @@ fn manager(a: App) -> impl Piece {
             c.insert(to, moved);
             a.save_catalogs(c);
         }
-    })
-    .deletable(true)
-    .delete_label(res::str::delete().format())
-    .on_delete(move |index| {
-        let mut c = match a.catalogs() {
-            Ok(c) => c,
-            Err(e) => return a.error(e),
-        };
-        if index < c.len() {
-            c.remove(index);
-            a.save_catalogs(c);
-        }
-    })
+    }))
+    .deletable(
+        Delete::new(move |index| {
+            let mut c = match a.catalogs() {
+                Ok(c) => c,
+                Err(e) => return a.error(e),
+            };
+            if index < c.len() {
+                c.remove(index);
+                a.save_catalogs(c);
+            }
+        })
+        .label(res::str::delete()),
+    )
     .editing(style == ManagerStyle::Editing)
     .on_selection(move |rows| selected.set(rows.first().map(|c| c.url().read())))
     .on_activate(move |c| edit_catalog(a, c.url().read()));
-    // macOS has no delete swipe but does have the two-finger row actions Mail uses.
-    let rows = if capability(Cap::ListDelete) != Support::Native
-        && capability(Cap::ListSwipeActions) == Support::Native
-    {
-        rows.swipe_trailing(move |index| {
-            vec![
-                swipe_action(res::str::delete().format())
-                    .destructive(true)
-                    .symbol(Symbol::Delete)
-                    .action(move || {
-                        if let Some(c) = a.catalogs().ok().and_then(|c| c.get(index).cloned()) {
-                            remove_catalog(a, &c.url);
-                        }
-                    }),
-            ]
-        })
+    // A desktop table draws its grid through the empty space below the rows as well.
+    let rows = if style == ManagerStyle::Desktop {
+        rows.no_separators()
     } else {
-        rows
+        rows.separators()
     };
-    let rows = rows.id("catalog-manager-list").grow();
+    // macOS has no delete swipe but does have the two-finger row actions Mail uses.
+    let swipes = capability(Cap::ListDelete) != Support::Native
+        && capability(Cap::ListSwipeActions) == Support::Native;
+    let rows = rows
+        .apply_if(swipes, |rows| {
+            rows.swipe_trailing(move |index| {
+                vec![
+                    swipe_action(res::str::delete())
+                        .destructive()
+                        .symbol(Symbol::Delete)
+                        .action(move || {
+                            if let Some(c) = a.catalogs().ok().and_then(|c| c.get(index).cloned()) {
+                                remove_catalog(a, &c.url);
+                            }
+                        }),
+                ]
+            })
+        })
+        .id("catalog-manager-list")
+        .grow();
     match style {
         ManagerStyle::Editing => rows.any(),
         // Material's add control for a list screen is the floating action button.
@@ -1248,13 +1234,13 @@ fn manager(a: App) -> impl Piece {
                     .action(move || a.catalog_editor.set(Some(catalog_editor::EditorRoute::Add)))
                     .id("catalog-manager-fab")
                     .frame(56., 56.)
-                    .padding(16.),
+                    .padding(Space::L),
             )
             .grow(),
             label(res::str::catalog_manager_touch_hint())
                 .font(Font::Footnote)
                 .secondary()
-                .padding(16.),
+                .padding(Space::L),
         ))
         .grow()
         .any(),

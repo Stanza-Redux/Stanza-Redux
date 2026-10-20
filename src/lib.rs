@@ -22,13 +22,10 @@ mod storage;
 day::resources!();
 day::routes! { enum ReaderRoute { Reading => "reading" } }
 day::day_start!(options: window(), root);
+/// The window: the generated options carry the locale catalog, the localized title and the
+/// version; the size is for desktop (phones fill the screen).
 pub fn window() -> day::WindowOptions {
-    day::WindowOptions {
-        locales: Some((res::locales::DEFAULT, res::locales::CATALOG)),
-        title_fn: Some(|| res::str::app_title().format()),
-        size: Size::new(1100., 800.),
-        ..Default::default()
-    }
+    res::window_options().size(1100., 800.)
 }
 pub fn sample_book() -> Result<Vec<u8>, AppError> {
     #[cfg(not(test))]
@@ -370,7 +367,7 @@ fn color_row(
                     .opacity(0.4)
             }),
         ))
-        .spacing(12.)
+        .spacing(Space::M)
         .height(48.)
     })
     .enabled(custom)
@@ -378,16 +375,16 @@ fn color_row(
 
 /// The reader's settings sheet: the Reading and Reader theme groups, one above the other in one
 /// scroll.
-fn reader_settings_sheet() -> AnyPiece {
-    PREFS.with(|p| match &*p.borrow() {
-        Some(prefs) => scroll(
-            column((prefs.group_body("reader"), prefs.group_body("theme")))
-                .spacing(0.)
-                .grow_w(),
-        )
-        .grow()
-        .any(),
-        None => column(()).any(),
+fn reader_settings_sheet() -> Option<impl Piece> {
+    PREFS.with(|p| {
+        p.borrow().as_ref().map(|prefs| {
+            scroll(
+                column((prefs.group_body("reader"), prefs.group_body("theme")))
+                    .spacing(0.)
+                    .grow_w(),
+            )
+            .grow()
+        })
     })
 }
 
@@ -646,7 +643,9 @@ impl App {
                             "next":res::str::next().format(), "chapter":res::str::chapter().format(),
                             "done":res::str::done().format(), "hint":res::str::reader_gestures().format(),
                             "appTitle":res::str::app_title().format(), "appearanceGlyph":res::str::appearance_glyph().format(),
-                            "position":res::str::position_text("{chapter}", "{chapters}", "{page}", "{pages}").format(),
+                            "position":res::str::position_text(res::str::PositionText {
+                                chapter: "{chapter}", chapters: "{chapters}", page: "{page}", pages: "{pages}",
+                            }).format(),
                             "bookmarkAdd":res::str::bookmark_add().format(),
                             "bookmarkRemove":res::str::bookmark_remove().format(),
                             "bookmarks":res::str::bookmarks().format(),
@@ -710,12 +709,12 @@ impl App {
                     let p = data["page"].as_u64().unwrap_or(0) + 1;
                     let n = data["pages"].as_u64().unwrap_or(1);
                     self.position.set(
-                        res::str::position_text(
-                            c as i64,
-                            b.chapters.len() as i64,
-                            p as i64,
-                            n as i64,
-                        )
+                        res::str::position_text(res::str::PositionText {
+                            chapter: c as i64,
+                            chapters: b.chapters.len() as i64,
+                            page: p as i64,
+                            pages: n as i64,
+                        })
                         .format(),
                     );
                 }
@@ -790,10 +789,10 @@ async fn fetch_bytes(
         if let Some(app) = app {
             let received = day::format_decimal(bytes.len() as f64 / 1048576., 1);
             app.status.set(match total {
-                Some(n) => res::str::download_progress_total(
+                Some(n) => res::str::download_progress_total(res::str::DownloadProgressTotal {
                     received,
-                    day::format_decimal(n as f64 / 1048576., 1),
-                )
+                    total: day::format_decimal(n as f64 / 1048576., 1),
+                })
                 .format(),
                 None => res::str::download_progress(received).format(),
             });
@@ -913,10 +912,10 @@ pub fn root() -> impl Piece {
         }
     });
     let open_book = documents::open_command(a);
-    app_menu_reactive(move || {
+    app_menu(move || {
         vec![
             sub_menu(
-                res::str::file_menu().format(),
+                res::str::file_menu(),
                 vec![
                     open_book.menu_item(),
                     menu_separator(),
@@ -925,16 +924,16 @@ pub fn root() -> impl Piece {
             )
             .bar_role(MenuBarRole::File),
             sub_menu(
-                res::str::catalogs().format(),
+                res::str::catalogs(),
                 vec![
-                    menu_item(res::str::add_catalog().format())
+                    menu_item(res::str::add_catalog())
                         .id("add-opds-catalog")
                         .icon(Symbol::Add)
                         .enabled(a.reader_open.get().is_none() && a.catalog_editor.get().is_none())
                         .action(move || {
                             a.catalog_editor.set(Some(catalog_editor::EditorRoute::Add))
                         }),
-                    menu_item(res::str::manage_catalogs().format())
+                    menu_item(res::str::manage_catalogs())
                         .id("manage-catalogs-menu")
                         .icon(Symbol::Settings)
                         .enabled(a.reader_open.get().is_none() && a.catalog_editor.get().is_none())
@@ -945,14 +944,14 @@ pub fn root() -> impl Piece {
                 ],
             ),
             sub_menu(
-                res::str::view_menu().format(),
+                res::str::view_menu(),
                 vec![
-                    menu_item(res::str::increase_font().format())
+                    menu_item(res::str::increase_font())
                         .id("increase-font")
                         .key("+")
                         .enabled(FONT_SIZE.get() < 40.)
                         .action(|| FONT_SIZE.set((FONT_SIZE.get_untracked() + 1.).min(40.))),
-                    menu_item(res::str::decrease_font().format())
+                    menu_item(res::str::decrease_font())
                         .id("decrease-font")
                         .key("-")
                         .enabled(FONT_SIZE.get() > 12.)
@@ -978,39 +977,34 @@ pub fn root() -> impl Piece {
     let navigation = nav(a.section)
         .title(res::str::app_title())
         .style(style)
-        .item_icon(
-            "library",
-            res::str::library(),
-            res::vectors::tab_library,
-            move || {
-                #[cfg(feature = "appkit")]
-                {
-                    library::desktop_detail(a).any()
-                }
-                #[cfg(not(feature = "appkit"))]
-                {
-                    library::view(a).any()
-                }
-            },
-        )
-        .item_icon(
-            "catalogs",
-            res::str::catalogs(),
-            res::vectors::tab_catalogs,
-            move || browser::view(a),
-        )
-        // Settings is a section on every platform; on the desktops the Settings… window is a
-        // second way to the same pages.
-        .items(
-            || vec![String::from("settings")],
-            |key: &String| item(key.clone(), res::str::settings()).icon(res::vectors::tab_settings),
-        )
-        .destination(move |_: &String| prefs.page());
+        .items((
+            item("library", res::str::library())
+                .icon(res::vectors::tab_library)
+                .page(move || {
+                    #[cfg(feature = "appkit")]
+                    {
+                        library::desktop_detail(a)
+                    }
+                    #[cfg(not(feature = "appkit"))]
+                    {
+                        library::view(a)
+                    }
+                }),
+            item("catalogs", res::str::catalogs())
+                .icon(res::vectors::tab_catalogs)
+                .page(move || browser::view(a)),
+            // Settings is a section on every platform; on the desktops the Settings… window is a
+            // second way to the same pages.
+            item("settings", res::str::settings())
+                .icon(res::vectors::tab_settings)
+                .page(move || prefs.page()),
+        ));
     #[cfg(feature = "appkit")]
-    let navigation = navigation
-        .content_list(move || library::view(a))
-        .content_list_width(340.)
-        .content_list_for(|key| key == "library");
+    let navigation = navigation.content_list(
+        ContentList::new(move || library::view(a))
+            .width(340.)
+            .only_for(|key: &String| key == "library"),
+    );
     zstack((
         navigation.id("navigation"),
         cover(a.reader_open, move |_: &ReaderRoute| reader(a)),
@@ -1045,8 +1039,8 @@ fn book_overview(
             move || metadata::panel(metadata.get_untracked().unwrap_or_default()),
         ),
     ))
-    .spacing(16.)
-    .padding(24.)
+    .spacing(Space::L)
+    .padding(Space::XL)
 }
 fn details(a: App, publication: opds::Publication) -> impl Piece {
     let summary = |p: &opds::Publication| {
@@ -1164,7 +1158,7 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
                             .frame(12., 24.)
                             .decorative(),
                     ))
-                    .spacing(12.)
+                    .spacing(Space::M)
                     .padding(Insets::symmetric(0., 10.))
                     .on_tap(move || {
                         let l = link.get().1;
@@ -1175,7 +1169,7 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
             ),))
             .align(HAlign::Leading),
         ))
-        .spacing(8.),
+        .spacing(Space::S),
     )
 }
 fn local_details(a: App, book: Saved) -> impl Piece {
@@ -1275,7 +1269,7 @@ fn reader_settings_panel(a: App, top: f64, bottom: f64) -> impl Piece {
         .padding(Insets::symmetric(20., 0.)),
         reader_settings_sheet(),
     ))
-    .spacing(16.)
+    .spacing(Space::L)
     .padding(Insets {
         top,
         bottom,

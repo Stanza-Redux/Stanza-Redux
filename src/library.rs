@@ -108,10 +108,8 @@ pub fn view(a: App) -> impl Piece {
             move || a.busy.get(),
             move || {
                 column((spinner().frame(28., 28.), label(res::str::loading())))
-                    .spacing(8.)
-                    .padding(20.)
-                    .background(Color::hex(0xf1f3f6))
-                    .corner_radius(12.)
+                    .spacing(Space::S)
+                    .card()
                     .id("library-loading")
             },
         ))
@@ -142,8 +140,8 @@ fn folders(a: App, kind: Option<&'static str>) -> impl Piece {
                     .frame(12., 24.)
                     .decorative(),
             ))
-            .spacing(12.)
-            .padding(16.)
+            .spacing(Space::M)
+            .padding(Space::L)
         })
         .row_height(RowHeight::Automatic)
         .on_select(move |folder| {
@@ -213,7 +211,7 @@ fn folders(a: App, kind: Option<&'static str>) -> impl Piece {
                     .frame(12., 24.)
                     .decorative(),
             ))
-            .spacing(12.)
+            .spacing(Space::M)
             .align(VAlign::Center)
             .padding(Insets::symmetric(16., 10.))
         },
@@ -274,7 +272,7 @@ fn books(a: App, page: Page) -> impl Piece {
         text_field(a.library_query)
             .placeholder(res::str::search_library())
             .id("library-search")
-            .padding(12.),
+            .padding(Space::M),
         when(
             move || empty.count() == 0,
             move || {
@@ -314,14 +312,14 @@ fn books(a: App, page: Page) -> impl Piece {
                         .single_line(),
                 ))
                 .align(HAlign::Leading)
-                .spacing(4.)
+                .spacing(Space::XS)
                 .grow(),
                 vector(res::vectors::chevron_forward)
                     .frame(12., 24.)
                     .decorative(),
             ))
-            .spacing(12.)
-            .padding(16.)
+            .spacing(Space::M)
+            .padding(Space::L)
         })
         .row_height(RowHeight::Automatic)
         .on_select(move |row| {
@@ -343,15 +341,11 @@ fn books(a: App, page: Page) -> impl Piece {
 pub fn desktop_detail(a: App) -> impl Piece {
     // Keyed replacement keeps asynchronous metadata/cover tasks bound to the selected book.
     column((
-        each(
-            items(
-                move || a.library_selection.get().into_iter().collect::<Vec<_>>(),
-                |b: &Saved| b.id.clone(),
-            ),
-            move |slot| {
-                let book = slot.get();
+        keyed(
+            move || a.library_selection.get(),
+            move |book| {
                 let remove_book = book.clone();
-                scroll(local_details(a, book))
+                scroll(local_details(a, book.clone()))
                     .toolbar(move || {
                         vec![
                             toolbar_button("delete-book", res::str::delete())
@@ -371,7 +365,7 @@ pub fn desktop_detail(a: App) -> impl Piece {
             || {
                 label(res::str::library_select_book())
                     .secondary()
-                    .padding(24.)
+                    .padding(Space::XL)
             },
         ),
     ))
