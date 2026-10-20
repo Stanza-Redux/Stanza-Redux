@@ -5,10 +5,16 @@ import hashlib
 import json
 import re
 import unittest
+from urllib.parse import quote
 from showcase_catalog import BOOKS, publication, response
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCALES = {'en', 'ar', 'de', 'es', 'fr', 'hi', 'id', 'it', 'ja', 'ko', 'pt-BR', 'ru', 'zh-CN'}
+
+
+def cover_id(width, url):
+    """The cover's element ID as `id!(catalog_cover, ...)` spells it: the key percent-encoded."""
+    return f'catalog_cover:{width}-' + quote(url, safe='')
 
 
 def catalog(path):
@@ -43,9 +49,9 @@ class ReleaseTests(unittest.TestCase):
         for path in fixtures.glob('*.epub'):
             self.assertLess(path.stat().st_size, 1024 * 1024, path.name)
             digest = hashlib.sha256(path.read_bytes()).hexdigest()
-            self.assertIn('library:books/' + digest + '.cover', walkthrough)
+            self.assertIn(cover_id(46, 'library:books/' + digest + '.cover'), walkthrough)
         for key in BOOKS:
-            self.assertIn('/showcase/cover/' + key, walkthrough)
+            self.assertIn(cover_id(160, 'http://127.0.0.1:18765/showcase/cover/' + key), walkthrough)
 
     def test_catalog_acquisitions_covers_and_metadata_are_real(self):
         seen = set()
