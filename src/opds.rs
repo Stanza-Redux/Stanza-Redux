@@ -18,6 +18,9 @@ pub struct Link {
     /// The facet that produced this feed (OPDS 2 `self`, Atom `opds:activeFacet`).
     #[serde(default)]
     pub active: bool,
+    /// The size of what the link fetches, in bytes, where the catalog says (`length`).
+    #[serde(default)]
+    pub length: Option<u64>,
 }
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct Publication {
@@ -143,23 +146,57 @@ fn json_link(v: &Value, base: &str) -> Option<Link> {
         mime: text(&v["type"]),
         count: v["properties"]["numberOfItems"].as_u64(),
         active: rel.split_whitespace().any(|r| r == "self"),
+        length: v["length"].as_u64(),
         rel,
     })
 }
 fn is_feed(mime: &str) -> bool {
     mime.contains("opds+json") || mime.contains("profile=opds-catalog")
 }
+/// The roles OPDS 2 gives a book's people besides its authors, as the metadata keys name them.
+const ROLES: [&str; 7] = [
+    "translator",
+    "editor",
+    "illustrator",
+    "artist",
+    "colorist",
+    "narrator",
+    "contributor",
+];
+/// What a subject is, by its scheme (OPDS 2 `subject.scheme`, Atom `category@scheme`).
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub enum SubjectKind {
+    /// A catalog's own shelf (Project Gutenberg's bookshelves).
+    Shelf,
+    /// A topic: a subject heading, a genre, a keyword.
+    Topic,
+    /// A library classification code ("PR"), for librarians rather than readers.
+    Class,
+}
+pub fn subject_kind(scheme: &str) -> SubjectKind {
+    let scheme = scheme.trim_end_matches('/');
+    if scheme.ends_with("/bookshelf") {
+        SubjectKind::Shelf
+    } else if scheme.ends_with("LCC") || scheme.ends_with("/DDC") || scheme.ends_with("/UDC") {
+        SubjectKind::Class
+    } else {
+        SubjectKind::Topic
+    }
+}
 /// Contributor and subject objects may link to feeds of their other works.
 fn json_browse(m: &Value, base: &str) -> Vec<Link> {
     let mut links = Vec::new();
-    for (key, rel) in [
-        ("author", "author"),
-        ("translator", "author"),
-        ("illustrator", "author"),
-        ("subject", "subject"),
-    ] {
+    let people = std::iter::once("author")
+        .chain(ROLES)
+        .map(|key| (key, "author"));
+    for (key, rel) in people.chain([("subject", "subject")]) {
         for v in many(&m[key]) {
             let name = text(v);
+            let rel = match (rel, subject_kind(&text(&v["scheme"]))) {
+                ("subject", SubjectKind::Shelf) => "shelf",
+                ("subject", SubjectKind::Class) => continue,
+                (rel, _) => rel,
+            };
             if let Some(mut link) = many(&v["links"])
                 .into_iter()
                 .filter_map(|l| json_link(l, base))
@@ -240,10 +277,19 @@ fn json_publication(v: &Value, base: &str) -> Publication {
                 .filter(|s| !s.is_empty())
                 .collect(),
             subtitle: text(&m["subtitle"]),
-            subjects: many(&m["subject"])
+            subjects: json_subjects(m, SubjectKind::Topic),
+            shelves: json_subjects(m, SubjectKind::Shelf),
+            credits: ROLES
                 .iter()
-                .map(|v| text(v))
-                .filter(|s| !s.is_empty())
+                .flat_map(|role| {
+                    many(&m[*role])
+                        .into_iter()
+                        .map(|v| crate::metadata::Credit {
+                            role: (*role).into(),
+                            name: text(v),
+                        })
+                })
+                .filter(|c| !c.name.is_empty())
                 .collect(),
             publisher: many(&m["publisher"])
                 .iter()
@@ -254,9 +300,10 @@ fn json_publication(v: &Value, base: &str) -> Publication {
             modified: text(&m["modified"]),
             languages: many(&m["language"]).iter().map(|v| text(v)).collect(),
             identifiers,
-            contributors: ["translator", "editor", "illustrator", "contributor"]
+            contributors: ROLES
                 .iter()
                 .flat_map(|k| many(&m[*k]).into_iter().map(|v| text(v)))
+                .filter(|s| !s.is_empty())
                 .collect(),
             rights: text(&m["rights"]),
             pages: m["numberOfPages"].as_u64(),
@@ -275,6 +322,15 @@ fn json_publication(v: &Value, base: &str) -> Publication {
         ),
         links,
     }
+}
+/// The names of one kind of subject.
+fn json_subjects(m: &Value, kind: SubjectKind) -> Vec<String> {
+    many(&m["subject"])
+        .iter()
+        .filter(|v| subject_kind(&text(&v["scheme"])) == kind)
+        .map(|v| text(v))
+        .filter(|s| !s.is_empty())
+        .collect()
 }
 fn rel(l: &Link, r: &str) -> bool {
     l.rel.split_whitespace().any(|x| x == r)
@@ -410,7 +466,17 @@ fn xml_link(n: roxmltree::Node, base: &str) -> Option<Link> {
             .attribute(("http://purl.org/syndication/thread/1.0", "count"))
             .and_then(|c| c.trim().parse().ok()),
         active: opds_attribute(n, "activeFacet") == Some("true"),
+        length: n.attribute("length").and_then(|l| l.trim().parse().ok()),
     })
+}
+/// An Atom entry's categories of one kind, by their labels.
+fn xml_subjects(n: roxmltree::Node, kind: SubjectKind) -> Vec<String> {
+    n.children()
+        .filter(|n| n.is_element() && n.tag_name().name() == "category")
+        .filter(|n| subject_kind(n.attribute("scheme").unwrap_or_default()) == kind)
+        .filter_map(|n| n.attribute("label").or_else(|| n.attribute("term")))
+        .map(str::to_owned)
+        .collect()
 }
 fn child(n: roxmltree::Node, name: &str) -> String {
     n.children()
@@ -590,12 +656,8 @@ pub fn parse(bytes: &[u8], base: &str) -> Result<Feed, AppError> {
                     .filter(|n| n.is_element() && n.tag_name().name() == "author")
                     .map(|n| child(n, "name"))
                     .collect(),
-                subjects: n
-                    .children()
-                    .filter(|n| n.is_element() && n.tag_name().name() == "category")
-                    .filter_map(|n| n.attribute("label").or_else(|| n.attribute("term")))
-                    .map(str::to_owned)
-                    .collect(),
+                subjects: xml_subjects(n, SubjectKind::Topic),
+                shelves: xml_subjects(n, SubjectKind::Shelf),
                 publisher: child(n, "publisher"),
                 published: child(n, "issued"),
                 modified: child(n, "updated"),
@@ -811,6 +873,84 @@ mod tests {
         assert_eq!(f.groups[0].entries[0].author, "B");
         assert_eq!(f.facets[0].title, "Language");
         assert_eq!(f.facets[0].links[0].title, "French");
+    }
+    #[test]
+    fn people_keep_their_roles_and_their_links() {
+        let feed = parse(
+            include_bytes!("../tests/fixtures/opds/gutenberg-publication-roles.json"),
+            "https://opds-test.pglaf.org/opds/publications?id=79827",
+        )
+        .unwrap();
+        let p = &feed.entries[0];
+        let credits: Vec<(&str, &str)> = p
+            .metadata
+            .credits
+            .iter()
+            .map(|c| (c.role.as_str(), c.name.as_str()))
+            .collect();
+        assert_eq!(
+            credits,
+            [
+                ("translator", "Delisle, Françoise Roussel"),
+                ("contributor", "Ellis, Havelock")
+            ]
+        );
+        let people: Vec<&str> = p
+            .browse
+            .iter()
+            .filter(|l| l.rel == "author")
+            .map(|l| l.title.as_str())
+            .collect();
+        assert_eq!(
+            people,
+            [
+                "Alain-Fournier",
+                "Delisle, Françoise Roussel",
+                "Ellis, Havelock"
+            ],
+            "every creator with a feed of their works can be browsed"
+        );
+        assert_eq!(p.epub().and_then(|l| l.length), Some(595_869));
+    }
+    #[test]
+    fn subjects_split_into_shelves_and_topics() {
+        let feed = parse(
+            include_bytes!("../tests/fixtures/opds/gutenberg-publication-shelves.json"),
+            "https://opds-test.pglaf.org/opds/publications?id=2701",
+        )
+        .unwrap();
+        let m = &feed.entries[0].metadata;
+        assert_eq!(
+            m.shelves,
+            [
+                "Best Books Ever Listings",
+                "Adventure",
+                "American Literature",
+                "Classics of Literature",
+                "Novels"
+            ]
+        );
+        assert_eq!(m.subjects.len(), 9);
+        assert!(m.subjects.contains(&"Sea stories".to_string()));
+        assert!(
+            !m.subjects.iter().any(|s| s.contains(": PS")),
+            "a classification code is not a reader's subject"
+        );
+        let browse = &feed.entries[0].browse;
+        assert_eq!(browse.iter().filter(|l| l.rel == "shelf").count(), 5);
+        assert_eq!(browse.iter().filter(|l| l.rel == "subject").count(), 9);
+        assert_eq!(
+            subject_kind("http://purl.org/dc/terms/LCC"),
+            SubjectKind::Class
+        );
+    }
+    #[test]
+    fn atom_link_length_and_category_schemes() {
+        let feed = parse(br#"<feed xmlns="http://www.w3.org/2005/Atom"><title>Catalog</title><entry><title>Book</title><category scheme="https://www.gutenberg.org/ebooks/bookshelf/" term="Adventure"/><category scheme="http://purl.org/dc/terms/LCSH" term="Sea stories"/><category scheme="http://purl.org/dc/terms/LCC" term="PS"/><link rel="http://opds-spec.org/acquisition/open-access" type="application/epub+zip" href="/b.epub" length="561234"/></entry></feed>"#, "https://example.org/catalog").unwrap();
+        let p = &feed.entries[0];
+        assert_eq!(p.metadata.shelves, ["Adventure"]);
+        assert_eq!(p.metadata.subjects, ["Sea stories"]);
+        assert_eq!(p.epub().and_then(|l| l.length), Some(561_234));
     }
     #[test]
     fn publication_metadata_and_sharp_cover() {

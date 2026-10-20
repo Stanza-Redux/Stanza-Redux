@@ -196,8 +196,12 @@ pub fn favicon(url: impl Fn() -> String + 'static) -> impl Piece {
         32.,
         move || {
             // Original source-specific artwork also works offline and when web CORS denies icons.
+            // Project Gutenberg's OPDS 2 feed is served from pglaf.org, its foundation's domain.
             let fallback = match opds::catalog_host(&fallback_url()).as_str() {
                 "gutenberg.org" | "www.gutenberg.org" => res::vectors::catalog_gutenberg,
+                h if h == "pglaf.org" || h.ends_with(".pglaf.org") => {
+                    res::vectors::catalog_gutenberg
+                }
                 "standardebooks.org" | "www.standardebooks.org" => res::vectors::catalog_standard,
                 "ebooksgratuits.com" | "www.ebooksgratuits.com" => res::vectors::catalog_gratuits,
                 _ => res::vectors::catalog_source,

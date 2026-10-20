@@ -1,5 +1,34 @@
 # Local validation
 
+## Catalog search field, catalog details, home-screen name, reopening a book — 2026-10-20
+
+- Search: each catalog page has its own native search field (Day's new page `.searchable`):
+  a `UISearchController` under the title on iOS, a search action on Android's app bar, an ArkUI
+  `Search` on HarmonyOS, the window toolbar's field on the desktops and the web. Return or the
+  keyboard's Search key runs the catalog's search, the results take the list's place, and clearing
+  the field brings the list back. The prompt dialog is gone. `dayscript/catalog.yaml` searches with
+  `toolbar: { item: day.search, text: 'Alice', submit: true }`: 43/43 on macOS, Android (emulator)
+  and linux-gtk (Lima); 48/48 and 54/54 with cleanup on the iOS 18.6 and iOS 27 simulators.
+  Native input: a real Return in the Linux VM (GTK and Qt) and real typing and Search on the Android
+  emulator each sent exactly one search; Return in Chromium and WebKit submitted (17/17); UIKit's
+  own Search-key and Cancel callbacks, driven in the simulator, searched and cleared. linux-qt
+  passes the search steps; its reader steps need Qt WebEngine, which the VM lacks. HarmonyOS
+  builds (no runtime runs here); Windows is unbuilt here.
+- Catalog details: the Download button and a File size row give the EPUB's size before download
+  (OPDS `length`); editors, artists, contributors and narrators link to their other books and are
+  listed by role; subjects split into Bookshelves and Subjects (Library of Congress classes are
+  left out), as rows and as grouped links. Parser tests use two more untrimmed Project Gutenberg
+  publications (`tests/fixtures/opds/`). The new Gutenberg feed's host (pglaf.org) shows the
+  Gutenberg icon.
+- Home screen: iOS, Android and HarmonyOS show "Stanza" (Day.toml `[app.<platform>] title`; the
+  HarmonyOS labels are in its committed resources); the desktops keep "Stanza Redux", and release
+  files keep the `stanza-redux` name.
+- Reopening: on the phones and tablets a book open when the app left the foreground opens again at
+  the next launch, at the saved page. Android emulator: Home then force-stop, relaunched into the
+  book at the same chapter; a force-stop while reading in the foreground (a crash's stand-in)
+  relaunched into the library. iOS 18.6 simulator: switching to Settings, then ending the app,
+  relaunched into the book.
+
 ## Reader fills the phone, vertical margin, catalog editor — 2026-10-20
 
 - On an iPhone 13 mini (iOS 18.7) the reader stopped about 120 pt above the bottom edge. WebKit

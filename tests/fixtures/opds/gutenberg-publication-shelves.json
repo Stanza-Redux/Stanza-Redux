@@ -1,0 +1,242 @@
+{
+  "metadata": {
+    "@type": "http://schema.org/Book",
+    "identifier": "https://www.gutenberg.org/ebooks/2701",
+    "title": "Moby Dick: Or, The Whale",
+    "language": "en",
+    "accessibility": {
+      "hazard": [
+        "none"
+      ],
+      "accessMode": [
+        "textual"
+      ],
+      "accessModeSufficient": [
+        [
+          "textual"
+        ]
+      ],
+      "feature": [
+        "displayTransformability",
+        "unlocked"
+      ]
+    },
+    "author": {
+      "name": "Melville, Herman",
+      "sortAs": "Melville, Herman",
+      "identifier": "https://www.gutenberg.org/ebooks/author/9",
+      "links": [
+        {
+          "href": "https://opds-test.pglaf.org/opds/search?author_id=9",
+          "type": "application/opds+json"
+        }
+      ]
+    },
+    "published": "2001-07-01",
+    "description": "Creators: Herman Melville (1819-1891)\n\n\"Moby Dick; Or, The Whale\" by Herman Melville is an epic novel published in 1851. Sailor Ishmael narrates the obsessive quest of Captain Ahab, who commands the whaling ship Pequod in pursuit of Moby Dick, a giant white sperm whale that destroyed his leg. Ahab's monomaniacal hunt for vengeance drives the ship and its diverse crew across the world's oceans, blending realistic whaling details with profound explorations of good, evil, fate, and human nature in this cornerstone of American literature. (This is an automatically generated summary.)\n\nReading Level: Reading ease score: 73.3 (7th grade). Fairly easy to read.\n\nRights: Public domain in the USA.\n\nDownloads: 169920",
+    "subject": [
+      {
+        "name": "Best Books Ever Listings",
+        "scheme": "https://www.gutenberg.org/ebooks/bookshelf/",
+        "code": "13",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/bookshelves?id=13",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "Adventure",
+        "scheme": "https://www.gutenberg.org/ebooks/bookshelf/",
+        "code": "644",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/bookshelves?id=644",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "American Literature",
+        "scheme": "https://www.gutenberg.org/ebooks/bookshelf/",
+        "code": "654",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/bookshelves?id=654",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "Classics of Literature",
+        "scheme": "https://www.gutenberg.org/ebooks/bookshelf/",
+        "code": "649",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/bookshelves?id=649",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "Novels",
+        "scheme": "https://www.gutenberg.org/ebooks/bookshelf/",
+        "code": "645",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/bookshelves?id=645",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "Adventure stories",
+        "scheme": "https://www.gutenberg.org/ebooks/subject/",
+        "code": "2849",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/subjects?id=2849",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "Ahab, Captain (Fictitious character) -- Fiction",
+        "scheme": "https://www.gutenberg.org/ebooks/subject/",
+        "code": "8143",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/subjects?id=8143",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "Mentally ill -- Fiction",
+        "scheme": "https://www.gutenberg.org/ebooks/subject/",
+        "code": "3315",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/subjects?id=3315",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "Psychological fiction",
+        "scheme": "https://www.gutenberg.org/ebooks/subject/",
+        "code": "2430",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/subjects?id=2430",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "Sea stories",
+        "scheme": "https://www.gutenberg.org/ebooks/subject/",
+        "code": "115",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/subjects?id=115",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "Ship captains -- Fiction",
+        "scheme": "https://www.gutenberg.org/ebooks/subject/",
+        "code": "2486",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/subjects?id=2486",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "Whales -- Fiction",
+        "scheme": "https://www.gutenberg.org/ebooks/subject/",
+        "code": "8144",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/subjects?id=8144",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "Whaling -- Fiction",
+        "scheme": "https://www.gutenberg.org/ebooks/subject/",
+        "code": "11",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/subjects?id=11",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "Whaling ships -- Fiction",
+        "scheme": "https://www.gutenberg.org/ebooks/subject/",
+        "code": "18044",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/subjects?id=18044",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "Language and Literatures: PS",
+        "sortAs": "PS",
+        "scheme": "http://purl.org/dc/terms/LCC",
+        "code": "PS",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/search?locc=PS",
+            "type": "application/opds+json"
+          }
+        ]
+      }
+    ]
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://opds-test.pglaf.org/opds/publications?id=2701",
+      "type": "application/opds-publication+json"
+    },
+    {
+      "rel": "http://opds-spec.org/acquisition/open-access",
+      "href": "https://www.gutenberg.org/cache/epub/2701/pg2701-images-3.epub",
+      "type": "application/epub+zip",
+      "length": 814023,
+      "title": "EPUB3 (E-readers incl. Send-to-Kindle)"
+    },
+    {
+      "rel": "related",
+      "href": "https://opds-test.pglaf.org/opds/also?id=2701",
+      "type": "application/opds+json",
+      "title": "Readers also downloaded"
+    }
+  ],
+  "images": [
+    {
+      "href": "https://www.gutenberg.org/cache/epub/2701/pg2701.cover.medium.jpg",
+      "type": "image/jpeg",
+      "width": 200,
+      "height": 288,
+      "rel": "http://opds-spec.org/image"
+    },
+    {
+      "href": "https://www.gutenberg.org/cache/epub/2701/pg2701.cover.small.jpg",
+      "type": "image/jpeg",
+      "width": 66,
+      "height": 95,
+      "rel": "http://opds-spec.org/image/thumbnail"
+    }
+  ]
+}

@@ -5,6 +5,8 @@ schema = 1
 [app]
 id = "org.appfair.app.StanzaRedux"
 title = "Stanza Redux"
+# Release files keep this name on every platform, whatever the home-screen title.
+artifact = "stanza-redux"
 build = 33
 targets = ["macos-appkit", "ios-uikit", "android-mdc", "linux-gtk", "linux-qt", "windows-winui", "harmony-arkui", "web-dom"]
 
@@ -16,12 +18,18 @@ height = 640
 min_width = 320
 min_height = 400
 
-# Preserve v1 identities so signed updates retain the existing app container.
+# Preserve v1 identities so signed updates retain the existing app container. The phones'
+# home screens have room for the short name only.
 [app.android]
 id = "org.appfair.app.Stanza_Redux"
+title = "Stanza"
 
 [app.ios]
 id = "org.appfair.app.Stanza-Redux"
+title = "Stanza"
+
+[app.harmony]
+title = "Stanza"
 
 [app.macos]
 id = "org.appfair.app.Stanza-Redux"

@@ -324,7 +324,7 @@ pub fn view(a: App) -> impl Piece {
         .title(res::str::catalogs())
         .toolbar(move || {
             if a.catalog_path.get().is_empty() {
-                catalog_actions(a, true, None, res::str::catalogs().format())
+                catalog_actions(a, true, res::str::catalogs().format())
             } else {
                 vec![]
             }
@@ -362,6 +362,52 @@ pub fn view(a: App) -> impl Piece {
                     })
                     .any()
             } else {
+                // The page's own search field (Mail's): submitting runs the catalog's search, and
+                // its results take the list's place until the field is cleared.
+                let query = Signal::new(String::new());
+                let found = Signal::new(None::<Found>);
+                let task = Rc::new(RefCell::new(None::<day::TaskHandle>));
+                Scope::current().on_cleanup({
+                    let task = task.clone();
+                    move || {
+                        if let Some(task) = task.borrow_mut().take() {
+                            task.abort()
+                        }
+                    }
+                });
+                watch(move || query.get().trim().is_empty(), {
+                    let task = task.clone();
+                    move |empty, _| {
+                        if *empty {
+                            if let Some(task) = task.borrow_mut().take() {
+                                task.abort()
+                            }
+                            found.set(None);
+                        }
+                    }
+                });
+                let submit = move |text: &str| {
+                    let text = text.trim().to_owned();
+                    let Some(link) = current(a, page_id).and_then(|p| p.feed.search.clone()) else {
+                        return;
+                    };
+                    if text.is_empty() {
+                        return;
+                    }
+                    if let Some(task) = task.borrow_mut().take() {
+                        task.abort()
+                    }
+                    found.set(Some(Found::Searching));
+                    let request = CatalogRequest::Search(link, text.clone());
+                    *task.borrow_mut() = Some(day::task(async move {
+                        let result = request.load().await;
+                        found.set(Some(match result {
+                            Ok(feed) => Found::Results(text, Rc::new(feed)),
+                            Err(error) => Found::Failed(error),
+                        }));
+                    }));
+                };
+                let retry = submit.clone();
                 // A page stays built while pages are pushed above it, so Back shows the same
                 // list, at the same scroll position, without rebuilding it.
                 when(
@@ -401,9 +447,40 @@ pub fn view(a: App) -> impl Piece {
                             .any()
                     } else {
                         let title = page.title();
-                        results(a, page_id, page.feed, title, depth).any()
+                        let retry = retry.clone();
+                        when(
+                            move || found.get().is_some(),
+                            move || {
+                                let retry = retry.clone();
+                                // Each stage is its own view: the spinner gives way to the
+                                // results (or the failure) when the search settles.
+                                keyed(
+                                    move || found.get().map(|f| f.stage()),
+                                    move |_| {
+                                        let retry = retry.clone();
+                                        found_view(a, page_id, found, depth, move || {
+                                            retry(&query.get_untracked())
+                                        })
+                                    },
+                                )
+                            },
+                        )
+                        .otherwise(move || {
+                            results(a, page_id, page.feed.clone(), title.clone(), depth, true)
+                        })
+                        .any()
                     }
                 })
+                .searchable(
+                    Search::new(query)
+                        .prompt(res::str::search())
+                        .on_submit(submit)
+                        .available(move || {
+                            current(a, page_id).is_some_and(|p| {
+                                !p.loading && p.publication.is_none() && p.feed.search.is_some()
+                            })
+                        }),
+                )
                 .toolbar(move || {
                     let Some(page) = current(a, page_id).filter(|_| {
                         a.catalog_path.get().last().is_some_and(|p| p.id == page_id)
@@ -424,12 +501,7 @@ pub fn view(a: App) -> impl Piece {
                         );
                         entries
                     } else {
-                        let search = if page.publication.is_none() {
-                            page.feed.search.clone()
-                        } else {
-                            None
-                        };
-                        let mut actions = catalog_actions(a, false, search, title);
+                        let mut actions = catalog_actions(a, false, title);
                         if page.publication.is_none() && !page.feed.facets.is_empty() {
                             actions.push(facet_menu(a, page_id, &page.feed.facets));
                         }
@@ -473,12 +545,7 @@ fn title_action(title: String) -> Vec<ToolbarEntry> {
         vec![]
     }
 }
-fn catalog_actions(
-    a: App,
-    root: bool,
-    search_link: Option<opds::Link>,
-    title: String,
-) -> Vec<ToolbarEntry> {
+fn catalog_actions(a: App, root: bool, title: String) -> Vec<ToolbarEntry> {
     if a.section.get() != "catalogs"
         || a.reader_open.get().is_some()
         || a.catalog_editor.get().is_some()
@@ -492,23 +559,6 @@ fn catalog_actions(
                 .icon(Symbol::Close)
                 .placement(ToolbarPlacement::Primary)
                 .action(move || a.cancel()),
-        );
-    }
-    if let Some(link) = search_link {
-        actions.push(
-            toolbar_button("catalog-search", res::str::search())
-                .icon(Symbol::Search)
-                .placement(ToolbarPlacement::Primary)
-                .action(move || {
-                    let link = link.clone();
-                    day::task(async move {
-                        if let Some(query) = prompt(res::str::search()).await {
-                            if !query.trim().is_empty() {
-                                search(a, link, query);
-                            }
-                        }
-                    });
-                }),
         );
     }
     actions.push(
@@ -788,7 +838,74 @@ fn feed_summary(feed: &opds::Feed) -> String {
         .collect::<Vec<_>>()
         .join(" · ")
 }
-fn results(a: App, page_id: u64, feed: Rc<opds::Feed>, title: String, depth: usize) -> impl Piece {
+/// A page's search, from submission to results.
+#[derive(Clone)]
+enum Found {
+    Searching,
+    Results(String, Rc<opds::Feed>),
+    Failed(AppError),
+}
+impl Found {
+    fn stage(&self) -> u8 {
+        match self {
+            Self::Searching => 0,
+            Self::Results(..) => 1,
+            Self::Failed(_) => 2,
+        }
+    }
+}
+
+/// What a page shows in its list's place while its search field holds a query: the search
+/// underway, its results (the catalog's own list, paging as it does), or why it failed.
+fn found_view(
+    a: App,
+    page_id: u64,
+    found: Signal<Option<Found>>,
+    depth: usize,
+    retry: impl Fn() + 'static,
+) -> AnyPiece {
+    match found.get_untracked() {
+        None | Some(Found::Searching) => column((
+            spacer(),
+            row((spacer(), loading_indicator(), spacer())),
+            spacer(),
+        ))
+        .grow()
+        .id("catalog-searching")
+        .any(),
+        Some(Found::Failed(error)) => column((
+            spacer(),
+            label(error.localized())
+                .secondary()
+                .padding(Space::XL)
+                .id("catalog-search-error"),
+            button(res::str::retry())
+                .prominent()
+                .action(retry)
+                .id("catalog-search-retry"),
+            spacer(),
+        ))
+        .grow()
+        .any(),
+        Some(Found::Results(query, feed)) => {
+            let title = res::str::search_results(query).format();
+            results(a, page_id, feed, title, depth, false)
+                .id("catalog-search-results")
+                .any()
+        }
+    }
+}
+
+/// A feed's list. `own` says the feed is the page's: further results are kept with the page,
+/// so Back and a reload show them; a search's results page on their own.
+fn results(
+    a: App,
+    page_id: u64,
+    feed: Rc<opds::Feed>,
+    title: String,
+    depth: usize,
+    own: bool,
+) -> impl Piece {
     let list_id = format!("catalog-list-{depth}-{}", feed.title);
     let shelves = !feed.groups.is_empty();
     let navigation = if shelves {
@@ -834,7 +951,9 @@ fn results(a: App, page_id: u64, feed: Rc<opds::Feed>, title: String, depth: usi
                             rows.push(CatalogRow::More);
                         }
                     });
-                    a.append_results(page_id, page);
+                    if own {
+                        a.append_results(page_id, page);
+                    }
                 }
                 Err(error) => a.error(error),
             }
@@ -1074,17 +1193,6 @@ pub(crate) async fn load_feed(url: String) -> Result<opds::Feed, AppError> {
     covers::background(move || opds::parse(&bytes, &final_url))
         .await
         .map_err(AppError::from)?
-}
-fn search(a: App, link: opds::Link, query: String) {
-    let query = query.trim().to_owned();
-    let request = CatalogRequest::Search(link, query.clone());
-    a.load_catalog(
-        false,
-        false,
-        res::str::search_results(query).format(),
-        request.clone(),
-        request.load(),
-    );
 }
 /// How the catalog manager edits on this platform. iOS has the list editing mode (delete
 /// controls, reorder grips); the other phones drag on a long press and, on Android, delete with a

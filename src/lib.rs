@@ -125,7 +125,7 @@ static VERTICAL_MARGIN: Pref<f64> = Pref::new("stanza.vertical_margin", || 0.15)
 static PARAGRAPH_SPACING: Pref<f64> = Pref::new("stanza.paragraph_spacing", || 0.6);
 static FONT: Pref<ReaderFont> = Pref::new("stanza.font", || ReaderFont::Serif);
 static THEME: Pref<ReaderTheme> = Pref::new("stanza.theme", || ReaderTheme::Sepia);
-static COLUMNS: Pref<Columns> = Pref::new("stanza.columns", || Columns::One);
+static COLUMNS: Pref<Columns> = Pref::new("stanza.columns", || Columns::Two);
 static PAPER: Pref<String> = Pref::new("stanza.paper", || DEFAULT_PAPER.into());
 static INK: Pref<String> = Pref::new("stanza.ink", || DEFAULT_INK.into());
 static JUSTIFIED: Pref<bool> = Pref::new("stanza.justified", || false);
@@ -134,6 +134,9 @@ static HYPHENATION: Pref<bool> = Pref::new("stanza.hyphenation", || true);
 static HIDE_STATUS_BAR: Pref<bool> = Pref::new("stanza.hide_status_bar", || false);
 /// A tap on the left edge turns forward, like the right edge, instead of back.
 static LEFT_TAP_ADVANCES: Pref<bool> = Pref::new("stanza.left_tap_advances", || false);
+/// The book a reader had open when the app left the foreground, on the phones and tablets; see
+/// [`reopen_last_book`]. Not a setting: no row shows it.
+static REOPEN_BOOK: Pref<String> = Pref::new("stanza.reopen_book", String::new);
 
 thread_local! {
     /// The installed settings handle, for the reader's sheet (`App` stays `Copy`).
@@ -873,6 +876,7 @@ pub fn root() -> impl Piece {
     }
     documents::register(a);
     browser::observe_path(a);
+    reopen_last_book(a);
     if let Some(db) = a.database.get_untracked() {
         day::task(async move {
             let errors = legacy::migrate(db.clone()).await;
@@ -1019,13 +1023,47 @@ pub fn root() -> impl Piece {
     zstack((
         navigation.id("navigation"),
         cover(a.reader_open, move |_: &ReaderRoute| reader(a)),
+        // A modal sheet over the catalogs it edits: a form sheet on an iPad, a window sheet on
+        // the Mac, a card over the dimmed window on the other wide screens, and a full-window
+        // sheet on a phone.
         cover(
             a.catalog_editor,
             move |route: &catalog_editor::EditorRoute| catalog_editor::view(a, route.clone()),
         )
+        .sheet()
         .unrouted(),
     ))
 }
+/// Reopen, at launch, the book that was open when the app last left the foreground (phones and
+/// tablets). There the system ends a backgrounded app without asking, so leaving a book open
+/// and coming back later should find it still open, at the page the reader saved.
+///
+/// Only a clean exit counts. The book is written down on leaving the foreground and forgotten
+/// on returning to it, so a crash while reading, which never left the foreground, never brings
+/// the reader back into the book that crashed it. Closing the book first leaves nothing to write.
+fn reopen_last_book(a: App) {
+    if !cfg!(any(feature = "uikit", feature = "mdc", feature = "arkui")) {
+        return;
+    }
+    let id = REOPEN_BOOK.get_untracked();
+    REOPEN_BOOK.reset();
+    if !id.is_empty()
+        && a.database
+            .get_untracked()
+            .is_some_and(|db| db.book(&id).is_some())
+    {
+        a.load(id);
+    }
+    on_lifecycle(Lifecycle::DidEnterBackground, move || {
+        if a.reader_open.get_untracked().is_some()
+            && let Some(book) = a.book.get_untracked()
+        {
+            REOPEN_BOOK.set(book.id.clone());
+        }
+    });
+    on_lifecycle(Lifecycle::WillEnterForeground, || REOPEN_BOOK.reset());
+}
+
 /// Remote and downloaded books share the same presentation. The caller supplies
 /// the available metadata, cover source and primary action.
 fn book_overview(
@@ -1077,6 +1115,13 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
         }
         let p = current.get_untracked();
         if let Some(link) = p.epub() {
+            if let Some(n) = link.length {
+                shown.update(|m| {
+                    if let Some(m) = m {
+                        m.bytes = m.bytes.or(Some(n));
+                    }
+                });
+            }
             epub.set(Some(link.clone()));
         } else if let Some(item) = p.archive_item() {
             checking.set(true);
@@ -1097,37 +1142,45 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
         covers::view(move || cover_url.clone(), 160., 220.),
         shown,
         column((
-            button(res::str::download())
-                .prominent()
-                .enabled(move || epub.get().is_some() && !a.busy.get())
-                .action(move || {
-                    if let Some(link) = epub.get_untracked() {
-                        let mut metadata = shown.get_untracked().unwrap_or_else(|| initial.clone());
-                        metadata.acquisition = link.url.clone();
-                        a.acquire(link.url, metadata);
-                    }
-                })
-                .id("download-book")
-                .height(50.)
-                .grow_w(),
-            label(move || {
-                if epub.get().is_some() {
-                    res::str::epub_only().format()
-                } else if checking.get() || shown.get().is_none() {
-                    res::str::epub_checking().format()
-                } else {
-                    match current.get().unavailable() {
-                        opds::Unavailable::Account => res::str::unavailable_account(),
-                        opds::Unavailable::Pdf => res::str::unavailable_pdf(),
-                        opds::Unavailable::Audio => res::str::unavailable_audio(),
-                        opds::Unavailable::Other => res::str::unavailable_other(),
-                    }
-                    .format()
+            button(move || match epub.get().and_then(|l| l.length) {
+                Some(n) => res::str::download_size(megabytes(n)).format(),
+                None => res::str::download().format(),
+            })
+            .prominent()
+            .enabled(move || epub.get().is_some() && !a.busy.get())
+            .action(move || {
+                if let Some(link) = epub.get_untracked() {
+                    let mut metadata = shown.get_untracked().unwrap_or_else(|| initial.clone());
+                    metadata.acquisition = link.url.clone();
+                    metadata.bytes = metadata.bytes.or(link.length);
+                    a.acquire(link.url, metadata);
                 }
             })
-            .font(Font::Footnote)
-            .secondary()
-            .id("publication-availability"),
+            .id("download-book")
+            .height(50.)
+            .grow_w(),
+            // Only while there is no download to offer: still checking, or why there is none.
+            when(
+                move || epub.get().is_none(),
+                move || {
+                    label(move || {
+                        if checking.get() || shown.get().is_none() {
+                            res::str::epub_checking().format()
+                        } else {
+                            match current.get().unavailable() {
+                                opds::Unavailable::Account => res::str::unavailable_account(),
+                                opds::Unavailable::Pdf => res::str::unavailable_pdf(),
+                                opds::Unavailable::Audio => res::str::unavailable_audio(),
+                                opds::Unavailable::Other => res::str::unavailable_other(),
+                            }
+                            .format()
+                        }
+                    })
+                    .font(Font::Footnote)
+                    .secondary()
+                    .id("publication-availability")
+                },
+            ),
             when(
                 move || {
                     epub.get().is_none()
@@ -1144,15 +1197,8 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
             ),
             column((each(
                 items(
-                    move || {
-                        current
-                            .get()
-                            .browse
-                            .into_iter()
-                            .enumerate()
-                            .collect::<Vec<_>>()
-                    },
-                    |(i, l): &(usize, opds::Link)| format!("{i}:{}", l.url),
+                    move || browse_rows(current.get().browse),
+                    |(i, l): &(usize, opds::Link)| format!("{i}:{}:{}", l.rel, l.url),
                 ),
                 move |link| {
                     let title = move || {
@@ -1163,6 +1209,21 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
                             l.title
                         }
                     };
+                    // A heading row opens nothing: it names the group below it. Its key, which
+                    // ends in its (empty) address, says so for the row's life.
+                    if link.key().ends_with(':') {
+                        return label(move || link.get().1.title)
+                            .font(Font::Headline)
+                            .padding(Insets {
+                                top: 14.,
+                                bottom: 4.,
+                                ..Insets::default()
+                            })
+                            .id_of(move || {
+                                format!("publication-browse-heading-{}", link.get().1.rel)
+                            })
+                            .any();
+                    }
                     row((
                         label(title).grow(),
                         vector(res::vectors::chevron_forward)
@@ -1176,6 +1237,7 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
                         a.browse_named(l.url, false, title())
                     })
                     .id_of(move || format!("publication-browse-{}", link.get().0))
+                    .any()
                 },
             ),))
             .align(HAlign::Leading),
@@ -1183,6 +1245,48 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
         .spacing(Space::S),
     )
 }
+/// A size in bytes as the reader's language writes megabytes.
+fn megabytes(bytes: u64) -> String {
+    res::str::file_size_mb(day::format_decimal(bytes as f64 / 1_048_576., 1)).format()
+}
+
+/// A book's browse links in groups: its people first, then its shelves and subjects under their
+/// own headings, then related lists. A heading is a link with no address, numbered with the rows
+/// so every row's index stays the one the link had in `browse`.
+fn browse_rows(browse: Vec<opds::Link>) -> Vec<(usize, opds::Link)> {
+    let indexed: Vec<(usize, opds::Link)> = browse.into_iter().enumerate().collect();
+    let of = |rel: &str| {
+        indexed
+            .iter()
+            .filter(|(_, l)| l.rel == rel)
+            .cloned()
+            .collect::<Vec<_>>()
+    };
+    let heading = |rel: &str, title: String| opds::Link {
+        title,
+        rel: rel.into(),
+        ..Default::default()
+    };
+    let mut rows = of("author");
+    for (rel, title) in [
+        ("shelf", res::str::bookshelves().format()),
+        ("subject", res::str::subjects().format()),
+    ] {
+        let group = of(rel);
+        if !group.is_empty() {
+            rows.push((usize::MAX - rows.len(), heading(rel, title)));
+            rows.extend(group);
+        }
+    }
+    rows.extend(
+        indexed
+            .iter()
+            .filter(|(_, l)| !["author", "shelf", "subject"].contains(&l.rel.as_str()))
+            .cloned(),
+    );
+    rows
+}
+
 fn local_details(a: App, book: Saved) -> impl Piece {
     let initial = a
         .database

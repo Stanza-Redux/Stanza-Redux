@@ -1,0 +1,166 @@
+{
+  "metadata": {
+    "@type": "http://schema.org/Book",
+    "identifier": "https://www.gutenberg.org/ebooks/79827",
+    "title": "The wanderer: (Le grand Meaulnes)",
+    "language": "en",
+    "accessibility": {
+      "hazard": [
+        "none"
+      ],
+      "accessMode": [
+        "textual"
+      ],
+      "accessModeSufficient": [
+        [
+          "textual"
+        ]
+      ],
+      "feature": [
+        "displayTransformability",
+        "unlocked"
+      ]
+    },
+    "author": {
+      "name": "Alain-Fournier",
+      "sortAs": "Alain-Fournier",
+      "identifier": "https://www.gutenberg.org/ebooks/author/1872",
+      "links": [
+        {
+          "href": "https://opds-test.pglaf.org/opds/search?author_id=1872",
+          "type": "application/opds+json"
+        }
+      ]
+    },
+    "contributor": {
+      "name": "Ellis, Havelock",
+      "sortAs": "Ellis, Havelock",
+      "identifier": "https://www.gutenberg.org/ebooks/author/2654",
+      "links": [
+        {
+          "href": "https://opds-test.pglaf.org/opds/search?author_id=2654",
+          "type": "application/opds+json"
+        }
+      ]
+    },
+    "translator": {
+      "name": "Delisle, Françoise Roussel",
+      "sortAs": "Delisle, Françoise Roussel",
+      "identifier": "https://www.gutenberg.org/ebooks/author/59903",
+      "links": [
+        {
+          "href": "https://opds-test.pglaf.org/opds/search?author_id=59903",
+          "type": "application/opds+json"
+        }
+      ]
+    },
+    "published": "2026-10-19",
+    "description": "Creators: Alain-Fournier (1886-1914), Havelock Ellis (1859-1939) [Author of introduction, etc.], and Françoise Roussel Delisle (1886-1974) [Translator]\n\nRights: Public domain in the USA.\n\nDownloads: 0",
+    "subject": [
+      {
+        "name": "Bildungsromans",
+        "scheme": "https://www.gutenberg.org/ebooks/subject/",
+        "code": "2536",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/subjects?id=2536",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "First loves -- Fiction",
+        "scheme": "https://www.gutenberg.org/ebooks/subject/",
+        "code": "2484",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/subjects?id=2484",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "France -- Fiction",
+        "scheme": "https://www.gutenberg.org/ebooks/subject/",
+        "code": "2869",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/subjects?id=2869",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "French fiction -- Translations into English",
+        "scheme": "https://www.gutenberg.org/ebooks/subject/",
+        "code": "5605",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/subjects?id=5605",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "Teenage boys -- Fiction",
+        "scheme": "https://www.gutenberg.org/ebooks/subject/",
+        "code": "3274",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/subjects?id=3274",
+            "type": "application/opds+json"
+          }
+        ]
+      },
+      {
+        "name": "Language and Literatures: PQ",
+        "sortAs": "PQ",
+        "scheme": "http://purl.org/dc/terms/LCC",
+        "code": "PQ",
+        "links": [
+          {
+            "href": "https://opds-test.pglaf.org/opds/search?locc=PQ",
+            "type": "application/opds+json"
+          }
+        ]
+      }
+    ],
+    "publisher": "Boston: Houghton Mifflin Company, 1928."
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://opds-test.pglaf.org/opds/publications?id=79827",
+      "type": "application/opds-publication+json"
+    },
+    {
+      "rel": "http://opds-spec.org/acquisition/open-access",
+      "href": "https://www.gutenberg.org/cache/epub/79827/pg79827-images-3.epub",
+      "type": "application/epub+zip",
+      "length": 595869,
+      "title": "EPUB3 (E-readers incl. Send-to-Kindle)"
+    },
+    {
+      "rel": "related",
+      "href": "https://opds-test.pglaf.org/opds/also?id=79827",
+      "type": "application/opds+json",
+      "title": "Readers also downloaded"
+    }
+  ],
+  "images": [
+    {
+      "href": "https://www.gutenberg.org/cache/epub/79827/pg79827.cover.medium.jpg",
+      "type": "image/jpeg",
+      "width": 200,
+      "height": 288,
+      "rel": "http://opds-spec.org/image"
+    },
+    {
+      "href": "https://www.gutenberg.org/cache/epub/79827/pg79827.cover.small.jpg",
+      "type": "image/jpeg",
+      "width": 66,
+      "height": 95,
+      "rel": "http://opds-spec.org/image/thumbnail"
+    }
+  ]
+}

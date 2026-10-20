@@ -9,6 +9,8 @@ these files to check the shapes the live catalogs publish.
 | `gutenberg-root.json` | `https://opds-test.pglaf.org/opds/` (Project Gutenberg's OPDS 2 preview) |
 | `gutenberg-search.json` | `https://opds-test.pglaf.org/opds/search?query=dickens` |
 | `gutenberg-publication.json` | `https://opds-test.pglaf.org/opds/publications?id=79774` |
+| `gutenberg-publication-roles.json` | `https://opds-test.pglaf.org/opds/publications?id=79827` (fetched 2026-10-20, untrimmed) |
+| `gutenberg-publication-shelves.json` | `https://opds-test.pglaf.org/opds/publications?id=2701` (fetched 2026-10-20, untrimmed) |
 | `archive-root.json` | `https://archive.org/services/opds` |
 | `archive-search.json` | `https://archive.org/services/opds/catalog?query=pride%20and%20prejudice%20austen&type=search` |
 
