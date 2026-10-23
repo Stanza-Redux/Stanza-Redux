@@ -27,6 +27,8 @@ function reserveLastSpread(doc,width,count,rtl){
  doc.stanzaEnd=end;doc.documentElement.append(end);
 }
 function report(){positionChrome();event('position',{chapter,page,pages,title:book.chapters[chapter].title,progress:pages>1?page/(pages-1):0})}
+// '#rrggbb' as the 'r,g,b' list an rgba() over a custom property takes.
+function channels(hex){return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)).join(',')}
 function settings(){if(prefs.theme===3){const hex=n=>'#'+((n>>>0)&0xffffff).toString(16).padStart(6,'0');return{bg:hex(prefs.paper??0xf4ead6),fg:hex(prefs.ink??0x30343b)}}const dark=prefs.theme===2,sepia=prefs.theme===1;return {bg:dark?'#202326':sepia?'#f1e6cf':'#fafafa',fg:dark?'#e6e3dd':sepia?'#493f30':'#25272b'}}
 // Keep keyboard focus in the stable shell before replacing a focused chapter.
 // On web-dom, removing its iframe otherwise sends focus to the outer app document.
@@ -38,7 +40,10 @@ function releaseChapterFocus(el){
 // The reading preferences as the chapter's own styles: written when a chapter loads, and again
 // in place when they change, so a change shows on the page without reloading the chapter.
 function applyPrefs(doc){
- const colors=settings();document.documentElement.style.setProperty('--paper',colors.bg);document.documentElement.style.setProperty('--ink',colors.fg);document.body.style.background=colors.bg;
+ const colors=settings(),root=document.documentElement.style;root.setProperty('--paper',colors.bg);root.setProperty('--ink',colors.fg);
+ // The channels too: the chrome's tints are rgba() over them, which every WebKit draws, where
+ // color-mix() left the toolbar and footer with no background before Safari 16.2.
+ root.setProperty('--paper-rgb',channels(colors.bg));root.setProperty('--ink-rgb',channels(colors.fg));document.body.style.background=colors.bg;
  const cols=prefs.columns===2&&frame.clientWidth>=640?2:1,gap=Math.max(12,prefs.margin||24),font=FONTS[prefs.font||0]||FONTS[0];
  // An explicit column width: iOS 18's WebKit lays out no columns at all for a column-count of 1
  // with an auto width, so a chapter ran down past the page instead of across pages.
