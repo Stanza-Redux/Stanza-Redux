@@ -31,7 +31,6 @@ async-lock = "3"
 futures-channel = "0.3"
 day-piece-webview = { git = "https://github.com/daybrite/day-piece-webview.git" }
 day-part-http = { git = "https://github.com/daybrite/day.git" }
-day-piece-colorpicker = { git = "https://github.com/daybrite/day.git" }
 day-piece-settings = { git = "https://github.com/daybrite/day.git" }
 day-part-fs = { git = "https://github.com/daybrite/day.git" }
 serde = { version = "1", features = ["derive"] }

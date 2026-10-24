@@ -375,7 +375,7 @@ fn color_row(
             label(title).grow_w(),
             when(
                 move || custom.get(),
-                move || day_piece_colorpicker::color_picker(color).id(id.clone()),
+                move || day::colorpicker::color_picker(color).id(id.clone()),
             )
             .otherwise(move || {
                 column(())
