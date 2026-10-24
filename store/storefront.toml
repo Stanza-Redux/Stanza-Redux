@@ -38,7 +38,7 @@ No ads, purchases, subscriptions, or account required. Your library stays on you
 Version 2 uses the Day framework with native controls on each platform. The interface is available in 13 languages. Source code: github.com/Stanza-Redux/Stanza-Redux
 """
 keywords = ["epub", "ebook", "reader", "books", "library", "opds", "offline", "gutenberg", "bookmark", "reading", "catalog"]
-release-notes = "Version 2: a rebuilt reader with library browsing by title, author and genre; OPDS catalogs; bookmarks; chapter navigation; and adjustable page layouts. Adds all 13 interface languages from version 1. Downloaded books from the previous app are imported on upgrade."
+release-notes = "Version 2: a rebuilt reader with library browsing by title, author and genre; OPDS catalogs; bookmarks; chapter navigation; and adjustable page layouts. Adds support for foldable devices such as iPhone Duo and Galaxy Fold. Adds all 13 interface languages from version 1. Downloaded books from the previous app are imported on upgrade."
 promo = "Explore free book catalogs, build an offline EPUB library, and read with the type, spacing, and colors you choose."
 
 [storefront.metadata."ar"]
@@ -58,7 +58,7 @@ Stanza Redux قارئ EPUB مجاني ومفتوح المصدر للهواتف �
 واجهة بثلاث عشرة لغة وعناصر أصلية لكل منصة باستخدام Day. الشفرة: github.com/Stanza-Redux/Stanza-Redux
 """
 keywords = ["epub", "كتب", "قراءة", "قارئ", "مكتبة", "opds", "دون اتصال", "إشارات", "فهارس"]
-release-notes = "الإصدار 2: قارئ جديد، ومكتبة حسب العنوان والمؤلف والنوع، وفهارس OPDS، وإشارات مرجعية وتنقّل بين الفصول وتخطيط قابل للتعديل. جميع لغات الإصدار 1 الثلاث عشرة. تُستورد الكتب المنزّلة من التطبيق السابق عند التحديث."
+release-notes = "الإصدار 2: قارئ جديد، ومكتبة حسب العنوان والمؤلف والنوع، وفهارس OPDS، وإشارات مرجعية وتنقّل بين الفصول وتخطيط قابل للتعديل. يدعم الأجهزة القابلة للطي مثل iPhone Duo وGalaxy Fold. جميع لغات الإصدار 1 الثلاث عشرة. تُستورد الكتب المنزّلة من التطبيق السابق عند التحديث."
 promo = "استكشف فهارس الكتب المجانية واحفظ EPUB دون اتصال واختر الخط والتباعد والألوان المناسبة للقراءة."
 
 [storefront.metadata."de"]
@@ -78,7 +78,7 @@ Keine Werbung, Käufe, Abos oder Konten. Beim Katalogbesuch wird dessen Server k
 Oberfläche in 13 Sprachen, native Bedienelemente mit Day. Quellcode: github.com/Stanza-Redux/Stanza-Redux
 """
 keywords = ["epub", "ebooks", "lesen", "bücher", "bibliothek", "opds", "offline", "lesezeichen", "katalog"]
-release-notes = "Version 2: neu entwickelter Reader mit Bibliothek nach Titel, Autor und Genre, OPDS-Katalogen, Lesezeichen, Kapitelnavigation und anpassbarem Layout. Alle 13 Sprachen aus Version 1. Heruntergeladene Bücher der bisherigen App werden beim Update importiert."
+release-notes = "Version 2: neu entwickelter Reader mit Bibliothek nach Titel, Autor und Genre, OPDS-Katalogen, Lesezeichen, Kapitelnavigation und anpassbarem Layout. Neu: Unterstützung für faltbare Geräte wie iPhone Duo und Galaxy Fold. Alle 13 Sprachen aus Version 1. Heruntergeladene Bücher der bisherigen App werden beim Update importiert."
 promo = "Entdecke kostenlose Buchkataloge und lies deine EPUBs offline mit passender Schrift, passenden Abständen und Farben."
 
 [storefront.metadata."es"]
@@ -98,7 +98,7 @@ Sin anuncios, compras, suscripciones ni cuenta. Consultar un catálogo contacta 
 Interfaz en 13 idiomas, controles nativos con Day. Código: github.com/Stanza-Redux/Stanza-Redux
 """
 keywords = ["epub", "libros", "lector", "lectura", "biblioteca", "opds", "sin conexión", "marcadores", "catálogo"]
-release-notes = "Versión 2: lector renovado, biblioteca por título, autor y género, catálogos OPDS, marcadores, navegación por capítulos y diseño ajustable. Los 13 idiomas de la versión 1. Los libros descargados de la aplicación anterior se importan al actualizar."
+release-notes = "Versión 2: lector renovado, biblioteca por título, autor y género, catálogos OPDS, marcadores, navegación por capítulos y diseño ajustable. Añade compatibilidad con dispositivos plegables como iPhone Duo y Galaxy Fold. Los 13 idiomas de la versión 1. Los libros descargados de la aplicación anterior se importan al actualizar."
 promo = "Explora catálogos gratuitos, guarda tus EPUB sin conexión y elige la letra, el espaciado y los colores."
 
 [storefront.metadata."fr"]
@@ -118,7 +118,7 @@ Sans publicité, achats, abonnement ni compte. Consulter un catalogue contacte s
 Interface en 13 langues, commandes natives grâce à Day. Code source : github.com/Stanza-Redux/Stanza-Redux
 """
 keywords = ["epub", "livres", "lecture", "bibliothèque", "opds", "hors ligne", "signets", "gutenberg", "catalogue"]
-release-notes = "Version 2 : lecteur reconstruit, bibliothèque par titre, auteur et genre, catalogues OPDS, signets, navigation par chapitre et mise en page réglable. Interface dans les 13 langues de la version 1. Les livres téléchargés dans l’ancienne application sont importés lors de la mise à jour."
+release-notes = "Version 2 : lecteur reconstruit, bibliothèque par titre, auteur et genre, catalogues OPDS, signets, navigation par chapitre et mise en page réglable. Prend en charge les appareils pliables comme l’iPhone Duo et le Galaxy Fold. Interface dans les 13 langues de la version 1. Les livres téléchargés dans l’ancienne application sont importés lors de la mise à jour."
 promo = "Explorez des catalogues gratuits, conservez vos EPUB hors ligne et ajustez chaque page à votre lecture."
 
 [storefront.metadata."hi"]
@@ -138,7 +138,7 @@ EPUB आयात करें या Standard Ebooks, Project Gutenberg और 
 13 भाषाओं में इंटरफ़ेस और Day के साथ हर प्लेटफ़ॉर्म के मूल नियंत्रण। स्रोत कोड: github.com/Stanza-Redux/Stanza-Redux
 """
 keywords = ["epub", "पुस्तक", "पढ़ना", "रीडर", "पुस्तकालय", "opds", "ऑफ़लाइन", "बुकमार्क"]
-release-notes = "संस्करण 2: नया रीडर, शीर्षक, लेखक और शैली के अनुसार पुस्तकालय, OPDS कैटलॉग, बुकमार्क, अध्याय नेविगेशन और पृष्ठ सेटिंग। संस्करण 1 की सभी 13 भाषाएँ। अपडेट पर पुराने ऐप की डाउनलोड की गई पुस्तकें आयात होती हैं।"
+release-notes = "संस्करण 2: नया रीडर, शीर्षक, लेखक और शैली के अनुसार पुस्तकालय, OPDS कैटलॉग, बुकमार्क, अध्याय नेविगेशन और पृष्ठ सेटिंग। iPhone Duo और Galaxy Fold जैसे फ़ोल्ड होने वाले उपकरणों के लिए समर्थन जोड़ा गया। संस्करण 1 की सभी 13 भाषाएँ। अपडेट पर पुराने ऐप की डाउनलोड की गई पुस्तकें आयात होती हैं।"
 promo = "मुफ़्त पुस्तक कैटलॉग देखें, EPUB ऑफ़लाइन रखें और पढ़ने के लिए फ़ॉन्ट, अंतराल और रंग चुनें।"
 
 [storefront.metadata."id"]
@@ -158,7 +158,7 @@ Tanpa iklan, pembelian, langganan, atau akun. Menelusuri katalog menghubungi ser
 Antarmuka dalam 13 bahasa, kontrol bawaan platform dengan Day. Kode: github.com/Stanza-Redux/Stanza-Redux
 """
 keywords = ["epub", "buku", "pembaca", "perpustakaan", "opds", "luring", "penanda", "katalog"]
-release-notes = "Versi 2: pembaca baru, perpustakaan berdasarkan judul, penulis dan genre, katalog OPDS, penanda, navigasi bab, dan tata letak yang dapat diatur. Ke-13 bahasa versi 1 tersedia. Buku unduhan dari aplikasi sebelumnya diimpor saat pembaruan."
+release-notes = "Versi 2: pembaca baru, perpustakaan berdasarkan judul, penulis dan genre, katalog OPDS, penanda, navigasi bab, dan tata letak yang dapat diatur. Menambahkan dukungan untuk perangkat lipat seperti iPhone Duo dan Galaxy Fold. Ke-13 bahasa versi 1 tersedia. Buku unduhan dari aplikasi sebelumnya diimpor saat pembaruan."
 promo = "Jelajahi katalog gratis, simpan EPUB luring, dan pilih font, jarak, serta warna untuk membaca."
 
 [storefront.metadata."it"]
@@ -178,7 +178,7 @@ Niente pubblicità, acquisti, abbonamenti o account. La consultazione di un cata
 Interfaccia in 13 lingue, controlli nativi con Day. Codice: github.com/Stanza-Redux/Stanza-Redux
 """
 keywords = ["epub", "libri", "lettore", "lettura", "biblioteca", "opds", "offline", "segnalibri", "cataloghi"]
-release-notes = "Versione 2: lettore ricostruito, biblioteca per titolo, autore e genere, cataloghi OPDS, segnalibri, navigazione nei capitoli e impaginazione regolabile. Tutte le 13 lingue della versione 1. I libri scaricati dalla vecchia app vengono importati con l’aggiornamento."
+release-notes = "Versione 2: lettore ricostruito, biblioteca per titolo, autore e genere, cataloghi OPDS, segnalibri, navigazione nei capitoli e impaginazione regolabile. Aggiunge il supporto per dispositivi pieghevoli come iPhone Duo e Galaxy Fold. Tutte le 13 lingue della versione 1. I libri scaricati dalla vecchia app vengono importati con l’aggiornamento."
 promo = "Esplora cataloghi gratuiti, conserva EPUB offline e scegli caratteri, spaziatura e colori per leggere."
 
 [storefront.metadata."ja"]
@@ -198,7 +198,7 @@ EPUBを取り込むか、Standard Ebooks、Project Gutenberg、Ebooks Gratuits�
 13言語のインターフェイスとDayによる各プラットフォームの標準コントロール。ソースコード：github.com/Stanza-Redux/Stanza-Redux
 """
 keywords = ["epub", "電子書籍", "読書", "本", "リーダー", "ライブラリ", "opds", "オフライン", "ブックマーク"]
-release-notes = "バージョン2：リーダーを再構築。書名・著者・ジャンル別の書庫、OPDSカタログ、ブックマーク、章の移動、ページ設定に対応。バージョン1の全13言語を追加。更新時に旧アプリのダウンロード済み書籍を取り込みます。"
+release-notes = "バージョン2：リーダーを再構築。書名・著者・ジャンル別の書庫、OPDSカタログ、ブックマーク、章の移動、ページ設定に対応。iPhone DuoやGalaxy Foldなどの折りたたみ端末にも対応。バージョン1の全13言語を追加。更新時に旧アプリのダウンロード済み書籍を取り込みます。"
 promo = "無料のカタログで本を探し、EPUBをオフラインに保存。書体、間隔、色を好みに合わせて読めます。"
 
 [storefront.metadata."ko"]
@@ -218,7 +218,7 @@ EPUB을 가져오거나 Standard Ebooks, Project Gutenberg, Ebooks Gratuits 등�
 13개 언어의 인터페이스와 Day 기반 플랫폼 기본 컨트롤. 소스 코드: github.com/Stanza-Redux/Stanza-Redux
 """
 keywords = ["epub", "전자책", "독서", "책", "리더", "보관함", "opds", "오프라인", "책갈피"]
-release-notes = "버전 2: 새로 만든 리더, 제목·저자·장르별 보관함, OPDS 카탈로그, 책갈피, 장 탐색, 페이지 설정. 버전 1의 13개 언어를 모두 추가했습니다. 업데이트 시 이전 앱에서 다운로드한 책을 가져옵니다."
+release-notes = "버전 2: 새로 만든 리더, 제목·저자·장르별 보관함, OPDS 카탈로그, 책갈피, 장 탐색, 페이지 설정. iPhone Duo, Galaxy Fold 등 폴더블 기기를 지원합니다. 버전 1의 13개 언어를 모두 추가했습니다. 업데이트 시 이전 앱에서 다운로드한 책을 가져옵니다."
 promo = "무료 카탈로그를 탐색하고 EPUB을 오프라인으로 보관하세요. 글꼴, 간격, 색상을 직접 고를 수 있습니다."
 
 [storefront.metadata."pt-BR"]
@@ -238,7 +238,7 @@ Sem anúncios, compras, assinaturas ou conta. Consultar um catálogo acessa seu 
 Interface em 13 idiomas, controles nativos com Day. Código: github.com/Stanza-Redux/Stanza-Redux
 """
 keywords = ["epub", "livros", "leitor", "leitura", "biblioteca", "opds", "offline", "marcadores", "catálogos"]
-release-notes = "Versão 2: leitor reconstruído, biblioteca por título, autor e gênero, catálogos OPDS, marcadores, navegação por capítulos e layout ajustável. Os 13 idiomas da versão 1. Livros baixados no app anterior são importados ao atualizar."
+release-notes = "Versão 2: leitor reconstruído, biblioteca por título, autor e gênero, catálogos OPDS, marcadores, navegação por capítulos e layout ajustável. Adiciona suporte a dispositivos dobráveis como iPhone Duo e Galaxy Fold. Os 13 idiomas da versão 1. Livros baixados no app anterior são importados ao atualizar."
 promo = "Explore catálogos gratuitos, guarde EPUB offline e escolha fonte, espaçamento e cores para ler."
 
 [storefront.metadata."ru"]
@@ -258,7 +258,7 @@ Stanza Redux — бесплатная читалка EPUB с открытым к
 Интерфейс на 13 языках, системные элементы управления с Day. Код: github.com/Stanza-Redux/Stanza-Redux
 """
 keywords = ["epub", "книги", "читалка", "чтение", "библиотека", "opds", "офлайн", "закладки", "каталог"]
-release-notes = "Версия 2: новая читалка, библиотека по названию, автору и жанру, каталоги OPDS, закладки, переходы по главам и настройка страниц. Все 13 языков версии 1. Скачанные в прежнем приложении книги импортируются при обновлении."
+release-notes = "Версия 2: новая читалка, библиотека по названию, автору и жанру, каталоги OPDS, закладки, переходы по главам и настройка страниц. Добавлена поддержка складных устройств, таких как iPhone Duo и Galaxy Fold. Все 13 языков версии 1. Скачанные в прежнем приложении книги импортируются при обновлении."
 promo = "Открывайте бесплатные каталоги, храните EPUB офлайн и выбирайте удобные шрифт, интервалы и цвета."
 
 [storefront.metadata."zh-CN"]
@@ -278,7 +278,7 @@ Stanza Redux是一款适用于手机、平板和电脑的免费开源EPUB阅读�
 界面支持13种语言，通过Day使用各平台原生控件。源代码：github.com/Stanza-Redux/Stanza-Redux
 """
 keywords = ["epub", "电子书", "阅读", "图书", "书库", "opds", "离线", "书签", "目录"]
-release-notes = "版本2：重建阅读器，按书名、作者和类别浏览书库，支持OPDS目录、书签、章节导航与页面设置。加入版本1的全部13种界面语言。更新时会导入旧应用中已下载的图书。"
+release-notes = "版本2：重建阅读器，按书名、作者和类别浏览书库，支持OPDS目录、书签、章节导航与页面设置。新增对iPhone Duo、Galaxy Fold等折叠屏设备的支持。加入版本1的全部13种界面语言。更新时会导入旧应用中已下载的图书。"
 promo = "浏览免费图书目录，建立离线EPUB书库，自由选择字体、间距和颜色。"
 
 [storefront.ios-uikit.screenshots]
