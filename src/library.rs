@@ -390,7 +390,8 @@ fn remove(a: App, book: Saved) {
                 p.pop();
             }
         });
-        if let Err(e) = day_part_filesystem::remove_future(&format!("books/{}.epub", book.id)).await {
+        if let Err(e) = day_part_filesystem::remove_future(&format!("books/{}.epub", book.id)).await
+        {
             a.error(e.to_string());
         }
         if let Some(path) = book.cover {

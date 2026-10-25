@@ -1046,7 +1046,11 @@ pub fn root() -> impl Piece {
 /// on returning to it, so a crash while reading, which never left the foreground, never brings
 /// the reader back into the book that crashed it. Closing the book first leaves nothing to write.
 fn reopen_last_book(a: App) {
-    if !cfg!(any(feature = "uikit", feature = "material", feature = "arkui")) {
+    if !cfg!(any(
+        feature = "uikit",
+        feature = "material",
+        feature = "arkui"
+    )) {
         return;
     }
     let id = REOPEN_BOOK.get_untracked();
