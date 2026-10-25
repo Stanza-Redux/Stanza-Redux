@@ -71,7 +71,7 @@
 
 ## CI run 39058075568: phone reader margins, iPad catalog rows, lint — 2026-10-17
 
-Three legs failed: android-mdc pixel and harmony-arkui phone (`reader-margins.yaml` step 17, as in
+Three legs failed: android-material pixel and harmony-arkui phone (`reader-margins.yaml` step 17, as in
 every run since `2a3dc8f`), and the iPad (`browser.yaml`, and `book-info.yaml` in the run before).
 
 - Phones: reproduced on the local Android emulator. The step's line boxes were empty on the last
@@ -86,7 +86,7 @@ every run since `2a3dc8f`), and the iPad (`browser.yaml`, and `book-info.yaml` i
 - iPad: the manager opened just after a catalog was added, and the new row was on screen (the CI
   capture shows it) but had no element id. UIKit can dequeue the cell it is ending, bind it, and
   only then report the old display ended; Day recycled the cell there and parked the visible row's
-  ids. day-uikit now defers that recycle and skips a cell the table still shows, as AppKit does.
+  ids. day-toolkit-uikit now defers that recycle and skips a cell the table still shows, as AppKit does.
   Not reproducible locally (passes in portrait and landscape on an iPad Pro 13-inch simulator).
 - Lint: `catalog-manager-add` was used for both the touch layout's floating button and the desktop
   bar's; the floating one is `catalog-manager-fab`. The `unknown-route` errors for `settings` were
@@ -113,7 +113,7 @@ sizes them on every toolkit and re-measures when the system text size changes wh
 
 The Library's Recents/Titles/Authors/Genres rows were 64 high with 16 of padding all round, which
 left 32 for a Headline name and its Footnote summary; Android's larger type scale clipped the
-summary to its top pixels. Rows are now 72 with 16 × 10 padding. Checked on android-mdc (1.0 and
+summary to its top pixels. Rows are now 72 with 16 × 10 padding. Checked on android-material (1.0 and
 1.3 font scale), iOS and macOS; `dayscript/library.yaml` 74/74 on Android. At Android's 2.0 font
 scale the summary still clips: Day list rows are a fixed height on every backend.
 
@@ -148,7 +148,7 @@ rows of Edit/Move up/Move down/Remove buttons:
 
 Runs 38980002757 and 38989511361 (`4411cc2c`, `d52ded51`) failed `dayscript/reader-margins.yaml`
 at step 17, `String(stanza.state().ready && stanza.state().page===stanza.state().pages-1)`, on
-the android-mdc pixel_7 and harmony-arkui phone legs, first attempt and retry alike, while the
+the android-material pixel_7 and harmony-arkui phone legs, first attempt and retry alike, while the
 Android tablet, the iPad, Windows and the desktops passed all 27 steps. The reported error,
 `web_eval "book-webview": awaiting the engine`, is only the wording of whichever poll came last
 and carries no information: a mismatched result reports the same text (checked on the WinUI
@@ -282,8 +282,8 @@ matter of its own.
   a slot freed for a woken waiter, which then rejoined at the back: covers 2, 5, 7, 9 and so
   on were never requested within the timeout. Covers now take slots in request order, and a
   rebind that hands a row its current URL keeps its load. 4/4 passes on unchanged day, 6/6
-  with the day-gtk change below.
-- day-gtk also replaced every list item on a same-size reload, so GtkListView rebuilt all 120
+  with the day-toolkit-gtk change below.
+- day-toolkit-gtk also replaced every list item on a same-size reload, so GtkListView rebuilt all 120
   rows as new cells while the first set kept running (240 cover requests). It now re-binds
   the bound cells in place. With that change, `browser`, `catalog`, `catalog-loading`,
   `catalog-cancellation`, `catalog-persistence`, `catalog-polish`, `catalog-thumbnails`,
@@ -311,7 +311,7 @@ matter of its own.
 - Catalog pages were wrapped in a gate that unmounted every page below the top one, so Back
   rebuilt the parent list. Without it, lldb showed the same `UITableView` before and after a
   push and pop, with its `contentOffset` (0, 1200) preserved.
-- Keeping parents built exposed a day-uikit race: a button Back was reported to Day only when
+- Keeping parents built exposed a day-toolkit-uikit race: a button Back was reported to Day only when
   its slide ended, so a row tapped on the revealed page during the slide pushed onto a model
   that still held the outgoing page, and the late report popped the new page. Day now reports
   non-interactive pops on the next run-loop turn, and title patches target the queued top.
@@ -379,7 +379,7 @@ matter of its own.
   The synthetic fixture exercises favicon loading, refresh, a 503 followed by successful
   retry, empty catalogs, and Back without an extra failed destination. Native validation
   uses a temporary `DAY_DATA_DIR`; web uses the Day Playwright driver with a fresh profile.
-- macOS AppKit, iOS UIKit simulator, Android MDC arm64 debug APK, and web DOM builds pass.
+- macOS AppKit, iOS UIKit simulator, Android Material Components arm64 debug APK, and web DOM builds pass.
   Mobile device interactions, Windows, Linux and Harmony were not exercised in this change.
   WebKit tests cover the reader shell; the full app/OPFS walkthrough was run in Chromium.
 - Live Project Gutenberg navigation and book-detail feeds parse successfully. The acquisition
@@ -537,7 +537,7 @@ bottom of Settings, showing the complete row and switch.
 
 Screenshots, native hierarchies and results are in the ignored
 `build/day/harmony-scroll-investigation/` directory. The reusable regression is
-Day's `toolkits/day-arkui/tests/navigation/scroll_emulator.py`. No app-specific
+Day's `crates/day-toolkit-arkui/tests/navigation/scroll_emulator.py`. No app-specific
 padding or sizing workaround, commit, or push was needed.
 
 ## Harmony navigation ownership — 2026-10-05
@@ -559,7 +559,7 @@ window toolbar. Stanza's application navigation code is unchanged.
 
 Validation on the local OpenHarmony 7.0.0.39 x86_64 phone:
 
-- The framework's new `toolkits/day-arkui/tests/navigation/` fixture passed 65
+- The framework's new `crates/day-toolkit-arkui/tests/navigation/` fixture passed 65
   native TitleBar checks using real mouse tab clicks and system Back. This includes
   independent retained histories, hidden-tab pushes, guarded Back, immediate
   push/pop, and destroying/recreating both hosts with live destinations.
@@ -672,7 +672,7 @@ store text; the settings language picker and startup locale selection cover them
 - Store screenshot validation passed for English, French and Arabic: iPhone Pro Max
   (1320×2868), iPad Pro 13-inch (2064×2752), and Android phone (1080×1920).
 - New store walkthrough: **137 passed on macOS AppKit**, **136 passed with one
-  desktop-only skip on iOS UIKit and Android MDC**. English, French and Arabic
+  desktop-only skip on iOS UIKit and Android Material Components**. English, French and Arabic
   were exercised on both mobile targets; each tour captures eight screenshots.
 - The local website builds all 13 languages. Browser checks returned HTTP 200 for
   every language and found no JavaScript errors. CI is configured to produce the
@@ -906,7 +906,7 @@ Local results:
 
 - Full Chromium app walkthrough suite: **449/449 steps**, 39 screenshots.
 - AppKit reader/settings walkthrough: **54/54 steps**.
-- Updated book-info walkthrough: **53/53** on iPhone UIKit and Android MDC; the original
+- Updated book-info walkthrough: **53/53** on iPhone UIKit and Android Material Components; the original
   **50/50** also passed on AppKit before the added navigation cleanup steps.
 - Stanza Rust tests: **27 passed**; fixture tests: **4 passed**; App Fair lint: **6 rules passed**.
 - Day mock navigation/UI suite: **212 passed**; route-lint regression and `cargo check` passed.
@@ -935,20 +935,20 @@ app workflow can consume all fixes.
 - Browser reader tests: 6/6 pass in Chromium/WebKit, covering pagination, columns, restoration,
   script isolation, keyboard focus, untouched sections, cyclic CSS, rapid section replacement
   and absence of blob URLs.
-- The 23-step `dayscript/reader-sections.yaml` passes on macOS AppKit, iOS UIKit, Android MDC
+- The 23-step `dayscript/reader-sections.yaml` passes on macOS AppKit, iOS UIKit, Android Material Components
   and Chromium web DOM through the real provider. It changes chapters rapidly, reconfigures
   pagination, verifies the cover’s relative image URL, captures a chapter and closes the reader.
 - The real WebKit app run is blocked before opening the library by a SQLite-worker
   `RangeError: Maximum call stack size exceeded`. The provider demo passes 37/37 in WebKit,
   and the standalone reader tests pass in both engines. Full-app web results above use Chromium.
-- The provider demo has separate relative-resource coverage on AppKit, UIKit, MDC, GTK, Qt and
+- The provider demo has separate relative-resource coverage on AppKit, UIKit, Material Components, GTK, Qt and
   web DOM. Linux and Windows adapters require their native CI runners. Harmony Rust compilation
   passes; local HAP packaging lacks `@ohos/hvigor-ohos-plugin`. No Harmony emulator was launched.
 
 ## Day persistence adoption — 2026-09-29
 
 - Library navigation and full-text search: 102/102 dayscript steps pass on iOS UIKit,
-  Android MDC, macOS AppKit and web DOM (Chromium). This includes chapter-only search,
+  Android Material Components, macOS AppKit and web DOM (Chromium). This includes chapter-only search,
   metadata search, safe handling of FTS punctuation, recents and author/genre folders.
 - Catalog live-query mutations: 25/25 steps pass on those four targets. The scenario adds,
   validates, renames, reorders and removes a synthetic catalog. iOS ran all three scripts
@@ -973,7 +973,7 @@ app workflow can consume all fixes.
 
 ## Document opening and catalog editor — 2026-09-29
 
-- Builds pass: macOS AppKit/GTK/Qt, iOS UIKit, Android MDC, web DOM. HarmonyOS Rust compile-check
+- Builds pass: macOS AppKit/GTK/Qt, iOS UIKit, Android Material Components, web DOM. HarmonyOS Rust compile-check
   passes; its ArkTS/HAP and runtime were not validated. Windows and Linux native activation
   still require their own hosts/CI.
 - Native macOS Launch Services tests pass on AppKit, GTK and Qt: cold launch with an EPUB,
@@ -1017,7 +1017,7 @@ unconditionally refocus the reader, so it cannot interrupt typing in the surroun
 
 ## Library navigation, cancellation and localization — 2026-09-29
 
-- Android MDC: **244/244** DayScript steps across `library.yaml`, `catalog.yaml`,
+- Android Material Components: **244/244** DayScript steps across `library.yaml`, `catalog.yaml`,
   `browser.yaml`, `catalog-loading.yaml`, `book-info.yaml`, `catalog-cancellation.yaml`,
   and `catalog-thumbnails.yaml`.
 - iOS UIKit and macOS AppKit: **210/210** steps each for library, catalog, browser,
@@ -1055,7 +1055,7 @@ Earlier validation follows; its shelf-specific descriptions and counts are histo
 
 ## Async catalog thumbnails — 2026-09-29
 
-The current iOS UIKit and Android MDC builds pass **158/158 Dayscript steps each**:
+The current iOS UIKit and Android Material Components builds pass **158/158 Dayscript steps each**:
 `catalog.yaml`, `browser.yaml`, `catalog-loading.yaml`, `book-info.yaml`, and
 `catalog-thumbnails.yaml`. Both apps were rebuilt against the local Day checkout.
 These runs include delayed, missing and corrupt covers, real nonzero image frames,
@@ -1100,7 +1100,7 @@ keyboard Back/Forward, catalog management and returning to the root list.
 | macos-gtk | 72/72 |
 | macos-qt | 72/72 |
 | ios-uikit | 72/72, iPhone simulator |
-| android-mdc | 72/72, Android emulator |
+| android-material | 72/72, Android emulator |
 | web-dom | 72/72, Chromium/Playwright |
 
 The preceding reader/persistence revision passed the combined demo/catalog/browser suite

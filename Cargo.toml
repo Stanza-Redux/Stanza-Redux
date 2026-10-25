@@ -13,7 +13,7 @@ appkit = ["day/appkit"]
 gtk = ["day/gtk"]
 qt = ["day/qt"]
 uikit = ["day/uikit"]
-mdc = ["day/mdc"]
+material = ["day/material"]
 xaml = ["day/xaml"]
 winui = ["day/winui"]
 arkui = ["day/arkui"]
@@ -32,7 +32,7 @@ futures-channel = "0.3"
 day-piece-webview = { git = "https://github.com/daybrite/day-piece-webview.git" }
 day-part-http = { git = "https://github.com/daybrite/day.git" }
 day-piece-settings = { git = "https://github.com/daybrite/day.git" }
-day-part-fs = { git = "https://github.com/daybrite/day.git" }
+day-part-filesystem = { git = "https://github.com/daybrite/day.git" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 url = "2"
@@ -59,4 +59,4 @@ image = { version = "0.25", default-features = false, features = ["png", "jpeg",
 rusqlite = { version = "0.40", features = ["bundled"] }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-day-dom = { git = "https://github.com/daybrite/day.git" }
+day-toolkit-dom = { git = "https://github.com/daybrite/day.git" }

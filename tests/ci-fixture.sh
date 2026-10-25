@@ -23,7 +23,7 @@ if ! "$STANZA_PYTHON" tests/prepare_fixture.py; then
     exit 1
 fi
 case "${DAY_SCRIPT_TARGET:-}" in
-    android-mdc)
+    android-material)
         STANZA_ADB="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}/platform-tools/adb"
         if [ ! -x "$STANZA_ADB" ]; then STANZA_ADB=adb; fi
         "$STANZA_ADB" ${ANDROID_SERIAL:+-s "$ANDROID_SERIAL"} reverse "tcp:$STANZA_FIXTURE_PORT" "tcp:$STANZA_FIXTURE_PORT"

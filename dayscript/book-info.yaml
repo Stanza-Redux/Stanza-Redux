@@ -18,8 +18,8 @@ flow:
   - screenshot: { name: remote-book-overview }
   - scroll_to: { id: book_metadata }
   - screenshot: { name: remote-book-metadata }
-  - nav_back: { native: true, only_on: [uikit, mdc] }
-  - nav_back: { native: true, only_on: [uikit, mdc] }
+  - nav_back: { native: true, only_on: [uikit, material] }
+  - nav_back: { native: true, only_on: [uikit, material] }
   - navigate: { route: library }
   - select: { id: library_folders, index: 1 }
   - wait_for: { id: library_list }
@@ -45,7 +45,7 @@ flow:
   - web_eval: { id: book_webview, script: "String(document.querySelector('#book').contentDocument.documentElement.style.getPropertyValue('--USER__bodyHyphens')==='none')", text: "true" }
   - web_eval: { id: book_webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),500);true", text: "true" }
   - assert_missing: { id: book_webview }
-  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
+  - nav_back: { only_on: [uikit, material, gtk, qt, xaml, arkui, dom] }
   - nav_back: {}
   - wait_for: { id: library_folders }
   - navigate: { route: settings }
@@ -54,7 +54,7 @@ flow:
   - navigate: { route: settings/general }
   - wait_for: { id: language_picker }
   # Leave Settings at its root: a later `navigate: settings` keeps the section's stack.
-  - nav_back: { only_on: [uikit, mdc, arkui, dom] }
+  - nav_back: { only_on: [uikit, material, arkui, dom] }
   - close_window: { window: day.preferences }
   - navigate: { route: catalogs }
   - menu: { id: manage_catalogs_menu }

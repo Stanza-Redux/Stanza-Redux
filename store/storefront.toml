@@ -284,7 +284,7 @@ promo = "浏览免费图书目录，建立离线EPUB书库，自由选择字体�
 [storefront.ios-uikit.screenshots]
 default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
 
-[storefront.android-mdc.screenshots]
+[storefront.android-material.screenshots]
 default = ["reading-alice", "bookshelf", "discover", "book-details", "reading-frankenstein", "reading-sepia", "reading-settings", "reading-contents"]
 
 [storefront.macos-appkit.screenshots]

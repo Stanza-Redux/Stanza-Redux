@@ -113,7 +113,7 @@ async fn load(url: String) -> Cover {
     }
     let result = async {
         let bytes = if let Some(path) = url.strip_prefix("library:") {
-            day_part_fs::read_future(path).await.ok()?
+            day_part_filesystem::read_future(path).await.ok()?
         } else {
             fetch_bytes(&url, 4 * 1024 * 1024, None).await.ok()?.0
         };

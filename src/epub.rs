@@ -72,7 +72,7 @@ pub async fn open_saved(id: &str) -> Result<Book, AppError> {
     {
         let id = id.to_owned();
         crate::covers::background(move || {
-            let file = day_part_fs::open_read(&format!("books/{id}.epub"))
+            let file = day_part_filesystem::open_read(&format!("books/{id}.epub"))
                 .map_err(|e| AppError::from(e.to_string()))?;
             let len = file
                 .metadata()
@@ -85,7 +85,7 @@ pub async fn open_saved(id: &str) -> Result<Book, AppError> {
     }
     #[cfg(target_arch = "wasm32")]
     {
-        let bytes = day_part_fs::read_future(&format!("books/{id}.epub"))
+        let bytes = day_part_filesystem::read_future(&format!("books/{id}.epub"))
             .await
             .map_err(|e| AppError::from(e.to_string()))?;
         let len = bytes.len() as u64;

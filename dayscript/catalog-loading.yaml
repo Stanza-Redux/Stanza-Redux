@@ -11,7 +11,7 @@ flow:
   - select: { id: catalog_list:1-Loading%20fixture, index: 0 }
   - wait_for: { id: catalog_loading }
   - screenshot: { name: catalog-loading }
-  - nav_back: { native: true, only_on: [uikit, mdc] }
+  - nav_back: { native: true, only_on: [uikit, material] }
   - nav_back: { only_on: [appkit, gtk, qt, xaml, arkui, dom] }
   - assert_missing: { id: catalog_loading }
   - assert_visible: { id: catalog_list:1-Loading%20fixture }
@@ -23,9 +23,9 @@ flow:
   - screenshot: { name: catalog-covers }
   - select: { id: catalog_list:2-Slow%20catalog, index: 1 }
   - assert_text: { id: publication_title, text: Broken cover }
-  - nav_back: { native: true, only_on: [uikit, mdc] }
+  - nav_back: { native: true, only_on: [uikit, material] }
   - nav_back: { only_on: [appkit, gtk, qt, xaml, arkui, dom] }
-  - nav_back: { native: true, only_on: [uikit, mdc] }
+  - nav_back: { native: true, only_on: [uikit, material] }
   - nav_back: { only_on: [appkit, gtk, qt, xaml, arkui, dom] }
   - wait_for: { id: catalog_list:1-Loading%20fixture }
   - select: { id: catalog_list:1-Loading%20fixture, index: 1 }
@@ -37,7 +37,7 @@ flow:
   - wait_for: { id: catalog_list:2-Stanza%20test%20catalog }
   - wait_for: { id: 'catalog_cover:46-http%3A%2F%2F127.0.0.1%3A18765%2Fcover.jpg' }
   - screenshot: { name: catalog-atom-cover }
-  - nav_back: { native: true, only_on: [uikit, mdc] }
+  - nav_back: { native: true, only_on: [uikit, material] }
   - nav_back: { only_on: [appkit, gtk, qt, xaml, arkui, dom] }
   - assert_visible: { id: catalog_list:1-Loading%20fixture }
   - menu: { id: manage_catalogs_menu }

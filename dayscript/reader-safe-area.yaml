@@ -30,6 +30,6 @@ flow:
   # Leave the app where it started: web runs the next script in this same page.
   - web_eval: { id: book_webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),500);true", text: "true" }
   - assert_missing: { id: book_webview }
-  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, winui, arkui, dom] }
+  - nav_back: { only_on: [uikit, material, gtk, qt, xaml, winui, arkui, dom] }
   - nav_back: {}
   - wait_for: { id: library_folders }

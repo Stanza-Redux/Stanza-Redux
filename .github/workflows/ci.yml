@@ -58,7 +58,7 @@ jobs:
       # resolved once per run, so every leg compiles the same one. Refresh the lock locally
       # (`cargo update -p day`) when a new framework API lands, so a local build matches.
       update-day-deps: true
-      #targets: "windows-winui, macos-appkit, linux-gtk, linux-qt, ios-uikit, android-mdc, harmony-arkui, web-dom"
+      #targets: "windows-winui, macos-appkit, linux-gtk, linux-qt, ios-uikit, android-material, harmony-arkui, web-dom"
       target-packages: |
         windows-winui: webview2-runtime
       # Requires the shared workflow's script-setup support; fixtures run after device boot.

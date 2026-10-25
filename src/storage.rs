@@ -952,13 +952,13 @@ pub async fn index_book(db: &Library, b: &crate::epub::Book) -> Result<(), Strin
     db.save_index(b, contents).map_err(|e| e.to_string())
 }
 pub async fn write_assets(b: &crate::epub::Book, bytes: Vec<u8>) -> Result<Saved, String> {
-    day_part_fs::write_future(&format!("books/{}.epub", b.id), bytes)
+    day_part_filesystem::write_future(&format!("books/{}.epub", b.id), bytes)
         .await
         .map_err(|e| e.to_string())?;
     let cover = if let Some(cover) = &b.cover {
         let data = b.resource(cover).map_err(|e| e.to_string())?;
         let path = format!("books/{}.cover", b.id);
-        day_part_fs::write_future(&path, data.to_vec())
+        day_part_filesystem::write_future(&path, data.to_vec())
             .await
             .map_err(|e| e.to_string())?;
         Some(path)

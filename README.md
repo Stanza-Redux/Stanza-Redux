@@ -11,7 +11,7 @@ Hindi, Indonesian, Italian, Japanese, Korean, Portuguese (Brazil), Russian, and 
 ```sh
 day launch                         # default desktop toolkit
 day launch -p ios-uikit
-day launch -p android-mdc
+day launch -p android-material
 day launch -p web-dom
 ```
 
@@ -263,7 +263,7 @@ but do not update the new chapter. Native callbacks run off the UI thread; web c
 the WASM thread. The host caches at most one inflated ZIP entry and shares binary response
 buffers without another application-side copy. There is no base64/chunk transport.
 
-Native library readers use `day_part_fs::open_read` and seek directly in the stored ZIP. Web
+Native library readers use `day_part_filesystem::open_read` and seek directly in the stored ZIP. Web
 currently retains the compressed EPUB buffer because Day's OPFS file API exposes whole-file
 reads; individual entries are still inflated on demand. Imports and full-text indexing must read
 all chapter text once, independently of the reader's section-loading lifecycle. The browser test
@@ -290,7 +290,7 @@ The trusted reader shell exchanges JSON with the native UI through `day-piece-we
 - Web catalogs must allow CORS. HTTPS pages cannot fetch HTTP catalogs. No proxy is installed.
   Android release builds require HTTPS; debug builds permit HTTP only to localhost for tests.
   Other native transport restrictions also apply.
-- All twelve Day targets are declared. macOS AppKit/GTK/Qt, iOS UIKit, Android MDC and Web DOM
+- All twelve Day targets are declared. macOS AppKit/GTK/Qt, iOS UIKit, Android Material Components and Web DOM
   can be exercised locally. Windows and Linux hosts need validation on those systems.
   Windows GTK/Qt require WebView2 Runtime; Linux GTK requires WebKitGTK, and Qt uses Qt WebEngine.
 - HarmonyOS Rust compilation is checked locally. HAP packaging currently stops at a missing
@@ -315,9 +315,9 @@ and stops the server on exit. The `script-setup` input must be available on the 
 `v1` reference before this workflow can run. To use the same setup locally, from the project root:
 
 ```sh
-DAY_SCRIPT_TARGET=android-mdc ANDROID_SERIAL=emulator-5554 bash -c '
+DAY_SCRIPT_TARGET=android-material ANDROID_SERIAL=emulator-5554 bash -c '
   source tests/ci-fixture.sh
-  day launch -p android-mdc --script dayscript/book-info.yaml
+  day launch -p android-material --script dayscript/book-info.yaml
 '
 python3 -m unittest discover -s tests -p 'test_*.py' -v
 ```
@@ -392,7 +392,7 @@ day launch -p macos-appkit --script dayscript/store-walkthrough.yaml
 day launch -p ios-uikit --script dayscript/store-walkthrough.yaml
 # On Android, set ANDROID_SERIAL to the device you selected.
 adb -s "$ANDROID_SERIAL" reverse tcp:18765 tcp:18765
-day launch -p android-mdc --android-device "$ANDROID_SERIAL" --script dayscript/store-walkthrough.yaml
+day launch -p android-material --android-device "$ANDROID_SERIAL" --script dayscript/store-walkthrough.yaml
 ```
 
 Use a temporary `DAY_DATA_DIR` for a clean desktop capture library; do not delete
@@ -410,7 +410,7 @@ day lint
 python3 -m unittest discover -s tests -p 'test_*.py'
 cargo test --lib
 day store stage -p ios-uikit
-day store stage -p android-mdc
+day store stage -p android-material
 # Generate the website data and start Astro using a local daysite checkout:
 DAYSITE_CONFIG="$PWD/website/site.toml" DAYSITE_THEME=/path/to/appsite \
   node /path/to/daysite/scripts/install-customization.mjs

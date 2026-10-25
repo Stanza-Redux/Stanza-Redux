@@ -1046,7 +1046,7 @@ pub fn root() -> impl Piece {
 /// on returning to it, so a crash while reading, which never left the foreground, never brings
 /// the reader back into the book that crashed it. Closing the book first leaves nothing to write.
 fn reopen_last_book(a: App) {
-    if !cfg!(any(feature = "uikit", feature = "mdc", feature = "arkui")) {
+    if !cfg!(any(feature = "uikit", feature = "material", feature = "arkui")) {
         return;
     }
     let id = REOPEN_BOOK.get_untracked();
@@ -1299,7 +1299,7 @@ fn local_details(a: App, book: Saved) -> impl Piece {
     if metadata.get_untracked().is_none() {
         let task = day::task(async move {
             // Enrich old entries without changing their reading position or last-opened date.
-            if let Ok(bytes) = day_part_fs::read_future(&format!("books/{id}.epub")).await {
+            if let Ok(bytes) = day_part_filesystem::read_future(&format!("books/{id}.epub")).await {
                 if let Ok(Ok(parsed)) = covers::background(move || epub::parse(&bytes)).await {
                     if let Some(db) = a.database.get_untracked() {
                         if let Err(e) = db.save_metadata(&id, &parsed.metadata) {
@@ -1456,7 +1456,7 @@ mod tests {
 fn now_ms() -> u64 {
     #[cfg(target_arch = "wasm32")]
     {
-        day_dom::now_epoch_ms()
+        day_toolkit_dom::now_epoch_ms()
     }
     #[cfg(not(target_arch = "wasm32"))]
     {

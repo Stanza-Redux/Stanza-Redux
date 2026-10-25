@@ -13,7 +13,7 @@ flow:
   - web_eval: { id: book_webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
   - web_eval: { id: book_webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),300);true", text: "true" }
   - assert_missing: { id: book_webview }
-  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
+  - nav_back: { only_on: [uikit, material, gtk, qt, xaml, arkui, dom] }
   - nav_back: {}
   - select: { id: library_folders, index: 0 }
   - wait_for: { id: library_list }
@@ -27,7 +27,7 @@ flow:
   - web_eval: { id: book_webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
   - web_eval: { id: book_webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),300);true", text: "true" }
   - assert_missing: { id: book_webview }
-  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
+  - nav_back: { only_on: [uikit, material, gtk, qt, xaml, arkui, dom] }
   - nav_back: {}
   - wait_for: { id: library_folders }
   - select: { id: library_folders, index: 2 }
@@ -55,7 +55,7 @@ flow:
   - select: { id: library_list, index: 0 }
   - wait_for: { id: open_local_book }
   - screenshot: { name: library-title-search }
-  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
+  - nav_back: { only_on: [uikit, material, gtk, qt, xaml, arkui, dom] }
   - nav_back: {}
   - navigate: { route: settings/general }
   - wait_for: { id: language_picker }
@@ -67,6 +67,6 @@ flow:
   - wait_for: { id: language_picker }
   - select: { id: language_picker, index: 0 }
   # Leave Settings at its root: a later `navigate: settings` keeps the section's stack.
-  - nav_back: { only_on: [uikit, mdc, arkui, dom] }
+  - nav_back: { only_on: [uikit, material, arkui, dom] }
   - close_window: { window: day.preferences }
   - navigate: { route: library }

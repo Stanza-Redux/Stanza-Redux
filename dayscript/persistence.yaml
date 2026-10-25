@@ -10,7 +10,7 @@ flow:
   - wait_for: { id: local_book_title }
   - assert_text: { id: local_book_title, text: "Alice's Adventures in Wonderland" }
   - screenshot: { name: persistence-chapter-search }
-  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
+  - nav_back: { only_on: [uikit, material, gtk, qt, xaml, arkui, dom] }
   - input: { id: library_search, text: Carroll }
   - assert_missing: { id: library_empty }
   - input: { id: library_search, text: fantasy }
@@ -26,7 +26,7 @@ flow:
   - web_eval: { id: book_webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
   - web_eval: { id: book_webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),300);true", text: "true" }
   - assert_missing: { id: book_webview }
-  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
+  - nav_back: { only_on: [uikit, material, gtk, qt, xaml, arkui, dom] }
   - nav_back: {}
   - select: { id: library_folders, index: 0 }
   - wait_for: { id: library_list }
@@ -34,5 +34,5 @@ flow:
   - select: { id: library_list, index: 0 }
   - wait_for: { id: local_book_title }
   - screenshot: { name: persistence-recents }
-  - nav_back: { only_on: [uikit, mdc, gtk, qt, xaml, arkui, dom] }
+  - nav_back: { only_on: [uikit, material, gtk, qt, xaml, arkui, dom] }
   - nav_back: {}
