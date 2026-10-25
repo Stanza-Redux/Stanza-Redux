@@ -42,7 +42,7 @@ base64 = "0.22"
 sha2 = "0.10"
 sha1 = "0.10"
 percent-encoding = "2"
-day = { git = "https://github.com/daybrite/day.git", features = ["model"] }
+day = { package = "day-app", git = "https://github.com/daybrite/day.git", features = ["model"] }
 day-persistence = { git = "https://github.com/daybrite/day-persistence.git", version = "0.1" }
 
 [build-dependencies]

@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+# A development build that installs beside the store app: its own Android package, so a local
+# build never has to replace (and erase) the store copy and its library. `day launch --flavor dev`.
+[app.android]
+id = "org.appfair.app.Stanza_Redux.dev"
+title = "Stanza Dev"
