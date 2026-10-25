@@ -7,7 +7,7 @@ id = "org.appfair.app.StanzaRedux"
 title = "Stanza Redux"
 # Release files keep this name on every platform, whatever the home-screen title.
 artifact = "stanza-redux"
-build = 36
+build = 37
 targets = ["macos-appkit", "ios-uikit", "android-material", "linux-gtk", "linux-qt", "windows-winui", "harmony-arkui", "web-dom"]
 
 # The window's geometry in points (https://daybrite.dev/docs/size-classes). `day build` carries
