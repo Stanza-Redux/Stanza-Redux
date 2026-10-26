@@ -13,8 +13,15 @@ on:
   # Marking a staged release Latest (see `release-mode` below) rebuilds the site against it.
   release:
     types: [released]
+  # Nightly, against the newest day release: what someone who builds this gets.
+  schedule:
+    - cron: "0 7 * * *"
   workflow_dispatch:
-
+    inputs:
+      day-main:
+        description: Build against day's main branch instead of the newest release
+        type: boolean
+        default: false
 # The repository's own jobs run this checkout's code with a read-only token. The write grants
 # sit on the job that calls the shared workflow, whose release and Pages jobs alone use them;
 # its build legs, which run this code too, narrow their token to read-only themselves.
@@ -57,7 +64,7 @@ jobs:
       # lock left at an older revision would silently stop testing day at all. The revision is
       # resolved once per run, so every leg compiles the same one. Refresh the lock locally
       # (`cargo update -p day`) when a new framework API lands, so a local build matches.
-      update-day-deps: true
+      day-deps: ${{ inputs.day-main && 'main' || 'auto' }}
       #targets: "windows-winui, macos-appkit, linux-gtk, linux-qt, ios-uikit, android-material, harmony-arkui, web-dom"
       target-packages: |
         windows-winui: webview2-runtime
