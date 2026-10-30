@@ -121,7 +121,7 @@ Failures appear in the destination instead of a modal alert.
 
 Books, reading positions, catalog names/order and import markers use **day-persistence** through
 Day's `persistence` feature and `ModelContainer`. There is no package named
-`day-part-persistence` in the current Day workspace. The database is `stanza-library.sqlite`.
+`day-part-persistence` in the current Day workspace. The database is `stanza-library.db`.
 `books` holds EPUB SHA-256 identities, reading positions and last-opened timestamps;
 `catalogs` holds subscriptions and ordering. `book_metadata` uses Day's JSON codec.
 `library_folders` and Day's generated `library_memberships` join represent authors and genres.
@@ -147,12 +147,19 @@ for commits from other processes. Reader windows in one process share the same c
 Settings are typed preferences (`day-piece-settings`), one key per setting in the platform's
 own store; the reader reads them as signals.
 
-Native databases live in `Sqlite::app_data_dir()` under `day-db/`. When the host sets
-`DAY_DATA_DIR`, the database is `$DAY_DATA_DIR/day-db/stanza-library.sqlite`; otherwise Day uses
-its platform data directory. For local unsandboxed macOS runs this is
-`~/Library/Application Support/day/day-db/stanza-library.sqlite`.
-EPUBs and extracted covers remain separate files in the corresponding `day-fs/books/` directory.
-Back up both directories with the app closed; copying a live SQLite file alone can omit its WAL.
+Native databases live in the app's data directory, `Sqlite::app_data_dir()`
+(`day::storage::data_dir()`). When the host sets `DAY_DATA_DIR`, the database is
+`$DAY_DATA_DIR/stanza-library.db`; otherwise Day uses the platform's folder for the app. For
+local unsandboxed macOS runs this is
+`~/Library/Application Support/org.appfair.app.StanzaRedux/stanza-library.db`, and inside the App Sandbox the same
+path within the app's container.
+EPUBs and extracted covers remain separate files in `day-fs/books/` in that directory.
+Back up the whole directory with the app closed; copying a live SQLite file alone can omit its WAL.
+Builds before 2026-10 kept the database at `day/day-db/stanza-library.sqlite` and the books in
+`day/day-fs/books/`, in a `day/` folder every Day app shared. On first launch the app moves both
+into its own directory, after folding the database's WAL into the file; if the database cannot be
+moved, the app opens it where it is and tries again on the next launch. The web build keeps its
+OPFS file's original name, `stanza-library.sqlite`.
 
 Web uses Day's SQLite worker and OPFS, scoped to the browser origin. It requires cross-origin
 isolation (COOP/COEP headers, supplied by `day launch`) and an available OPFS store. A storage

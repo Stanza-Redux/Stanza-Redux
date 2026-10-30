@@ -102,6 +102,97 @@ pub struct BookmarkRecord {
     pub progress: f64,
     pub title: String,
 }
+/// The library's file in the app's data directory.
+#[cfg(not(target_arch = "wasm32"))]
+const LIBRARY_FILE: &str = "stanza-library.db";
+
+/// Move the library, and the books and covers beside it, from where builds before 2026-10 kept
+/// them: one `day/` folder in the platform's data directory, shared by every Day app
+/// (`day/day-db/stanza-library.sqlite`, `day/day-fs/books/`), or `DAY_DATA_DIR`'s `day-db/` on
+/// Android. Day now gives each app a folder of its own. Runs before the library opens, and only
+/// when the new location holds no library yet. A library it could not move is returned, to be
+/// opened where it is this time and moved on a later launch.
+#[cfg(not(target_arch = "wasm32"))]
+fn adopt_previous_location() -> Option<std::path::PathBuf> {
+    let new_db = Sqlite::app_data_dir().ok()?.join(LIBRARY_FILE);
+    let old_root = previous_root()?;
+    let old_db = old_root.join("day-db").join("stanza-library.sqlite");
+    if new_db.exists() || !old_db.is_file() {
+        return None;
+    }
+    if let Err(e) = move_database(&old_db, &new_db) {
+        eprintln!(
+            "stanza: could not move the library from {}: {e}",
+            old_db.display()
+        );
+        return Some(old_db);
+    }
+    // The EPUBs and covers the library refers to (day-part-filesystem's `books/`). On Android
+    // they were already where they belong.
+    let old_books = old_root.join("day-fs").join("books");
+    if let Ok(data) = day_part_filesystem::data_dir() {
+        let new_books = data.join("day-fs").join("books");
+        if old_books != new_books && old_books.is_dir() && !new_books.exists() {
+            let moved = new_books
+                .parent()
+                .map_or(Ok(()), std::fs::create_dir_all)
+                .and_then(|()| std::fs::rename(&old_books, &new_books));
+            if let Err(e) = moved {
+                eprintln!(
+                    "stanza: could not move the books from {}: {e}",
+                    old_books.display()
+                );
+            }
+        }
+    }
+    // The old folders go only when empty: on a desktop other apps kept files there too.
+    for dir in [old_root.join("day-fs"), old_root.join("day-db")] {
+        let _ = std::fs::remove_dir(dir);
+    }
+    if std::env::var_os("DAY_DATA_DIR").is_none_or(|d| d.is_empty()) {
+        let _ = std::fs::remove_dir(&old_root);
+    }
+    None
+}
+
+/// Where earlier builds rooted the app's files: `DAY_DATA_DIR` when a host set it, else `day/`
+/// in the platform's data directory (Application Support, `%APPDATA%`, `$XDG_DATA_HOME`).
+#[cfg(not(target_arch = "wasm32"))]
+fn previous_root() -> Option<std::path::PathBuf> {
+    if let Some(dir) = std::env::var_os("DAY_DATA_DIR").filter(|d| !d.is_empty()) {
+        return Some(std::path::PathBuf::from(dir));
+    }
+    Some(day_part_filesystem::platform_data_dir().ok()?.join("day"))
+}
+
+/// Move one SQLite database to `to`: its write-ahead log is folded into the file first, so a
+/// single file moves and the emptied log and index are dropped. A log that cannot be folded (the
+/// file busy or damaged) fails the move and leaves everything where it was.
+#[cfg(not(target_arch = "wasm32"))]
+fn move_database(from: &std::path::Path, to: &std::path::Path) -> std::io::Result<()> {
+    // The connection closes at the end of the closure, before the file moves.
+    let busy = rusqlite::Connection::open(from)
+        .and_then(|db| {
+            db.query_row("PRAGMA wal_checkpoint(TRUNCATE)", [], |row| {
+                row.get::<_, i64>(0)
+            })
+        })
+        .map_err(std::io::Error::other)?;
+    if busy != 0 {
+        return Err(std::io::Error::other("its write-ahead log is in use"));
+    }
+    if let Some(parent) = to.parent() {
+        std::fs::create_dir_all(parent)?;
+    }
+    std::fs::rename(from, to)?;
+    for suffix in ["-wal", "-shm"] {
+        let mut sidecar = from.as_os_str().to_owned();
+        sidecar.push(suffix);
+        let _ = std::fs::remove_file(std::path::PathBuf::from(sidecar));
+    }
+    Ok(())
+}
+
 #[derive(Clone)]
 pub struct Library {
     db: ModelContainer,
@@ -109,7 +200,12 @@ pub struct Library {
 impl Library {
     pub fn open() -> Result<Self, DbError> {
         #[cfg(not(target_arch = "wasm32"))]
-        let driver = Sqlite::app_data("stanza-library.sqlite")?;
+        let driver = match adopt_previous_location() {
+            Some(unmoved) => Sqlite::at(unmoved),
+            None => Sqlite::app_data(LIBRARY_FILE)?,
+        };
+        // The browser's file keeps its first name: nothing here can rename an OPFS file, and a
+        // new name would open an empty library.
         #[cfg(target_arch = "wasm32")]
         let driver = Sqlite::at("stanza-library.sqlite");
         Self::with_driver(driver)
@@ -613,9 +709,36 @@ impl Library {
 mod tests {
     use super::*;
     #[test]
+    fn a_moved_library_keeps_writes_still_in_its_log() {
+        let dir = std::env::temp_dir().join(format!("stanza-move-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        let old = dir.join("day/day-db/stanza-library.sqlite");
+        std::fs::create_dir_all(old.parent().unwrap()).unwrap();
+        // The write stays in the log while a connection is open; this one is leaked below, not
+        // closed, because closing the last connection would fold the log itself.
+        let writer = rusqlite::Connection::open(&old).unwrap();
+        writer
+            .execute_batch(
+                "PRAGMA journal_mode=WAL; PRAGMA wal_autocheckpoint=0;
+                 CREATE TABLE t(v TEXT); INSERT INTO t VALUES ('in the log');",
+            )
+            .unwrap();
+        let wal = dir.join("day/day-db/stanza-library.sqlite-wal");
+        assert!(std::fs::metadata(&wal).unwrap().len() > 0);
+        let new = dir.join("org.example.stanza/stanza-library.db");
+        std::mem::forget(writer);
+        move_database(&old, &new).unwrap();
+        assert!(!old.exists() && !wal.exists());
+        let moved = rusqlite::Connection::open(&new).unwrap();
+        let v: String = moved
+            .query_row("SELECT v FROM t", [], |r| r.get(0))
+            .unwrap();
+        assert_eq!(v, "in the log");
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+    #[test]
     fn bookmarks_are_live_scoped_deduplicated_and_cascade_after_reopen() {
-        let path =
-            std::env::temp_dir().join(format!("stanza-bookmarks-{}.sqlite", std::process::id()));
+        let path = std::env::temp_dir().join(format!("stanza-bookmarks-{}.db", std::process::id()));
         let _ = std::fs::remove_file(&path);
         {
             let db = Library::with_driver(Sqlite::at(&path)).unwrap();
@@ -727,7 +850,7 @@ mod tests {
         use day_persistence::SqliteConnection;
         use day_persistence::SqliteDriver;
         let path =
-            std::env::temp_dir().join(format!("stanza-old-schema-{}.sqlite", std::process::id()));
+            std::env::temp_dir().join(format!("stanza-old-schema-{}.db", std::process::id()));
         let _ = std::fs::remove_file(&path);
         {
             let mut conn = Sqlite::at(&path).open().unwrap();
@@ -766,8 +889,7 @@ mod tests {
     }
     #[test]
     fn library_facets_history_and_deletion_survive_reopen() {
-        let path =
-            std::env::temp_dir().join(format!("stanza-facets-{}.sqlite", std::process::id()));
+        let path = std::env::temp_dir().join(format!("stanza-facets-{}.db", std::process::id()));
         {
             let db = Library::with_driver(Sqlite::at(&path)).unwrap();
             // Synthetic publications; commas in author names are never split.
@@ -841,7 +963,7 @@ mod tests {
     #[test]
     fn imports_preserve_existing_positions_and_survive_reopen() {
         let path =
-            std::env::temp_dir().join(format!("stanza-import-test-{}.sqlite", std::process::id()));
+            std::env::temp_dir().join(format!("stanza-import-test-{}.db", std::process::id()));
         let row = Saved {
             id: "imported".into(),
             title: "Legacy title".into(),
@@ -865,10 +987,8 @@ mod tests {
     }
     #[test]
     fn metadata_survives_reopen_without_changing_position() {
-        let path = std::env::temp_dir().join(format!(
-            "stanza-metadata-test-{}.sqlite",
-            std::process::id()
-        ));
+        let path =
+            std::env::temp_dir().join(format!("stanza-metadata-test-{}.db", std::process::id()));
         {
             let db = Library::with_driver(Sqlite::at(&path)).unwrap();
             db.put(&Saved {
@@ -897,8 +1017,7 @@ mod tests {
     }
     #[test]
     fn database_round_trip_and_empty_catalogs() {
-        let path =
-            std::env::temp_dir().join(format!("stanza-db-test-{}.sqlite", std::process::id()));
+        let path = std::env::temp_dir().join(format!("stanza-db-test-{}.db", std::process::id()));
         {
             let l = Library::with_driver(Sqlite::at(&path)).unwrap();
             let b = Saved {
