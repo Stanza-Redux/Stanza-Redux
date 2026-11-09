@@ -286,10 +286,10 @@ fn cover_source(
     loaded: &(String, Cover),
     fallback: &day::ImageSource,
 ) -> day::ImageSource {
-    if loaded.0 == requested {
-        if let Some(bytes) = &loaded.1 {
-            return day::ImageSource::from(bytes.clone());
-        }
+    if loaded.0 == requested
+        && let Some(bytes) = &loaded.1
+    {
+        return day::ImageSource::from(bytes.clone());
     }
     fallback.clone()
 }

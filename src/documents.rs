@@ -48,11 +48,11 @@ async fn import(a: App, file: FileUrl) {
     }
 }
 pub fn reader_window(a: App, book: epub::Book) {
-    if let Some(db) = a.database.get_untracked() {
-        if let Err(e) = db.opened(&book.id, now_ms() as i64) {
-            a.error(e.to_string());
-            return;
-        }
+    if let Some(db) = a.database.get_untracked()
+        && let Err(e) = db.opened(&book.id, now_ms() as i64)
+    {
+        a.error(e.to_string());
+        return;
     }
     let key = format!("reader-{}", book.id);
     let title = book.title.clone();

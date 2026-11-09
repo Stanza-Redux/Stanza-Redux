@@ -542,11 +542,11 @@ impl Library {
         Ok(())
     }
     pub fn remove_bookmark(&self, book: &str, id: &str) -> Result<(), DbError> {
-        if let Some(row) = self.db.try_get::<BookmarkRecord>(id.to_owned())? {
-            if row.book().read() == One::to(book.to_owned()) {
-                self.db.delete::<BookmarkRecord>(id.to_owned())?;
-                self.db.save()?;
-            }
+        if let Some(row) = self.db.try_get::<BookmarkRecord>(id.to_owned())?
+            && row.book().read() == One::to(book.to_owned())
+        {
+            self.db.delete::<BookmarkRecord>(id.to_owned())?;
+            self.db.save()?;
         }
         Ok(())
     }
@@ -583,10 +583,10 @@ impl Library {
     }
     pub fn save_catalogs(&self, catalogs: &[opds::Link]) -> Result<(), DbError> {
         for id in self.catalog_query().try_ids()? {
-            if let Some(old) = self.db.try_get::<CatalogRecord>(id)? {
-                if !catalogs.iter().any(|c| c.url == old.url().read()) {
-                    self.db.delete::<CatalogRecord>(id)?;
-                }
+            if let Some(old) = self.db.try_get::<CatalogRecord>(id)?
+                && !catalogs.iter().any(|c| c.url == old.url().read())
+            {
+                self.db.delete::<CatalogRecord>(id)?;
             }
         }
         for (rank, c) in catalogs.iter().enumerate() {
@@ -705,6 +705,59 @@ impl Library {
         self.mark_imported("day-prefs-v1")
     }
 }
+
+/// Extract a book's chapter text on a worker thread; only the database writes stay on the UI
+/// thread. Indexing a long book on the UI thread froze the app at launch.
+async fn extract_text(b: &crate::epub::Book) -> Result<ChapterText, String> {
+    let b = b.clone();
+    crate::covers::background(move || Library::chapter_text(&b))
+        .await?
+        .map_err(|e| e.to_string())
+}
+/// Write assets before committing metadata. Interrupted writes leave only replaceable orphans.
+pub async fn store_book(db: &Library, b: &crate::epub::Book, bytes: Vec<u8>) -> Result<(), String> {
+    let row = write_assets(b, bytes).await?;
+    let contents = extract_text(b).await?;
+    db.install_with(&row, b, contents)
+        .map_err(|e| e.to_string())
+}
+/// Rebuild a saved book's metadata and search text with the current parser.
+pub async fn index_book(db: &Library, b: &crate::epub::Book) -> Result<(), String> {
+    let contents = extract_text(b).await?;
+    db.save_index(b, contents).map_err(|e| e.to_string())
+}
+pub async fn write_assets(b: &crate::epub::Book, bytes: Vec<u8>) -> Result<Saved, String> {
+    day_part_filesystem::write_future(&format!("books/{}.epub", b.id), bytes)
+        .await
+        .map_err(|e| e.to_string())?;
+    let cover = if let Some(cover) = &b.cover {
+        let data = b.resource(cover).map_err(|e| e.to_string())?;
+        let path = format!("books/{}.cover", b.id);
+        day_part_filesystem::write_future(&path, data.to_vec())
+            .await
+            .map_err(|e| e.to_string())?;
+        Some(path)
+    } else {
+        None
+    };
+    Ok(Saved {
+        id: b.id.clone(),
+        title: b.title.clone(),
+        author: b.author.clone(),
+        cover,
+    })
+}
+
+impl From<BookRecord> for Saved {
+    fn from(b: BookRecord) -> Self {
+        Self {
+            id: b.id,
+            title: b.title,
+            author: b.author,
+            cover: b.cover,
+        }
+    }
+}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -753,7 +806,7 @@ mod tests {
             let query = db.bookmark_query("a");
             let count = Signal::new(0usize);
             let observed = query.clone();
-            let _watch = watch(move || observed.count(), move |n, _| count.set(*n));
+            watch(move || observed.count(), move |n, _| count.set(*n));
             db.add_bookmark("a", 3, 0.6, "Later fixture".into())
                 .unwrap();
             db.add_bookmark("a", 1, 0.2, "Earlier fixture".into())
@@ -1047,58 +1100,5 @@ mod tests {
             assert!(l.books().is_empty());
         }
         let _ = std::fs::remove_file(path);
-    }
-}
-
-/// Extract a book's chapter text on a worker thread; only the database writes stay on the UI
-/// thread. Indexing a long book on the UI thread froze the app at launch.
-async fn extract_text(b: &crate::epub::Book) -> Result<ChapterText, String> {
-    let b = b.clone();
-    crate::covers::background(move || Library::chapter_text(&b))
-        .await?
-        .map_err(|e| e.to_string())
-}
-/// Write assets before committing metadata. Interrupted writes leave only replaceable orphans.
-pub async fn store_book(db: &Library, b: &crate::epub::Book, bytes: Vec<u8>) -> Result<(), String> {
-    let row = write_assets(b, bytes).await?;
-    let contents = extract_text(b).await?;
-    db.install_with(&row, b, contents)
-        .map_err(|e| e.to_string())
-}
-/// Rebuild a saved book's metadata and search text with the current parser.
-pub async fn index_book(db: &Library, b: &crate::epub::Book) -> Result<(), String> {
-    let contents = extract_text(b).await?;
-    db.save_index(b, contents).map_err(|e| e.to_string())
-}
-pub async fn write_assets(b: &crate::epub::Book, bytes: Vec<u8>) -> Result<Saved, String> {
-    day_part_filesystem::write_future(&format!("books/{}.epub", b.id), bytes)
-        .await
-        .map_err(|e| e.to_string())?;
-    let cover = if let Some(cover) = &b.cover {
-        let data = b.resource(cover).map_err(|e| e.to_string())?;
-        let path = format!("books/{}.cover", b.id);
-        day_part_filesystem::write_future(&path, data.to_vec())
-            .await
-            .map_err(|e| e.to_string())?;
-        Some(path)
-    } else {
-        None
-    };
-    Ok(Saved {
-        id: b.id.clone(),
-        title: b.title.clone(),
-        author: b.author.clone(),
-        cover,
-    })
-}
-
-impl From<BookRecord> for Saved {
-    fn from(b: BookRecord) -> Self {
-        Self {
-            id: b.id,
-            title: b.title,
-            author: b.author,
-            cover: b.cover,
-        }
     }
 }

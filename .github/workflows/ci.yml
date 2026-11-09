@@ -15,7 +15,8 @@ on:
     types: [released]
   # Nightly, against the newest day release: what someone who builds this gets.
   schedule:
-    - cron: "0 7 * * *"
+    - cron: "30 0 * * *" # 00:30 Eastern; staggered across daybrite.
+      timezone: America/New_York
   workflow_dispatch:
     inputs:
       day-main:

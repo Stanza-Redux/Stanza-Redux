@@ -413,12 +413,9 @@ pub fn view(a: App) -> impl Piece {
                 when(
                     move || current(a, page_id).is_some_and(|p| p.loading),
                     move || {
-                        column((
-                            spacer(),
-                            row((spacer(), loading_indicator(), spacer())),
-                            spacer(),
-                        ))
-                        .grow()
+                        loading_indicator()
+                            .aligned(Alignment::Center)
+                            .grow(Dimension::Both)
                     },
                 )
                 .otherwise(move || {
@@ -438,7 +435,7 @@ pub fn view(a: App) -> impl Piece {
                                 .id(id!(catalog_retry)),
                             spacer(),
                         ))
-                        .grow()
+                        .grow(Dimension::Both)
                         .any();
                     }
                     if let Some(publication) = page.publication {
@@ -520,7 +517,7 @@ pub fn view(a: App) -> impl Piece {
             }
         })
         .id(id!(catalog_stack))
-        .grow(),))
+        .grow(Dimension::Both),))
     .focusable()
     .focused(a.catalog_focus)
     .on_key(move |k| catalog_key(a, &k.key))
@@ -671,7 +668,7 @@ fn sources(a: App) -> impl Piece {
         .align(HAlign::Leading)
         .spacing(6.)
         .padding(20.)
-        .grow_w(),
+        .grow(Dimension::Width),
         when(
             move || empty.try_collect().is_ok_and(|rows| rows.is_empty()),
             move || {
@@ -699,7 +696,7 @@ fn sources(a: App) -> impl Piece {
                 ))
                 .spacing(Space::XS)
                 .align(HAlign::Leading)
-                .grow(),
+                .grow(Dimension::Both),
                 vector(res::vectors::chevron_forward)
                     .frame(12., 24.)
                     .decorative(),
@@ -724,9 +721,9 @@ fn sources(a: App) -> impl Piece {
             a.browse_named(catalog.url().read(), true, catalog.title().read());
         })
         .id(id!(catalog_sources))
-        .grow(),
+        .grow(Dimension::Both),
     ))
-    .grow()
+    .grow(Dimension::Both)
     .overlay(loading(a, 0))
     .any()
 }
@@ -865,14 +862,11 @@ fn found_view(
     retry: impl Fn() + 'static,
 ) -> AnyPiece {
     match found.get_untracked() {
-        None | Some(Found::Searching) => column((
-            spacer(),
-            row((spacer(), loading_indicator(), spacer())),
-            spacer(),
-        ))
-        .grow()
-        .id(id!(catalog_searching))
-        .any(),
+        None | Some(Found::Searching) => loading_indicator()
+            .aligned(Alignment::Center)
+            .grow(Dimension::Both)
+            .wrapper_id(id!(catalog_searching))
+            .any(),
         Some(Found::Failed(error)) => column((
             spacer(),
             label(error.localized())
@@ -885,7 +879,7 @@ fn found_view(
                 .id(id!(catalog_search_retry)),
             spacer(),
         ))
-        .grow()
+        .grow(Dimension::Both)
         .any(),
         Some(Found::Results(query, feed)) => {
             let title = res::str::search_results(query).format();
@@ -991,7 +985,7 @@ fn results(
             ))
             .align(HAlign::Leading)
             .spacing(Space::XS)
-            .grow(),
+            .grow(Dimension::Both),
         ))
         .spacing(Space::M)
         .padding(Space::L),
@@ -1050,9 +1044,9 @@ fn results(
         .row_height(RowHeight::Automatic)
         .first_visible_row(first_visible)
         .id(list_id)
-        .grow(),
+        .grow(Dimension::Both),
     ))
-    .grow()
+    .grow(Dimension::Both)
     .overlay(loading(a, depth))
 }
 fn catalog_row(
@@ -1103,7 +1097,7 @@ fn catalog_row(
         ))
         .spacing(Space::XS)
         .align(HAlign::Leading)
-        .grow(),
+        .grow(Dimension::Both),
         label(move || slot.get().1.count())
             .font(Font::Footnote)
             .secondary(),
@@ -1136,7 +1130,7 @@ fn shelf(a: App, group: impl Fn() -> opds::Group + Copy + 'static) -> impl Piece
             ))
             .align(HAlign::Leading)
             .spacing(2.)
-            .grow(),
+            .grow(Dimension::Both),
             when(
                 move || group().more.is_some(),
                 move || {
@@ -1246,7 +1240,7 @@ fn manager(a: App) -> impl Piece {
             ))
             .spacing(3.)
             .align(HAlign::Leading)
-            .grow_w(),
+            .grow(Dimension::Width),
             when(
                 move || style != ManagerStyle::Desktop,
                 move || {
@@ -1328,7 +1322,7 @@ fn manager(a: App) -> impl Piece {
             })
         })
         .id(id!(catalog_manager_list))
-        .grow();
+        .grow(Dimension::Both);
     match style {
         ManagerStyle::Editing => rows.any(),
         // Material's add control for a list screen is the floating action button.
@@ -1344,13 +1338,13 @@ fn manager(a: App) -> impl Piece {
                     .frame(56., 56.)
                     .padding(Space::L),
             )
-            .grow(),
+            .grow(Dimension::Both),
             label(res::str::catalog_manager_touch_hint())
                 .font(Font::Footnote)
                 .secondary()
                 .padding(Space::L),
         ))
-        .grow()
+        .grow(Dimension::Both)
         .any(),
         ManagerStyle::Desktop => {
             let chosen = Rc::new(chosen);
@@ -1395,12 +1389,12 @@ fn manager(a: App) -> impl Piece {
                         .font(Font::Footnote)
                         .secondary()
                         .single_line()
-                        .grow_w(),
+                        .grow(Dimension::Width),
                 ))
                 .spacing(6.)
                 .padding(Insets::symmetric(12., 8.)),
             ))
-            .grow()
+            .grow(Dimension::Both)
             .any()
         }
     }

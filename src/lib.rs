@@ -372,7 +372,7 @@ fn color_row(
             },
         );
         row((
-            label(title).grow_w(),
+            label(title).grow(Dimension::Width),
             when(
                 move || custom.get(),
                 move || day::colorpicker::color_picker(color).id(id.clone()),
@@ -399,9 +399,9 @@ fn reader_settings_sheet() -> Option<impl Piece> {
             scroll(
                 column((prefs.group_body("reader"), prefs.group_body("theme")))
                     .spacing(0.)
-                    .grow_w(),
+                    .grow(Dimension::Width),
             )
-            .grow()
+            .grow(Dimension::Both)
         })
     })
 }
@@ -488,7 +488,7 @@ fn defaults() -> Vec<opds::Link> {
     ]
     .into_iter()
     .map(|(title, url)| opds::Link {
-        title: title.into(),
+        title,
         url: url.into(),
         ..Default::default()
     })
@@ -601,11 +601,11 @@ impl App {
         }
     }
     fn open(self, b: epub::Book) {
-        if let Some(db) = self.database.get_untracked() {
-            if let Err(e) = db.opened(&b.id, now_ms() as i64) {
-                self.error(e.to_string());
-                return;
-            }
+        if let Some(db) = self.database.get_untracked()
+            && let Err(e) = db.opened(&b.id, now_ms() as i64)
+        {
+            self.error(e.to_string());
+            return;
         }
         self.book.set(None);
         self.ready.set(false);
@@ -641,52 +641,52 @@ impl App {
             .unwrap_or_default();
         match u.host_str() {
             Some("ready") => {
-                if !self.ready.get_untracked() {
-                    if let Some(b) = self.book.get_untracked() {
-                        let prefs = reader_config();
-                        let pos = self
-                            .database
-                            .get_untracked()
-                            .and_then(|db| db.book(&b.id))
-                            .map(|b| {
-                                serde_json::json!({"chapter":b.chapter,"progress":b.progress})
-                                    .to_string()
-                            })
-                            .unwrap_or_else(|| "{}".into());
-                        let json = serde_json::to_string(&*b).unwrap();
-                        self.ready.set(true);
-                        let labels = serde_json::json!({
-                            "close":res::str::back_library().format(), "contents":res::str::contents().format(),
-                            "appearance":res::str::settings().format(), "previous":res::str::previous().format(),
-                            "next":res::str::next().format(), "chapter":res::str::chapter().format(),
-                            "done":res::str::done().format(), "hint":res::str::reader_gestures().format(),
-                            "appTitle":res::str::app_title().format(), "appearanceGlyph":res::str::appearance_glyph().format(),
-                            "position":res::str::position_text(res::str::PositionText {
-                                chapter: "{chapter}", chapters: "{chapters}", page: "{page}", pages: "{pages}",
-                            }).format(),
-                            "bookmarkAdd":res::str::bookmark_add().format(),
-                            "bookmarkRemove":res::str::bookmark_remove().format(),
-                            "bookmarks":res::str::bookmarks().format(),
-                            "bookmarksEmpty":res::str::bookmarks_empty().format(),
-                            "chapterPosition":res::str::chapter_position().format(),
-                            "returnPosition":res::str::return_position().format(),
-                            "contentsSearch":res::str::contents_search().format(),
-                            "contentsEmpty":res::str::contents_empty().format(),
-                            "chapterPercent":res::str::chapter_percent("{percent}").format(),
-                            "locale":day::locale().get_untracked(),
-                        });
-                        let bookmarks = self
-                            .database
-                            .get_untracked()
-                            .map(|db| db.bookmark_query(&b.id).try_collect())
-                            .transpose();
-                        match bookmarks {
-                            Ok(rows) => self.eval(format!(
-                                "stanza.load({json},{prefs},{pos},{labels},{})",
-                                serde_json::to_string(&rows.unwrap_or_default()).unwrap()
-                            )),
-                            Err(error) => self.error(error.to_string()),
-                        }
+                if !self.ready.get_untracked()
+                    && let Some(b) = self.book.get_untracked()
+                {
+                    let prefs = reader_config();
+                    let pos = self
+                        .database
+                        .get_untracked()
+                        .and_then(|db| db.book(&b.id))
+                        .map(|b| {
+                            serde_json::json!({"chapter":b.chapter,"progress":b.progress})
+                                .to_string()
+                        })
+                        .unwrap_or_else(|| "{}".into());
+                    let json = serde_json::to_string(&*b).unwrap();
+                    self.ready.set(true);
+                    let labels = serde_json::json!({
+                        "close":res::str::back_library().format(), "contents":res::str::contents().format(),
+                        "appearance":res::str::settings().format(), "previous":res::str::previous().format(),
+                        "next":res::str::next().format(), "chapter":res::str::chapter().format(),
+                        "done":res::str::done().format(), "hint":res::str::reader_gestures().format(),
+                        "appTitle":res::str::app_title().format(), "appearanceGlyph":res::str::appearance_glyph().format(),
+                        "position":res::str::position_text(res::str::PositionText {
+                            chapter: "{chapter}", chapters: "{chapters}", page: "{page}", pages: "{pages}",
+                        }).format(),
+                        "bookmarkAdd":res::str::bookmark_add().format(),
+                        "bookmarkRemove":res::str::bookmark_remove().format(),
+                        "bookmarks":res::str::bookmarks().format(),
+                        "bookmarksEmpty":res::str::bookmarks_empty().format(),
+                        "chapterPosition":res::str::chapter_position().format(),
+                        "returnPosition":res::str::return_position().format(),
+                        "contentsSearch":res::str::contents_search().format(),
+                        "contentsEmpty":res::str::contents_empty().format(),
+                        "chapterPercent":res::str::chapter_percent("{percent}").format(),
+                        "locale":day::locale().get_untracked(),
+                    });
+                    let bookmarks = self
+                        .database
+                        .get_untracked()
+                        .map(|db| db.bookmark_query(&b.id).try_collect())
+                        .transpose();
+                    match bookmarks {
+                        Ok(rows) => self.eval(format!(
+                            "stanza.load({json},{prefs},{pos},{labels},{})",
+                            serde_json::to_string(&rows.unwrap_or_default()).unwrap()
+                        )),
+                        Err(error) => self.error(error.to_string()),
                     }
                 }
             }
@@ -714,14 +714,14 @@ impl App {
             }
             Some("position") => {
                 if let Some(b) = self.book.get_untracked() {
-                    if let Some(db) = self.database.get_untracked() {
-                        if let Err(e) = db.position(
+                    if let Some(db) = self.database.get_untracked()
+                        && let Err(e) = db.position(
                             &b.id,
                             data["chapter"].as_u64().unwrap_or(0) as u32,
                             data["progress"].as_f64().unwrap_or(0.),
-                        ) {
-                            self.error(e.to_string())
-                        }
+                        )
+                    {
+                        self.error(e.to_string())
                     }
                     let c = data["chapter"].as_u64().unwrap_or(0) + 1;
                     let p = data["page"].as_u64().unwrap_or(0) + 1;
@@ -739,10 +739,10 @@ impl App {
             }
             Some("close") => {
                 if self.document_window {
-                    if let Some(book) = self.book.get_untracked() {
-                        if let Some(window) = day::window_by_key(&format!("reader-{}", book.id)) {
-                            window.close();
-                        }
+                    if let Some(book) = self.book.get_untracked()
+                        && let Some(window) = day::window_by_key(&format!("reader-{}", book.id))
+                    {
+                        window.close();
                     }
                     return LinkPolicy::Ignore;
                 }
@@ -752,10 +752,10 @@ impl App {
             Some("settings") => self.reader_settings.set(true),
             Some("error") => self.error(AppError::detail(res::str::epub_chapter_missing, data)),
             Some("link") => {
-                if let Some(link) = data["url"].as_str() {
-                    if link.starts_with("https://") || link.starts_with("http://") {
-                        open_link(link)
-                    }
+                if let Some(link) = data["url"].as_str()
+                    && (link.starts_with("https://") || link.starts_with("http://"))
+                {
+                    open_link(link)
                 }
             }
             _ => {}
@@ -1090,7 +1090,7 @@ fn book_overview(
             .font(Font::Footnote)
             .secondary(),
         action,
-        when(move || metadata.get().is_none(), || spinner()),
+        when(move || metadata.get().is_none(), spinner),
         when(
             move || metadata.get().is_some(),
             move || metadata::panel(metadata.get_untracked().unwrap_or_default()),
@@ -1114,10 +1114,10 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
     let task = day::task(async move {
         let detail = current.get_untracked().detail;
         if !detail.is_empty() {
-            if let Ok(feed) = browser::load_feed(detail).await {
-                if let Some(full) = feed.entries.into_iter().next() {
-                    current.update(|p| p.supplement(full));
-                }
+            if let Ok(feed) = browser::load_feed(detail).await
+                && let Some(full) = feed.entries.into_iter().next()
+            {
+                current.update(|p| p.supplement(full));
             }
             shown.set(Some(summary(&current.get_untracked())));
         }
@@ -1166,7 +1166,7 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
             })
             .id(id!(download_book))
             .height(50.)
-            .grow_w(),
+            .grow(Dimension::Width),
             // Only while there is no download to offer: still checking, or why there is none.
             when(
                 move || epub.get().is_none(),
@@ -1231,7 +1231,7 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
                             .any();
                     }
                     row((
-                        label(title).grow(),
+                        label(title).grow(Dimension::Both),
                         vector(res::vectors::chevron_forward)
                             .frame(12., 24.)
                             .decorative(),
@@ -1303,16 +1303,16 @@ fn local_details(a: App, book: Saved) -> impl Piece {
     if metadata.get_untracked().is_none() {
         let task = day::task(async move {
             // Enrich old entries without changing their reading position or last-opened date.
-            if let Ok(bytes) = day_part_filesystem::read_future(&format!("books/{id}.epub")).await {
-                if let Ok(Ok(parsed)) = covers::background(move || epub::parse(&bytes)).await {
-                    if let Some(db) = a.database.get_untracked() {
-                        if let Err(e) = db.save_metadata(&id, &parsed.metadata) {
-                            a.error(e.to_string());
-                        }
-                    }
-                    metadata.set(Some(parsed.metadata));
-                    return;
+            if let Ok(bytes) = day_part_filesystem::read_future(&format!("books/{id}.epub")).await
+                && let Ok(Ok(parsed)) = covers::background(move || epub::parse(&bytes)).await
+            {
+                if let Some(db) = a.database.get_untracked()
+                    && let Err(e) = db.save_metadata(&id, &parsed.metadata)
+                {
+                    a.error(e.to_string());
                 }
+                metadata.set(Some(parsed.metadata));
+                return;
             }
             metadata.set(Some(metadata::Metadata::default()));
         });
@@ -1335,7 +1335,7 @@ fn local_details(a: App, book: Saved) -> impl Piece {
             .action(move || a.load(id.clone()))
             .id(id!(open_local_book))
             .height(50.)
-            .grow_w(),
+            .grow(Dimension::Width),
     )
 }
 /// Whether the window is compact (phone width), where the reader's settings open as a half
@@ -1430,6 +1430,20 @@ fn reader(a: App) -> impl Piece {
     .status_bar_hidden(|| HIDE_STATUS_BAR.get())
 }
 
+fn now_ms() -> u64 {
+    #[cfg(target_arch = "wasm32")]
+    {
+        day_toolkit_dom::now_epoch_ms()
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_millis() as u64
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1454,19 +1468,5 @@ mod tests {
         for tag in ["en", "ar", "pt-BR", "zh-CN"] {
             assert!(tags.contains(&tag), "{tag} missing from res::locales::ALL");
         }
-    }
-}
-
-fn now_ms() -> u64 {
-    #[cfg(target_arch = "wasm32")]
-    {
-        day_toolkit_dom::now_epoch_ms()
-    }
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-        std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .unwrap_or_default()
-            .as_millis() as u64
     }
 }

@@ -103,7 +103,7 @@ pub fn view(a: App) -> impl Piece {
             .any()
         })
         .id(id!(library_stack))
-        .grow()
+        .grow(Dimension::Both)
         .overlay(when(
             move || a.busy.get(),
             move || {
@@ -135,7 +135,7 @@ fn folders(a: App, kind: Option<&'static str>) -> impl Piece {
                 })
                 .font(Font::Headline)
                 .single_line()
-                .grow(),
+                .grow(Dimension::Both),
                 vector(res::vectors::chevron_forward)
                     .frame(12., 24.)
                     .decorative(),
@@ -160,7 +160,7 @@ fn folders(a: App, kind: Option<&'static str>) -> impl Piece {
         } else {
             id!(library_genres)
         })
-        .grow()
+        .grow(Dimension::Both)
         .any();
     }
     // Live counts for the summary under each collection's name; absent (an empty summary)
@@ -206,7 +206,7 @@ fn folders(a: App, kind: Option<&'static str>) -> impl Piece {
                 ))
                 .spacing(2.)
                 .align(HAlign::Leading)
-                .grow(),
+                .grow(Dimension::Both),
                 vector(res::vectors::chevron_forward)
                     .frame(12., 24.)
                     .decorative(),
@@ -228,7 +228,7 @@ fn folders(a: App, kind: Option<&'static str>) -> impl Piece {
         }
     })
     .id(id!(library_folders))
-    .grow()
+    .grow(Dimension::Both)
     .any()
 }
 /// The live counts behind the top-level collections' summaries.
@@ -313,7 +313,7 @@ fn books(a: App, page: Page) -> impl Piece {
                 ))
                 .align(HAlign::Leading)
                 .spacing(Space::XS)
-                .grow(),
+                .grow(Dimension::Both),
                 vector(res::vectors::chevron_forward)
                     .frame(12., 24.)
                     .decorative(),
@@ -332,9 +332,9 @@ fn books(a: App, page: Page) -> impl Piece {
             }
         })
         .id(id!(library_list))
-        .grow(),
+        .grow(Dimension::Both),
     ))
-    .grow()
+    .grow(Dimension::Both)
     .any()
 }
 #[cfg(feature = "appkit")]
@@ -357,7 +357,7 @@ pub fn desktop_detail(a: App) -> impl Piece {
                                 }),
                         ]
                     })
-                    .grow()
+                    .grow(Dimension::Both)
             },
         ),
         when(
@@ -369,7 +369,7 @@ pub fn desktop_detail(a: App) -> impl Piece {
             },
         ),
     ))
-    .grow()
+    .grow(Dimension::Both)
 }
 fn remove(a: App, book: Saved) {
     day::task(async move {

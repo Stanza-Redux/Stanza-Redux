@@ -221,7 +221,7 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
                             .input_purpose(InputPurpose::Url)
                             .submit_label(SubmitLabel::Go)
                             .on_submit(submit)
-                            .grow_w()
+                            .grow(Dimension::Width)
                             .id(id!(catalog_editor_url)),
                         row((
                             button(res::str::validate_catalog())
@@ -254,7 +254,7 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
                     .title(res::str::catalog_url()),
                     section((text_field(title)
                         .submit_label(SubmitLabel::Done)
-                        .grow_w()
+                        .grow(Dimension::Width)
                         .id(id!(catalog_editor_title)),))
                     .title(res::str::catalog_name())
                     .footer(res::str::catalog_title_hint()),
@@ -300,10 +300,10 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
                 trailing: 20.,
             }),
         )
-        .grow(),
+        .grow(Dimension::Both),
     ))
     .max_width(640.)
-    .grow_h()
+    .grow(Dimension::Height)
     .id(id!(catalog_editor))
 }
 

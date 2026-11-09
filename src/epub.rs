@@ -124,10 +124,10 @@ impl Book {
             return Err(AppError::detail(res::str::epub_resource_missing, path));
         }
         let mut cache = self.source.cache.lock().unwrap();
-        if let Some((key, bytes)) = &*cache {
-            if key == path {
-                return Ok(bytes.clone());
-            }
+        if let Some((key, bytes)) = &*cache
+            && key == path
+        {
+            return Ok(bytes.clone());
         }
         let mut bytes = read_entry(&mut self.source.zip.lock().unwrap(), path)?;
         if let Some((key, length)) = self.source.fonts.get(path) {
@@ -243,75 +243,72 @@ fn parse_source(source: Source, id: String, compressed_len: u64) -> Result<Book,
         .descendants()
         .filter(|n| n.is_element() && n.tag_name().name() == "item")
     {
-        if let (Some(id), Some(href)) = (n.attribute("id"), n.attribute("href")) {
-            if let Some(path) = resolve(opf, href) {
-                let typ = n
-                    .attribute("media-type")
-                    .unwrap_or("application/octet-stream");
-                if typ.starts_with("image/")
-                    && (legacy_cover == Some(id)
-                        || n.attribute("properties")
-                            .is_some_and(|p| p.split_whitespace().any(|p| p == "cover-image")))
-                {
-                    cover = Some(path.clone());
-                }
-                manifest.insert(id.to_owned(), path.clone());
-                mime.insert(path.clone(), typ.to_owned());
-                if n.attribute("properties")
-                    .is_some_and(|p| p.split_whitespace().any(|p| p == "nav"))
-                {
-                    nav = Some(path.clone())
-                }
-                if typ == "application/x-dtbncx+xml" {
-                    ncx = Some(path)
-                }
+        if let (Some(id), Some(href)) = (n.attribute("id"), n.attribute("href"))
+            && let Some(path) = resolve(opf, href)
+        {
+            let typ = n
+                .attribute("media-type")
+                .unwrap_or("application/octet-stream");
+            if typ.starts_with("image/")
+                && (legacy_cover == Some(id)
+                    || n.attribute("properties")
+                        .is_some_and(|p| p.split_whitespace().any(|p| p == "cover-image")))
+            {
+                cover = Some(path.clone());
+            }
+            manifest.insert(id.to_owned(), path.clone());
+            mime.insert(path.clone(), typ.to_owned());
+            if n.attribute("properties")
+                .is_some_and(|p| p.split_whitespace().any(|p| p == "nav"))
+            {
+                nav = Some(path.clone())
+            }
+            if typ == "application/x-dtbncx+xml" {
+                ncx = Some(path)
             }
         }
     }
     let mut toc = Vec::new();
-    if let Some(path) = nav {
-        if let Ok(s) = xml(&path) {
-            if let Ok(d) = roxmltree::Document::parse(&s) {
-                for n in d
+    if let Some(path) = nav
+        && let Ok(s) = xml(&path)
+        && let Ok(d) = roxmltree::Document::parse(&s)
+    {
+        for n in d
+            .descendants()
+            .filter(|n| n.is_element() && n.tag_name().name() == "a")
+        {
+            if let Some(p) = n.attribute("href").and_then(|h| resolve(&path, h)) {
+                let title = n
                     .descendants()
-                    .filter(|n| n.is_element() && n.tag_name().name() == "a")
-                {
-                    if let Some(p) = n.attribute("href").and_then(|h| resolve(&path, h)) {
-                        let title = n
-                            .descendants()
-                            .filter(|n| n.is_text())
-                            .filter_map(|n| n.text())
-                            .collect::<String>();
-                        toc.push(Chapter { path: p, title })
-                    }
-                }
+                    .filter(|n| n.is_text())
+                    .filter_map(|n| n.text())
+                    .collect::<String>();
+                toc.push(Chapter { path: p, title })
             }
         }
     }
-    if toc.is_empty() {
-        if let Some(path) = ncx {
-            if let Ok(s) = xml(&path) {
-                if let Ok(d) = roxmltree::Document::parse(&s) {
-                    for n in d
-                        .descendants()
-                        .filter(|n| n.is_element() && n.tag_name().name() == "navPoint")
-                    {
-                        let title = n
-                            .descendants()
-                            .find(|n| n.is_element() && n.tag_name().name() == "text")
-                            .and_then(|n| n.text())
-                            .unwrap_or_default()
-                            .into();
-                        if let Some(p) = n
-                            .children()
-                            .find(|n| n.is_element() && n.tag_name().name() == "content")
-                            .and_then(|n| n.attribute("src"))
-                            .and_then(|h| resolve(&path, h))
-                        {
-                            toc.push(Chapter { path: p, title })
-                        }
-                    }
-                }
+    if toc.is_empty()
+        && let Some(path) = ncx
+        && let Ok(s) = xml(&path)
+        && let Ok(d) = roxmltree::Document::parse(&s)
+    {
+        for n in d
+            .descendants()
+            .filter(|n| n.is_element() && n.tag_name().name() == "navPoint")
+        {
+            let title = n
+                .descendants()
+                .find(|n| n.is_element() && n.tag_name().name() == "text")
+                .and_then(|n| n.text())
+                .unwrap_or_default()
+                .into();
+            if let Some(p) = n
+                .children()
+                .find(|n| n.is_element() && n.tag_name().name() == "content")
+                .and_then(|n| n.attribute("src"))
+                .and_then(|h| resolve(&path, h))
+            {
+                toc.push(Chapter { path: p, title })
             }
         }
     }

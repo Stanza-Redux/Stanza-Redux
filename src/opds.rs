@@ -302,7 +302,7 @@ fn json_publication(v: &Value, base: &str) -> Publication {
             identifiers,
             contributors: ROLES
                 .iter()
-                .flat_map(|k| many(&m[*k]).into_iter().map(|v| text(v)))
+                .flat_map(|k| many(&m[*k]).into_iter().map(text))
                 .filter(|s| !s.is_empty())
                 .collect(),
             rights: text(&m["rights"]),
@@ -443,10 +443,10 @@ fn base_at(n: roxmltree::Node, base: &str) -> String {
     let mut b = base.to_owned();
     let chain: Vec<_> = n.ancestors().filter(|a| a.is_element()).collect();
     for a in chain.into_iter().rev() {
-        if let Some(h) = a.attribute(("http://www.w3.org/XML/1998/namespace", "base")) {
-            if let Ok(u) = resolve(&b, h) {
-                b = u
-            }
+        if let Some(h) = a.attribute(("http://www.w3.org/XML/1998/namespace", "base"))
+            && let Ok(u) = resolve(&b, h)
+        {
+            b = u
         }
     }
     b
