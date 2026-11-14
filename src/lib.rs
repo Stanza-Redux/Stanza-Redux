@@ -654,7 +654,8 @@ impl App {
                                 .to_string()
                         })
                         .unwrap_or_else(|| "{}".into());
-                    let json = serde_json::to_string(&*b).unwrap();
+                    let json = serde_json::to_string(&*b)
+                        .expect("a book manifest is strings, flags and lists, which serialize");
                     self.ready.set(true);
                     let labels = serde_json::json!({
                         "close":res::str::back_library().format(), "contents":res::str::contents().format(),
@@ -684,7 +685,8 @@ impl App {
                     match bookmarks {
                         Ok(rows) => self.eval(format!(
                             "stanza.load({json},{prefs},{pos},{labels},{})",
-                            serde_json::to_string(&rows.unwrap_or_default()).unwrap()
+                            serde_json::to_string(&rows.unwrap_or_default())
+                                .expect("bookmark rows are plain fields, which serialize")
                         )),
                         Err(error) => self.error(error.to_string()),
                     }

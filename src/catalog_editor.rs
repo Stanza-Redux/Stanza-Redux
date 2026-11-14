@@ -261,7 +261,10 @@ pub fn view(a: App, route: EditorRoute) -> impl Piece {
                     when(
                         move || validated.get().is_some(),
                         move || {
-                            let feed = validated.get_untracked().unwrap().1;
+                            let feed = validated
+                                .get_untracked()
+                                .expect("`when` builds this branch only while `validated` is set")
+                                .1;
                             let counts = res::str::catalog_counts(res::str::CatalogCounts {
                                 books: feed.book_count() as i64,
                                 links: feed.link_count() as i64,

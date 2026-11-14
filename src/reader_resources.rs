@@ -23,7 +23,8 @@ pub fn view(a: App) -> day_piece_webview::WebView {
                 match rows {
                     Ok(rows) => a.eval(format!(
                         "stanza.bookmarks({})",
-                        serde_json::to_string(rows).unwrap()
+                        serde_json::to_string(rows)
+                            .expect("bookmark rows are plain fields, which serialize")
                     )),
                     Err(error) => a.error(error.clone()),
                 }

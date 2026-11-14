@@ -123,13 +123,23 @@ impl Book {
         if !self.resources.contains_key(path) {
             return Err(AppError::detail(res::str::epub_resource_missing, path));
         }
-        let mut cache = self.source.cache.lock().unwrap();
+        let mut cache = self
+            .source
+            .cache
+            .lock()
+            .expect("the resource cache lock is poisoned: an earlier resource read panicked");
         if let Some((key, bytes)) = &*cache
             && key == path
         {
             return Ok(bytes.clone());
         }
-        let mut bytes = read_entry(&mut self.source.zip.lock().unwrap(), path)?;
+        // Taken only here, under the cache lock, so it is poisoned only when that one is.
+        let mut zip = self
+            .source
+            .zip
+            .lock()
+            .expect("the archive lock is poisoned: an earlier resource read panicked");
+        let mut bytes = read_entry(&mut zip, path)?;
         if let Some((key, length)) = self.source.fonts.get(path) {
             for (i, b) in bytes.iter_mut().take(*length).enumerate() {
                 *b ^= key[i % key.len()];
