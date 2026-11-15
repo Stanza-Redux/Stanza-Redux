@@ -38,7 +38,6 @@ serde_json = "1"
 url = "2"
 roxmltree = "0.20"
 zip = { version = "2", default-features = false, features = ["deflate"] }
-base64 = "0.22"
 sha2 = "0.10"
 sha1 = "0.10"
 percent-encoding = "2"
@@ -53,6 +52,10 @@ day-build = "0.*"
 # so a finding blocks the change that introduced it. Fix findings in the code; for a site where
 # the lint is wrong, use `#[expect(clippy::<lint>, reason = "…")]`. A stricter table, up to
 # Clippy's `pedantic` group, is the project's choice; keep these lines in it.
+[dev-dependencies]
+# examples/export_book.rs encodes a cover image.
+base64 = "0.22"
+
 [lints.clippy]
 # Debugging and placeholder macros do not ship.
 dbg_macro = "warn"
