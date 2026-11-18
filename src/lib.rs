@@ -8,6 +8,7 @@ use std::cell::RefCell;
 use std::sync::Arc;
 mod browser;
 mod covers;
+mod default_catalogs;
 pub mod error;
 use error::AppError;
 mod catalog_editor;
@@ -471,29 +472,6 @@ fn saved<T: serde::de::DeserializeOwned + Default>(key: &str) -> T {
         .and_then(|s| serde_json::from_str(&s).ok())
         .unwrap_or_default()
 }
-fn defaults() -> Vec<opds::Link> {
-    [
-        (
-            res::str::catalog_standard().format(),
-            "https://standardebooks.org/feeds/opds",
-        ),
-        (
-            res::str::catalog_gutenberg().format(),
-            "https://www.gutenberg.org/ebooks/search.opds/",
-        ),
-        (
-            res::str::catalog_ebooks_gratuits().format(),
-            "https://www.ebooksgratuits.com/opds/",
-        ),
-    ]
-    .into_iter()
-    .map(|(title, url)| opds::Link {
-        title,
-        url: url.into(),
-        ..Default::default()
-    })
-    .collect()
-}
 impl App {
     fn catalogs(self) -> Result<Vec<opds::Link>, AppError> {
         self.database
@@ -881,6 +859,7 @@ pub fn root() -> impl Piece {
         );
     }
     documents::register(a);
+    default_catalogs::start(a);
     browser::observe_path(a);
     reopen_last_book(a);
     if let Some(db) = a.database.get_untracked() {

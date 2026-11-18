@@ -74,7 +74,28 @@ pub struct CatalogRecord {
     pub url: String,
     pub title: String,
     pub rank: u32,
+    pub description: String,
+    /// The published default this row follows (`default_catalogs`), or empty for a catalog the
+    /// reader added or renamed, which no published list changes.
+    pub default_id: String,
 }
+/// A published default the reader removed, by its id, so no later list brings it back.
+#[derive(Model, Clone, Default, PartialEq)]
+#[model(table = "dismissed_catalogs")]
+struct DismissedRecord {
+    #[model(id)]
+    pub id: String,
+}
+/// The defaults builds before the published list seeded into every library, by the ids the list
+/// gives them now.
+const BUILT_IN_DEFAULTS: [(&str, &str); 3] = [
+    ("standard-ebooks", "https://standardebooks.org/feeds/opds"),
+    (
+        "project-gutenberg",
+        "https://www.gutenberg.org/ebooks/search.opds/",
+    ),
+    ("ebooks-gratuits", "https://www.ebooksgratuits.com/opds/"),
+];
 #[derive(Model, Clone, Default, PartialEq)]
 #[model(table = "imports")]
 struct ImportRecord {
@@ -237,6 +258,7 @@ impl Library {
                 FolderRecord,
                 ContentRecord,
                 CatalogRecord,
+                DismissedRecord,
                 ImportRecord,
                 MetadataRecord,
                 BookmarkRecord
@@ -571,6 +593,7 @@ impl Library {
             rows.into_iter()
                 .map(|c| opds::Link {
                     title: c.title,
+                    description: c.description,
                     url: c.url,
                     ..Default::default()
                 })
@@ -581,27 +604,117 @@ impl Library {
     pub fn catalogs(&self) -> Vec<opds::Link> {
         self.try_catalogs().unwrap()
     }
+    /// Store the reader's own edit of the list. Removing a published default records that, and
+    /// renaming one makes it the reader's own, so `sync_defaults` leaves both decisions alone.
     pub fn save_catalogs(&self, catalogs: &[opds::Link]) -> Result<(), DbError> {
         for id in self.catalog_query().try_ids()? {
             if let Some(old) = self.db.try_get::<CatalogRecord>(id)?
                 && !catalogs.iter().any(|c| c.url == old.url().read())
             {
+                let default_id = old.default_id().read();
+                if !default_id.is_empty() {
+                    self.db.insert(DismissedRecord { id: default_id });
+                }
                 self.db.delete::<CatalogRecord>(id)?;
             }
         }
         for (rank, c) in catalogs.iter().enumerate() {
             if let Some(old) = self.db.try_get::<CatalogRecord>(c.url.clone())? {
-                old.title().write(c.title.clone());
+                if old.title().read() != c.title {
+                    old.title().write(c.title.clone());
+                    old.default_id().write(String::new());
+                }
                 old.rank().write(rank as u32);
             } else {
                 self.db.insert(CatalogRecord {
                     url: c.url.clone(),
                     title: c.title.clone(),
                     rank: rank as u32,
+                    ..Default::default()
                 });
             }
         }
         self.db.save()
+    }
+    /// Make the library's default catalogs the published list: new ones appear, ones no longer
+    /// published go, and names, descriptions and addresses follow it. Catalogs the reader added,
+    /// renamed or removed are theirs and stay as they left them, as does the order of the list.
+    pub fn sync_defaults(
+        &self,
+        defaults: &[crate::default_catalogs::DefaultCatalog],
+    ) -> Result<(), DbError> {
+        let before = self.catalog_query().try_collect()?;
+        let mut next: Vec<CatalogRecord> = before
+            .iter()
+            .filter(|c| c.default_id.is_empty() || defaults.iter().any(|d| d.id == c.default_id))
+            .cloned()
+            .collect();
+        for (index, d) in defaults.iter().enumerate() {
+            let taken = next.iter().any(|c| c.url == d.url && c.default_id != d.id);
+            if let Some(row) = next.iter_mut().find(|c| c.default_id == d.id) {
+                if !taken {
+                    row.url.clone_from(&d.url);
+                }
+                row.title.clone_from(&d.title);
+                row.description.clone_from(&d.description);
+            } else if !taken && self.db.try_get::<DismissedRecord>(d.id.clone())?.is_none() {
+                // Beside the default the list puts it after, wherever the reader moved that.
+                let at = defaults[..index]
+                    .iter()
+                    .rev()
+                    .find_map(|p| next.iter().position(|c| c.default_id == p.id))
+                    .map_or(0, |p| p + 1);
+                next.insert(
+                    at,
+                    CatalogRecord {
+                        url: d.url.clone(),
+                        title: d.title.clone(),
+                        description: d.description.clone(),
+                        default_id: d.id.clone(),
+                        rank: 0,
+                    },
+                );
+            }
+        }
+        for (rank, c) in next.iter_mut().enumerate() {
+            c.rank = rank as u32;
+        }
+        if next == before {
+            return Ok(());
+        }
+        for old in &before {
+            if !next.iter().any(|c| c.url == old.url) {
+                self.db.delete::<CatalogRecord>(old.url.clone())?;
+            }
+        }
+        for c in next {
+            if let Some(old) = self.db.try_get::<CatalogRecord>(c.url.clone())? {
+                old.title().write(c.title);
+                old.description().write(c.description);
+                old.default_id().write(c.default_id);
+                old.rank().write(c.rank);
+            } else {
+                self.db.insert(c);
+            }
+        }
+        self.db.save()
+    }
+    /// Once, for a library from a build that seeded its defaults itself: tie those rows to the
+    /// published list, and record the ones the reader had already removed.
+    fn adopt_built_in_defaults(&self, established: bool) -> Result<(), DbError> {
+        const KEY: &str = "published-default-catalogs";
+        if self.imported(KEY)? {
+            return Ok(());
+        }
+        if established {
+            for (id, url) in BUILT_IN_DEFAULTS {
+                match self.db.try_get::<CatalogRecord>(url.to_owned())? {
+                    Some(row) => row.default_id().write(id.to_owned()),
+                    None => self.db.insert(DismissedRecord { id: id.to_owned() }),
+                }
+            }
+        }
+        self.mark_imported(KEY)
     }
     pub fn imported(&self, key: &str) -> Result<bool, DbError> {
         Ok(self.db.try_get::<ImportRecord>(key.to_owned())?.is_some())
@@ -682,7 +795,7 @@ impl Library {
     /// One-time bridge from the first Day prototype. Keep old prefs intact for recovery.
     pub fn import_preferences(&self) -> Result<(), DbError> {
         if self.imported("day-prefs-v1")? {
-            return Ok(());
+            return self.adopt_built_in_defaults(true);
         }
         for b in crate::saved::<Vec<Saved>>("stanza.library")
             .into_iter()
@@ -698,11 +811,14 @@ impl Library {
                 )?;
             }
         }
+        // A new library has no catalogs yet: `default_catalogs` lists the published ones.
         let catalogs = day::prefs::get("stanza.catalogs")
-            .and_then(|v| serde_json::from_str::<Vec<opds::Link>>(&v).ok())
-            .unwrap_or_else(crate::defaults);
-        self.save_catalogs(&catalogs)?;
-        self.mark_imported("day-prefs-v1")
+            .and_then(|v| serde_json::from_str::<Vec<opds::Link>>(&v).ok());
+        if let Some(catalogs) = &catalogs {
+            self.save_catalogs(catalogs)?;
+        }
+        self.mark_imported("day-prefs-v1")?;
+        self.adopt_built_in_defaults(catalogs.is_some())
     }
 }
 
@@ -1068,6 +1184,94 @@ mod tests {
         drop(db);
         let _ = std::fs::remove_file(path);
     }
+    fn published(entries: &[(&str, &str, &str)]) -> Vec<crate::default_catalogs::DefaultCatalog> {
+        entries
+            .iter()
+            .map(|(id, url, title)| crate::default_catalogs::DefaultCatalog {
+                id: (*id).into(),
+                url: (*url).into(),
+                title: (*title).into(),
+                description: format!("About {title}"),
+            })
+            .collect()
+    }
+    fn titles(db: &Library) -> Vec<String> {
+        db.catalogs().into_iter().map(|c| c.title).collect()
+    }
+    #[test]
+    fn published_defaults_follow_the_list_and_respect_the_reader() {
+        let db = Library::with_driver(Sqlite::memory()).unwrap();
+        db.import_preferences().unwrap();
+        assert!(db.catalogs().is_empty());
+        let a = ("a", "https://a.test/", "A");
+        let b = ("b", "https://b.test/", "B");
+        let c = ("c", "https://c.test/", "C");
+        db.sync_defaults(&published(&[a, b])).unwrap();
+        assert_eq!(titles(&db), ["A", "B"]);
+        assert_eq!(db.catalogs()[0].description, "About A");
+
+        // The reader's own catalog and order survive; a new default lands beside its neighbor.
+        let mut list = db.catalogs();
+        list.push(opds::Link {
+            title: "Mine".into(),
+            url: "https://mine.test/".into(),
+            ..Default::default()
+        });
+        list.swap(0, 2);
+        db.save_catalogs(&list).unwrap();
+        db.sync_defaults(&published(&[a, b, c])).unwrap();
+        assert_eq!(titles(&db), ["Mine", "B", "C", "A"]);
+
+        // A default renamed or moved by the list keeps its place.
+        let moved = ("b", "https://b2.test/", "B2");
+        db.sync_defaults(&published(&[a, moved, c])).unwrap();
+        assert_eq!(titles(&db), ["Mine", "B2", "C", "A"]);
+        assert_eq!(db.catalogs()[1].url, "https://b2.test/");
+
+        // Removed by the reader: gone for good. Renamed by the reader: theirs from then on.
+        let mut list = db.catalogs();
+        list.retain(|l| l.title != "C");
+        list[2].title = "My A".into();
+        db.save_catalogs(&list).unwrap();
+        db.sync_defaults(&published(&[a, moved, c])).unwrap();
+        assert_eq!(titles(&db), ["Mine", "B2", "My A"]);
+
+        // Withdrawn by the list: its defaults go, the reader's catalogs do not.
+        db.sync_defaults(&[]).unwrap();
+        assert_eq!(titles(&db), ["Mine", "My A"]);
+    }
+    #[test]
+    fn built_in_defaults_of_an_earlier_build_are_adopted_once() {
+        let db = Library::with_driver(Sqlite::memory()).unwrap();
+        // An earlier build seeded all three; this reader removed one and renamed nothing.
+        db.mark_imported("day-prefs-v1").unwrap();
+        let link = |title: &str, url: &str| opds::Link {
+            title: title.into(),
+            url: url.into(),
+            ..Default::default()
+        };
+        db.save_catalogs(&[
+            link("Standard Ebooks", BUILT_IN_DEFAULTS[0].1),
+            link("Ebooks Gratuits", BUILT_IN_DEFAULTS[2].1),
+        ])
+        .unwrap();
+        db.import_preferences().unwrap();
+        let list = published(&[
+            (
+                "project-gutenberg",
+                BUILT_IN_DEFAULTS[1].1,
+                "Project Gutenberg",
+            ),
+            ("ebooks-gratuits", BUILT_IN_DEFAULTS[2].1, "Ebooks Gratuits"),
+            ("new", "https://new.test/", "New"),
+        ]);
+        db.sync_defaults(&list).unwrap();
+        // The removed default stays removed, the withdrawn one goes, the new one arrives.
+        assert_eq!(titles(&db), ["Ebooks Gratuits", "New"]);
+        db.import_preferences().unwrap();
+        db.sync_defaults(&list).unwrap();
+        assert_eq!(titles(&db), ["Ebooks Gratuits", "New"]);
+    }
     #[test]
     fn database_round_trip_and_empty_catalogs() {
         let path = std::env::temp_dir().join(format!("stanza-db-test-{}.db", std::process::id()));
@@ -1082,7 +1286,13 @@ mod tests {
             l.position("one", 3, 0.4).unwrap();
             l.put(&b).unwrap();
             assert_eq!(l.book("one").unwrap().chapter, 3);
-            l.save_catalogs(&crate::defaults()).unwrap();
+            let link = |url: &str| opds::Link {
+                title: url.into(),
+                url: url.into(),
+                ..Default::default()
+            };
+            l.save_catalogs(&["https://a.test/", "https://b.test/", "https://c.test/"].map(link))
+                .unwrap();
             let mut c = l.catalogs();
             c.swap(0, 2);
             l.save_catalogs(&c).unwrap();

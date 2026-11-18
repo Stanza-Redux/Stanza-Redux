@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "catalogs": [
+    {
+      "id": "gutenberg-ru",
+      "url": "https://www.gutenberg.org/ebooks/search.opds/?query=l.ru",
+      "name": {
+        "en": "Project Gutenberg in Russian",
+        "ru": "Проект «Гутенберг» на русском"
+      },
+      "description": {
+        "en": "Public-domain books in Russian.",
+        "ru": "Книги на русском языке в общественном достоянии."
+      },
+      "locales": ["ru"]
+    },
+    {
+      "id": "standard-ebooks",
+      "url": "https://standardebooks.org/feeds/opds",
+      "name": "Standard Ebooks",
+      "description": {
+        "en": "Carefully formatted editions of public-domain classics.",
+        "ar": "طبعات منسّقة بعناية من كلاسيكيات الملك العام.",
+        "de": "Sorgfältig gestaltete Ausgaben gemeinfreier Klassiker.",
+        "es": "Ediciones cuidadas de clásicos de dominio público.",
+        "fr": "Éditions soignées de classiques du domaine public.",
+        "hi": "सार्वजनिक डोमेन की श्रेष्ठ कृतियों के सुसज्जित संस्करण।",
+        "id": "Edisi karya klasik domain publik yang ditata dengan cermat.",
+        "it": "Edizioni curate di classici di pubblico dominio.",
+        "ja": "パブリックドメインの名作を丁寧に組版した版。",
+        "ko": "퍼블릭 도메인 고전을 정성껏 편집한 판본.",
+        "pt-BR": "Edições bem cuidadas de clássicos em domínio público.",
+        "ru": "Тщательно оформленные издания классики в общественном достоянии.",
+        "zh-CN": "精心排版的公版经典作品。"
+      }
+    },
+    {
+      "id": "project-gutenberg",
+      "url": "https://www.gutenberg.org/ebooks/search.opds/",
+      "name": "Project Gutenberg",
+      "description": {
+        "en": "More than 75,000 free public-domain ebooks.",
+        "ar": "أكثر من 75,000 كتاب إلكتروني مجاني من الملك العام.",
+        "de": "Mehr als 75.000 kostenlose gemeinfreie E-Books.",
+        "es": "Más de 75.000 libros electrónicos gratuitos de dominio público.",
+        "fr": "Plus de 75 000 livres numériques gratuits du domaine public.",
+        "hi": "सार्वजनिक डोमेन की 75,000 से अधिक निःशुल्क ई-पुस्तकें।",
+        "id": "Lebih dari 75.000 ebook gratis domain publik.",
+        "it": "Oltre 75.000 ebook gratuiti di pubblico dominio.",
+        "ja": "75,000冊を超えるパブリックドメインの無料電子書籍。",
+        "ko": "75,000권이 넘는 퍼블릭 도메인 무료 전자책.",
+        "pt-BR": "Mais de 75.000 ebooks gratuitos em domínio público.",
+        "ru": "Более 75 000 бесплатных электронных книг в общественном достоянии.",
+        "zh-CN": "超过 75,000 本免费的公版电子书。"
+      }
+    },
+    {
+      "id": "ebooks-gratuits",
+      "url": "https://www.ebooksgratuits.com/opds/",
+      "name": "Ebooks Gratuits",
+      "description": {
+        "en": "Free public-domain ebooks in French.",
+        "ar": "كتب إلكترونية مجانية من الملك العام باللغة الفرنسية.",
+        "de": "Kostenlose gemeinfreie E-Books auf Französisch.",
+        "es": "Libros electrónicos gratuitos de dominio público en francés.",
+        "fr": "Livres numériques gratuits du domaine public en français.",
+        "hi": "फ़्रेंच में सार्वजनिक डोमेन की निःशुल्क ई-पुस्तकें।",
+        "id": "Ebook gratis domain publik berbahasa Prancis.",
+        "it": "Ebook gratuiti di pubblico dominio in francese.",
+        "ja": "フランス語のパブリックドメイン無料電子書籍。",
+        "ko": "프랑스어 퍼블릭 도메인 무료 전자책.",
+        "pt-BR": "Ebooks gratuitos em domínio público em francês.",
+        "ru": "Бесплатные электронные книги на французском языке в общественном достоянии.",
+        "zh-CN": "免费的法语公版电子书。"
+      }
+    }
+  ]
+}

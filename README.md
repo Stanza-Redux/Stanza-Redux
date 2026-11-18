@@ -68,7 +68,7 @@ and simulated launchQueue delivery; it does not test installation of a PWA file 
 
 ## Catalog discovery
 
-Catalog sources show a favicon and hostname. Icons come from each catalog's own origin
+Catalog sources show a favicon and, below the name, the published description of a default catalog or the hostname of one the reader added. Icons come from each catalog's own origin
 (no third-party favicon service), share the bounded cover cache, and fall back to bundled
 artwork when unavailable (distinct motifs for the built-in sources, a globe for custom catalogs).
 The built-in sources currently deny cross-origin favicon fetches, so web uses this fallback. Feed pages honor Atom/OPDS 2 icon links and show the published
@@ -99,6 +99,27 @@ and follows the interface locale's direction. Pagination measures the toolbar an
 or a change in control height. Hiding/showing controls preserves pagination. Home/End seek to the beginning/end of the current
 chapter and preserve **Return to previous position**. Text-entry and control keys retain their
 normal behavior.
+
+## Default catalogs
+
+The catalogs a new library starts with are not compiled in. They are the list in
+`website/public/catalogs.json`, published at <https://stanza-redux.app/catalogs.json> and
+fetched at every launch, so the list can change without an app release. The format is
+described at the top of `src/default_catalogs.rs`: each catalog has a stable `id`, a `url`,
+a `name` and `description` that are either one string or a map from language tags to strings,
+and optional `locales`, which list the catalog only for readers with a matching language
+anywhere in their device's preferred languages.
+
+`resource/assets/catalogs.json` is the same file, bundled for a first launch with no network;
+a test fails when the two differ. The app keeps the last list it fetched. Catalogs a reader
+adds, renames, removes or reorders are theirs, and no published list changes them.
+
+To try a list before publishing it, preview the website (below) and build the app against it.
+Android needs `adb reverse tcp:4323 tcp:4323` first:
+
+```sh
+STANZA_CATALOGS_URL=http://127.0.0.1:4323/catalogs.json day launch -t ios-uikit --flavor dev
+```
 
 ## Catalog covers
 

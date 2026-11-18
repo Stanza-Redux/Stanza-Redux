@@ -689,10 +689,18 @@ fn sources(a: App) -> impl Piece {
                     label(move || slot.title().read())
                         .font(Font::Headline)
                         .single_line(),
-                    label(move || opds::catalog_host(&slot.url().read()))
-                        .font(Font::Footnote)
-                        .secondary()
-                        .single_line(),
+                    // A published default says what it offers; the reader's own show their host.
+                    label(move || {
+                        let description = slot.description().read();
+                        if description.is_empty() {
+                            opds::catalog_host(&slot.url().read())
+                        } else {
+                            description
+                        }
+                    })
+                    .font(Font::Footnote)
+                    .secondary()
+                    .max_lines(2),
                 ))
                 .spacing(Space::XS)
                 .align(HAlign::Leading)
