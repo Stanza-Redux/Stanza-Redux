@@ -634,10 +634,10 @@ fn facet_menu(a: App, page_id: u64, facets: &[opds::FacetGroup]) -> ToolbarEntry
         .icon(Symbol::Filter)
         .placement(ToolbarPlacement::Primary)
 }
-fn catalog_key(a: App, key: &str) {
+fn catalog_key(a: App, key: &day::Key) {
     match key {
-        "ArrowLeft" => a.catalog_step(false),
-        "ArrowRight" => a.catalog_step(true),
+        day::Key::ArrowLeft => a.catalog_step(false),
+        day::Key::ArrowRight => a.catalog_step(true),
         _ => {}
     }
 }
@@ -963,15 +963,7 @@ fn results(
         });
         *more.borrow_mut() = Some(task);
     };
-    let first_visible = Signal::new(0usize);
-    watch(move || first_visible.get(), {
-        let load_more = load_more.clone();
-        move |first, _| {
-            if rows.get_untracked().len().saturating_sub(*first) < 12 {
-                load_more()
-            }
-        }
-    });
+    let end_reached = load_more.clone();
     let summary = feed_summary(&feed);
     let no_results = rows.get_untracked().is_empty();
     let icon = feed.icon.clone();
@@ -1050,7 +1042,8 @@ fn results(
             Some(CatalogRow::Shelf(_)) | None => {}
         })
         .row_height(RowHeight::Automatic)
-        .first_visible_row(first_visible)
+        // About a dozen rows ahead of the end, the next page starts loading.
+        .on_end_reached(800., end_reached)
         .id(list_id)
         .grow(Dimension::Both),
     ))

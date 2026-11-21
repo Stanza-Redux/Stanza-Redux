@@ -1357,9 +1357,10 @@ impl Binding<Option<String>> for SettingsSheet {
     }
 }
 
-/// The reader's settings under their title and Done button, `top` and `bottom` points from the
-/// edges. Only the title row takes side padding: each platform's groups bring their own margins.
-fn reader_settings_panel(a: App, top: f64, bottom: f64) -> impl Piece {
+/// The reader's settings under their title and Done button, padded by `edges` (a top and a
+/// bottom inset). Only the title row takes side padding: each platform's groups bring their own
+/// margins.
+fn reader_settings_panel<M>(a: App, edges: impl IntoReactive<Insets, M>) -> impl Piece {
     column((
         row((
             label(res::str::settings()).font(Font::Title),
@@ -1372,11 +1373,7 @@ fn reader_settings_panel(a: App, top: f64, bottom: f64) -> impl Piece {
         reader_settings_sheet(),
     ))
     .spacing(Space::L)
-    .padding(Insets {
-        top,
-        bottom,
-        ..Insets::default()
-    })
+    .padding(edges)
 }
 
 fn reader(a: App) -> impl Piece {
@@ -1386,7 +1383,11 @@ fn reader(a: App) -> impl Piece {
         when(
             move || a.reader_settings.get() && a.document_window,
             move || {
-                reader_settings_panel(a, day::safe_area().top + 16., day::safe_area().bottom + 16.)
+                reader_settings_panel(a, || Insets {
+                    top: day::safe_area().top + 16.,
+                    bottom: day::safe_area().bottom + 16.,
+                    ..Insets::default()
+                })
             },
         )
         .otherwise(move || {
@@ -1394,7 +1395,11 @@ fn reader(a: App) -> impl Piece {
             reader_resources::view(a).js(a.js).id(id!(book_webview))
         }),
         cover(SettingsSheet { app: a, half: true }, move |_: &String| {
-            reader_settings_panel(a, 20., day::safe_area().bottom)
+            reader_settings_panel(a, || Insets {
+                top: 20.,
+                bottom: day::safe_area().bottom,
+                ..Insets::default()
+            })
         })
         .half_sheet()
         .unrouted(),
@@ -1403,7 +1408,16 @@ fn reader(a: App) -> impl Piece {
                 app: a,
                 half: false,
             },
-            move |_: &String| reader_settings_panel(a, 20., 20.),
+            move |_: &String| {
+                reader_settings_panel(
+                    a,
+                    Insets {
+                        top: 20.,
+                        bottom: 20.,
+                        ..Insets::default()
+                    },
+                )
+            },
         )
         .sheet()
         .unrouted(),
