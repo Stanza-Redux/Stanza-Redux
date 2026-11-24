@@ -1,11 +1,13 @@
 name: webdav-settings
-description: Open the WebDAV account form in native settings.
+description: Check which platforms offer WebDAV account settings.
 flow:
-  - navigate: { route: settings/webdav }
-  - wait_for: { id: dav_endpoint }
-  - assert_visible: { id: dav_username }
-  - assert_visible: { id: dav_password }
-  - assert_visible: { id: dav_status }
+  - navigate: { route: settings, only_on: [web-dom] }
+  - wait_for: { id: prefs_group:general, only_on: [web-dom] }
+  - assert_missing: { id: prefs_group:webdav, only_on: [web-dom] }
+  - navigate: { route: settings/webdav, skip_on: [web-dom] }
+  - wait_for: { id: dav_endpoint, skip_on: [web-dom] }
+  - assert_visible: { id: dav_username, skip_on: [web-dom] }
+  - assert_visible: { id: dav_password, skip_on: [web-dom] }
+  - assert_visible: { id: dav_status, skip_on: [web-dom] }
   - screenshot: { name: webdav-settings, window: day.preferences, only_on: [macos-appkit] }
-  - screenshot: { name: webdav-settings, skip_on: [macos-appkit] }
-  - screenshot: { name: webdav-settings, skip_on: [macos-appkit] }
+  - screenshot: { name: webdav-settings, skip_on: [macos-appkit, web-dom] }

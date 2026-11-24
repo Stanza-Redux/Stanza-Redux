@@ -1,5 +1,89 @@
 {
   "sourceLanguage": "en",
-  "strings": {},
+  "strings": {
+    "NSFaceIDUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فتح قفل كلمة مرور حساب WebDAV المحفوظة على هذا الجهاز."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das auf diesem Gerät gespeicherte WebDAV-Passwort entsperren."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock the WebDAV account password stored on this device."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desbloquear la contraseña de la cuenta WebDAV guardada en este dispositivo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déverrouiller le mot de passe du compte WebDAV enregistré sur cet appareil."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "इस डिवाइस पर सहेजे गए WebDAV खाते के पासवर्ड को अनलॉक करें।"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buka kunci kata sandi akun WebDAV yang tersimpan di perangkat ini."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sblocca la password dell’account WebDAV salvata su questo dispositivo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このデバイスに保存された WebDAV アカウントのパスワードをロック解除します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 기기에 저장된 WebDAV 계정 암호를 잠금 해제합니다."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desbloquear a senha da conta WebDAV armazenada neste dispositivo."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Разблокировать пароль учётной записи WebDAV, сохранённый на этом устройстве."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "解锁存储在此设备上的 WebDAV 账户密码。"
+          }
+        }
+      }
+    }
+  },
   "version": "1.0"
 }

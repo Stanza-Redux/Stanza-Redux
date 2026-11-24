@@ -96,5 +96,7 @@
 	<array>
 		<string>org.idpf.epub-container</string>
 	</array>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Unlock the WebDAV account password stored on this device.</string>
 </dict>
 </plist>
