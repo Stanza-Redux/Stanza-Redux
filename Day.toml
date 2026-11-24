@@ -43,3 +43,7 @@ apple_uti = "org.idpf.epub-container"
 [store]
 apple-app-id = "1639831676"
 google-play-id = "org.appfair.app.Stanza_Redux"
+
+# The native keychain contributes this platform permission.
+[permissions]
+biometrics = true

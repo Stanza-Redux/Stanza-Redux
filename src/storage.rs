@@ -216,7 +216,7 @@ fn move_database(from: &std::path::Path, to: &std::path::Path) -> std::io::Resul
 
 #[derive(Clone)]
 pub struct Library {
-    db: ModelContainer,
+    pub(crate) db: ModelContainer,
 }
 impl Library {
     pub fn open() -> Result<Self, DbError> {
@@ -231,7 +231,7 @@ impl Library {
         let driver = Sqlite::at("stanza-library.sqlite");
         Self::with_driver(driver)
     }
-    fn with_driver(driver: Sqlite) -> Result<Self, DbError> {
+    pub(crate) fn with_driver(driver: Sqlite) -> Result<Self, DbError> {
         // Existing libraries have no foreign key in metadata and keep recency separately.
         // Transform owned data before Day installs the new constraints and FTS shadows.
         let plan = day_persistence::MigrationPlan::new().custom(0, 1, |conn| {
@@ -251,20 +251,19 @@ impl Library {
             if tables.iter().any(|t| t == "book_facets") { conn.execute_batch("DROP TABLE book_facets;")?; }
             Ok(())
         });
-        let db = ModelContainer::open_with(
-            driver,
-            schema![
-                BookRecord,
-                FolderRecord,
-                ContentRecord,
-                CatalogRecord,
-                DismissedRecord,
-                ImportRecord,
-                MetadataRecord,
-                BookmarkRecord
-            ],
-            plan,
-        )?;
+        let schema = schema![
+            BookRecord,
+            FolderRecord,
+            ContentRecord,
+            CatalogRecord,
+            DismissedRecord,
+            ImportRecord,
+            MetadataRecord,
+            BookmarkRecord
+        ];
+        #[cfg(not(target_arch = "wasm32"))]
+        let schema = schema.with::<day_sync::Bookmark>();
+        let db = ModelContainer::open_with(driver, schema, plan)?;
         db.set_autosave(false);
         let library = Self { db };
         if !library.imported("library-relations-v2")? {
@@ -843,6 +842,32 @@ pub async fn index_book(db: &Library, b: &crate::epub::Book) -> Result<(), Strin
     db.save_index(b, contents).map_err(|e| e.to_string())
 }
 pub async fn write_assets(b: &crate::epub::Book, bytes: Vec<u8>) -> Result<Saved, String> {
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        let id = b.id.clone();
+        crate::covers::background(move || -> Result<(), String> {
+            use std::io::Write as _;
+            let dir = day_part_filesystem::data_dir()
+                .map_err(|e| e.to_string())?
+                .join("day-fs/books");
+            std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+            let mut staged = tempfile::NamedTempFile::new_in(&dir).map_err(|e| e.to_string())?;
+            staged
+                .write_all(&bytes)
+                .and_then(|()| staged.as_file().sync_all())
+                .map_err(|e| e.to_string())?;
+            staged
+                .persist(dir.join(format!("{id}.epub")))
+                .map_err(|e| e.to_string())?;
+            #[cfg(unix)]
+            std::fs::File::open(dir)
+                .and_then(|f| f.sync_all())
+                .map_err(|e| e.to_string())?;
+            Ok(())
+        })
+        .await??;
+    }
+    #[cfg(target_arch = "wasm32")]
     day_part_filesystem::write_future(&format!("books/{}.epub", b.id), bytes)
         .await
         .map_err(|e| e.to_string())?;

@@ -391,6 +391,7 @@ fn remove(a: App, book: Saved) {
             }
         });
         if let Err(e) = day_part_filesystem::remove_future(&format!("books/{}.epub", book.id)).await
+            && !matches!(e, day_part_filesystem::FsError::NotFound)
         {
             a.error(e.to_string());
         }

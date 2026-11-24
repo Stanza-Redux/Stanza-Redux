@@ -20,6 +20,8 @@ mod metadata;
 pub mod opds;
 mod reader_resources;
 mod storage;
+#[cfg(not(target_arch = "wasm32"))]
+mod sync;
 day::resources!();
 day::routes! { enum ReaderRoute { Reading => "reading" } }
 day::day_start!(options: window(), root);
@@ -320,8 +322,11 @@ fn install_preferences() -> Prefs {
                     rows::toggle(&LEFT_TAP_ADVANCES, res::str::left_tap_advances())
                         .id(id!(reader_left_tap_advances)),
                 ),
-        )
-        .install();
+        );
+    #[cfg(not(target_arch = "wasm32"))]
+    let prefs =
+        prefs.group(Group::new("webdav", res::str::dav_title()).row(rows::custom(sync::settings)));
+    let prefs = prefs.install();
     PREFS.with(|p| *p.borrow_mut() = Some(prefs.clone()));
     prefs
 }
@@ -599,6 +604,16 @@ impl App {
         self.cancel();
         self.busy.set(true);
         day::task(async move {
+            #[cfg(not(target_arch = "wasm32"))]
+            if let Err(error) = sync::ensure_book(&id).await {
+                self.error(AppError::detail(res::str::dav_failed, error));
+                return;
+            }
+            #[cfg(not(target_arch = "wasm32"))]
+            if let Err(error) = sync::choose_position(&id).await {
+                self.error(AppError::detail(res::str::dav_failed, error));
+                return;
+            }
             match epub::open_saved(&id).await {
                 Ok(book) => self.open(book),
                 Err(error) => self.error(error),
@@ -858,6 +873,8 @@ pub fn root() -> impl Piece {
             },
         );
     }
+    #[cfg(not(target_arch = "wasm32"))]
+    sync::start(a);
     documents::register(a);
     default_catalogs::start(a);
     browser::observe_path(a);

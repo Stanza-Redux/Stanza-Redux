@@ -16,7 +16,7 @@ day launch -p web-dom
 ```
 
 Open **Library** to import an EPUB. An empty library receives *Alice in Wonderland* once on first launch; deleting it does not restore it. In **Catalogs**, open a catalog, search or follow its categories, select a book, and download its EPUB.
-Downloaded books and reading positions remain available offline. **Settings** has four groups:
+Downloaded books and reading positions remain available offline. **Reader preferences** include:
 General (appearance, language), Reading (typeface, text size, line spacing, justification,
 hyphenation, margins, paragraph spacing, columns), Reader theme (Light, Sepia, Dark, or custom
 paper and text colors) and Controls (status bar, left-edge tap). On the desktops it is the app
@@ -46,6 +46,35 @@ Desktop View → Full Screen uses the platform's full-screen window mode.
 Day and `day-piece-webview` are git dependencies. To build against local checkouts, the ignored
 `.cargo/config.toml` patches both git sources to their paths; a build without that file fetches
 them from GitHub. Use `/opt/src/github/daybrite/day/target/debug/day` with these local checkouts.
+
+## Synchronizing a library
+
+On each native device, open **Settings → WebDAV sync** and enter the full URL of the same
+writable WebDAV collection, your username, and a password or app password. For Nextcloud,
+copy the WebDAV address from Files settings and select a folder you own. **Verify and save**
+checks authentication, listing, conditional writes, readback, and deletion in a disposable
+child folder. Stanza stores the password in the operating system's keychain.
+
+Existing libraries merge on enrollment. Identical EPUB bytes identify the same edition.
+Titles, author and genre details, bookmarks, recency, and reading positions synchronize while
+the app is running. Open a title to fetch the EPUB or turn on **Keep all books offline**.
+After a download, reading works without a connection. A deliberate move backward synchronizes.
+When devices record conflicting reading positions offline, reopening the book offers the
+available locations. Removing a book from the library propagates to the other devices.
+
+The WebDAV account can read the files and catalog. A fresh device can download the catalog
+and resume without copying an existing SQLite file or device identity. The web edition uses
+its browser-local library.
+
+### Testing synchronization
+
+`cargo test --lib sync::tests` runs the two-library recovery and checkpoint tests.
+The live version runs the same two-library scenario with real HTTP. Create a disposable
+collection named `stanza-fixture-<unique suffix>` on a local WebDAV server at
+`127.0.0.1`. Set `STANZA_TEST_DAV` to its full URL and provide its test account via
+`STANZA_TEST_USER` and `STANZA_TEST_PASSWORD`. Run
+`cargo test --lib dav_library_roundtrip -- --ignored`. Delete the disposable collection
+afterward. The test expects an empty collection for each run.
 
 ## Opening EPUB documents
 
