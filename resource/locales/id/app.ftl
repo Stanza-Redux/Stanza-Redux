@@ -257,3 +257,6 @@ dav_remove_server = Perangkat ini dan server
 
 reader_update_failed = Tidak dapat memperbarui pembaca buku.
 error_details = Detail teknis: { $details }
+
+# Server-authored plain text from the localized censorship registry.
+cover_restriction_message = { $message }

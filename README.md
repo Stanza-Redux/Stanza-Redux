@@ -528,3 +528,94 @@ needed. For local previews, clone and install daysite, clone appsite, and set `D
 to the appsite checkout's absolute path before installing customization dependencies or
 running the preview. See Day's [app website guide](https://daybrite.dev/docs/websites)
 for setup, customization, GitHub Pages, and custom domains.
+
+## Remote catalog and cover restrictions
+
+`website/public/censorship.json` publishes at `https://stanza-redux.app/censorship.json`.
+The app fetches it **once per process launch**, not periodically or on foreground activation.
+It starts with the last valid cached document, or `resource/assets/censorship.json` on a
+first offline launch. A successful launch fetch updates the current UI, including cached
+covers, catalog lists/shelves, and an open reader's cover resources. Downloaded EPUB files,
+text, bookmarks, reading positions, and local library entries are never removed by these rules.
+
+The published and bundled defaults are identical. Edit both when preparing an app release;
+a website-only policy update needs only the published file. Deploying the website makes the
+update available on the next launch of each connected app. Invalid JSON, unsupported schemas,
+HTTP errors, oversized documents, and network failures retain the last valid policy.
+Deleting the remote file does **not** disable censorship: publish `"enabled": false`, disable
+individual rules, or publish an empty `rules` array. An accepted document replaces the prior
+one completely, including when it deactivates restrictions. Offline devices retain their cached
+policy until a later successful launch fetch.
+
+The defaults restore *The Golden Ass* (case 5-1708000040527), cover *Confessions of Zeno*
+(the title Google confirmed in case 3-9772000041706), and retain *The Chink in the Armour*
+as a precaution. Google explicitly did not cite or clear the latter. These are exact edition
+matches, not title matching or a general content filter. Cover replacement alone is not a
+certification that an unrestricted catalog complies with Families requirements.
+
+The version-one document contains `enabled`, a `messages` map, and `rules`. Every message
+maps locale tags to plain text; `en` is required as the remote document's fallback. The shipped
+messages cover all 13 app languages. The app uses its selected language, then device languages,
+then the supplied English entry. Messages are limited to 240 characters and never interpreted
+as HTML, JavaScript, or Fluent syntax. For example, a rule can use:
+
+```json
+{
+  "id": "google-zeno",
+  "enabled": true,
+  "storefronts": ["google-play"],
+  "match": {
+    "identifiers": ["https://standardebooks.org/ebooks/italo-svevo/confessions-of-zeno/beryl-de-zoete"],
+    "url_prefixes": ["https://standardebooks.org/images/covers/italo-svevo_confessions-of-zeno_beryl-de-zoete/"]
+  },
+  "cover_message": "google-cover",
+  "hide_from_catalogs": false
+}
+```
+
+- `cover_message` references a key in `messages`, such as `google-cover` or `apple-cover`.
+  It replaces cover pixels with a placeholder carrying that localized message. Customize the
+  wording in JSON without rebuilding the app. Omit it for a hide-only rule.
+- `hide_from_catalogs: true` removes the matching publication from catalog results, search
+  results, shelves, and subsequent pages. Existing local books remain available. It can be
+  combined with `cover_message` to also replace covers of previously downloaded copies.
+- `match.identifiers` uses exact publisher identifiers (including URNs), publication/detail
+  links, and acquisition URLs. `url_prefixes` matches URL origin and directory path; prefixes
+  must end in `/` and cannot cover an entire host. Titles and author names are never matched.
+- `enabled` can disable the whole document or one rule. Only enabled rules for the build's
+  storefront apply. If multiple cover rules match, the first supplies the message; any
+  matching hide rule hides the catalog entry.
+- `case` and `evidence` are optional administrative notes, never displayed to readers.
+
+`STANZA_STOREFRONT` is a build-time choice: `google-play` (Android default),
+`apple-app-store` (iOS default), or `unrestricted` (other platforms by default). Set
+`STANZA_STOREFRONT=apple-app-store` for Mac App Store builds; set `unrestricted` for
+Android distributions outside Google Play. No Apple rule is active in the initial registry.
+Unrestricted builds do not fetch or enforce the registry. There is no reviewer-specific
+behavior or user switch. Unknown storefront values fail the build.
+
+For a local fixture server, compile with `STANZA_CENSORSHIP_URL=http://127.0.0.1:PORT/censorship.json`.
+Production endpoints require HTTPS; only loopback HTTP is accepted for development. Fetches
+request cache revalidation and accept at most 256 KiB. Test all build modes with:
+
+```sh
+STANZA_STOREFRONT=google-play cargo test --lib
+STANZA_STOREFRONT=apple-app-store cargo test --lib
+STANZA_STOREFRONT=unrestricted cargo test --lib
+```
+
+## Release dependency policy
+
+Tagged App Fair releases use external Rust dependencies from crates.io and a checked-in
+`Cargo.lock`. First-party crates within this repository remain workspace/path dependencies.
+The tag workflow selects `day-deps: release`: it checks the lock with `cargo metadata --locked`,
+rejects Git/local source overrides, preserves every resolved version, and installs the published
+Day CLI matching the locked framework. It never updates or regenerates a release lock.
+Development/main and scheduled compatibility builds may resolve different versions.
+
+Prepare the release lock in a clean checkout without machine-local `.cargo` patches, run the
+app's tests against that crates.io graph, and include the validated lock in the release commit
+before tagging. Missing published dependencies must be released first; a Git fallback is not
+permitted. After local patched development, regenerate/validate the crates.io lock in isolation
+so the release does not inherit machine-local sources. App Fair submission rebuilds use the
+same pinned lock and CLI. Committing or pushing still requires the maintainer's permission.

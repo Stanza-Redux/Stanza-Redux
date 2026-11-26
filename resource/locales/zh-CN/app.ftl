@@ -257,3 +257,6 @@ dav_remove_server = 此设备和服务器
 
 reader_update_failed = 无法更新图书阅读器。
 error_details = 技术详情：{ $details }
+
+# Server-authored plain text from the localized censorship registry.
+cover_restriction_message = { $message }

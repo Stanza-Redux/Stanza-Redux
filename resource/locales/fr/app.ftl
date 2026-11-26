@@ -270,3 +270,6 @@ dav_remove_server = Cet appareil et le serveur
 
 reader_update_failed = Impossible de mettre à jour le lecteur de livres.
 error_details = Détails techniques : { $details }
+
+# Server-authored plain text from the localized censorship registry.
+cover_restriction_message = { $message }

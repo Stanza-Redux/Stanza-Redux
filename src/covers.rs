@@ -5,7 +5,12 @@ use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::rc::Rc;
 
-type Cover = Option<Arc<Vec<u8>>>;
+#[derive(Clone)]
+enum CoverContent {
+    Image(Arc<Vec<u8>>),
+    Restricted(String),
+}
+type Cover = Option<CoverContent>;
 thread_local! {
     // Cache successes and misses for this session; never persist remote images in the library DB.
     static CACHE: RefCell<VecDeque<(String, Cover)>> = const { RefCell::new(VecDeque::new()) };
@@ -103,7 +108,16 @@ fn cached(url: &str) -> Option<Cover> {
         Some(result)
     })
 }
+pub(crate) fn clear_cache() {
+    CACHE.with(|c| c.borrow_mut().clear());
+}
 async fn load(url: String) -> Cover {
+    if let Some(key) = content_restrictions::cover_message(&url) {
+        return Some(CoverContent::Restricted(key));
+    }
+    if url.starts_with(content_restrictions::HIDDEN_COVER) {
+        return None;
+    }
     if let Some(bytes) = cached(&url) {
         return bytes;
     }
@@ -113,13 +127,22 @@ async fn load(url: String) -> Cover {
     }
     let result = async {
         let bytes = if let Some(path) = url.strip_prefix("library:") {
+            if content_restrictions::enabled() {
+                // Check the EPUB itself, including pre-upgrade covers whose database metadata
+                // is missing. Never display saved pixels before the policy check completes.
+                let id = path.strip_prefix("books/")?.strip_suffix(".cover")?;
+                let book = epub::open_saved(id).await.ok()?;
+                if let Some(key) = content_restrictions::metadata_message(&book.metadata) {
+                    return Some(CoverContent::Restricted(key));
+                }
+            }
             day_part_filesystem::read_future(path).await.ok()?
         } else {
             fetch_bytes(&url, 4 * 1024 * 1024, None).await.ok()?.0
         };
         #[cfg(not(target_arch = "wasm32"))]
         let bytes = background(move || thumbnail(bytes)).await.ok()?.ok()?;
-        Some(Arc::new(bytes))
+        Some(CoverContent::Image(Arc::new(bytes)))
     }
     .await;
     CACHE.with(|c| {
@@ -128,7 +151,10 @@ async fn load(url: String) -> Cover {
         while c.len() > 64
             || c.iter()
                 .filter_map(|(_, b)| b.as_ref())
-                .map(|b| b.len())
+                .map(|b| match b {
+                    CoverContent::Image(bytes) => bytes.len(),
+                    CoverContent::Restricted(_) => 0,
+                })
                 .sum::<usize>()
                 > 16 * 1024 * 1024
         {
@@ -220,7 +246,8 @@ fn image_view(
     fallback: impl Fn() -> day::ImageSource + 'static,
 ) -> impl Piece {
     let url = Rc::new(url);
-    let shown = Signal::new((String::new(), None::<Arc<Vec<u8>>>));
+    let shown = Signal::new((String::new(), None::<CoverContent>));
+    let shown_revision = Signal::new(content_restrictions::revision());
     let generation = Rc::new(std::cell::Cell::new(0_u64));
     let task = Rc::new(RefCell::new(None::<day::TaskHandle>));
     let start = {
@@ -234,8 +261,13 @@ fn image_view(
             }
             // Publish a cache hit synchronously; an uncached or missing cover shows the
             // same book-shaped skeleton, never the previous occupant's pixels.
-            let hit = cached(&url);
+            let hit = if let Some(key) = content_restrictions::cover_message(&url) {
+                Some(Some(CoverContent::Restricted(key)))
+            } else {
+                cached(&url)
+            };
             shown.set((url.clone(), hit.clone().flatten()));
+            shown_revision.set(content_restrictions::revision());
             if !url.is_empty() && hit.is_none() {
                 let generation = generation.clone();
                 *task.borrow_mut() = Some(day::task(async move {
@@ -252,10 +284,10 @@ fn image_view(
     // A list rebind can hand the row the URL it already shows or is loading. Keep that load:
     // restarting drops the cover and queues the request behind every other row's.
     watch(
-        move || watched_url(),
-        move |url, previous| {
-            if previous != Some(url) {
-                start(url.clone())
+        move || (watched_url(), content_restrictions::revision()),
+        move |request, previous| {
+            if previous != Some(request) {
+                start(request.0.clone())
             }
         },
     );
@@ -266,28 +298,68 @@ fn image_view(
         }
     });
     let source_url = url.clone();
-    image(move || cover_source(&source_url(), &shown.get(), &fallback()))
-        .fit()
-        .decorative()
-        .id_of(move || {
-            let requested = url();
-            let (loaded, bytes) = shown.get();
-            let key = format!("{width}-{requested}");
-            if requested == loaded && bytes.is_some() {
-                id!(catalog_cover, key)
-            } else {
-                id!(catalog_placeholder, key)
-            }
-        })
-        .frame(width, height)
+    let restricted_url = url.clone();
+    let message_url = url.clone();
+    image(move || {
+        if shown_revision.get() != content_restrictions::revision() {
+            fallback()
+        } else {
+            cover_source(&source_url(), &shown.get(), &fallback())
+        }
+    })
+    .fit()
+    .decorative()
+    .id_of(move || {
+        let requested = url();
+        let (loaded, bytes) = shown.get();
+        let key = format!("{width}-{requested}");
+        if restricted(&requested, &(loaded.clone(), bytes.clone())) {
+            id!(censored_cover, key)
+        } else if requested == loaded && bytes.is_some() {
+            id!(catalog_cover, key)
+        } else {
+            id!(catalog_placeholder, key)
+        }
+    })
+    .frame(width, height)
+    .overlay(when(
+        move || restricted(&restricted_url(), &shown.get()),
+        move || {
+            let message_url = message_url.clone();
+            label(move || {
+                let key = restriction_message(&message_url(), &shown.get()).unwrap_or_default();
+                content_restrictions::message(&key)
+            })
+            .font(Font::Caption2)
+            .padding(2.)
+            .width(width)
+            .background(Color::hex(0xeee8da))
+        },
+    ))
 }
+fn restriction_message(requested: &str, loaded: &(String, Cover)) -> Option<String> {
+    content_restrictions::cover_message(requested).or_else(|| {
+        if loaded.0 == requested
+            && let Some(CoverContent::Restricted(key)) = &loaded.1
+        {
+            Some(key.clone())
+        } else {
+            None
+        }
+    })
+}
+fn restricted(requested: &str, loaded: &(String, Cover)) -> bool {
+    restriction_message(requested, loaded).is_some()
+}
+
 fn cover_source(
     requested: &str,
     loaded: &(String, Cover),
     fallback: &day::ImageSource,
 ) -> day::ImageSource {
-    if loaded.0 == requested
-        && let Some(bytes) = &loaded.1
+    if !restricted(requested, loaded)
+        && loaded.0 == requested
+        && let Some(CoverContent::Image(bytes)) = &loaded.1
     {
         return day::ImageSource::from(bytes.clone());
     }
@@ -296,6 +368,61 @@ fn cover_source(
 #[cfg(all(test, not(target_arch = "wasm32")))]
 mod tests {
     use super::*;
+    #[test]
+    fn saved_covers_are_checked_before_pixels_load_including_pre_upgrade_books() {
+        // Isolate the filesystem backend's process-global data directory from other tests
+        // and from the user's library; never mutate an environment variable in-process.
+        if std::env::var_os("STANZA_COVER_TEST_CHILD").is_none() {
+            let dir = tempfile::tempdir().unwrap();
+            let result = std::process::Command::new(std::env::current_exe().unwrap())
+                .args(["--exact", "covers::tests::saved_covers_are_checked_before_pixels_load_including_pre_upgrade_books"])
+                .env("STANZA_COVER_TEST_CHILD", "1")
+                .env("DAY_DATA_DIR", dir.path())
+                .output().unwrap();
+            assert!(
+                result.status.success(),
+                "{}\n{}",
+                String::from_utf8_lossy(&result.stdout),
+                String::from_utf8_lossy(&result.stderr)
+            );
+            return;
+        }
+        let dir = day_part_filesystem::data_dir()
+            .unwrap()
+            .join("day-fs/books");
+        std::fs::create_dir_all(&dir).unwrap();
+        let mut cover = std::io::Cursor::new(Vec::new());
+        image::DynamicImage::new_rgb8(12, 18)
+            .write_to(&mut cover, image::ImageFormat::Png)
+            .unwrap();
+        for (uid, should_hide) in [
+            (
+                "https://standardebooks.org/ebooks/italo-svevo/confessions-of-zeno/beryl-de-zoete",
+                true,
+            ),
+            ("urn:stanza:synthetic-unrestricted-book", false),
+        ] {
+            let bytes = content_restrictions::cover_fixture(uid);
+            let book = epub::parse(&bytes).unwrap();
+            let path = dir.join(format!("{}.epub", book.id));
+            std::fs::write(&path, &bytes).unwrap();
+            std::fs::write(dir.join(format!("{}.cover", book.id)), cover.get_ref()).unwrap();
+            // No metadata database: models a saved cover from an earlier release.
+            let url = format!("library:books/{}.cover", book.id);
+            for _ in 0..2 {
+                let result = futures_lite::future::block_on(load(url.clone()));
+                if should_hide && env!("STANZA_STOREFRONT") == "google-play" {
+                    assert!(matches!(result, Some(CoverContent::Restricted(_))));
+                } else {
+                    assert!(matches!(result, Some(CoverContent::Image(_))));
+                }
+            }
+            assert_eq!(
+                std::fs::read(crate::shelf::path(&dir, &book.id).unwrap()).unwrap(),
+                bytes
+            );
+        }
+    }
     #[test]
     fn request_slots_are_granted_in_order_and_cancelled_turns_pass_them_on() {
         use std::future::Future;
@@ -329,7 +456,7 @@ mod tests {
     #[test]
     fn recycled_rows_never_show_a_cover_for_another_url() {
         let bytes = Arc::new(vec![1, 2, 3]);
-        let loaded = ("book-a".into(), Some(bytes.clone()));
+        let loaded = ("book-a".into(), Some(CoverContent::Image(bytes.clone())));
         let placeholder = day::ImageSource::from(res::vectors::book_placeholder);
         assert_eq!(
             cover_source("book-a", &loaded, &placeholder),
@@ -340,6 +467,28 @@ mod tests {
         assert_eq!(
             cover_source("book-a", &("book-a".into(), None), &placeholder),
             placeholder
+        );
+    }
+    #[test]
+    fn restricted_covers_never_reveal_cached_pixels_or_leak_between_rows() {
+        let url = "https://standardebooks.org/ebooks/apuleius/the-golden-ass/william-adlington/downloads/cover.jpg";
+        let pixels = (
+            url.into(),
+            Some(CoverContent::Image(Arc::new(vec![1, 2, 3]))),
+        );
+        let fallback = day::ImageSource::from(res::vectors::book_placeholder);
+        if env!("STANZA_STOREFRONT") == "google-play" {
+            assert_eq!(cover_source(url, &pixels, &fallback), fallback);
+        }
+        let hidden = (
+            "library:fixture".into(),
+            Some(CoverContent::Restricted("google-cover".into())),
+        );
+        assert!(restricted("library:fixture", &hidden));
+        assert!(!restricted("https://example.test/other.jpg", &hidden));
+        assert_eq!(
+            cover_source("library:fixture", &hidden, &fallback),
+            fallback
         );
     }
     #[test]

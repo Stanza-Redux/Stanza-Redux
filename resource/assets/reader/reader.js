@@ -6,7 +6,7 @@
 // resolved against this page, and the private family names never match an installed font.
 const FONTS=['Georgia,serif','system-ui,sans-serif','ui-monospace,monospace',"'Stanza Montserrat',system-ui,sans-serif","'Stanza Noto Sans',system-ui,sans-serif","'Stanza Noto Serif',Georgia,serif"];
 const FONT_FACES=[['Stanza Montserrat','Montserrat-Regular.ttf','400'],['Stanza Noto Sans','NotoSans.ttf','100 900'],['Stanza Noto Serif','NotoSerif.ttf','100 900']].map(([family,file,weight])=>`@font-face{font-family:'${family}';src:url('${new URL('fonts/'+file,document.baseURI).href}') format('truetype');font-weight:${weight};font-style:normal;font-display:block}`).join('');
-let frame=document.getElementById('book');let book=null,prefs={},chapter=0,page=0,pages=1,ready=false,serial=0,loaded=null;
+let frame=document.getElementById('book');let book=null,prefs={},chapter=0,page=0,pages=1,ready=false,serial=0,loaded=null,requestedProgress=0,policyRevision=0;
 let measuredChrome='';
 // The screen's safe areas (notch, home indicator), which no margin setting puts text under.
 let safeProbe=null;
@@ -84,14 +84,14 @@ function restyle(){
  applyPrefs(d);settled(d,()=>paginate(n,progress));return true;
 }
 async function show(index,progress=0,fragment='',direction=0){
- if(!book)return;releaseChapterFocus(frame);cancelMotion();ready=false;loaded=null;document.getElementById('bookmark').disabled=true;document.getElementById('chapter-progress').disabled=true;
+ if(!book)return;requestedProgress=progress;releaseChapterFocus(frame);cancelMotion();ready=false;loaded=null;document.getElementById('bookmark').disabled=true;document.getElementById('chapter-progress').disabled=true;
  let outgoing=null;
  if(direction){outgoing=frame;outgoing.id='book-outgoing';outgoing.style.pointerEvents='none';frame=outgoing.cloneNode(false);frame.removeAttribute('src');frame.id='book';frame.style.pointerEvents='';frame.hidden=true;outgoing.after(frame)}else releaseResources(frame)
  // Some Android WebViews retain a zero initial vh while their native view grows.
  // Read the current viewport and assign pixels before laying out the nested document.
  frame.style.height=Math.max(1,innerHeight)+'px';frame.style.width=Math.max(1,innerWidth)+'px';document.body.style.height=Math.max(1,innerHeight)+'px';
  chapter=Math.max(0,Math.min(index,book.chapters.length-1));const entry=book.chapters[chapter];
- const n=++serial,target=new URL(entry.path.split('/').map(encodeURIComponent).join('/'),resourceRoot).href;
+ const n=++serial,target=new URL(entry.path.split('/').map(encodeURIComponent).join('/'),resourceRoot).href+(policyRevision?'?stanza_policy='+policyRevision:'');
  frame.onload=()=>{if(n!==serial)return;
  try {
  const doc=frame.contentDocument;if(!doc?.body||doc.URL!==target)return;
@@ -320,7 +320,7 @@ document.getElementById('chapter-progress').onchange=e=>{if(!ready||animating)re
 document.getElementById('return-position').onclick=()=>{if(!previousPosition||!ready||animating)return;const target=previousPosition;previousPosition=null;document.getElementById('return-position').hidden=true;document.body.focus({preventScroll:true});show(target.chapter,target.progress)};
 document.getElementById('previous-page').onclick=()=>turn(-1);
 document.getElementById('next-page').onclick=()=>turn(1);
-window.stanza={load(data,options,position,translations,savedBookmarks=[]){++serial;cancelMotion();releaseResources(frame);readerLabels(translations);chrome(true);book=data;bookmarks=savedBookmarks;previousPosition=null;document.getElementById("return-position").hidden=true;renderBookmarks();prefs=options;renderContents();show(position?.chapter||0,position?.progress||0);return true},goToChapter(index){show(index)},next(){return turn(1)},previous(){return turn(-1)},configure(options){prefs=options;if(!restyle())show(chapter,pages>1?page/(pages-1):0)},bookmarks(rows){bookmarks=rows;renderBookmarks()},jump(index){if(!ready||animating)return;const c=book.toc[index], [file,frag]=c.path.split('#');const i=book.chapters.findIndex(c=>c.path===file);if(i>=0){rememberPosition();show(i,0,frag||'')}},state(){return{ready,animating,controls,chapter,page,pages,width:frame.clientWidth,height:frame.clientHeight,title:book?.title,text:frame.contentDocument?.body?.innerText?.slice(0,100)}}};
+window.stanza={load(data,options,position,translations,savedBookmarks=[]){++serial;cancelMotion();releaseResources(frame);readerLabels(translations);chrome(true);book=data;bookmarks=savedBookmarks;previousPosition=null;document.getElementById("return-position").hidden=true;renderBookmarks();prefs=options;renderContents();show(position?.chapter||0,position?.progress||0);return true},refreshContent(){++policyRevision;show(chapter,ready?(pages>1?page/(pages-1):0):requestedProgress);return true},goToChapter(index){show(index)},next(){return turn(1)},previous(){return turn(-1)},configure(options){prefs=options;if(!restyle())show(chapter,pages>1?page/(pages-1):0)},bookmarks(rows){bookmarks=rows;renderBookmarks()},jump(index){if(!ready||animating)return;const c=book.toc[index], [file,frag]=c.path.split('#');const i=book.chapters.findIndex(c=>c.path===file);if(i>=0){rememberPosition();show(i,0,frag||'')}},state(){return{ready,animating,controls,chapter,page,pages,width:frame.clientWidth,height:frame.clientHeight,title:book?.title,text:frame.contentDocument?.body?.innerText?.slice(0,100)}}};
 let resizing;
 // A native re-layout can raise resize with nothing changed (the window and chrome still measure as at
 // the last pagination): skip, so a page turn in flight is not cancelled. Otherwise restyle the loaded

@@ -269,3 +269,6 @@ dav_remove_server = هذا الجهاز والخادم
 
 reader_update_failed = تعذّر تحديث قارئ الكتب.
 error_details = التفاصيل التقنية: { $details }
+
+# Server-authored plain text from the localized censorship registry.
+cover_restriction_message = { $message }

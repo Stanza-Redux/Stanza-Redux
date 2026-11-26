@@ -265,3 +265,6 @@ dav_remove_server = С устройства и сервера
 
 reader_update_failed = Не удалось обновить окно чтения книги.
 error_details = Технические сведения: { $details }
+
+# Server-authored plain text from the localized censorship registry.
+cover_restriction_message = { $message }

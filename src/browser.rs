@@ -179,6 +179,9 @@ impl App {
         }
     }
     pub fn select_publication(self, publication: opds::Publication) {
+        if content_restrictions::publication_hidden(&publication) {
+            return;
+        }
         let id = self.catalog_serial.get_untracked() + 1;
         self.catalog_serial.set(id);
         self.catalog_forward.set(Vec::new());
@@ -751,7 +754,7 @@ impl CatalogRow {
     }
     fn cover(&self) -> String {
         match self {
-            Self::Book(p) => p.cover.clone(),
+            Self::Book(p) => content_restrictions::publication_cover(p),
             _ => String::new(),
         }
     }
@@ -809,6 +812,19 @@ fn feed_rows(feed: &opds::Feed) -> Vec<CatalogRow> {
         rows.push(CatalogRow::More);
     }
     rows
+}
+fn row_visible(row: &CatalogRow) -> bool {
+    match row {
+        CatalogRow::Book(book) => !content_restrictions::publication_hidden(book),
+        CatalogRow::Shelf(group) => {
+            group.more.is_some()
+                || group
+                    .entries
+                    .iter()
+                    .any(|p| !content_restrictions::publication_hidden(p))
+        }
+        _ => true,
+    }
 }
 /// The feed's size and any refinement already applied, such as "Sort By: Newest".
 fn feed_summary(feed: &opds::Feed) -> String {
@@ -965,7 +981,6 @@ fn results(
     };
     let end_reached = load_more.clone();
     let summary = feed_summary(&feed);
-    let no_results = rows.get_untracked().is_empty();
     let icon = feed.icon.clone();
     column((
         row((
@@ -1010,15 +1025,24 @@ fn results(
             .horizontal()
             .height(44.)
         }),
-        no_results.then(|| {
-            label(res::str::catalog_no_results())
-                .secondary()
-                .padding(Space::XL)
-                .id(id!(catalog_empty))
-        }),
+        when(
+            move || !rows.get().iter().any(row_visible),
+            || {
+                label(res::str::catalog_no_results())
+                    .secondary()
+                    .padding(Space::XL)
+                    .id(id!(catalog_empty))
+            },
+        ),
         list(
             items(
-                move || rows.get().into_iter().enumerate().collect::<Vec<_>>(),
+                move || {
+                    rows.get()
+                        .into_iter()
+                        .enumerate()
+                        .filter(|(_, row)| row_visible(row))
+                        .collect::<Vec<_>>()
+                },
                 |(i, _): &(usize, CatalogRow)| *i,
             ),
             move |slot| {
@@ -1151,12 +1175,23 @@ fn shelf(a: App, group: impl Fn() -> opds::Group + Copy + 'static) -> impl Piece
         scroll(
             row((each(
                 items(
-                    move || group().entries.into_iter().enumerate().collect::<Vec<_>>(),
+                    move || {
+                        group()
+                            .entries
+                            .into_iter()
+                            .enumerate()
+                            .filter(|(_, p)| !content_restrictions::publication_hidden(p))
+                            .collect::<Vec<_>>()
+                    },
                     |(i, p): &(usize, opds::Publication)| format!("{i}:{}", p.title),
                 ),
                 move |book| {
                     column((
-                        covers::view(move || book.get().1.cover, 96., 138.),
+                        covers::view(
+                            move || content_restrictions::publication_cover(&book.get().1),
+                            96.,
+                            138.,
+                        ),
                         label(move || book.get().1.title)
                             .font(Font::Footnote)
                             .single_line(),

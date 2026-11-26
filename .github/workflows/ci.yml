@@ -60,12 +60,8 @@ jobs:
       # The targets this app was scaffolded with. Add one with `day project add-target`, and
       # add it here too.
       targets: all
-      # Build against the tip of the day branch the app tracks, not the revision the committed
-      # lock pins: a sample app exists to prove the current framework still builds it, and a
-      # lock left at an older revision would silently stop testing day at all. The revision is
-      # resolved once per run, so every leg compiles the same one. Refresh the lock locally
-      # (`cargo update -p day`) when a new framework API lands, so a local build matches.
-      day-deps: ${{ inputs.day-main && 'main' || 'auto' }}
+      # Release tags use the checked-in crates.io lock unchanged; development can track main.
+      day-deps: ${{ startsWith(github.ref, 'refs/tags/') && 'release' || inputs.day-main && 'main' || 'auto' }}
       #targets: "windows-winui, macos-appkit, linux-gtk, linux-qt, ios-uikit, android-material, harmony-arkui, web-dom"
       target-packages: |
         windows-winui: webview2-runtime

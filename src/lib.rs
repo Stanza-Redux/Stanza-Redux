@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::sync::Arc;
 mod browser;
+mod content_restrictions;
 mod covers;
 mod default_catalogs;
 pub mod error;
@@ -839,6 +840,7 @@ async fn fetch_bytes(
     Ok((bytes, final_url))
 }
 pub fn root() -> impl Piece {
+    content_restrictions::start();
     let prefs = install_preferences();
     let database = storage::Library::open().and_then(|db| {
         db.import_preferences()?;
@@ -908,6 +910,17 @@ pub fn root() -> impl Piece {
             }
         },
     );
+    watch(content_restrictions::revision, move |_, _| {
+        a.catalog_path.update(|path| {
+            if let Some(index) = path.iter().position(|page| {
+                page.publication
+                    .as_ref()
+                    .is_some_and(content_restrictions::publication_hidden)
+            }) {
+                path.truncate(index);
+            }
+        });
+    });
     documents::register(a);
     default_catalogs::start(a);
     browser::observe_path(a);
@@ -1199,114 +1212,140 @@ fn details(a: App, publication: opds::Publication) -> impl Piece {
         }
     });
     Scope::current().on_cleanup(move || task.abort());
-    let cover_url = publication.cover.clone();
-    book_overview(
-        publication.title,
-        publication.author,
-        id!(publication_title),
-        covers::view(move || cover_url.clone(), 160., 220.),
-        shown,
-        column((
-            button(move || match epub.get().and_then(|l| l.length) {
-                Some(n) => res::str::download_size(megabytes(n)).format(),
-                None => res::str::download().format(),
-            })
-            .prominent()
-            .enabled(move || epub.get().is_some() && !a.busy.get())
-            .action(move || {
-                if let Some(link) = epub.get_untracked() {
-                    let mut metadata = shown.get_untracked().unwrap_or_else(|| initial.clone());
-                    metadata.acquisition = link.url.clone();
-                    metadata.bytes = metadata.bytes.or(link.length);
-                    a.acquire(link.url, metadata);
-                }
-            })
-            .id(id!(download_book))
-            .height(50.)
-            .grow(Dimension::Width),
-            // Only while there is no download to offer: still checking, or why there is none.
-            when(
-                move || epub.get().is_none(),
-                move || {
-                    label(move || {
-                        if checking.get() || shown.get().is_none() {
-                            res::str::epub_checking().format()
-                        } else {
-                            match current.get().unavailable() {
-                                opds::Unavailable::Account => res::str::unavailable_account(),
-                                opds::Unavailable::Pdf => res::str::unavailable_pdf(),
-                                opds::Unavailable::Audio => res::str::unavailable_audio(),
-                                opds::Unavailable::Other => res::str::unavailable_other(),
-                            }
-                            .format()
-                        }
-                    })
-                    .font(Font::Footnote)
-                    .secondary()
-                    .id(id!(publication_availability))
-                },
-            ),
-            when(
-                move || {
-                    epub.get().is_none()
-                        && !checking.get()
-                        && shown.get().is_some()
-                        && !current.get().web.is_empty()
-                },
-                move || {
-                    button(res::str::view_on_web())
-                        .bordered()
-                        .action(move || open_link(&current.get_untracked().web))
-                        .id(id!(publication_web))
-                },
-            ),
-            column((each(
-                items(
-                    move || browse_rows(current.get().browse),
-                    |(i, l): &(usize, opds::Link)| format!("{i}:{}:{}", l.rel, l.url),
+    when(
+        move || !content_restrictions::publication_hidden(&current.get()),
+        move || {
+            let initial = initial.clone();
+            book_overview(
+                publication.title.clone(),
+                publication.author.clone(),
+                id!(publication_title),
+                covers::view(
+                    move || content_restrictions::publication_cover(&current.get()),
+                    160.,
+                    220.,
                 ),
-                move |link| {
-                    let title = move || {
-                        let l = link.get().1;
-                        if l.rel == "author" {
-                            res::str::more_by(l.title).format()
-                        } else {
-                            l.title
-                        }
-                    };
-                    // A heading row opens nothing: it names the group below it. Its key, which
-                    // ends in its (empty) address, says so for the row's life.
-                    if link.key().ends_with(':') {
-                        return label(move || link.get().1.title)
-                            .font(Font::Headline)
-                            .padding(Insets {
-                                top: 14.,
-                                bottom: 4.,
-                                ..Insets::default()
-                            })
-                            .id_of(move || id!(publication_browse_heading, link.get().1.rel))
-                            .any();
-                    }
-                    row((
-                        label(title).grow(Dimension::Both),
-                        vector(res::vectors::chevron_forward)
-                            .frame(12., 24.)
-                            .decorative(),
-                    ))
-                    .spacing(Space::M)
-                    .padding(Insets::symmetric(0., 10.))
-                    .on_tap(move || {
-                        let l = link.get().1;
-                        a.browse_named(l.url, false, title())
+                shown,
+                column((
+                    button(move || match epub.get().and_then(|l| l.length) {
+                        Some(n) => res::str::download_size(megabytes(n)).format(),
+                        None => res::str::download().format(),
                     })
-                    .id_of(move || id!(publication_browse, link.get().0))
-                    .any()
-                },
-            ),))
-            .align(HAlign::Leading),
-        ))
-        .spacing(Space::S),
+                    .prominent()
+                    .enabled(move || {
+                        epub.get().is_some()
+                            && !a.busy.get()
+                            && !content_restrictions::publication_hidden(&current.get())
+                    })
+                    .action(move || {
+                        if content_restrictions::publication_hidden(&current.get_untracked()) {
+                            return;
+                        }
+                        if let Some(link) = epub.get_untracked() {
+                            let mut metadata =
+                                shown.get_untracked().unwrap_or_else(|| initial.clone());
+                            metadata.acquisition = link.url.clone();
+                            metadata.bytes = metadata.bytes.or(link.length);
+                            a.acquire(link.url, metadata);
+                        }
+                    })
+                    .id(id!(download_book))
+                    .height(50.)
+                    .grow(Dimension::Width),
+                    // Only while there is no download to offer: still checking, or why there is none.
+                    when(
+                        move || epub.get().is_none(),
+                        move || {
+                            label(move || {
+                                if checking.get() || shown.get().is_none() {
+                                    res::str::epub_checking().format()
+                                } else {
+                                    match current.get().unavailable() {
+                                        opds::Unavailable::Account => {
+                                            res::str::unavailable_account()
+                                        }
+                                        opds::Unavailable::Pdf => res::str::unavailable_pdf(),
+                                        opds::Unavailable::Audio => res::str::unavailable_audio(),
+                                        opds::Unavailable::Other => res::str::unavailable_other(),
+                                    }
+                                    .format()
+                                }
+                            })
+                            .font(Font::Footnote)
+                            .secondary()
+                            .id(id!(publication_availability))
+                        },
+                    ),
+                    when(
+                        move || {
+                            epub.get().is_none()
+                                && !checking.get()
+                                && shown.get().is_some()
+                                && !current.get().web.is_empty()
+                        },
+                        move || {
+                            button(res::str::view_on_web())
+                                .bordered()
+                                .action(move || open_link(&current.get_untracked().web))
+                                .id(id!(publication_web))
+                        },
+                    ),
+                    column((each(
+                        items(
+                            move || browse_rows(current.get().browse),
+                            |(i, l): &(usize, opds::Link)| format!("{i}:{}:{}", l.rel, l.url),
+                        ),
+                        move |link| {
+                            let title = move || {
+                                let l = link.get().1;
+                                if l.rel == "author" {
+                                    res::str::more_by(l.title).format()
+                                } else {
+                                    l.title
+                                }
+                            };
+                            // A heading row opens nothing: it names the group below it. Its key, which
+                            // ends in its (empty) address, says so for the row's life.
+                            if link.key().ends_with(':') {
+                                return label(move || link.get().1.title)
+                                    .font(Font::Headline)
+                                    .padding(Insets {
+                                        top: 14.,
+                                        bottom: 4.,
+                                        ..Insets::default()
+                                    })
+                                    .id_of(move || {
+                                        id!(publication_browse_heading, link.get().1.rel)
+                                    })
+                                    .any();
+                            }
+                            row((
+                                label(title).grow(Dimension::Both),
+                                vector(res::vectors::chevron_forward)
+                                    .frame(12., 24.)
+                                    .decorative(),
+                            ))
+                            .spacing(Space::M)
+                            .padding(Insets::symmetric(0., 10.))
+                            .on_tap(move || {
+                                let l = link.get().1;
+                                a.browse_named(l.url, false, title())
+                            })
+                            .id_of(move || id!(publication_browse, link.get().0))
+                            .any()
+                        },
+                    ),))
+                    .align(HAlign::Leading),
+                ))
+                .spacing(Space::S),
+            )
+        },
     )
+    .otherwise(|| {
+        label(res::str::catalog_no_results())
+            .secondary()
+            .padding(Space::XL)
+    })
 }
 /// A size in bytes as the reader's language writes megabytes.
 fn megabytes(bytes: u64) -> String {

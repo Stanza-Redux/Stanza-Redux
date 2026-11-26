@@ -261,3 +261,6 @@ dav_remove_server = यह डिवाइस और सर्वर
 
 reader_update_failed = पुस्तक रीडर अपडेट नहीं हो सका।
 error_details = तकनीकी विवरण: { $details }
+
+# Server-authored plain text from the localized censorship registry.
+cover_restriction_message = { $message }

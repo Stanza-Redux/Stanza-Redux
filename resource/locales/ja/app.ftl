@@ -257,3 +257,6 @@ dav_remove_server = この端末とサーバー
 
 reader_update_failed = ブックリーダーを更新できませんでした。
 error_details = 技術的な詳細：{ $details }
+
+# Server-authored plain text from the localized censorship registry.
+cover_restriction_message = { $message }

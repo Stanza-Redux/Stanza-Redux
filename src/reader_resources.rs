@@ -32,6 +32,38 @@ pub fn view(a: App) -> day_piece_webview::WebView {
             },
         );
     }
+    // Only the UI task reads policy/locale signals. Providers read this immutable
+    // byte snapshot on their worker; no resource callback touches UI state.
+    let hidden_cover = Arc::new(std::sync::RwLock::new(
+        book.as_ref()
+            .and_then(|book| content_restrictions::reader_placeholder(book)),
+    ));
+    let policy_book = book.clone();
+    let policy_cover = hidden_cover.clone();
+    let pending = std::cell::Cell::new(false);
+    watch(
+        move || {
+            (
+                content_restrictions::revision(),
+                day::locale().get(),
+                a.ready.get(),
+            )
+        },
+        move |(_, _, ready), _| {
+            let next = policy_book
+                .as_ref()
+                .and_then(|book| content_restrictions::reader_placeholder(book));
+            let mut current = policy_cover.write().expect("reader policy snapshot");
+            if *current != next {
+                *current = next;
+                pending.set(true);
+            }
+            drop(current);
+            if *ready && pending.replace(false) {
+                a.eval("stanza.refreshContent()".into());
+            }
+        },
+    );
     let provider = ResourceProvider::with_site(res::assets::reader, move |request| {
         let Some(book) = &book else {
             return ResourceResponse::not_found();
@@ -39,34 +71,54 @@ pub fn view(a: App) -> day_piece_webview::WebView {
         let Some(path) = request.path.strip_prefix("book/") else {
             return ResourceResponse::not_found();
         };
-        let Some(mime) = book.resources.get(path) else {
-            return ResourceResponse::not_found();
-        };
-        let Ok(bytes) = book.resource(path) else {
-            return ResourceResponse::error(500);
-        };
-        let mut response = if mime.contains("html") || mime == "image/svg+xml" {
-            let Some(html) = sanitize(&bytes) else {
-                return ResourceResponse::error(422);
-            };
-            ResourceResponse::new(
-                if mime.contains("html") {
-                    "text/html"
-                } else {
-                    mime
-                },
-                html.into_bytes(),
-            )
-        } else {
-            ResourceResponse::new(mime.clone(), bytes)
-        };
-        response
-            .headers
-            .push(("Content-Security-Policy".into(), CONTENT_POLICY.into()));
-        response
+        let hidden = hidden_cover.read().expect("reader policy snapshot");
+        book_response(book, path, hidden.as_deref())
     });
     web_view_resources(provider, "__day_assets/index.html")
         .on_external_link(move |url| a.on_link(url))
+}
+fn book_response(book: &epub::Book, path: &str, hidden_cover: Option<&[u8]>) -> ResourceResponse {
+    let Some(mime) = book.resources.get(path) else {
+        return ResourceResponse::not_found();
+    };
+    let cover = content_restrictions::cover_path(book.cover.as_deref(), path);
+    if cover && let Some(hidden_cover) = hidden_cover {
+        let mut response = ResourceResponse::new("image/svg+xml", hidden_cover.to_vec());
+        response
+            .headers
+            .push(("Cache-Control".into(), "no-store".into()));
+        response
+            .headers
+            .push(("Content-Security-Policy".into(), CONTENT_POLICY.into()));
+        return response;
+    }
+    let Ok(bytes) = book.resource(path) else {
+        return ResourceResponse::error(500);
+    };
+    let mut response = if mime.contains("html") || mime == "image/svg+xml" {
+        let Some(html) = sanitize(&bytes) else {
+            return ResourceResponse::error(422);
+        };
+        ResourceResponse::new(
+            if mime.contains("html") {
+                "text/html"
+            } else {
+                mime
+            },
+            html.into_bytes(),
+        )
+    } else {
+        ResourceResponse::new(mime.clone(), bytes)
+    };
+    if cover {
+        response
+            .headers
+            .push(("Cache-Control".into(), "no-store".into()));
+    }
+    response
+        .headers
+        .push(("Content-Security-Policy".into(), CONTENT_POLICY.into()));
+    response
 }
 /// The HTML elements with no end tag, which keep their `<br/>` form. Any other XHTML element
 /// written self-closed (`<a id="x"/>`, `<div/>`) would be read by the HTML parser as an open
@@ -183,6 +235,46 @@ fn sanitize(bytes: &[u8]) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn restricted_reader_serves_placeholder_without_mutating_epub_or_chapters() {
+        let bytes = content_restrictions::cover_fixture(
+            "https://standardebooks.org/ebooks/apuleius/the-golden-ass/william-adlington",
+        );
+        let book = epub::parse(&bytes).unwrap();
+        let placeholder =
+            b"<svg xmlns='http://www.w3.org/2000/svg'><text>Fixture notice</text></svg>";
+        let hidden = content_restrictions::metadata_restricted(&book.metadata)
+            .then_some(placeholder.as_slice());
+        for path in ["images/cover.jpg", "images/cover.svg"] {
+            let response = book_response(&book, path, hidden);
+            assert_eq!(response.status, 200);
+            if hidden.is_some() {
+                assert_eq!(response.mime, "image/svg+xml");
+                assert_eq!(response.body.as_ref(), placeholder);
+            } else {
+                assert_ne!(response.body.as_ref(), placeholder);
+            }
+        }
+        assert_eq!(
+            book.resource("images/cover.jpg").unwrap().as_ref(),
+            b"original synthetic cover bytes"
+        );
+        let chapter = book_response(&book, "chapter.xhtml", hidden);
+        assert!(
+            std::str::from_utf8(&chapter.body)
+                .unwrap()
+                .contains("Preserved fixture text")
+        );
+        assert_eq!(book_response(&book, "missing.jpg", hidden).status, 404);
+        let mut unrelated = book.clone();
+        unrelated.metadata.identifiers.clear();
+        assert_eq!(
+            book_response(&unrelated, "images/cover.jpg", None)
+                .body
+                .as_ref(),
+            b"original synthetic cover bytes"
+        );
+    }
     #[test]
     fn svg_images_keep_relative_references_but_not_executable_content() {
         let input=br#"<svg xmlns="http://www.w3.org/2000/svg" onload="bad()"><script>bad()</script><image href="../images/a.png"/><a href="javascript:bad()"><text>Fixture</text></a><set attributeName="href" to="javascript:bad()"/></svg>"#;

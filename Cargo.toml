@@ -78,9 +78,9 @@ version = "2.2.9"
 same-file = "1"
 icu_casemap = "2"
 icu_normalizer = "2"
-day-sync = { version = "0.*", git = "https://github.com/daybrite/day-sync.git" }
-day-sync-webdav = { version = "0.*", git = "https://github.com/daybrite/day-sync.git" }
-day-piece-webdav-settings = { version = "0.*", git = "https://github.com/daybrite/day-webdav.git" }
+day-sync = { version = "0.*" }
+day-sync-webdav = { version = "0.*" }
+day-piece-webdav-settings = { version = "0.*" }
 day-part-keychain = "0.*"
 futures-lite = "2"
 tempfile = "3"
