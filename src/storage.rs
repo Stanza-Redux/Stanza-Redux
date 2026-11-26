@@ -251,6 +251,16 @@ impl Library {
             if tables.iter().any(|t| t == "book_facets") { conn.execute_batch("DROP TABLE book_facets;")?; }
             Ok(())
         });
+        // Some version-one libraries added the relation as a nullable column. Rebuild
+        // it explicitly before the model schema enforces its required foreign key.
+        let plan = plan.custom(1, 2, |conn| {
+            let mut exists = false;
+            conn.query("SELECT 1 FROM sqlite_master WHERE type='table' AND name='book_metadata'", &[], &mut |_| exists = true)?;
+            if exists {
+                conn.execute_batch("CREATE TABLE book_metadata_required(id TEXT NOT NULL PRIMARY KEY, book TEXT NOT NULL REFERENCES books(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, json TEXT NOT NULL); INSERT INTO book_metadata_required SELECT id,coalesce(book,id),json FROM book_metadata; DROP TABLE book_metadata; ALTER TABLE book_metadata_required RENAME TO book_metadata;")?;
+            }
+            Ok(())
+        });
         let schema = schema![
             BookRecord,
             FolderRecord,
@@ -573,13 +583,19 @@ impl Library {
     }
     pub fn position(&self, id: &str, chapter: u32, progress: f64) -> Result<(), DbError> {
         if let Some(book) = self.db.try_get::<BookRecord>(id.to_owned())? {
-            book.chapter().write(chapter);
-            book.progress().write(if progress.is_finite() {
+            let progress = if progress.is_finite() {
                 progress.clamp(0., 1.)
             } else {
                 0.
-            });
+            };
+            if book.chapter().read() == chapter && book.progress().read() == progress {
+                return Ok(());
+            }
+            book.chapter().write(chapter);
+            book.progress().write(progress);
             self.db.save()?;
+            #[cfg(not(target_arch = "wasm32"))]
+            crate::sync::changed();
         }
         Ok(())
     }
@@ -845,6 +861,7 @@ pub async fn write_assets(b: &crate::epub::Book, bytes: Vec<u8>) -> Result<Saved
     #[cfg(not(target_arch = "wasm32"))]
     {
         let id = b.id.clone();
+        let name = crate::shelf::name(&b.title, &id);
         crate::covers::background(move || -> Result<(), String> {
             use std::io::Write as _;
             let dir = day_part_filesystem::data_dir()
@@ -852,17 +869,8 @@ pub async fn write_assets(b: &crate::epub::Book, bytes: Vec<u8>) -> Result<Saved
                 .join("day-fs/books");
             std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
             let mut staged = tempfile::NamedTempFile::new_in(&dir).map_err(|e| e.to_string())?;
-            staged
-                .write_all(&bytes)
-                .and_then(|()| staged.as_file().sync_all())
-                .map_err(|e| e.to_string())?;
-            staged
-                .persist(dir.join(format!("{id}.epub")))
-                .map_err(|e| e.to_string())?;
-            #[cfg(unix)]
-            std::fs::File::open(dir)
-                .and_then(|f| f.sync_all())
-                .map_err(|e| e.to_string())?;
+            staged.write_all(&bytes).map_err(|e| e.to_string())?;
+            crate::shelf::install(&dir, &id, &name, staged).map_err(|e| e.to_string())?;
             Ok(())
         })
         .await??;
@@ -1062,6 +1070,46 @@ mod tests {
         assert_eq!(db.recents(1)[0].id, "legacy-fixture");
         drop(db);
         let _ = std::fs::remove_file(path);
+    }
+    #[test]
+    fn nullable_version_one_metadata_relation_preserves_existing_library() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("nullable-metadata.db");
+        {
+            let db = Library::with_driver(Sqlite::at(&path)).unwrap();
+            db.put(&Saved {
+                id: "migration-fixture".into(),
+                title: "Synthetic title".into(),
+                ..Default::default()
+            })
+            .unwrap();
+            db.save_metadata(
+                "migration-fixture",
+                &crate::metadata::Metadata {
+                    subjects: vec!["Synthetic subject".into()],
+                    ..Default::default()
+                },
+            )
+            .unwrap();
+            db.position("migration-fixture", 3, 0.5).unwrap();
+            db.add_bookmark("migration-fixture", 2, 0.25, "Synthetic bookmark".into())
+                .unwrap();
+        }
+        {
+            let conn = rusqlite::Connection::open(&path).unwrap();
+            conn.execute_batch("PRAGMA foreign_keys=OFF; CREATE TABLE nullable_metadata(id TEXT PRIMARY KEY,json TEXT NOT NULL,book TEXT); INSERT INTO nullable_metadata SELECT id,json,book FROM book_metadata; DROP TABLE book_metadata; ALTER TABLE nullable_metadata RENAME TO book_metadata; UPDATE _day_schema SET version=1 WHERE table_name='_db';").unwrap();
+        }
+        for _ in 0..2 {
+            let db = Library::with_driver(Sqlite::at(&path)).unwrap();
+            assert_eq!(db.books().len(), 1);
+            let book = db.book("migration-fixture").unwrap();
+            assert_eq!((book.chapter, book.progress), (3, 0.5));
+            assert_eq!(
+                db.metadata(&book.id).unwrap().subjects,
+                ["Synthetic subject"]
+            );
+            assert_eq!(db.bookmark_query(&book.id).try_collect().unwrap().len(), 1);
+        }
     }
     #[test]
     fn starter_book_deletion_keeps_the_first_launch_marker() {

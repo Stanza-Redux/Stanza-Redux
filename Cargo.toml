@@ -74,8 +74,11 @@ unwrap_used = "warn"
 version = "2.2.9"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-day-sync = { version = "0.3", git = "https://github.com/daybrite/day-sync.git" }
-day-sync-webdav = { version = "0.3", git = "https://github.com/daybrite/day-sync.git" }
+same-file = "1"
+icu_casemap = "2"
+icu_normalizer = "2"
+day-sync = { version = "0.*", git = "https://github.com/daybrite/day-sync.git" }
+day-sync-webdav = { version = "0.*", git = "https://github.com/daybrite/day-sync.git" }
 day-piece-webdav-settings = { version = "0.*", git = "https://github.com/daybrite/day-webdav.git" }
 day-part-keychain = "0.*"
 futures-lite = "2"

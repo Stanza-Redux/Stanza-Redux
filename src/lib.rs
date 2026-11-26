@@ -19,11 +19,15 @@ mod library;
 mod metadata;
 pub mod opds;
 mod reader_resources;
+#[cfg(not(target_arch = "wasm32"))]
+mod shelf;
 mod storage;
 #[cfg(not(target_arch = "wasm32"))]
 mod sync;
 day::resources!();
 day::routes! { enum ReaderRoute { Reading => "reading" } }
+// A root section is always selected; an empty route must not orphan the library list.
+day::routes! { enum AppSection { Library => "library", Catalogs => "catalogs", Settings => "settings" } }
 day::day_start!(options: window(), root);
 /// The window: the generated options carry the locale catalog, the localized title and the
 /// version; the size is for desktop (phones fill the screen).
@@ -324,8 +328,7 @@ fn install_preferences() -> Prefs {
                 ),
         );
     #[cfg(not(target_arch = "wasm32"))]
-    let prefs =
-        prefs.group(Group::new("webdav", res::str::dav_title()).row(rows::custom(sync::settings)));
+    let prefs = prefs.group(sync::settings_group());
     let prefs = prefs.install();
     PREFS.with(|p| *p.borrow_mut() = Some(prefs.clone()));
     prefs
@@ -449,7 +452,7 @@ async fn seed_library(db: &storage::Library) -> Result<(), AppError> {
 struct App {
     document_window: bool,
     database: Signal<Option<storage::Library>>,
-    section: Signal<String>,
+    section: Signal<AppSection>,
     reader_open: Signal<Option<ReaderRoute>>,
     reader_settings: Signal<bool>,
     library_query: Signal<String>,
@@ -466,6 +469,7 @@ struct App {
     busy: Signal<bool>,
     task: Signal<Option<day::TaskHandle>>,
     js: JsHandle,
+    reader_scope: Signal<Option<Scope>>,
     ready: Signal<bool>,
     position: Signal<String>,
     toc: Signal<usize>,
@@ -496,12 +500,13 @@ impl App {
         let error = error.into();
         eprintln!("{error}");
         let e = error.localized();
+        let explanation = error.explanation();
         self.status.set(res::str::error_status(e.clone()).format());
         self.busy.set(false);
         if self.reader_open.get_untracked().is_none() {
             day::task(async move {
                 alert(res::str::error())
-                    .message(e)
+                    .message(explanation)
                     .button(res::str::done(), ())
                     .present()
                     .await;
@@ -509,11 +514,25 @@ impl App {
         }
     }
     fn eval(self, code: String) {
-        day::task(async move {
-            if let Err(e) = self.js.eval(code).await {
-                self.error(e.to_string())
+        let Some(scope) = self
+            .reader_scope
+            .try_get()
+            .flatten()
+            .filter(|s| s.is_alive())
+        else {
+            return;
+        };
+        let task = day::task(async move {
+            if let Err(error) = self.js.eval(code).await
+                && scope.is_alive()
+                && self.reader_scope.try_get() == Some(Some(scope))
+            {
+                self.error(AppError::reader(error));
             }
         });
+        // A reader command belongs to this web view, including when settings replace it.
+        // Closing it cancels pending work instead of reporting an expected ViewGone error.
+        scope.on_cleanup(move || task.abort());
     }
     fn acquire(self, url: String, metadata: metadata::Metadata) {
         self.cancel();
@@ -604,6 +623,8 @@ impl App {
         self.cancel();
         self.busy.set(true);
         day::task(async move {
+            #[cfg(not(target_arch = "wasm32"))]
+            sync::before_open().await;
             #[cfg(not(target_arch = "wasm32"))]
             if let Err(error) = sync::ensure_book(&id).await {
                 self.error(AppError::detail(res::str::dav_failed, error));
@@ -733,6 +754,10 @@ impl App {
                 }
             }
             Some("close") => {
+                self.reader_scope.set(None);
+                self.ready.set(false);
+                #[cfg(not(target_arch = "wasm32"))]
+                sync::flush();
                 if self.document_window {
                     if let Some(book) = self.book.get_untracked()
                         && let Some(window) = day::window_by_key(&format!("reader-{}", book.id))
@@ -742,7 +767,7 @@ impl App {
                     return LinkPolicy::Ignore;
                 }
                 self.reader_open.set(None);
-                self.section.set("library".into());
+                self.section.set(AppSection::Library);
             }
             Some("settings") => self.reader_settings.set(true),
             Some("error") => self.error(AppError::detail(res::str::epub_chapter_missing, data)),
@@ -831,7 +856,7 @@ pub fn root() -> impl Piece {
     let a = App {
         document_window: false,
         database: Signal::new(database),
-        section: Signal::new("library".into()),
+        section: Signal::new(AppSection::Library),
         reader_open: Signal::new(None),
         reader_settings: Signal::new(false),
         library_query: Signal::new(String::new()),
@@ -848,6 +873,7 @@ pub fn root() -> impl Piece {
         busy: Signal::new(false),
         task: Signal::new(None),
         js: JsHandle::new(),
+        reader_scope: Signal::new(None),
         ready: Signal::new(false),
         position: Signal::new(String::new()),
         toc: Signal::new(0),
@@ -874,11 +900,17 @@ pub fn root() -> impl Piece {
         );
     }
     #[cfg(not(target_arch = "wasm32"))]
-    sync::start(a);
+    watch(
+        move || a.reader_open.get().is_some(),
+        |open, previous| {
+            if !*open && previous == Some(&true) {
+                sync::flush();
+            }
+        },
+    );
     documents::register(a);
     default_catalogs::start(a);
     browser::observe_path(a);
-    reopen_last_book(a);
     if let Some(db) = a.database.get_untracked() {
         day::task(async move {
             let errors = legacy::migrate(db.clone()).await;
@@ -897,6 +929,33 @@ pub fn root() -> impl Piece {
                     return;
                 }
             };
+            #[cfg(not(target_arch = "wasm32"))]
+            {
+                // Rename local EPUBs independently of WebDAV and index versions. Finish
+                // before sync/reopening can adopt another filename for the same edition.
+                let names = books
+                    .iter()
+                    .map(|book| (book.id.clone(), book.title.clone()))
+                    .collect::<Vec<_>>();
+                let migration = covers::background(move || {
+                    shelf::root()
+                        .map(|root| shelf::migrate_legacy_names(&root, &names))
+                        .map_err(|error| error.to_string())
+                })
+                .await;
+                match migration {
+                    Ok(Ok((_, failures))) if failures.is_empty() => {}
+                    Ok(Ok((_, failures))) => a.error(AppError::detail(
+                        res::str::operation_failed,
+                        failures.join("\n"),
+                    )),
+                    Ok(Err(error)) | Err(error) => {
+                        a.error(AppError::detail(res::str::operation_failed, error))
+                    }
+                }
+                sync::start(a);
+            }
+            reopen_last_book(a);
             for book in books {
                 if db
                     .book(&book.id)
@@ -955,7 +1014,7 @@ pub fn root() -> impl Piece {
                         .icon(Symbol::Settings)
                         .enabled(a.reader_open.get().is_none() && a.catalog_editor.get().is_none())
                         .action(move || {
-                            a.section.set("catalogs".into());
+                            a.section.set(AppSection::Catalogs);
                             a.manage_catalogs()
                         }),
                 ],
@@ -995,7 +1054,7 @@ pub fn root() -> impl Piece {
         .title(res::str::app_title())
         .style(style)
         .items((
-            item("library", res::str::library())
+            item(AppSection::Library, res::str::library())
                 .icon(res::vectors::tab_library)
                 .page(move || {
                     #[cfg(feature = "appkit")]
@@ -1007,12 +1066,12 @@ pub fn root() -> impl Piece {
                         library::view(a)
                     }
                 }),
-            item("catalogs", res::str::catalogs())
+            item(AppSection::Catalogs, res::str::catalogs())
                 .icon(res::vectors::tab_catalogs)
                 .page(move || browser::view(a)),
             // Settings is a section on every platform; on the desktops the Settings… window is a
             // second way to the same pages.
-            item("settings", res::str::settings())
+            item(AppSection::Settings, res::str::settings())
                 .icon(res::vectors::tab_settings)
                 .page(move || prefs.page()),
         ));
@@ -1020,7 +1079,7 @@ pub fn root() -> impl Piece {
     let navigation = navigation.content_list(
         ContentList::new(move || library::view(a))
             .width(340.)
-            .only_for(|key: &String| key == "library"),
+            .only_for(|key: &AppSection| *key == AppSection::Library),
     );
     zstack((
         navigation.id(id!(navigation)),
@@ -1301,9 +1360,7 @@ fn local_details(a: App, book: Saved) -> impl Piece {
     if metadata.get_untracked().is_none() {
         let task = day::task(async move {
             // Enrich old entries without changing their reading position or last-opened date.
-            if let Ok(bytes) = day_part_filesystem::read_future(&format!("books/{id}.epub")).await
-                && let Ok(Ok(parsed)) = covers::background(move || epub::parse(&bytes)).await
-            {
+            if let Ok(parsed) = epub::open_saved(&id).await {
                 if let Some(db) = a.database.get_untracked()
                     && let Err(e) = db.save_metadata(&id, &parsed.metadata)
                 {

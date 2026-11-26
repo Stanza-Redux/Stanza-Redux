@@ -49,18 +49,52 @@ them from GitHub. Use `/opt/src/github/daybrite/day/target/debug/day` with these
 
 ## Synchronizing a library
 
-On each native device, open **Settings → WebDAV sync** and enter the full URL of the same
-writable WebDAV collection, your username, and a password or app password. For Nextcloud,
-copy the WebDAV address from Files settings and select a folder you own. **Verify and save**
+On each native device, open **Settings → Synchronization**, select or enter the WebDAV
+server URL, and choose the same **App folder**. Enter your username and a password or app
+password. For Nextcloud, copy the WebDAV address from Files settings. To use an existing
+collection URL directly, leave **App folder** empty. **Verify and save**
 checks authentication, listing, conditional writes, readback, and deletion in a disposable
 child folder. Stanza stores the password in the operating system's keychain.
 
+The native settings page separates server details, credentials, and synchronization status.
+During a transfer it names the current book, shows its place in the upload or download
+queue, and advances a progress bar with transfer data. Completion waits for verification
+and indexing. Existing local EPUBs with hash filenames are migrated to readable titles
+at startup, even while offline. The migration verifies their hashes and writes filename
+receipts before removing the old paths; book IDs and reading state stay unchanged. Connection checks, metadata exchange, and finalization have explicit status messages. The Google Material Symbols Sync icon is
+from [Google Fonts](https://fonts.google.com/icons?selected=Material+Symbols+Outlined:sync);
+its Apache 2.0 license is bundled in `resource/assets/material-symbols-LICENSE.txt`.
+
 Existing libraries merge on enrollment. Identical EPUB bytes identify the same edition.
 Titles, author and genre details, bookmarks, recency, and reading positions synchronize while
-the app is running. Open a title to fetch the EPUB or turn on **Keep all books offline**.
+the app is running. Reading-position changes request a metadata exchange after one second;
+closing a book or changing app activation requests it immediately. Active apps poll metadata
+every ten seconds, independently of bulk EPUB transfers. Opening a book checks for a newer
+position with a five-second limit so offline reading remains available. Metadata already
+matching its server hash is reused; other descriptions download two at a time. Open a title to fetch the EPUB or turn on **Keep all books offline**.
 After a download, reading works without a connection. A deliberate move backward synchronizes.
 When devices record conflicting reading positions offline, reopening the book offers the
 available locations. Removing a book from the library propagates to the other devices.
+
+Open `books/` in the app’s WebDAV folder to browse or download ordinary EPUBs. Native
+devices use the same title-based filenames in `day-fs/books/`. For example, a book titled
+*Pride and Prejudice* appears as `books/Pride and Prejudice.epub`. A conflicting edition
+gets a short content-ID suffix. Devices agree on the spelling even when the server
+distinguishes names that differ only in capitalization or Unicode normalization. The file identity stays stable for bookmarks and progress.
+
+New libraries keep replication records and metadata in `.sync/`. WebDAV clients that hide
+dot-prefixed folders show only the browsable `books/` folder. Existing libraries keep
+their journal location and publish readable EPUBs on sync, including books held only
+in the former chunk store. Update each participating device before syncing the new layout.
+Keep the old sync directories for recovery. Once a book's EPUB and library record have been
+confirmed on the server, Remove offers **This device only**, **This device and server**, and
+**Cancel**. Local-only removal stays hidden on that device until explicitly re-imported and
+leaves other libraries intact. Server removal publishes the shared deletion before removing
+the verified remote EPUB; interrupted removals retry. Books not yet synchronized keep the
+ordinary local confirmation. Files retained by older versions are not purged retroactively.
+Use Stanza to import books and make catalog changes.
+Other WebDAV clients can open or copy an EPUB directly. Moving or editing the server copy
+will break its stored reference. Interrupted whole-file transfers retry from the beginning.
 
 The WebDAV account can read the files and catalog. A fresh device can download the catalog
 and resume without copying an existing SQLite file or device identity. The web edition uses

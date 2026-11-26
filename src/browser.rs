@@ -92,7 +92,7 @@ impl App {
     ) {
         self.cancel();
         self.status.set(String::new());
-        self.section.set("catalogs".into());
+        self.section.set(AppSection::Catalogs);
         let id = self.catalog_serial.get_untracked() + 1;
         self.catalog_serial.set(id);
         let depth = if root {
@@ -481,7 +481,7 @@ pub fn view(a: App) -> impl Piece {
                 .toolbar(move || {
                     let Some(page) = current(a, page_id).filter(|_| {
                         a.catalog_path.get().last().is_some_and(|p| p.id == page_id)
-                            && a.section.get() == "catalogs"
+                            && a.section.get() == AppSection::Catalogs
                             && a.reader_open.get().is_none()
                             && a.catalog_editor.get().is_none()
                     }) else {
@@ -543,7 +543,7 @@ fn title_action(title: String) -> Vec<ToolbarEntry> {
     }
 }
 fn catalog_actions(a: App, root: bool, title: String) -> Vec<ToolbarEntry> {
-    if a.section.get() != "catalogs"
+    if a.section.get() != AppSection::Catalogs
         || a.reader_open.get().is_some()
         || a.catalog_editor.get().is_some()
     {
@@ -985,7 +985,7 @@ fn results(
             ))
             .align(HAlign::Leading)
             .spacing(Space::XS)
-            .grow(Dimension::Both),
+            .grow(Dimension::Width),
         ))
         .spacing(Space::M)
         .padding(Space::L),
@@ -1098,7 +1098,7 @@ fn catalog_row(
         ))
         .spacing(Space::XS)
         .align(HAlign::Leading)
-        .grow(Dimension::Both),
+        .grow(Dimension::Width),
         label(move || slot.get().1.count())
             .font(Font::Footnote)
             .secondary(),

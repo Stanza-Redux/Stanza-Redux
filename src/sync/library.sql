@@ -10,6 +10,18 @@ CREATE TABLE IF NOT EXISTS stanza_sync_values (
 CREATE INDEX IF NOT EXISTS stanza_values_book ON stanza_sync_values(book,field);
 CREATE TABLE IF NOT EXISTS stanza_sync_descriptions(book TEXT PRIMARY KEY REFERENCES books(id) ON DELETE CASCADE,hash TEXT NOT NULL) WITHOUT ROWID;
 CREATE TABLE IF NOT EXISTS stanza_sync_uploads(book TEXT PRIMARY KEY) WITHOUT ROWID;
+CREATE TABLE IF NOT EXISTS stanza_sync_remote_files(book TEXT PRIMARY KEY,body TEXT NOT NULL) WITHOUT ROWID;
+CREATE TABLE IF NOT EXISTS stanza_sync_hidden(book TEXT PRIMARY KEY) WITHOUT ROWID;
+-- A DELETE may finish after re-import, or before the process records its response.
+-- Keep this independent of deletion intent, which re-import is allowed to cancel.
+CREATE TABLE IF NOT EXISTS stanza_sync_file_repairs(book TEXT PRIMARY KEY) WITHOUT ROWID;
+CREATE TABLE IF NOT EXISTS stanza_sync_deletions(book TEXT PRIMARY KEY,body TEXT NOT NULL) WITHOUT ROWID;
+CREATE TRIGGER IF NOT EXISTS stanza_sync_restore_local AFTER INSERT ON books
+WHEN (SELECT projecting FROM stanza_sync_control)=0 BEGIN
+    DELETE FROM stanza_sync_hidden WHERE book=NEW.id;
+    DELETE FROM stanza_sync_deletions WHERE book=NEW.id;
+END;
+
 
 -- Seed in the same transaction that installs capture. Running this after a restart must
 -- never manufacture fresh edits for earlier local or remote data.

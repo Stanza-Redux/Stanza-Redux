@@ -22,6 +22,28 @@ impl AppError {
     pub fn localized(&self) -> String {
         (self.message)().format()
     }
+    /// Format the summary and retained diagnostics on the UI thread.
+    pub fn explanation(&self) -> String {
+        let summary = self.localized();
+        if self.diagnostic.trim().is_empty() {
+            summary
+        } else {
+            format!(
+                "{summary}\n\n{}",
+                res::str::error_details(self.diagnostic.as_str()).format()
+            )
+        }
+    }
+    pub(crate) fn reader(error: day_piece_webview::EvalError) -> Self {
+        use day_piece_webview::EvalError;
+        let code = match &error {
+            EvalError::ViewGone => "reader.javascript.view_gone",
+            EvalError::Unsupported => "reader.javascript.unsupported",
+            EvalError::Threw { .. } => "reader.javascript.exception",
+            EvalError::Engine(_) => "reader.javascript.invalid_reply",
+        };
+        Self::detail(res::str::reader_update_failed, format!("{code}\n{error}"))
+    }
 }
 impl From<String> for AppError {
     fn from(detail: String) -> Self {
@@ -47,6 +69,12 @@ mod tests {
             .unwrap();
         day::prelude::set_locale("en");
         let english = error.localized();
+        assert_eq!(error.explanation(), english);
+        let detailed = AppError::reader(day_piece_webview::EvalError::ViewGone);
+        let explanation = detailed.explanation();
+        assert!(explanation.contains("reader.javascript.view_gone"));
+        assert!(explanation.contains("the web view is gone"));
+        assert!(explanation.starts_with(&res::str::reader_update_failed().format()));
         day::prelude::set_locale("fr");
         let french = error.localized();
         assert_ne!(english, french);

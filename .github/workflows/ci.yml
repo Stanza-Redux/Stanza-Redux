@@ -91,6 +91,7 @@ jobs:
         dayscript/catalog.yaml
         dayscript/demo.yaml
         dayscript/library.yaml
+        dayscript/library-startup.yaml
         dayscript/navigation-settle.yaml
         dayscript/persistence.yaml
         dayscript/reader-affordances.yaml

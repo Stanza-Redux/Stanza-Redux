@@ -13,6 +13,7 @@ flow:
   - web_eval: { id: book_webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
   - web_eval: { id: book_webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),300);true", text: "true" }
   - assert_missing: { id: book_webview }
+  - assert_not_presented: {}
   - nav_back: { only_on: [uikit, material, gtk, qt, xaml, arkui, dom] }
   - nav_back: {}
   - select: { id: library_folders, index: 0 }
@@ -27,6 +28,7 @@ flow:
   - web_eval: { id: book_webview, script: "String(stanza.state().ready)", text: "true", timeout_secs: 40 }
   - web_eval: { id: book_webview, script: "setTimeout(()=>document.getElementById('close-reader').click(),300);true", text: "true" }
   - assert_missing: { id: book_webview }
+  - assert_not_presented: {}
   - nav_back: { only_on: [uikit, material, gtk, qt, xaml, arkui, dom] }
   - nav_back: {}
   - wait_for: { id: library_folders }

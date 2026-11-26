@@ -1,0 +1,15 @@
+# Run in a fresh macOS session: do not select Library before checking the first book.
+flow:
+  - assert_route: { route: library, only_on: [appkit] }
+  - select: { id: library_folders, index: 1, only_on: [appkit] }
+  - select: { id: library_list, index: 0, only_on: [appkit] }
+  - assert_visible: { id: local_book_title, only_on: [appkit] }
+  - nav_back: { only_on: [appkit] }
+  - assert_route: { route: library, only_on: [appkit] }
+  # Back at the root must not deselect Library and orphan its book list.
+  - nav_back: { only_on: [appkit] }
+  - assert_route: { route: library, only_on: [appkit] }
+  - select: { id: library_folders, index: 1, only_on: [appkit] }
+  - select: { id: library_list, index: 0, only_on: [appkit] }
+  - assert_visible: { id: local_book_title, only_on: [appkit] }
+  - screenshot: { name: library-startup-detail, only_on: [appkit] }

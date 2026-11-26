@@ -88,6 +88,14 @@ fn coordinates(key: &RecordKey, value: &Field) -> Result<(String, String), DbErr
         }
         Field::File { epub, metadata }
             if epub.sha256 == book
+                && epub
+                    .file
+                    .as_ref()
+                    .is_none_or(|f| f.directory == "books" && crate::shelf::valid(&f.name))
+                && metadata.file.as_ref().is_none_or(|f| {
+                    f.directory == "stanza-redux-v1"
+                        && f.name == format!("{}.json", metadata.sha256)
+                })
                 && epub.validate().is_ok()
                 && metadata.validate().is_ok()
                 && metadata.bytes <= crate::epub::RESOURCE_LIMIT =>
@@ -120,7 +128,7 @@ impl Application for LibraryProfile {
     }
     fn before_freeze(&self, c: &mut dyn SqliteConnection) -> Result<(), DbError> {
         self.before_import(c)?;
-        if rows(c, "SELECT 1 FROM stanza_sync_uploads LIMIT 1", &[])?.is_empty() {
+        if rows(c, "SELECT 1 FROM stanza_sync_uploads UNION ALL SELECT 1 FROM stanza_sync_file_repairs r JOIN books b ON b.id=r.book LIMIT 1", &[])?.is_empty() {
             Ok(())
         } else {
             Err(DbError::driver("stanza.sync.pending_uploads"))
@@ -231,6 +239,15 @@ fn apply(
     item: &str,
     body: &Field,
 ) -> Result<(), DbError> {
+    if !rows(
+        c,
+        "SELECT 1 FROM stanza_sync_hidden WHERE book=?",
+        &[text(book)],
+    )?
+    .is_empty()
+    {
+        return Ok(());
+    }
     match body {
         Field::Opened(time) => {
             c.execute(

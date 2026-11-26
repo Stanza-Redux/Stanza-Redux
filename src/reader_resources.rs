@@ -4,6 +4,7 @@ use crate::*;
 use day_piece_webview::{ResourceProvider, ResourceResponse, web_view_resources};
 const CONTENT_POLICY: &str = "default-src 'none'; script-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; media-src 'self' data:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'";
 pub fn view(a: App) -> day_piece_webview::WebView {
+    a.reader_scope.set(Some(Scope::current()));
     let book = a.book.get_untracked();
     if let (Some(db), Some(book)) = (a.database.get_untracked(), &book) {
         // The query belongs to this reader scope. Insert/delete and cross-window updates

@@ -51,7 +51,7 @@ fn heading(title: String) -> Vec<ToolbarEntry> {
     }
 }
 fn actions(a: App, title: String) -> Vec<ToolbarEntry> {
-    if a.section.get() != "library"
+    if a.section.get() != AppSection::Library
         || a.reader_open.get().is_some()
         || a.catalog_editor.get().is_some()
     {
@@ -373,15 +373,45 @@ pub fn desktop_detail(a: App) -> impl Piece {
 }
 fn remove(a: App, book: Saved) {
     day::task(async move {
-        if !confirm(res::str::remove_book_question()).await {
-            return;
-        }
         let Some(db) = a.database.get_untracked() else {
             return;
         };
-        if let Err(e) = db.remove(&book.id) {
-            a.error(e.to_string());
-            return;
+        #[cfg(not(target_arch = "wasm32"))]
+        let shared = match sync::offers_server_delete(&book.id).await {
+            Ok(shared) => shared,
+            Err(error) => {
+                a.error(AppError::detail(res::str::operation_failed, error));
+                return;
+            }
+        };
+        #[cfg(target_arch = "wasm32")]
+        let shared = false;
+        if shared {
+            let choice = Alert::new(res::str::remove_book_question())
+                .message(res::str::dav_remove_scope())
+                .button(res::str::dav_remove_local(), false)
+                .button(res::str::dav_remove_server(), true)
+                .cancel(res::str::cancel())
+                .present()
+                .await;
+            let Some(server) = choice else { return };
+            #[cfg(not(target_arch = "wasm32"))]
+            if let Err(error) = sync::delete_book(&book.id, server).await {
+                a.error(AppError::detail(res::str::operation_failed, error));
+                return;
+            }
+            #[cfg(target_arch = "wasm32")]
+            let _ = server;
+        } else {
+            if !confirm(res::str::remove_book_question()).await {
+                return;
+            }
+            if let Err(error) = db.remove(&book.id) {
+                a.error(AppError::detail(res::str::operation_failed, error));
+                return;
+            }
+            #[cfg(not(target_arch = "wasm32"))]
+            sync::flush();
         }
 
         a.library_selection.set(None);
@@ -390,6 +420,11 @@ fn remove(a: App, book: Saved) {
                 p.pop();
             }
         });
+        #[cfg(not(target_arch = "wasm32"))]
+        if let Err(e) = crate::shelf::root().and_then(|dir| crate::shelf::remove(&dir, &book.id)) {
+            a.error(e.to_string());
+        }
+        #[cfg(target_arch = "wasm32")]
         if let Err(e) = day_part_filesystem::remove_future(&format!("books/{}.epub", book.id)).await
             && !matches!(e, day_part_filesystem::FsError::NotFound)
         {

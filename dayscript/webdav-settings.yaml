@@ -6,6 +6,7 @@ flow:
   - assert_missing: { id: prefs_group:webdav, only_on: [web-dom] }
   - navigate: { route: settings/webdav, skip_on: [web-dom] }
   - wait_for: { id: dav_endpoint, skip_on: [web-dom] }
+  - assert_visible: { id: dav_folder, skip_on: [web-dom] }
   - assert_visible: { id: dav_username, skip_on: [web-dom] }
   - assert_visible: { id: dav_password, skip_on: [web-dom] }
   - assert_visible: { id: dav_status, skip_on: [web-dom] }

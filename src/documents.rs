@@ -59,6 +59,8 @@ pub fn reader_window(a: App, book: epub::Book) {
     day::open_window(
         window().title(title).size(1000., 760.).key(key),
         move || {
+            #[cfg(not(target_arch = "wasm32"))]
+            Scope::current().on_cleanup(sync::flush);
             let reader_app = App {
                 document_window: true,
                 reader_open: Signal::new(None),
@@ -71,6 +73,7 @@ pub fn reader_window(a: App, book: epub::Book) {
                 busy: Signal::new(false),
                 task: Signal::new(None),
                 js: JsHandle::new(),
+                reader_scope: Signal::new(None),
                 ..a
             };
             reader_app.open(book);

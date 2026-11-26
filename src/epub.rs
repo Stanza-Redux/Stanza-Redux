@@ -61,7 +61,7 @@ impl Seek for Source {
         }
     }
 }
-/// Library files are immutable and named by the content hash computed at import.
+/// The content hash identifies an immutable edition independently of its display filename.
 /// Native readers seek directly in the ZIP; web keeps compressed bytes because Day's
 /// browser file store currently exposes whole-file reads, not a seekable handle.
 pub async fn open_saved(id: &str) -> Result<Book, AppError> {
@@ -72,13 +72,21 @@ pub async fn open_saved(id: &str) -> Result<Book, AppError> {
     {
         let id = id.to_owned();
         crate::covers::background(move || {
-            let file = day_part_filesystem::open_read(&format!("books/{id}.epub"))
-                .map_err(|e| AppError::from(e.to_string()))?;
-            let len = file
-                .metadata()
-                .map_err(|e| AppError::from(e.to_string()))?
-                .len();
-            parse_source(Source::File(file), id, len)
+            let io = |e: std::io::Error| AppError::from(e.to_string());
+            let root = crate::shelf::root().map_err(io)?;
+            let path = crate::shelf::path(&root, &id).map_err(io)?;
+            let mut file = std::fs::File::open(&path).map_err(io)?;
+            if crate::shelf::digest(&mut file).map_err(io)? != id {
+                return Err(AppError::new(res::str::epub_invalid));
+            }
+            file.rewind().map_err(io)?;
+            let len = file.metadata().map_err(io)?.len();
+            let book = parse_source(Source::File(file), id.clone(), len)?;
+            if path == root.join(format!("{id}.epub")) {
+                crate::shelf::adopt(&root, &id, &crate::shelf::name(&book.title, &id))
+                    .map_err(io)?;
+            }
+            Ok(book)
         })
         .await
         .map_err(AppError::from)?
