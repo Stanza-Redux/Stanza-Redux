@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+// SPDX-License-Identifier: GPL-2.0-or-later
 //! One resource namespace per reader. The engine resolves all EPUB-relative URLs.
 use crate::*;
 use day_piece_webview::{ResourceProvider, ResourceResponse, web_view_resources};

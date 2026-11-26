@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+// SPDX-License-Identifier: GPL-2.0-or-later
 use crate::res;
 use day_sync::{Error, StoreErrorKind};
 use day_sync_webdav::webdav::{ConnectionStep, Error as DavError};

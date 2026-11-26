@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+// SPDX-License-Identifier: GPL-2.0-or-later
 //! The EPUB filename is presentation data. A private receipt maps the immutable book ID
 //! to the file actually installed. Libraries written before receipts use the hash path.
 use sha2::{Digest, Sha256};

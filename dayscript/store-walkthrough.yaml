@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+# SPDX-License-Identifier: GPL-2.0-or-later
 # Run after sourcing tests/ci-fixture.sh. Real EPUB downloads, no public network.
 # Gallery labels match the generated UI catalogs; publication text is not translated.
 name: store-walkthrough

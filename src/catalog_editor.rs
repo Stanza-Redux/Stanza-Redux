@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+// SPDX-License-Identifier: GPL-2.0-or-later
 //! One editor for adding and updating catalog sources. Validation never mutates the library.
 use crate::*;
 use std::{

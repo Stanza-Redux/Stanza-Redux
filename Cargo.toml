@@ -2,6 +2,7 @@
 name = "stanza-redux"
 version.workspace = true
 edition = "2024"
+license = "GPL-2.0-or-later"
 # Generates typed `res::` constants from `resource/` (see build.rs).
 build = "build.rs"
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+# SPDX-License-Identifier: GPL-2.0-or-later
 # Source after the CI device boots, in the shell that runs the dayscripts.
 set -euo pipefail
 STANZA_PYTHON=python3

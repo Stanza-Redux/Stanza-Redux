@@ -446,8 +446,8 @@ cargo run --example probe_catalog -- --acquire https://www.gutenberg.org/ebooks.
 
 ## License
 
-AGPL-3.0-only with the App Fair Distribution Exception. See `LICENSE.txt` and
-`LICENSE-EXCEPTIONS.txt`. Readium CSS and font license notices are retained separately.
+Stanza Redux is licensed under the [GNU General Public License, version 2 or later](LICENSE.txt). The bundled Readium CSS
+and fonts retain their own license notices.
 
 ## Localization and resources
 

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+# SPDX-License-Identifier: GPL-2.0-or-later
 # Shared listing text; Day maps these locale tags and fields to each store.
 [storefront.submission-info]
 copyright = "2026 The App Fair Project"

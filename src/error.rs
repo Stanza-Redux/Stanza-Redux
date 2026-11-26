@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+// SPDX-License-Identifier: GPL-2.0-or-later
 //! Carry message constructors across worker threads; format only on the UI thread.
 use crate::res;
 #[derive(Clone, Debug)]

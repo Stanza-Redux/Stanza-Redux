@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+# SPDX-License-Identifier: GPL-2.0-or-later
 """Offline screenshot collection of actual public-domain publications, not app UI copy."""
 from pathlib import Path
 import json

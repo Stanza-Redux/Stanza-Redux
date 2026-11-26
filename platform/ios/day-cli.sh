@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+# SPDX-License-Identifier: GPL-2.0-or-later
 # Runs the day CLI with the arguments given, wherever it is installed.
 # The Xcode script phases call this rather than `day` directly: `day build` exports DAY_BIN, but
 # a build started from the Xcode GUI runs on Xcode's own minimal PATH, with no shell profile and

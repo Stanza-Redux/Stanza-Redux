@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+# SPDX-License-Identifier: GPL-2.0-or-later
 # A development build that installs beside the store app: its own Android package, so a local
 # build never has to replace (and erase) the store copy and its library. `day launch --flavor dev`.
 [app.android]

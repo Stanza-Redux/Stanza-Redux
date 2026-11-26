@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+// SPDX-License-Identifier: GPL-2.0-or-later
 //! Native library navigation; queries and membership come from the persistence store.
 use crate::storage::{BookRecord, BookRecordFields, FolderRecord, FolderRecordFields};
 use crate::*;

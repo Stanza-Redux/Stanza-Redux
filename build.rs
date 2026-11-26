@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+// SPDX-License-Identifier: GPL-2.0-or-later
 //! What day-build does before this project compiles: today, the typed `res::` constants
 //! generated from `resource/` (https://daybrite.dev/docs/resources).
 fn main() {

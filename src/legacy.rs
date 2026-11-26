@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+// SPDX-License-Identifier: GPL-2.0-or-later
 //! Read-only v1 adapter. No legacy tables or Readium JSON leak into the current schema.
 #[cfg(not(target_arch = "wasm32"))]
 mod native {

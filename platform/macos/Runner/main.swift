@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-only WITH App-Fair-Distribution-Exception
+// SPDX-License-Identifier: GPL-2.0-or-later
 // A thin native shell. The Rust staticlib, built by the `day xcode-backend build` script
 // phase, exports day_main, which boots the AppKit app.
 import AppKit
