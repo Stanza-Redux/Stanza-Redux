@@ -334,7 +334,9 @@ checksum = "914a755b7c2d4af2bdcff7ce1739e2db9a1b81a9b07123d8015786ae03c0980d"
 
 [[package]]
 name = "day-app"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "05f769021926185a646a129e02c137574ddfd58c4cb17b9b779c4ee665266a9b"
 dependencies = [
  "day-core",
  "day-geometry",
@@ -368,11 +370,15 @@ dependencies = [
 
 [[package]]
 name = "day-async"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9943b666805ee64c0630dc74bc1bb3a72e22e484e700f79fade03f92b4939d55"
 
 [[package]]
 name = "day-bridge"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dc4121e6ebc41c26d7a67f768f01389d3f98ca8c5baf710b192202f539d706c2"
 dependencies = [
  "day-async",
  "day-macros",
@@ -381,7 +387,9 @@ dependencies = [
 
 [[package]]
 name = "day-build"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e8702f75551315bd7faf713957b199f90724dd9ebeb69fdb84e62d19183e767f"
 dependencies = [
  "cc",
  "day-fonts",
@@ -391,7 +399,9 @@ dependencies = [
 
 [[package]]
 name = "day-core"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6d85043a86b021c5ed3efab8944bb5be11ba9bcba686ccf0be2f6e6967d6dabc"
 dependencies = [
  "anstream",
  "anstyle",
@@ -410,15 +420,21 @@ dependencies = [
 
 [[package]]
 name = "day-fonts"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7b52a849e6eb221c62b554d87d66d666b0a68eeba73fbda92c32dd83e872269b"
 
 [[package]]
 name = "day-geometry"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "45eae68ee22d018c093d36a9840bb7ca449d712c5b1595a8289ca49a2c3177ce"
 
 [[package]]
 name = "day-localization"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "793c3c224a19f4c6cf4a7872bbe24abe9534bf697e49c4079bf464590398e713"
 dependencies = [
  "day-reactive",
  "fluent-bundle",
@@ -437,7 +453,9 @@ dependencies = [
 
 [[package]]
 name = "day-localization-ui"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4b1e7dc26b63c8df80deb485e31454652a2b6bead535b81740b804e62b6e6b35"
 dependencies = [
  "day-core",
  "day-localization",
@@ -445,11 +463,15 @@ dependencies = [
 
 [[package]]
 name = "day-macros"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a7b04aea85f02785e8cd9bceaf97e1d0cfd6ca6847dd71af2b7789b90228e31a"
 
 [[package]]
 name = "day-mock"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "22412c1e5cf6cc6af644cf7665d781efe89e401eba1f48bd7a7c3709fe0dd2d5"
 dependencies = [
  "day-async",
  "day-spec",
@@ -457,7 +479,9 @@ dependencies = [
 
 [[package]]
 name = "day-model"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2d4e59ca36a939ae8fea36d6d24577294843551f300c18220ae3b4e51ddb363d"
 dependencies = [
  "day-reactive",
  "uuid",
@@ -465,7 +489,9 @@ dependencies = [
 
 [[package]]
 name = "day-part-biometrics"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fb892f83ba53983eae8010da7c5c83afc8993643b7360e4d3c31f64c03aae940"
 dependencies = [
  "block2",
  "day-async",
@@ -480,7 +506,9 @@ dependencies = [
 
 [[package]]
 name = "day-part-clipboard"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ead03e51e25fdb4f40e57590cfc0a77cd030efc3f5ad0d3dbf2bca75479c02a0"
 dependencies = [
  "base64 0.23.1",
  "day-async",
@@ -495,7 +523,9 @@ dependencies = [
 
 [[package]]
 name = "day-part-connectivity"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3468a17ad6fc6e1e180baf775026c22fe5c41e37466a03cff8ecd9efa5499980"
 dependencies = [
  "cc",
  "day-bridge",
@@ -507,7 +537,9 @@ dependencies = [
 
 [[package]]
 name = "day-part-filesystem"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8878b0bcfa89b7b01abd06929de9f7c80feeb54100fd0f759e37cc5908306cc5"
 dependencies = [
  "day-async",
  "day-process",
@@ -515,7 +547,9 @@ dependencies = [
 
 [[package]]
 name = "day-part-http"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "93723b16f9e85e2d6c8e32abf9f22484f2b49b45e97fc9cc43350a29e66ac893"
 dependencies = [
  "block2",
  "day-async",
@@ -537,7 +571,9 @@ dependencies = [
 
 [[package]]
 name = "day-part-keychain"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "019d109b60d9b091af49b436e04bb412101a83251d9ca6fb6ee6e624bfdcefe9"
 dependencies = [
  "day-async",
  "day-bridge",
@@ -554,7 +590,9 @@ dependencies = [
 
 [[package]]
 name = "day-part-preferences"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c691d8db0db3baaeedcc9c876b61d51392ee912764348c78d614bea499ae1add"
 dependencies = [
  "day-bridge",
  "day-build",
@@ -569,6 +607,8 @@ dependencies = [
 [[package]]
 name = "day-persistence"
 version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "16e53db1911310b8e1d68bd941b84c809194ad21fe25c453a964402fd5382c69"
 dependencies = [
  "day-async",
  "day-macros",
@@ -587,10 +627,14 @@ dependencies = [
 [[package]]
 name = "day-persistence-macros"
 version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2c8cb46437df8eb9edca8a702ae0f24b0fb55a17104d7b80b8d80b5e1bbbff3e"
 
 [[package]]
 name = "day-piece-settings"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d0ccf4aa9ac0a088cd85e48df216b103c1e7a233b2d91192720723e0f92ca54e"
 dependencies = [
  "cc",
  "day-core",
@@ -624,7 +668,9 @@ dependencies = [
 
 [[package]]
 name = "day-piece-swiftui"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "56ba64633df7436d40e17258c1a4fe1bc7cc8184972e2f64f2526d7f9b7d4694"
 dependencies = [
  "day-core",
  "day-pieces",
@@ -641,7 +687,9 @@ dependencies = [
 
 [[package]]
 name = "day-piece-text-editor"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dcf46efb842b96cbd4d55c5420623fb55f7306fc82f0aba883bc00c81f4628b5"
 dependencies = [
  "cc",
  "day-core",
@@ -672,6 +720,8 @@ dependencies = [
 [[package]]
 name = "day-piece-webdav-settings"
 version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7aee4a72a386aedae4767fbbda1ae9681ebe30552b192de5f0218fc3c0f8b454"
 dependencies = [
  "day-app",
  "day-piece-settings",
@@ -681,6 +731,8 @@ dependencies = [
 [[package]]
 name = "day-piece-webview"
 version = "0.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c37c872ec1bcce236cb4f0a96f1bd1ce580ebf6d98541db77c069692e76cf355"
 dependencies = [
  "cc",
  "day-async",
@@ -701,7 +753,9 @@ dependencies = [
 
 [[package]]
 name = "day-pieces"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "efdc76177ea59b51f91dd23a9e0f0c8f212a44a7f74c61c78f543021094da2e0"
 dependencies = [
  "day-core",
  "day-geometry",
@@ -719,7 +773,9 @@ dependencies = [
 
 [[package]]
 name = "day-platform-android"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0ae189402eeeb981b291621c54a1995c39f8da6b12f4a1b34bfb038a001ab08f"
 dependencies = [
  "day-macros",
  "day-process",
@@ -730,11 +786,15 @@ dependencies = [
 
 [[package]]
 name = "day-platform-linux"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b12dedbe929d13c97f5779f189088b0d57c0dbdb45759d517810ffaca3a865d0"
 
 [[package]]
 name = "day-platform-macos"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2ce49d1703f8a3cd76ffaf12b78b18dadba3efcb350e4a1999c7e80dfeaabf92"
 dependencies = [
  "day-core",
  "day-reactive",
@@ -746,14 +806,18 @@ dependencies = [
 
 [[package]]
 name = "day-platform-windows"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "730601715365c5f2fc721106c8060b3cfea3115fa0105ee79ff98b4a58122e5c"
 dependencies = [
  "windows",
 ]
 
 [[package]]
 name = "day-process"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eeacfd3b2e7866b423674173eb4e9f44b75209028221bf0042a644da042aea24"
 dependencies = [
  "linkme",
  "log",
@@ -761,7 +825,9 @@ dependencies = [
 
 [[package]]
 name = "day-reactive"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2168ca5e045afa4eefc25e3ef6e4e5f339edac0f56cd3474c0dde01d7f9de536"
 dependencies = [
  "log",
  "slotmap",
@@ -769,7 +835,9 @@ dependencies = [
 
 [[package]]
 name = "day-script"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "626fe9bfa338fb618075708bc441bc583873579d67579badca6fc86a1dede76c"
 dependencies = [
  "day-core",
  "day-localization-ui",
@@ -783,7 +851,9 @@ dependencies = [
 
 [[package]]
 name = "day-script-protocol"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0056c40206ade5e55016b08428124c47eb32988e45ce591374b9df5bb23509e3"
 dependencies = [
  "serde",
  "serde_json",
@@ -792,7 +862,9 @@ dependencies = [
 
 [[package]]
 name = "day-spec"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "769b5abf5ff211bfc9a84687ee2c8b7c839cf3bffed8d0f22e4335d2343bf5cf"
 dependencies = [
  "day-fonts",
  "day-geometry",
@@ -804,6 +876,8 @@ dependencies = [
 [[package]]
 name = "day-sqlite-worker"
 version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "46b665359c5442c0bea8ca03510672a37627d5fa30827e73363f467b6bdf8c5d"
 dependencies = [
  "cc",
  "log",
@@ -812,6 +886,8 @@ dependencies = [
 [[package]]
 name = "day-sync"
 version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f1fbe8e08ab636c4accc14dbed0a5cead91ccc229e7ef315b695037205913cb1"
 dependencies = [
  "day-model",
  "day-persistence",
@@ -826,6 +902,8 @@ dependencies = [
 [[package]]
 name = "day-sync-webdav"
 version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2dff7aa459a21bb64a95c74b855e6d71d9b71dfc2234c4fbe168f8956ab7d3a3"
 dependencies = [
  "day-sync",
  "day-webdav",
@@ -836,11 +914,15 @@ dependencies = [
 
 [[package]]
 name = "day-toolchain"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f8fce3837eb0093f9ae4fc01369c9f3bebfa77f24e087247dab65fdff7fadf5b"
 
 [[package]]
 name = "day-toolkit-appkit"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "09e770b3999c9b8ae1232541fcf01d8375243bccd738ed120df6b2b3167dc209"
 dependencies = [
  "block2",
  "cc",
@@ -864,7 +946,9 @@ dependencies = [
 
 [[package]]
 name = "day-toolkit-arkui"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3df1f4fa5edd6fbb76113ee38cc3b882970453ec5a228f33784b406d7d9c84b6"
 dependencies = [
  "day-bridge",
  "day-build",
@@ -883,7 +967,9 @@ dependencies = [
 
 [[package]]
 name = "day-toolkit-dom"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "63560e9f27182bb78c46f24c52dad7a81b4467018f19816623778826899d8430"
 dependencies = [
  "day-core",
  "day-geometry",
@@ -897,7 +983,9 @@ dependencies = [
 
 [[package]]
 name = "day-toolkit-gtk"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f15fdbc1a2e24431d80b355629adc2b627914677f26c55d4b28d2eed839fd71f"
 dependencies = [
  "cairo-rs",
  "day-core",
@@ -920,7 +1008,9 @@ dependencies = [
 
 [[package]]
 name = "day-toolkit-material"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "10a8cf096b15d59d63df9242a30f127997e3226f4734d5e66b6271b6ed50dbf4"
 dependencies = [
  "day-core",
  "day-platform-android",
@@ -934,7 +1024,9 @@ dependencies = [
 
 [[package]]
 name = "day-toolkit-qt"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b20a71f3c4a9ccb56b7f8ebb95c71d5a6344b81e662303ff7b5beab8faa82497"
 dependencies = [
  "day-core",
  "day-platform-linux",
@@ -948,14 +1040,18 @@ dependencies = [
 
 [[package]]
 name = "day-toolkit-qt-sys"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6b85b5f65ce81617fffc99a91878bf23eb055c199502edfed3ee4cd44bcb0288"
 dependencies = [
  "cc",
 ]
 
 [[package]]
 name = "day-toolkit-uikit"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "20ca87801372ab37186058b11a06bd7e7ad8d9c91c45187ee700f09cf0845335"
 dependencies = [
  "block2",
  "cc",
@@ -976,7 +1072,9 @@ dependencies = [
 
 [[package]]
 name = "day-toolkit-winui"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "253abded2516902905c0489fa188ab8026b58cc832b3551d7cf1bc8e3b3a4c56"
 dependencies = [
  "day-core",
  "day-localization",
@@ -990,7 +1088,9 @@ dependencies = [
 
 [[package]]
 name = "day-toolkit-xaml-sys"
-version = "0.7.12"
+version = "0.7.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4b5ba39cfbf8814dd01698965960943c4a894fb27429cabe1160a74241a3aeb5"
 dependencies = [
  "cc",
  "day-toolchain",
@@ -999,6 +1099,8 @@ dependencies = [
 [[package]]
 name = "day-webdav"
 version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "16a58510ce70d5e73114404a1e9abc359b98b72805800f969bf5f3c4cafdfb12"
 dependencies = [
  "atomic-waker",
  "day-async",
@@ -3991,127 +4093,3 @@ checksum = "27bc9d5b815bc103f142aa054f561d9187d191692ec7c2d1e2b4737f8dbd7296"
 dependencies = [
  "zune-core",
 ]
-
-[[patch.unused]]
-name = "alacritty_terminal"
-version = "0.26.0"
-
-[[patch.unused]]
-name = "day-cli"
-version = "0.7.12"
-
-[[patch.unused]]
-name = "day-console"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "day-part-auth"
-version = "0.1.2"
-
-[[patch.unused]]
-name = "day-part-device"
-version = "0.7.12"
-
-[[patch.unused]]
-name = "day-part-downloads"
-version = "0.7.12"
-
-[[patch.unused]]
-name = "day-part-haptics"
-version = "0.7.12"
-
-[[patch.unused]]
-name = "day-part-local-notify"
-version = "0.7.12"
-
-[[patch.unused]]
-name = "day-part-location"
-version = "0.7.12"
-
-[[patch.unused]]
-name = "day-part-permissions"
-version = "0.7.12"
-
-[[patch.unused]]
-name = "day-part-sensors"
-version = "0.7.12"
-
-[[patch.unused]]
-name = "day-part-sound"
-version = "0.7.12"
-
-[[patch.unused]]
-name = "day-part-speech"
-version = "0.5.1"
-
-[[patch.unused]]
-name = "day-part-wakelock"
-version = "0.7.12"
-
-[[patch.unused]]
-name = "day-part-zeroconf"
-version = "0.1.1"
-
-[[patch.unused]]
-name = "day-piece-camera"
-version = "0.1.2"
-
-[[patch.unused]]
-name = "day-piece-charts"
-version = "0.5.2"
-
-[[patch.unused]]
-name = "day-piece-charts-gallery"
-version = "0.1.2"
-
-[[patch.unused]]
-name = "day-piece-crash-reporter"
-version = "0.2.1"
-
-[[patch.unused]]
-name = "day-piece-lottie"
-version = "0.5.4"
-
-[[patch.unused]]
-name = "day-piece-lottie-gallery"
-version = "0.1.2"
-
-[[patch.unused]]
-name = "day-piece-map"
-version = "0.3.2"
-
-[[patch.unused]]
-name = "day-piece-media"
-version = "0.4.7"
-
-[[patch.unused]]
-name = "day-piece-self-update"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "day-piece-webview-servo"
-version = "0.4.3"
-
-[[patch.unused]]
-name = "day-self-update-core"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "day-selfupdate-tools"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "day-tweak-button-bezel"
-version = "0.7.12"
-
-[[patch.unused]]
-name = "day-tweak-slider-tick-marks"
-version = "0.7.12"
-
-[[patch.unused]]
-name = "day-tweak-tree-style"
-version = "0.7.12"
-
-[[patch.unused]]
-name = "day-vector"
-version = "0.7.12"
