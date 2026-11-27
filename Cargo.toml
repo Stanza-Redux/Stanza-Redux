@@ -72,7 +72,7 @@ unwrap_used = "warn"
 [workspace]
 
 [workspace.package]
-version = "2.2.9"
+version = "2.2.10"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 same-file = "1"
