@@ -740,9 +740,9 @@ pub fn search_url(template: &str, query: &str) -> Result<String, AppError> {
                 match name {
                     "searchTerms" => out.push_str(&form),
                     "query" | "q" => out.push_str(&strict),
-                    "count" if optional => out.push_str("30"),
-                    "startIndex" if optional => out.push('0'),
-                    "startPage" if optional => out.push('1'),
+                    // These standard parameters have client defaults even when required.
+                    "count" => out.push_str("30"),
+                    "startIndex" | "startPage" => out.push('1'),
                     "language" if optional => out.push('*'),
                     _ if optional => {}
                     _ => return Err(invalid()),
@@ -798,12 +798,14 @@ pub fn open_search(bytes: &[u8], base: &str) -> Result<String, AppError> {
         .map_err(|e| AppError::detail(res::str::catalog_invalid, e))?;
     let n = d
         .descendants()
-        .find(|n| {
+        .filter(|n| {
             n.is_element()
                 && n.tag_name().name() == "Url"
                 && n.attribute("type")
                     .is_some_and(|s| s.contains("atom") || s.contains("opds"))
         })
+        // Prefer an acquisition catalog over an ordinary Atom feed when both are offered.
+        .min_by_key(|n| !n.attribute("type").unwrap_or_default().contains("opds"))
         .ok_or_else(|| AppError::new(res::str::search_missing))?;
     resolve(
         base,
@@ -981,6 +983,35 @@ mod tests {
             search_url("https://x/?q={searchTerms}&n={count?}&l={lang?}", "a").unwrap(),
             "https://x/?q=a&n=30&l="
         );
+    }
+    #[test]
+    fn opensearch_prefers_opds_and_expands_required_paging() {
+        // Synthetic descriptor matching Standard Ebooks: ordinary Atom precedes OPDS,
+        // and pagination parameters are required rather than marked with a question mark.
+        let descriptor = br#"<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+            <Url type="text/html" template="/ebooks?query={searchTerms}"/>
+            <Url type="application/atom+xml" template="/feeds/atom/all?query={searchTerms}&amp;per-page={count}&amp;page={startPage}"/>
+            <Url type="application/atom+xml;profile=opds-catalog;kind=acquisition" template="/feeds/opds/all?query={searchTerms}&amp;per-page={count}&amp;page={startPage}"/>
+        </OpenSearchDescription>"#;
+        let template = open_search(descriptor, "https://example.org/opensearch").unwrap();
+        assert_eq!(
+            search_url(&template, "Zeno & Svevo").unwrap(),
+            "https://example.org/feeds/opds/all?query=Zeno+%26+Svevo&per-page=30&page=1"
+        );
+    }
+    #[test]
+    fn opensearch_required_paging_and_atom_fallback() {
+        // A catalog offering only Atom remains searchable. OpenSearch indices and
+        // pages default to one; unknown required parameters still cannot be filled.
+        let descriptor = br#"<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+            <Url type="application/atom+xml" template="/search?q={searchTerms}&amp;count={count}&amp;page={startPage}&amp;index={startIndex}"/>
+        </OpenSearchDescription>"#;
+        let template = open_search(descriptor, "https://example.org/opensearch").unwrap();
+        assert_eq!(
+            search_url(&template, "é").unwrap(),
+            "https://example.org/search?q=%C3%A9&count=30&page=1&index=1"
+        );
+        assert!(search_url("https://example.org/?q={searchTerms}&x={unknown}", "Zeno").is_err());
     }
     // Trimmed live responses; see tests/fixtures/opds/README.md.
     const GUTENBERG_ROOT: &str = include_str!("../tests/fixtures/opds/gutenberg-root.json");
