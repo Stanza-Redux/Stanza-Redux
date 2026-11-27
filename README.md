@@ -165,23 +165,50 @@ normal behavior.
 
 ## Default catalogs
 
-The catalogs a new library starts with are not compiled in. They are the list in
-`website/public/catalogs.json`, published at <https://stanza-redux.app/catalogs.json> and
-fetched at every launch, so the list can change without an app release. The format is
-described at the top of `src/default_catalogs.rs`: each catalog has a stable `id`, a `url`,
-a `name` and `description` that are either one string or a map from language tags to strings,
-and optional `locales`, which list the catalog only for readers with a matching language
-anywhere in their device's preferred languages.
+The single editable remote configuration is `website/public/catalog-config.json`, published
+at <https://stanza-redux.app/catalog-config.json>. It contains both `catalogs` and `censorship`:
 
-`resource/assets/catalogs.json` is the same file, bundled for a first launch with no network;
-a test fails when the two differ. The app keeps the last list it fetched. Catalogs a reader
-adds, renames, removes or reorders are theirs, and no published list changes them.
+```json
+{
+  "version": 1,
+  "catalogs": [
+    { "id": "example", "enabled": true, "url": "https://example.org/opds", "name": "Example" }
+  ],
+  "censorship": { "version": 1, "enabled": false, "messages": {}, "rules": [] }
+}
+```
 
-To try a list before publishing it, preview the website (below) and build the app against it.
-Android needs `adb reverse tcp:4323 tcp:4323` first:
+The app fetches this document **once per process launch**, on every platform. It validates both
+sections before applying either, then caches the accepted document. Startup uses the last valid
+cache or the bundled copy; invalid caches fall back to the bundle. Locale changes reuse the
+loaded document without fetching it again. The first upgrade also preserves a valid cached
+censorship policy from the old separate endpoint when offline.
+
+Each catalog has a stable `id`, an OPDS `url`, localized `name` and `description`, and optional
+`locales` (BCP 47 language ranges). `enabled` defaults to true. Set it to false to withdraw a
+managed default; setting it back to true restores it on the next successful launch fetch.
+Catalogs the reader added or renamed remain theirs, and a reader-deleted default stays deleted.
+Downloaded books are unaffected. Both Gutenberg defaults (`project-gutenberg` and
+`gutenberg-ru`) are temporarily disabled for maintenance. Re-enable either by changing its
+`enabled` field to true and publishing the website.
+
+After editing the configuration, run:
 
 ```sh
-STANZA_CATALOGS_URL=http://127.0.0.1:4323/catalogs.json day launch -t ios-uikit --flavor dev
+python3 scripts/sync_catalog_config.py
+```
+
+This copies the canonical document to `resource/assets/catalog-config.json` and generates
+`website/public/catalogs.json` (enabled entries only) and `website/public/censorship.json`.
+Those two compatibility endpoints keep already-released apps working; do not edit them by hand.
+The updated app requests only `catalog-config.json`. Tests check that generated copies agree.
+A website-only change takes effect at the next launch; publishing these files does not require
+an app release. Preparing an app release also updates the generated offline bundle.
+
+To preview locally (Android also needs `adb reverse tcp:4323 tcp:4323`):
+
+```sh
+STANZA_CATALOG_CONFIG_URL=http://127.0.0.1:4323/catalog-config.json day launch -t ios-uikit --flavor dev
 ```
 
 ## Catalog covers
@@ -531,19 +558,17 @@ for setup, customization, GitHub Pages, and custom domains.
 
 ## Remote catalog and cover restrictions
 
-`website/public/censorship.json` publishes at `https://stanza-redux.app/censorship.json`.
-The app fetches it **once per process launch**, not periodically or on foreground activation.
-It starts with the last valid cached document, or `resource/assets/censorship.json` on a
-first offline launch. A successful launch fetch updates the current UI, including cached
+The `censorship` section of `website/public/catalog-config.json` travels with the default
+catalog list in the single launch fetch described above. A successful launch fetch updates the current UI, including cached
 covers, catalog lists/shelves, and an open reader's cover resources. Downloaded EPUB files,
 text, bookmarks, reading positions, and local library entries are never removed by these rules.
 
-The published and bundled defaults are identical. Edit both when preparing an app release;
-a website-only policy update needs only the published file. Deploying the website makes the
+Edit the canonical configuration and run `python3 scripts/sync_catalog_config.py` to update
+the bundle and compatibility endpoints. Deploying the website makes the
 update available on the next launch of each connected app. Invalid JSON, unsupported schemas,
 HTTP errors, oversized documents, and network failures retain the last valid policy.
-Deleting the remote file does **not** disable censorship: publish `"enabled": false`, disable
-individual rules, or publish an empty `rules` array. An accepted document replaces the prior
+Deleting the remote file does **not** disable censorship: set `censorship.enabled` to false,
+disable individual rules, or publish an empty `censorship.rules` array. An accepted document replaces the prior
 one completely, including when it deactivates restrictions. Offline devices retain their cached
 policy until a later successful launch fetch.
 
@@ -553,7 +578,7 @@ as a precaution. Google explicitly did not cite or clear the latter. These are e
 matches, not title matching or a general content filter. Cover replacement alone is not a
 certification that an unrestricted catalog complies with Families requirements.
 
-The version-one document contains `enabled`, a `messages` map, and `rules`. Every message
+The version-one `censorship` object contains `enabled`, a `messages` map, and `rules`. Every message
 maps locale tags to plain text; `en` is required as the remote document's fallback. The shipped
 messages cover all 13 app languages. The app uses its selected language, then device languages,
 then the supplied English entry. Messages are limited to 240 characters and never interpreted
@@ -582,7 +607,7 @@ as HTML, JavaScript, or Fluent syntax. For example, a rule can use:
 - `match.identifiers` uses exact publisher identifiers (including URNs), publication/detail
   links, and acquisition URLs. `url_prefixes` matches URL origin and directory path; prefixes
   must end in `/` and cannot cover an entire host. Titles and author names are never matched.
-- `enabled` can disable the whole document or one rule. Only enabled rules for the build's
+- `enabled` can disable the censorship section or one rule. Only enabled rules for the build's
   storefront apply. If multiple cover rules match, the first supplies the message; any
   matching hide rule hides the catalog entry.
 - `case` and `evidence` are optional administrative notes, never displayed to readers.
@@ -591,12 +616,12 @@ as HTML, JavaScript, or Fluent syntax. For example, a rule can use:
 `apple-app-store` (iOS default), or `unrestricted` (other platforms by default). Set
 `STANZA_STOREFRONT=apple-app-store` for Mac App Store builds; set `unrestricted` for
 Android distributions outside Google Play. No Apple rule is active in the initial registry.
-Unrestricted builds do not fetch or enforce the registry. There is no reviewer-specific
+Unrestricted builds fetch the shared catalog configuration but do not enforce censorship rules. There is no reviewer-specific
 behavior or user switch. Unknown storefront values fail the build.
 
-For a local fixture server, compile with `STANZA_CENSORSHIP_URL=http://127.0.0.1:PORT/censorship.json`.
+For a local fixture server, compile with `STANZA_CATALOG_CONFIG_URL=http://127.0.0.1:PORT/catalog-config.json`.
 Production endpoints require HTTPS; only loopback HTTP is accepted for development. Fetches
-request cache revalidation and accept at most 256 KiB. Test all build modes with:
+request cache revalidation and accept at most 512 KiB for the combined document (256 KiB for its censorship section). Test all build modes with:
 
 ```sh
 STANZA_STOREFRONT=google-play cargo test --lib

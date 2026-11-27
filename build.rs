@@ -18,6 +18,6 @@ fn main() {
         "STANZA_STOREFRONT must be google-play, apple-app-store, or unrestricted"
     );
     println!("cargo:rustc-env=STANZA_STOREFRONT={storefront}");
-    println!("cargo:rerun-if-env-changed=STANZA_CENSORSHIP_URL");
+    println!("cargo:rerun-if-env-changed=STANZA_CATALOG_CONFIG_URL");
     day_build::prebuild_project().expect("day-build: prebuild");
 }

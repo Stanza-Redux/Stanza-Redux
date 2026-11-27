@@ -12,7 +12,10 @@
         "en": "Public-domain books in Russian.",
         "ru": "Книги на русском языке в общественном достоянии."
       },
-      "locales": ["ru"]
+      "locales": [
+        "ru"
+      ],
+      "enabled": false
     },
     {
       "id": "standard-ebooks",
@@ -32,7 +35,8 @@
         "pt-BR": "Edições bem cuidadas de clássicos em domínio público.",
         "ru": "Тщательно оформленные издания классики в общественном достоянии.",
         "zh-CN": "精心排版的公版经典作品。"
-      }
+      },
+      "enabled": true
     },
     {
       "id": "project-gutenberg",
@@ -52,7 +56,8 @@
         "pt-BR": "Mais de 75.000 ebooks gratuitos em domínio público.",
         "ru": "Более 75 000 бесплатных электронных книг в общественном достоянии.",
         "zh-CN": "超过 75,000 本免费的公版电子书。"
-      }
+      },
+      "enabled": false
     },
     {
       "id": "ebooks-gratuits",
@@ -72,7 +77,106 @@
         "pt-BR": "Ebooks gratuitos em domínio público em francês.",
         "ru": "Бесплатные электронные книги на французском языке в общественном достоянии.",
         "zh-CN": "免费的法语公版电子书。"
-      }
+      },
+      "enabled": true
     }
-  ]
+  ],
+  "censorship": {
+    "version": 1,
+    "enabled": true,
+    "messages": {
+      "google-cover": {
+        "ja": "Google により検閲されています",
+        "it": "Censurato da Google",
+        "ru": "Цензура Google",
+        "zh-CN": "已被 Google 审查屏蔽",
+        "ar": "خاضع للرقابة من Google",
+        "pt-BR": "Censurado pelo Google",
+        "hi": "Google द्वारा सेंसर किया गया",
+        "de": "Von Google zensiert",
+        "ko": "Google에 의해 검열됨",
+        "id": "Disensor oleh Google",
+        "fr": "Censuré par Google",
+        "es": "Censurado por Google",
+        "en": "Censored by Google"
+      },
+      "apple-cover": {
+        "ja": "Apple により検閲されています",
+        "it": "Censurato da Apple",
+        "ru": "Цензура Apple",
+        "zh-CN": "已被 Apple 审查屏蔽",
+        "ar": "خاضع للرقابة من Apple",
+        "pt-BR": "Censurado pela Apple",
+        "hi": "Apple द्वारा सेंसर किया गया",
+        "de": "Von Apple zensiert",
+        "ko": "Apple에 의해 검열됨",
+        "id": "Disensor oleh Apple",
+        "fr": "Censuré par Apple",
+        "es": "Censurado por Apple",
+        "en": "Censored by Apple"
+      }
+    },
+    "rules": [
+      {
+        "id": "google-golden-ass",
+        "enabled": true,
+        "storefronts": [
+          "google-play"
+        ],
+        "match": {
+          "identifiers": [
+            "https://standardebooks.org/ebooks/apuleius/the-golden-ass/william-adlington"
+          ],
+          "url_prefixes": [
+            "https://standardebooks.org/ebooks/apuleius/the-golden-ass/william-adlington/downloads/",
+            "https://standardebooks.org/images/covers/apuleius_the-golden-ass_william-adlington/"
+          ]
+        },
+        "cover_message": "google-cover",
+        "hide_from_catalogs": false,
+        "case": "5-1708000040527",
+        "evidence": "Restore the cover restriction from the Swift release (commit 1b16141)."
+      },
+      {
+        "id": "google-zeno",
+        "enabled": true,
+        "storefronts": [
+          "google-play"
+        ],
+        "match": {
+          "identifiers": [
+            "https://standardebooks.org/ebooks/italo-svevo/confessions-of-zeno/beryl-de-zoete"
+          ],
+          "url_prefixes": [
+            "https://standardebooks.org/ebooks/italo-svevo/confessions-of-zeno/beryl-de-zoete/downloads/",
+            "https://standardebooks.org/images/covers/italo-svevo_confessions-of-zeno_beryl-de-zoete/"
+          ]
+        },
+        "cover_message": "google-cover",
+        "hide_from_catalogs": false,
+        "case": "3-9772000041706",
+        "evidence": "Google support confirmed Confessions of Zeno as the cited tobacco-depiction cover in case 3-9772000041706 for version code 43."
+      },
+      {
+        "id": "google-chink-in-armour",
+        "enabled": true,
+        "storefronts": [
+          "google-play"
+        ],
+        "match": {
+          "identifiers": [
+            "https://standardebooks.org/ebooks/marie-belloc-lowndes/the-chink-in-the-armour"
+          ],
+          "url_prefixes": [
+            "https://standardebooks.org/ebooks/marie-belloc-lowndes/the-chink-in-the-armour/downloads/",
+            "https://standardebooks.org/images/covers/marie-belloc-lowndes_the-chink-in-the-armour/"
+          ]
+        },
+        "cover_message": "google-cover",
+        "hide_from_catalogs": false,
+        "case": "3-9772000041706",
+        "evidence": "Precautionary cover restriction. Google explicitly stated this title was not cited in the version-code-43 finding and has not been separately reviewed or cleared."
+      }
+    ]
+  }
 }

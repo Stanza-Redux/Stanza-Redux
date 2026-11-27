@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
-"""Deployment contracts; website-only updates need not change the bundled fallback."""
+"""Deployment contracts for the combined configuration and legacy policy endpoint."""
 import json
 from pathlib import Path
 import unittest
@@ -14,9 +14,10 @@ class CensorshipTests(unittest.TestCase):
 
     def test_messages_cover_every_shipped_locale(self):
         locales = {p.parent.name for p in (ROOT / 'resource/locales').glob('*/app.ftl')}
-        for source in ['website/public/censorship.json', 'resource/assets/censorship.json']:
+        for source in ['website/public/censorship.json', 'website/public/catalog-config.json', 'resource/assets/catalog-config.json']:
             with self.subTest(source=source):
                 data = json.loads((ROOT / source).read_text())
+                data = data.get('censorship', data)
                 self.assertEqual(data['version'], 1)
                 for message in data['messages'].values():
                     self.assertEqual(set(message), locales)

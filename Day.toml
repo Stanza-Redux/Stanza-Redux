@@ -47,3 +47,8 @@ google-play-id = "org.appfair.app.Stanza_Redux"
 # The native keychain contributes this platform permission.
 [permissions]
 biometrics = true
+
+# day-part-http uses connectivity checks for catalog requests and WebDAV sync.
+# Declare the permission its Android dependency contributes to the packaged app.
+[permissions.raw]
+android = ["android.permission.ACCESS_NETWORK_STATE"]

@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::sync::Arc;
 mod browser;
+mod catalog_config;
 mod content_restrictions;
 mod covers;
 mod default_catalogs;
@@ -840,7 +841,7 @@ async fn fetch_bytes(
     Ok((bytes, final_url))
 }
 pub fn root() -> impl Piece {
-    content_restrictions::start();
+    catalog_config::initialize();
     let prefs = install_preferences();
     let database = storage::Library::open().and_then(|db| {
         db.import_preferences()?;
@@ -922,7 +923,7 @@ pub fn root() -> impl Piece {
         });
     });
     documents::register(a);
-    default_catalogs::start(a);
+    catalog_config::start(a);
     browser::observe_path(a);
     if let Some(db) = a.database.get_untracked() {
         day::task(async move {

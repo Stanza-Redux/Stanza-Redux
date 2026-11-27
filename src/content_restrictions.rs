@@ -10,15 +10,9 @@ use std::{
 
 pub const HIDDEN_COVER: &str = "stanza-restricted:";
 const LIMIT: usize = 256 * 1024;
-const CACHE: &str = "stanza.censorship.v1";
-const PUBLISHED: &str = match option_env!("STANZA_CENSORSHIP_URL") {
-    Some(url) => url,
-    None => "https://stanza-redux.app/censorship.json",
-};
-
 #[derive(Clone, Debug, Deserialize, PartialEq)]
 #[serde(deny_unknown_fields)]
-struct Rules {
+pub(crate) struct Rules {
     version: u32,
     enabled: bool,
     messages: BTreeMap<String, BTreeMap<String, String>>,
@@ -104,7 +98,7 @@ impl Matcher {
     }
 }
 impl Rules {
-    fn parse(bytes: &[u8]) -> Result<Self, String> {
+    pub(crate) fn parse(bytes: &[u8]) -> Result<Self, String> {
         if bytes.len() > LIMIT {
             return Err("censorship.document_too_large".into());
         }
@@ -192,24 +186,11 @@ impl Rules {
     }
 }
 fn bundled() -> Rules {
-    #[cfg(not(test))]
-    let bytes = day::resource(res::assets::censorship_json)
-        .expect("bundled censorship registry")
-        .to_vec();
-    #[cfg(test)]
-    let bytes = std::fs::read(
-        std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("resource/assets")
-            .join(res::assets::censorship_json.as_str()),
-    )
-    .expect("bundled censorship registry");
-    Rules::parse(&bytes).expect("valid bundled censorship registry")
+    crate::catalog_config::bundled_rules()
 }
 thread_local! {
     static POLICY: Signal<Arc<Rules>> = Signal::global(Arc::new(bundled()));
     static REVISION: Signal<u64> = Signal::global(0);
-    static STARTED: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
-    static FETCHING: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
 }
 fn policy() -> Arc<Rules> {
     POLICY.with(|s| s.get())
@@ -220,82 +201,13 @@ pub fn revision() -> u64 {
 pub fn enabled() -> bool {
     env!("STANZA_STOREFRONT") != "unrestricted"
 }
-fn install(rules: Rules) {
+pub(crate) fn install(rules: Rules) {
     if POLICY.with(|s| *s.get_untracked() == rules) {
         return;
     }
     crate::covers::clear_cache();
     POLICY.with(|s| s.set(Arc::new(rules)));
     REVISION.with(|s| s.update(|n| *n = n.wrapping_add(1)));
-}
-async fn fetch(endpoint: &str) -> Result<Vec<u8>, String> {
-    let url = url::Url::parse(endpoint).map_err(|e| e.to_string())?;
-    if url.scheme() != "https"
-        && !(url.scheme() == "http"
-            && matches!(url.host_str(), Some("localhost" | "127.0.0.1" | "[::1]")))
-    {
-        return Err("censorship.insecure_endpoint".into());
-    }
-    let response = crate::http_client()
-        .send_future(
-            day_part_http::Request::get(endpoint)
-                .header("Accept", "application/json")
-                .header("Cache-Control", "no-cache"),
-        )
-        .await
-        .map_err(|e| e.to_string())?;
-    if response.status() != 200 || response.expected_length().is_some_and(|n| n > LIMIT as u64) {
-        return Err("censorship.invalid_response".into());
-    }
-    let mut body = response.into_body();
-    let mut bytes = Vec::new();
-    while let Some(chunk) = body.next().await {
-        let chunk = chunk.map_err(|e| e.to_string())?;
-        if bytes.len() + chunk.len() > LIMIT {
-            return Err("censorship.document_too_large".into());
-        }
-        bytes.extend(chunk);
-    }
-    Ok(bytes)
-}
-fn refresh() {
-    if !enabled() || FETCHING.with(|f| f.replace(true)) {
-        return;
-    }
-    day::task(async {
-        struct Fetching;
-        impl Drop for Fetching {
-            fn drop(&mut self) {
-                FETCHING.with(|f| f.set(false));
-            }
-        }
-        let _fetching = Fetching;
-        if let Err(error) = refresh_from(PUBLISHED).await {
-            day::warn!("Censorship registry not refreshed: {error}");
-        }
-    });
-}
-async fn refresh_from(endpoint: &str) -> Result<(), String> {
-    let bytes = fetch(endpoint).await?;
-    let rules = Rules::parse(&bytes)?;
-    // Only validated responses replace the cache. Empty/disabled documents are valid;
-    // errors and 404s preserve the last policy rather than accidentally lifting it.
-    let text = String::from_utf8(bytes).map_err(|e| e.to_string())?;
-    day::prefs::set(CACHE, &text);
-    install(rules);
-    Ok(())
-}
-pub fn start() {
-    if !enabled() || STARTED.with(|s| s.replace(true)) {
-        return;
-    }
-    if let Some(cached) = day::prefs::get(CACHE) {
-        match Rules::parse(cached.as_bytes()) {
-            Ok(rules) => install(rules),
-            Err(e) => day::warn!("Ignoring invalid cached censorship registry: {e}"),
-        }
-    }
-    refresh();
 }
 pub fn publication_hidden(p: &opds::Publication) -> bool {
     policy().hidden(p, env!("STANZA_STOREFRONT"))

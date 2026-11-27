@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-//! The default catalog list: a static JSON document published with the website, so the catalogs
+//! The default catalog section of the shared website configuration, so the catalogs
 //! a new reader starts with can change without an app release.
 //!
+//! Catalog-section example (the full document also requires `censorship`):
 //! ```json
 //! {
 //!   "version": 1,
@@ -17,8 +18,8 @@
 //! }
 //! ```
 //!
-//! - `version`: the format's major version. A document with a later one is ignored whole, so a
-//!   breaking change cannot be half-read by this build. Unknown fields are ignored.
+//! - `version`: the format's major version. Unsupported versions are rejected whole.
+//!   Unknown catalog-entry fields are ignored.
 //! - `catalogs`: the defaults, in the order they are listed in the app.
 //! - `id`: stable for the life of the catalog. The app keys its copy on it, so a later document
 //!   can rename the catalog or move its `url`, and a catalog the reader removed stays removed.
@@ -29,23 +30,14 @@
 //!   reader with a matching preferred language; `ru` matches `ru` and `ru-RU`, in any position
 //!   of the device's language list. When absent, the catalog is listed for everyone.
 //!
-//! The source is `website/public/catalogs.json`; `resource/assets/catalogs.json` is the same
-//! file, bundled for a first launch with no network.
-use crate::{App, res, storage::Library};
-use day::prelude::*;
+//! - `enabled`: defaults to true. False withdraws a managed default until re-enabled.
+//!
+//! This is the catalog section of `catalog-config.json`; `catalog_config` owns its single
+//! launch fetch, cache, fallback and the accompanying content restrictions.
 use serde::Deserialize;
 use std::collections::BTreeMap;
 
-/// Where the list is published. `STANZA_CATALOGS_URL` at build time points a development build
-/// at a local preview of the website.
-const PUBLISHED: &str = match option_env!("STANZA_CATALOGS_URL") {
-    Some(url) => url,
-    None => "https://stanza-redux.app/catalogs.json",
-};
 const VERSION: u32 = 1;
-const LIMIT: usize = 256 * 1024;
-/// The last document fetched, so a launch with no network keeps what the last one showed.
-const CACHE: &str = "stanza.catalogs.published";
 
 #[derive(Deserialize)]
 struct Document {
@@ -54,6 +46,8 @@ struct Document {
 }
 #[derive(Deserialize)]
 struct Entry {
+    #[serde(default = "enabled_by_default")]
+    enabled: bool,
     id: String,
     url: String,
     name: Localized,
@@ -80,6 +74,10 @@ pub struct DefaultCatalog {
     pub url: String,
     pub title: String,
     pub description: String,
+}
+
+fn enabled_by_default() -> bool {
+    true
 }
 
 /// Whether `tag` falls in the language range `range` (RFC 4647 basic filtering).
@@ -124,9 +122,9 @@ impl Localized {
 /// The catalogs `json` lists for a reader with these languages, most preferred first.
 pub fn parse(json: &[u8], preferred: &[String]) -> Result<Vec<DefaultCatalog>, String> {
     let document: Document = serde_json::from_slice(json).map_err(|e| e.to_string())?;
-    if document.version > VERSION {
+    if document.version != VERSION {
         return Err(format!(
-            "catalog list version {} is newer than {VERSION}",
+            "unsupported catalog list version {}; expected {VERSION}",
             document.version
         ));
     }
@@ -140,7 +138,8 @@ pub fn parse(json: &[u8], preferred: &[String]) -> Result<Vec<DefaultCatalog>, S
         let title = entry.name.resolve(preferred);
         let web = entry.url.starts_with("https://") || entry.url.starts_with("http://");
         // One bad entry does not cost the reader the rest of the list.
-        if !listed
+        if !entry.enabled
+            || !listed
             || !web
             || entry.id.is_empty()
             || title.is_empty()
@@ -158,62 +157,6 @@ pub fn parse(json: &[u8], preferred: &[String]) -> Result<Vec<DefaultCatalog>, S
         });
     }
     Ok(catalogs)
-}
-
-/// The app's language, then every language the device lists.
-fn preferred() -> Vec<String> {
-    let mut tags = vec![day::locale().get()];
-    for tag in day::launch_locales() {
-        if !tags.contains(&tag) {
-            tags.push(tag);
-        }
-    }
-    tags
-}
-fn bundled() -> Option<Vec<u8>> {
-    day::resource(res::assets::catalogs_json).map(|r| r.to_vec())
-}
-fn apply(db: &Library, json: &[u8]) -> Result<(), String> {
-    db.sync_defaults(&parse(json, &preferred())?)
-        .map_err(|e| e.to_string())
-}
-/// The list this install last saw, or the bundled one before its first fetch.
-fn apply_known(db: &Library) {
-    let known = day::prefs::get(CACHE)
-        .map(String::into_bytes)
-        .or_else(bundled);
-    if let Some(json) = known
-        && let Err(e) = apply(db, &json)
-    {
-        day::warn!("Default catalogs not applied: {e}");
-    }
-}
-
-/// List the known defaults now, refresh them from the website, and follow the app's language.
-pub fn start(a: App) {
-    let Some(db) = a.database.get_untracked() else {
-        return;
-    };
-    // Tracks the locale: a reader who switches language sees the names in it, and the catalogs
-    // listed for it.
-    let known = db.clone();
-    watch(move || day::locale().get(), move |_, _| apply_known(&known));
-    apply_known(&db);
-    day::task(async move {
-        let json = match crate::fetch_bytes(PUBLISHED, LIMIT, None).await {
-            Ok((json, _)) => json,
-            Err(e) => return day::warn!("Default catalogs not refreshed: {e}"),
-        };
-        match apply(&db, &json) {
-            // Cached only once it has parsed, so a bad deployment never replaces a good list.
-            Ok(()) => {
-                if let Ok(text) = String::from_utf8(json) {
-                    day::prefs::set(CACHE, &text);
-                }
-            }
-            Err(e) => day::warn!("Published default catalogs ignored: {e}"),
-        }
-    });
 }
 
 #[cfg(test)]
@@ -267,18 +210,18 @@ mod tests {
         let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
         let bundled = std::fs::read(
             root.join("resource/assets")
-                .join(res::assets::catalogs_json.as_str()),
+                .join(crate::res::assets::catalog_config_json.as_str()),
         )
         .unwrap();
-        let published = std::fs::read(root.join("website/public/catalogs.json")).unwrap();
+        let published = std::fs::read(root.join("website/public/catalog-config.json")).unwrap();
         assert!(
             bundled == published,
-            "copy website/public/catalogs.json to resource/assets/catalogs.json"
+            "copy website/public/catalog-config.json to resource/assets/catalog-config.json"
         );
         let everyone = parse(&bundled, &tags(&["en"])).unwrap();
         assert!(!everyone.is_empty());
         assert!(everyone.iter().all(|c| !c.description.is_empty()));
         let russian = parse(&bundled, &tags(&["en", "ru"])).unwrap();
-        assert!(russian.len() > everyone.len());
+        assert!(russian.len() >= everyone.len());
     }
 }
