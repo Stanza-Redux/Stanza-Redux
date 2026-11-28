@@ -331,7 +331,8 @@ fn install_preferences() -> Prefs {
         );
     #[cfg(not(target_arch = "wasm32"))]
     let prefs = prefs.group(sync::settings_group());
-    let prefs = prefs.install();
+    // The App Fair group: about the project, the donation link, the other App Fair apps.
+    let prefs = prefs.provider(&day_piece_appfair::APP_FAIR).install();
     PREFS.with(|p| *p.borrow_mut() = Some(prefs.clone()));
     prefs
 }
